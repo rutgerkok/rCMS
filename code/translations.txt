@@ -1,0 +1,111 @@
+Edit
+Delete
+Admin home
+Account
+Log in
+Log out
+Search
+Universiteit Leiden. The university to discover.
+Read more
+Start new article
+Page
+Article
+Category
+Research group
+Event
+Pages
+Articles
+Categories
+Events
+Research groups
+was not found.
+Fields with a <span class="required">*</span> are required.
+Title
+Pinned
+Pinned articles are always on the top of the page.
+Intro
+Featured image
+Select/upload image
+Body
+Save
+Save and quit
+Quit
+Create a new research group
+is too short
+not entered
+is too long
+Archive
+Created on
+Last edited on
+Author
+Year
+All
+Date and time of event
+Event calendar for the next twelve months
+Calendar for
+updated
+added
+More options
+Hidden
+Hidden articles are only visable to logged in users.
+This article is hidden.
+Browse calendar
+Calendar
+Date
+Time
+Enter the key to access this site.
+Please log in
+as a site administrator
+Username
+Password
+Logged in
+You are succesfully logged in.
+Logged out
+You are succesfully logged out.
+Enter the date and time for events (only for events).
+Comments
+Allow comments
+Check this box if you want to allow comments.
+Comments are allowed
+There are no comments yet.
+Add a comment
+Display name
+E-mail
+Comment
+An e-mail address is not required. The e-mail address won't be displayed.
+OK
+Cancel
+is not correct.
+kon niet opgeslagen worden.
+Are you sure you want to delete this comment?
+Yes
+No
+has been removed.
+could not be removed!
+in
+Browse all
+Nothing was found
+HTML tags are not allowed!
+Account management
+Not set
+Site administrator
+Edit you account
+Edit the account of someone else
+Create new account
+Change your
+Fill out the form below to change your password. It's a good practice to change your password at least every other month. The password must be at least 5 characters long.
+Repeat
+Zoek op
+Results
+research groups
+Found * results.
+Found 1 result.
+of
+Previous page
+Next page
+Reset site
+Change a
+Remove a
+Create a new category
+Rename
+Reset the whole site

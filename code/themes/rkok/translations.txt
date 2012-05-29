@@ -1,0 +1,112 @@
+﻿Bewerk
+Verwijder
+Beheer site
+Account
+Inloggen
+Uitloggen
+Zoek
+RutgerKok.nl
+Lees meer
+Maak een nieuw artikel
+Pagina
+Artikel
+Categorie
+Games
+'Zie ook'-link
+Pagina's
+Artikelen
+Categorieën
+Games
+Zie ook
+is niet gevonden.
+Velden met een <span class="required">*</span> zijn verplicht.
+Titel
+Vastgepind
+Vastgepinde berichten staan altijd boven aan de pagina.
+Intro
+Afbeelding bij bericht
+Selecteer/upload afbeelding
+Inhoud van bericht
+Opslaan
+Opslaan en weggaan
+Weggaan
+Maak een nieuwe 'Zie ook'-link
+is te kort
+is niet ingevuld
+is te lang
+Archief
+Gemaakt op
+Laatst bewerkt op
+Auteur
+Jaar
+Alle
+Datum voor agenda 
+Agenda voor de komende twaalf maanden
+Agenda voor
+bijgewerkt
+toegevoegd
+Meer opties
+Verborgen
+Verborgen artikelen zijn alleen zichtbaar voor redacteuren en beheerders.
+Dit artikel is verborgen.
+Selecteer datum
+Agenda
+Datum
+Tijd
+Vul de code in om toegang te krijgen tot deze site.
+Log alsjeblieft in
+als een site-beheerder
+Inlognaam
+Wachtwoord
+Ingelogd
+Je bent nu ingelogd.
+Uitgelogd
+Je bent nu uitgelogd.
+
+Reacties
+Sta reacties toe
+Bepaal of je wel of niet reacties wilt toestaan bij dit bericht.
+Reacties toegestaan
+Er zijn nog geen reacties.
+Reageer
+Weergavenaam
+E-mail
+Reactie
+Het opgeven van een e-mailadres is niet verplicht. Jouw e-mailadres wordt niet weergegeven. Je hoeft het alleen in te vullen als je wilt dat wij met je in contact kunnen komen.
+OK
+Annuleren
+niet goed ingevuld.
+kon niet opgeslagen worden.
+Wilt u echt deze reactie verwijderen?
+Ja
+Nee
+is verwijderd.
+kan niet verwijderd worden!
+in
+Toon alle
+Niets gevonden
+HTML-tags zijn niet toegestaan!
+Accountbeheer
+Niet ingesteld
+Beheerder
+Bewerk jouw account
+Bewerk iemand anders account
+Maak nieuwe account aan
+Verander jouw
+Vul onderstaand formulier in om je wachtwoord te wijzigen. Het is een goede gewoonte om je wachtwoord elke paar maanden te wijzigen. Het wachtwoord moet minimaal 5 tekens lang zijn.
+Herhaal
+Zoek op
+Resultaten
+games
+Er zijn * resultaten gevonden.
+Er is één resultaat gevonden.
+van de
+Vorige pagina
+Volgende pagina
+Site resetten
+Verander een
+Verwijder een
+Maak een nieuwe categorie aan
+Hernoem
+Reset de hele site
+Begin weer helemaal opnieuw
