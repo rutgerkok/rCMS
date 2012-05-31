@@ -36,6 +36,9 @@ class Website
 	
 	function __construct()
 	{
+		//SITES INSTELLEN
+		$this->site_settings();
+		
 		//VARIABELEN INSTELLEN
 		$this->pagevars['errors'] = array();
 		$this->pagevars['local'] = ( ($_SERVER['REMOTE_ADDR']=="127.0.0.1") OR (substr($_SERVER['REMOTE_ADDR'],0,8)=="192.168.") );//zijn we lokaal?
@@ -46,17 +49,16 @@ class Website
 		
 		if($this->pagevars['local'])
 		{
-			$this->pagevars['base_uri'] = 'C:/xampp/htdocs/';
-			$this->pagevars['base_url'] = 'http://localhost/';
+			$this->pagevars['base_uri'] = $this->get_sitevar('local_uri');
+			$this->pagevars['base_url'] = $this->get_sitevar('local_url');
 		}
 		else
 		{
-			$this->pagevars['base_uri'] = '/home/rkok/domains/prinshendrikpark.nl/public_html/';
-			$this->pagevars['base_url'] = 'http://www.prinshendrikpark.nl/';
+			$this->pagevars['base_uri'] = $this->get_sitevar('external_uri');
+			$this->pagevars['base_url'] = $this->get_sitevar('external_url');
 		}
 
-		//SITES INSTELLEN
-		$this->site_settings();
+		
 		
 		//VERTALINGEN
 		if(file_exists($this->get_uri_themes().$this->get_sitevar("theme")."/translations.txt")) //zoek naar thema-specifiek bestand
@@ -79,7 +81,7 @@ class Website
 		}
 		else
 		{
-			die("Translations file not found! Corrupted installation?");
+			die("Translations file (<code>"+$this->get_uri_scripts()."translations.txt</code>) not found! Corrupted installation?");
 		}
 		
 		//PAGINASPECIFIEKE GEGEVENS OPHALEN
@@ -333,9 +335,13 @@ class Website
 	public function site_settings()
 	{
 		//SITES INSTELLEN
-		if(file_exists($this->get_uri_scripts().'config.php'))
+		if(file_exists('config.php'))
 		{
-			require($this->get_uri_scripts().'config.php');
+			require('config.php');
+		}
+		else
+		{
+			echo "<code>config.php</code> was not found! Place it next to your index.php";
 		}
 	}
 }
