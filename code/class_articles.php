@@ -402,6 +402,7 @@ EOT;
 		
 		//CATEGORIE BEPALEN (bepaal welke categorieen moeten worden weergegeven)
 		$cat_display = (int) $cat_display;
+		
 		//where clausule voor query
 		$where = "`categorie_id`=$cat_display";
 		if($cat_display==0)
@@ -419,7 +420,7 @@ EOT;
 		if($year==0) { $year = (int) date('Y'); }
 		
 		
-		$sql = "SELECT YEAR(`artikel_gemaakt`) FROM artikel WHERE $where LIMIT 0,1";
+		$sql = "SELECT YEAR(`artikel_gemaakt`) FROM artikel WHERE $where ORDER BY `artikel_gemaakt` LIMIT 0,1";
 		$result = $oDB->query($sql);
 		
 		if($result)
