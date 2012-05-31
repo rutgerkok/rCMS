@@ -53,7 +53,7 @@ class Edit
 		
 				
 		//ZET GEGEVENS KLAAR IN OBJECT
-		$this->contents = array(0,'','','','','','',0,0,'',0);
+		$this->contents = array(0,'','','<p>Typ hier het artikel</p>','','','',0,0,'',0);
 		if($id>0)
 		{
 			//haal uit database als id is opgegeven
@@ -204,23 +204,30 @@ class Edit
 						<td colspan="2">
 							<label for="article_body">{$oWebsite->translations[28]}<span class="required">*</span></label><br />	
 EOT;
-							// CKEditor insluiten
-							include_once('./ckeditor/ckeditor_php5.php');
-							// CKFinder insluiten
-							include_once('./ckfinder/ckfinder.php');
-							
-							//Instantie maken en textarea #article_edit maken
-							$CKEditor = new CKEditor();
-							$CKEditor->basePath = './ckeditor/';
-							CKFinder::SetupCKEditor( $CKEditor, './ckfinder/' ) ;
-							$CKEditor->editor("article_body", $contents[3]);
+							if(file_exists('./ckeditor/ckeditor_php5.php'))
+							{
+								// CKEditor insluiten
+								include_once('./ckeditor/ckeditor_php5.php');
+								// CKFinder insluiten
+								include_once('./ckfinder/ckfinder.php');
+								
+								//Instantie maken en textarea #article_edit maken
+								$CKEditor = new CKEditor();
+								$CKEditor->basePath = './ckeditor/';
+								CKFinder::SetupCKEditor( $CKEditor, './ckfinder/' ) ;
+								$CKEditor->editor("article_body", $contents[3]);
+							}
+							else
+							{	//Maar sluit niet in als CKEditor niet gevonden is
+								echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">'.$contents[3].'</textarea>';
+								echo '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
+							}
 							echo <<<EOT
 						</td>	
 					</tr>
 				</table>
 			<!-- page and id -->
 			<input type="hidden" name="p" value="edit_article" />
-			<input type="hidden" name="wide" value="1" />
 			<input type="hidden" name="id" value="{$this->id}" />
 			
 			<p>
@@ -322,7 +329,7 @@ EOT;
 		$title = $_REQUEST['article_title'];
 		$intro = $_REQUEST['article_intro'];
 		$cat   = (int) $_REQUEST['article_category'];
-		$body  = str_replace(array('<h2>','</h2>'),array('<h3>','</h3>'),$_REQUEST['article_body']);
+		$body  = str_replace(array('<h2>','</h2>'),array('<h3>','</h3>'),$_REQUEST['article_body']);//vervang <h2> door <h3>
 		$featured_image = $_REQUEST['article_featured_image'];
 		$pinned = isset($_REQUEST['article_pinned'])? 1 : 0;
 		$hidden = isset($_REQUEST['article_hidden'])? 1 : 0;
