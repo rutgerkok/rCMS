@@ -67,7 +67,7 @@ class Articles
 		$sql.= "LEFT JOIN `gebruikers` USING ( gebruiker_id ) ";//join 2
 		$sql.= "WHERE artikel_verborgen <= $logged_in ";//verborgen artikelen niet voor niet ingelogde gebruikers
 		if(!empty($where_clausule)) $sql.= "AND $where_clausule ";//nog een extra voorwaarde?
-		$sql.= "ORDER BY artikel_gepind DESC, artikel_id DESC ";//sorteren
+		$sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt DESC ";//sorteren
 		$sql.= "LIMIT $start , $limit";//nooit teveel
 		
 		$result = $oDB->query($sql);
