@@ -246,7 +246,7 @@ EOT;
 			foreach($result as $row)
 			{
 				list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
-				$return_value.= "\n\n<div class=\"artikelintro\">";
+				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=view_article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
 				$return_value.= "<h3>$title</h3>";
 				if($metainfo) $return_value.= '<p class="meta">';
 				if($metainfo) $return_value.= $oWebsite->translations[37]." ".$created .' - ';//gemaakt op
@@ -257,8 +257,10 @@ EOT;
 				if($metainfo && $hidden) $return_value.= " - ".$oWebsite->translations[48];//verborgen?
 				if($metainfo) $return_value.= '</p>';
 				
+				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
+				
 				$return_value.= '<p >';
-				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" style=\"float:left;max-width:100px\" />";
+				
 				$return_value.= $intro;
 				
 				$return_value.= "<br />";
