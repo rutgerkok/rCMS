@@ -208,6 +208,17 @@ class Website
 	{
 		return $this->get_uri_scripts()."themes/";
 	}
+	//Geeft de map van alle widgets terug als url
+	public function get_url_widgets()
+	{
+		return $this->get_url_scripts()."widgets/";
+	}
+	
+	//Geeft de map van alle widgets terug als uri
+	public function get_uri_widgets()
+	{
+		return $this->get_uri_scripts()."widgets/";
+	}	
 //Einde paden
 
 	public function add_error($message,$public_message=false)

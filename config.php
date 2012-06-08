@@ -1,7 +1,7 @@
 <?php
 if(!isset($this)) die(); //security
 
-$this->config['theme'] =  "rkok";//name of theme directory
+$this->config['theme'] =  "phpark";//name of theme directory
 $this->config['title'] =  "Test site van rCMS";//title of site
 $this->config['hometitle'] =  "Test site van rCMS";
 $this->config['sidebarcategories'] = array(2,5);//categories to display in sidebar

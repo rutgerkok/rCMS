@@ -2,10 +2,12 @@
 class Themes
 {
 	private $website_object; //bewaart het website-object
+	private $widgets_object; //bewaart het widgets-object
 	
 	public function __construct($oWebsite)
 	{
 		$this->website_object = $oWebsite;
+		$this->widgets_object = new Widgets($oWebsite);
 		
 		if(file_exists($this->get_uri_theme()."main.php"))
 		{
@@ -92,7 +94,12 @@ EOT;
 		$oWebsite = $this->website_object;//afkorting
 		$oDB = $oWebsite->get_database();
 		
-		if($area==0)
+		///////////
+		$oWidgets = $this->widgets_object;
+		$oWidgets->echo_widgets_sidebar($area);
+		///////////
+		
+		/*if($area==0)
 		{
 			//ARTIKELEN
 			$oArticles = new Articles($oWebsite,$oDB);
@@ -161,7 +168,7 @@ EOT;
 						</script>
 TWITTER;
 				} 
-		}
+		}*/
 		
 	}
 	
