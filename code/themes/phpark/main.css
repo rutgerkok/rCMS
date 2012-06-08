@@ -194,6 +194,35 @@
 			max-width: 100%;
 			margin:1px;
 		}
+		
+		/*Pagina's met artikellijsten */
+		div.artikelintro
+		{	/*gebruikt bij de artikelpagina*/
+			margin:10px;
+			min-height: 7em;
+		}
+		div.artikelintro:hover
+		{
+			background: #f7f7f7;
+		}
+		p.meta
+		{
+			color: #bbb;
+			font-style: italic;
+		}
+		div.artikelintro img
+		{
+			max-height: 150px;
+			max-width: 20%;
+			float: left;	
+		}
+		div.artikelintro p.intro
+		{
+			float:left;
+			width: 70%;
+		}
+		
+		/*Pagina's met een artikel */
 		div.artikel
 		{	/*gebruikt bij de artikelpagina*/
 			float:left;
@@ -203,17 +232,7 @@
 			margin-left:0;
 			margin-right:0;
 		}
-		div.artikelintro
-		{	/*gebruikt bij de artikelenpagina*/
-			clear:both;
-			margin-bottom:10px;
-		}
-		p.meta
-		{
-			color: #bbb;
-			font-style: italic;
-		}
-		p.intro
+		div.artikel p.intro
 		{
 			font-weight: bold;
 			font-style: italic;

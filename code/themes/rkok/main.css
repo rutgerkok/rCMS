@@ -197,18 +197,10 @@
 			max-width: 100%;
 			margin:1px;
 		}
-		div.artikel
-		{	/*gebruikt bij de artikelpagina*/
-			float:left;
-			border-left: 1px #bbbbbb dotted;
-			padding-left: 1%;
-			width:69%;
-			margin-left:0;
-			margin-right:0;
-		}
+		
+		/*Pagina's met artikellijsten */
 		div.artikelintro
 		{	/*gebruikt bij de artikelpagina*/
-			clear:both;
 			margin:10px;
 			background: #eee;
 			min-height: 8em;
@@ -223,7 +215,29 @@
 			color: #bbb;
 			font-style: italic;
 		}
-		p.intro
+		div.artikelintro img
+		{
+			max-height: 150px;
+			max-width: 20%;
+			float: left;	
+		}
+		div.artikelintro p.intro
+		{
+			float:left;
+			width: 790%;
+		}
+		
+		/*Pagina's met een artikel */
+		div.artikel
+		{	/*gebruikt bij de artikelpagina*/
+			float:left;
+			border-left: 1px #bbbbbb dotted;
+			padding-left: 1%;
+			width:69%;
+			margin-left:0;
+			margin-right:0;
+		}
+		div.artikel p.intro
 		{
 			font-weight: bold;
 			font-style: italic;
@@ -235,6 +249,7 @@
 			padding-top: 5px;
 			padding-bottom: 5px;
 		}
+		
 		span.required
 		{
 			color: #990000;

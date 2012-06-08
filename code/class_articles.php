@@ -259,7 +259,7 @@ EOT;
 				
 				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
 				
-				$return_value.= '<p >';
+				$return_value.= '<p class="intro">';
 				
 				$return_value.= $intro;
 				
@@ -268,6 +268,9 @@ EOT;
 				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->translations[0].'</a>&nbsp;&nbsp;'. //edit
 							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->translations[1].'</a>'; //delete
 				$return_value.= "</p>";
+				
+				$return_value.= '<p style="clear:both"></p>';
+				
 				$return_value.= "</div>";
 			}
 			
