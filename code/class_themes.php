@@ -24,16 +24,16 @@ class Themes
 		//Geef de inloglinks weer
 		if($this->website_object->logged_in(true)) 
 		{ //admin
-			echo '<a href="index.php?p=admin">'.$this->website_object->translations[2].'</a> | ';
+			echo '<li><a href="index.php?p=admin">'.$this->website_object->translations[2].'</a></li>';
 		}
 		if($this->website_object->logged_in(false))
 		{	//ingelogd
-			echo '<a href="index.php?p=account_management">'.$this->website_object->translations[3].'</a> | ';
-			echo '<a href="index.php?p=log_out">'.$this->website_object->translations[5].'</a>';
+			echo '<li><a href="index.php?p=account_management">'.$this->website_object->translations[3].'</a></li>';
+			echo '<li><a href="index.php?p=log_out">'.$this->website_object->translations[5].'</a></li>';
 		}
 		else
 		{
-			echo '<a href="index.php?p=log_in">'.$this->website_object->translations[4].'</a>';	
+			echo '<li><a href="index.php?p=log_in">'.$this->website_object->translations[4].'</a></li>';	
 		}
 	}
 	
@@ -98,8 +98,8 @@ EOT;
 		/*
 		$oWidgets = $this->widgets_object;
 		$oWidgets->echo_widgets_sidebar($area);
-		///////////*/
-		
+		///////////
+		*/
 		
 		///////////OUDE WIDGETCODE
 		if($area==0)

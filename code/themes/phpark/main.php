@@ -20,9 +20,9 @@
 				</div>
 				<div id="hornav">
 					<?php $this->echo_menu(); ?>
-					<span id="accountlinks">
+					<ul id="accountlinks">
 						<?php $this->echo_accounts_menu(); ?>
-					</span>
+					</ul>
 				</div>
 				<div <?php
 					if($this->get_page_type()=="NORMAL")
