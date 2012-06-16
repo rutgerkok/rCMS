@@ -1,0 +1,20 @@
+read=Lees meer
+edit=Bewerk
+delete=Verwijder
+admin=Admin home
+account=Account
+login=Inloggen
+logout=Uitloggen
+search=Zoek
+slogan=<a href="mailto:prinshendrikpark@gmail.com" style="color:white">prinshendrikpark@gmail.com</a> - Prins Hendrikpark Bussum
+article=Artikel
+articles=Artikelen
+page=Pagina
+pages=Pagina's
+category=Categorie
+categories=Categorie&euml;n
+event=PHParool
+events=PHParool
+link=Zie ook
+links='Zie ook'-links
+year=Jaar

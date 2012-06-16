@@ -1,0 +1,5 @@
+error_occured=Er is een fout opgetreden.
+errors_occured=Er zijn # fouten opgetreden.
+not_found=is niet gevonden.
+not_public=is niet openbaar.
+too_short=is te kort. Minimale lengte is # tekens.
