@@ -1,0 +1,4 @@
+serroroccured=An error has occured.
+errorsoccured=# errors have occured.
+notfound=was not found.
+systemerror=A system error has occured.

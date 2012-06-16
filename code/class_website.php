@@ -32,7 +32,7 @@ class Website
 	protected $errorsdisplayed = false;
 	
 	
-	public $translations = array();
+	public $translations = array();//oude vertaalarray
 	
 	function __construct()
 	{
@@ -43,7 +43,6 @@ class Website
 		$this->pagevars['errors'] = array();
 		$this->pagevars['local'] = ( ($_SERVER['REMOTE_ADDR']=="127.0.0.1") OR (substr($_SERVER['REMOTE_ADDR'],0,8)=="192.168.") );//zijn we lokaal?
 		$this->pagevars['debug'] = $this->logged_in(true)||$this->pagevars['local'];
-		$this->pagevars['hiddenerrors'] = 0;
 		$this->pagevars['site'] = 'phpark'; //phpark, rkok of bioscience
 		$this->pagevars['database_object'] = null;
 		
@@ -60,7 +59,7 @@ class Website
 
 		
 		
-		//VERTALINGEN
+		//OUDE VERTALINGEN
 		if(file_exists($this->get_uri_themes().$this->get_sitevar("theme")."/translations.txt")) //zoek naar thema-specifiek bestand
 		{
 			$this->translations = file( $this->get_uri_themes().$this->get_sitevar("theme")."/translations.txt" );
@@ -219,6 +218,17 @@ class Website
 	{
 		return $this->get_uri_scripts()."widgets/";
 	}	
+	//Geeft de map van alle vertalingen terug als url
+	public function get_url_translations()
+	{
+		return $this->get_url_scripts()."translations/";
+	}
+	
+	//Geeft de map van alle vertalingen terug als uri
+	public function get_uri_translations()
+	{
+		return $this->get_uri_scripts()."translations/";
+	}	
 //Einde paden
 
 	public function add_error($message,$public_message=false)
@@ -239,7 +249,7 @@ class Website
 	
 	public function error_count()
 	{
-		return(count($this->pagevars['errors'])+$this->pagevars['hiddenerrors']);
+		return count($this->pagevars['errors']);
 	}
 	
 	public function error_clear_all()
@@ -252,37 +262,28 @@ class Website
 	{	//geeft alle foutmeldingen weer
 		$this->errorsdisplayed = true;
 		
-		$errors = count($this->pagevars['errors'])+$this->pagevars['hiddenerrors'];//totaal aantal foutmeldingen
-		$displayed_errors = count($this->pagevars['errors']);//foutmeldingen die weergegeven worden
+		$errors = count($this->pagevars['errors']);//totaal aantal foutmeldingen
 		if($errors==0)
 		{
 			return true;
 		}
 		elseif($errors==1)
 		{
-			echo '<div class="fout"><h3>An error has occured</h3>';
+			echo '<div class="fout"><h3>'.$this->t("errors.erroroccured").'</h3>';
 			echo $this->pagevars['errors'][0];
 			echo '</div>';
 		}
 		else
 		{
 			echo '<div class="fout">';
-			echo "   <h3>$errors errors have occured</h3>";
+			echo "   <h3>".str_replace("#",$errors,$this->t('errors.errorsoccured'))."</h3>";
 			echo '   <p>';
-			if($displayed_errors>0)
+			echo '      <ul>';
+			foreach($this->pagevars['errors'] as $nr=>$error)
 			{
-				echo '      <ul>';
-				foreach($this->pagevars['errors'] as $nr=>$error)
-				{
-					echo '<li>'.$error.'</li>';
-				}
-				while($nr<$errors-1)
-				{
-					echo '<li>A system error had occured.</li>';
-					$nr++;
-				}
-				echo '      </ul>';
+				echo '<li>'.$error.'</li>';
 			}
+			echo '      </ul>';
 			echo '	 </p>';
 			echo '</div>';
 		}
@@ -306,7 +307,9 @@ class Website
 	{
 		if($this->has_access())
 		{	//geef de pagina weer
-			setcookie("key", $this->get_sitevar('password'), time()+3600*24*60,"/");
+			setcookie("key", $this->get_sitevar('password'), time()+3600*24*365,"/");
+			$this->add_error('test');
+			$this->add_error('test2');
 			new Themes($this);
 		}
 		else
@@ -353,7 +356,40 @@ class Website
 		else
 		{
 			echo "<code>config.php</code> was not found! Place it next to your index.php";
+			die();
 		}
+	}
+	
+	public function t($key)
+	{
+		$keys = explode(".",$key,2);
+		if(isset($this->translations[$keys[0]]))
+		{	//al geladen
+			return $this->translations[$keys[0]][$keys[1]];
+		}
+		else
+		{	//moet nog geladen worden
+			$translations_file = $this->get_uri_translations().$this->get_sitevar('language')."/translations_".$keys[0].".txt";
+			if(file_exists($translations_file))
+			{	//laad
+				$file_contents = file($translations_file);
+				foreach($file_contents as $line)
+				{
+					$translation = explode("=",$line,2);
+					$this->translations[$keys[0]][$translation[0]] = $translation[1];
+				}
+				unset($file_contents);
+				
+				//en geef juiste waarde terug
+				return $this->translations[$keys[0]][$keys[1]];
+			}
+			else
+			{	//foutmelding
+				echo "<code>$translations_file</code> was not found!";
+				die();
+			}
+		}
+		
 	}
 }
 ?>

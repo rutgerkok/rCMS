@@ -8,6 +8,7 @@ $this->config['sidebarcategories'] = array(2,5);//categories to display in sideb
 $this->config['locales'] = array('nl_NL', 'nl', 'du','nld','dutch');//locales
 $this->config['password'] = "";//password to view your site
 $this->config['twitter'] = array("Twitter","Test van twitter",'CMS');//Twitter feed! Title-description-search
+$this->config['language'] = "en";
 
 //DATABASE SETTINGS
 $this->config['database_location'] = 'localhost';//Location of mysql server, for example: 'localhost' or 'mysql://example.net'
