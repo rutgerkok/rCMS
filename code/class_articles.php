@@ -110,20 +110,20 @@ class Articles
 					//zijbalk
 					if(!empty($featured_image)) $return_value.= "<p><img src=\"$featured_image\" alt=\"$title\" /></p>";
 					$return_value.= '<p class="meta">';
-					$return_value.= $oWebsite->translations[37]." <br />&nbsp;&nbsp;&nbsp;".$created;
-					if($last_edited) $return_value.= " <br />  ".$oWebsite->translations[38]." <br />&nbsp;&nbsp;&nbsp;".$last_edited . "";
-					$return_value.= " <br /> ".$oWebsite->translations[12].": ".$article_category;
-					$return_value.= " <br /> ".$oWebsite->translations[39].": $author";//auteur
-					if($pinned) $return_value.= "<br />" . $oWebsite->translations[23] . " ";//gepind
-					if($hidden) $return_value.= "<br />" . $oWebsite->translations[48];//verborgen
-					if($logged_in && $comments) $return_value.= "<br />" . $oWebsite->translations[68];//reacties
+					$return_value.= $oWebsite->t('articles.created')." <br />&nbsp;&nbsp;&nbsp;".$created;
+					if($last_edited) $return_value.= " <br />  ".$oWebsite->t('articles.last_edited')." <br />&nbsp;&nbsp;&nbsp;".$last_edited . "";
+					$return_value.= " <br /> ".$oWebsite->t('main.category').": ".$article_category;
+					$return_value.= " <br /> ".$oWebsite->t('articles.author').": $author";//auteur
+					if($pinned) $return_value.= "<br />" .$oWebsite->t('articles.pinned'). " ";//gepind
+					if($hidden) $return_value.= "<br />" .$oWebsite->t('articles.hidden');//verborgen
+					if($logged_in && $comments) $return_value.= "<br />" . $oWebsite->t('articles.comments.allowed');//reacties
 					$return_value.= '</p>';
 					if($logged_in) $return_value.= "<p style=\"clear:both\">";
-					if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->translations[0].'</a>&nbsp;&nbsp;'. //edit
-								'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->translations[1].'</a>'; //delete
+					if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp;&nbsp;'. //edit
+								'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a>'; //delete
 					if($logged_in) $return_value.= "</p>";
 					if($comments) $return_value.= <<<EOT
-					<!-- AddThis Button BEGIN -->
+
 					<!-- AddThis Button BEGIN -->
 					<div class="addthis_toolbox addthis_default_style ">
 					<a class="addthis_button_facebook_like"></a>
@@ -143,7 +143,7 @@ EOT;
 				
 				$return_value.= '<div class="artikel">';
 					//artikel
-					if($logged_in && $hidden) $return_value.= '<p class="meta">'.$oWebsite->translations[50]."<br /> \n".$oWebsite->translations[49].'</p>';
+					if($logged_in && $hidden) $return_value.= '<p class="meta">'.$oWebsite->t('articles.is_hidden')."<br /> \n".$oWebsite->t('articles.hidden.explained').'</p>';
 					$return_value.= '<p class="intro">'.$intro.'</p>';
 					$return_value.= $body;
 					//reacties
@@ -154,8 +154,8 @@ EOT;
 						$result = $oDB->query($sql);
 						if($oDB->rows($result)>0)
 						{	//geef reacties weer
-							$return_value.="<h3 class=\"notable\">".$oWebsite->translations[65]." (".$oDB->rows($result).")</h3>";
-							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->translations[70]."</a></p>";//link: reageer
+							$return_value.="<h3 class=\"notable\">".$oWebsite->t('articles.comments')." (".$oDB->rows($result).")</h3>";
+							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->t('articles.comment.add')."</a></p>";//link: reageer
 							
 							while(list($comment_id,$comment_email,$comment_name,$comment_date,$comment,$account_name)=$oDB->fetch($result)) //geef alle reacties weer
 							{	//geef reactie weer
@@ -164,17 +164,17 @@ EOT;
 								$return_value.= "<h3>$comment_name ($comment_date)</h3>";//naam en datum
 								$return_value.= "<p>";
 								if($logged_in && !empty($comment_email)) $return_value.= "<a href=\"mailto:$comment_email\">$comment_email</a> &nbsp;&nbsp;&nbsp;";//mail
-								if($logged_in) $return_value.= "<a class=\"arrow\" href=\"index.php?p=delete_comment&amp;id=$comment_id\">{$oWebsite->translations[1]}</a> </p>";//verwijder
+								if($logged_in) $return_value.= '<a class="arrow" href="index.php?p=delete_comment&amp;id='.$comment_id.'">'.$oWebsite->t('main.delete').'</a> </p>';//verwijder
 								$return_value.= "<p>".nl2br($comment)."</p>";
 							}
 							
-							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->translations[70]."</a></p>";//link: reageer
+							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->t('articles.comment.add')."</a></p>";//link: reageer
 						}
 						else
 						{
-							$return_value.="<h3 class=\"notable\">".$oWebsite->translations[65]."</h3>";
-							$return_value.= "<p><em>".$oWebsite->translations[69]."</em></p>";//geen reacties gevonden
-							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->translations[70]."</a></p>";//link: reageer
+							$return_value.="<h3 class=\"notable\">".$oWebsite->t('articles.comments')."</h3>";
+							$return_value.= "<p><em>".$oWebsite->t('articles.comments.not_found')."</em></p>";//geen reacties gevonden
+							$return_value.="<p><a href=\"index.php?p=add_comment&amp;id=$id\" class=\"arrow\">".$oWebsite->t('articles.comment.add')."</a></p>";//link: reageer
 						}
 					}
 				$return_value.= '</div>';
@@ -182,12 +182,12 @@ EOT;
 			}
 			else
 			{
-				$oWebsite->add_error('Article is not public.');
+				$oWebsite->add_error($oWebsite->t('main.article').' '.$oWebsite->t('errors.not_public'));
 			}
 		}
 		else
 		{
-			$oWebsite->add_error('Article does not exist.');
+			$oWebsite->add_error($oWebsite->t('main.article').' '.$oWebsite->t('errors.not_found'));
 		}
 		
 		return $return_value;
@@ -239,9 +239,9 @@ EOT;
 			if($logged_in)
 			{
 				if($not)
-					{$return_value.= '<p><a href="index.php?p=edit_article&amp;id=0" class="arrow">'.$oWebsite->translations[9].'</a></p>';}
+					{$return_value.= '<p><a href="index.php?p=edit_article&amp;id=0" class="arrow">'.$oWebsite->t('articles.create').'</a></p>';}
 				else
-					{$return_value.= '<p><a href="index.php?p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->translations[9].'</a></p>';}
+					{$return_value.= '<p><a href="index.php?p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->t('articles.create').'</a></p>';}
 			}
 			foreach($result as $row)
 			{
@@ -249,12 +249,12 @@ EOT;
 				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=view_article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
 				$return_value.= "<h3>$title</h3>";
 				if($metainfo) $return_value.= '<p class="meta">';
-				if($metainfo) $return_value.= $oWebsite->translations[37]." ".$created .' - ';//gemaakt op
-				if($metainfo && $last_edited) $return_value.= lcfirst($oWebsite->translations[38])." ".$last_edited . '<br />';//laatst bewerkt op
-				if($metainfo) $return_value.= $oWebsite->translations[12].": ".$article_category;//categorie
-				if($metainfo) $return_value.= " - ".$oWebsite->translations[39].": $author";//auteur
-				if($metainfo && $pinned) $return_value.= " - ".$oWebsite->translations[23];//vastgepind?
-				if($metainfo && $hidden) $return_value.= " - ".$oWebsite->translations[48];//verborgen?
+				if($metainfo) $return_value.= $oWebsite->t('articles.created')." ".$created .' - ';//gemaakt op
+				if($metainfo && $last_edited) $return_value.= lcfirst($oWebsite->t('articles.last_edited'))." ".$last_edited . '<br />';//laatst bewerkt op
+				if($metainfo) $return_value.= $oWebsite->t('main.category').": ".$article_category;//categorie
+				if($metainfo) $return_value.= " - ".$oWebsite->t('articles.author').": $author";//auteur
+				if($metainfo && $pinned) $return_value.= " - ".$oWebsite->t('articles.pinned');//vastgepind?
+				if($metainfo && $hidden) $return_value.= " - ".$oWebsite->t('articles.hidden');//verborgen?
 				if($metainfo) $return_value.= '</p>';
 				
 				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
@@ -264,9 +264,9 @@ EOT;
 				$return_value.= $intro;
 				
 				$return_value.= "<br />";
-				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->translations[8].'</a>';
-				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->translations[0].'</a>&nbsp;&nbsp;'. //edit
-							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->translations[1].'</a>'; //delete
+				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
+				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp;&nbsp;'. //edit
+							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a>'; //delete
 				$return_value.= "</p>";
 				
 				$return_value.= '<p style="clear:both"></p>';
@@ -277,11 +277,11 @@ EOT;
 			if($logged_in)
 			{
 				if($not)
-					{$return_value.= '<p> <a href="index.php?p=edit_article&amp;id=0" class="arrow">'.$oWebsite->translations[9].'</a></p>';}//maak nieuw artikel
+					{$return_value.= '<p> <a href="index.php?p=edit_article&amp;id=0" class="arrow">'.$oWebsite->t('articles.create').'</a></p>';}//maak nieuw artikel
 				else
-					{$return_value.= '<p> <a href="index.php?p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->translations[9].'</a></p>';}//maak nieuw artikel in categorie
+					{$return_value.= '<p> <a href="index.php?p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->t('articles.create').'</a></p>';}//maak nieuw artikel in categorie
 			}
-			$return_value.='<p><a href="index.php?p=archive&amp;year='.date('Y').'&amp;cat='.$category.'" class="arrow">'.$oWebsite->translations[36].'</a></p>';//archief
+			$return_value.='<p><a href="index.php?p=archive&amp;year='.date('Y').'&amp;cat='.$category.'" class="arrow">'.$oWebsite->t('articles.archive').'</a></p>';//archief
 			return $return_value;
 		}
 		else
@@ -290,9 +290,9 @@ EOT;
 			if($logged_in)
 			{
 				if($not)
-					{ return('<p> <a href="index.php?wide=1&amp;p=edit_article&amp;id=0" class="arrow">'.$oWebsite->translations[9].'</a></p>'); }//maak nieuw artikel
+					{ return('<p> <a href="index.php?wide=1&amp;p=edit_article&amp;id=0" class="arrow">'.$oWebsite->t('articles.create').'</a></p>'); }//maak nieuw artikel
 				else
-					{ return('<p> <a href="index.php?wide=1&amp;p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->translations[9].'</a></p>'); }//maak nieuw artikel in categorie
+					{ return('<p> <a href="index.php?wide=1&amp;p=edit_article&amp;id=0&amp;article_category='.$category.'" class="arrow">'.$oWebsite->t('articles.create').'</a></p>'); }//maak nieuw artikel in categorie
 			}
 			else
 			{
@@ -316,8 +316,7 @@ EOT;
 		
 		if(strlen($keyword)<3)
 		{
-			$oWebsite->add_error('Search term is too short!');
-			return '<p>Please search again. Minimum length is three characters.</p>';
+			return '';//moet vooraf al op worden gecontroleerd
 		}
 		
 		
@@ -342,53 +341,58 @@ EOT;
 		if($result)
 		{
 			//Geef aantal resultaten weer
-			$return_value.= ($resultcount==1)? "<p>".$oWebsite->translations[101]."</p>": "<p>".str_replace('*',$resultcount,$oWebsite->translations[100])."</p>";
+			$return_value.= ($resultcount==1)? "<p>".$oWebsite->t('articles.search.result_found')."</p>": "<p>".str_replace('#',$resultcount,$oWebsite->t('articles.search.results_found'))."</p>";
 			
 			$i = 0;//vijf keer artikel weergeven, zesde keer alleen linkje met meer
 			
 			//paginanavigatie
 			$return_value.= '<p class="lijn">';
-			if($page>1) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page-1).'">'.$oWebsite->translations[103].'</a> ';//vorige pagina
-			$return_value.= $oWebsite->translations[10].' '.$page.' '.$oWebsite->translations[102].' '.ceil($resultcount/$articles_per_page);//pagina X van Y
-			if($resultcount>$start+$articles_per_page) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page+1).'">'.$oWebsite->translations[104].'</a>';//volgende pagina
+			if($page>1) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page-1).'">'.$oWebsite->t('articles.page.previous').'</a> ';//vorige pagina
+			$return_value.= str_replace("\$",ceil($resultcount/$articles_per_page),str_replace("#",$page,$oWebsite->t('articles.page.current')));//pagina X van Y
+			if($resultcount>$start+$articles_per_page) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page+1).'">'.$oWebsite->t('articles.page.next').'</a>';//volgende pagina
 			$return_value.= '</p>';
 			
 			foreach($result as $row)
 			{
 				list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
-				$return_value.= "\n\n<div class=\"artikelintro\">";
+				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=view_article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
 				$return_value.= "<h3>$title</h3>";
 				if($metainfo) $return_value.= '<p class="meta">';
-				if($metainfo) $return_value.= $oWebsite->translations[37]." ".$created .' - ';//gemaakt op
-				if($metainfo && $last_edited) $return_value.= lcfirst($oWebsite->translations[38])." ".$last_edited . '<br />';//laatst bewerkt op
-				if($metainfo) $return_value.= $oWebsite->translations[12].": ".$article_category;//categorie
-				if($metainfo) $return_value.= " - ".$oWebsite->translations[39].": $author";//auteur
-				if($metainfo && $pinned) $return_value.= " - ".$oWebsite->translations[23];//vastgepind?
-				if($metainfo && $hidden) $return_value.= " - ".$oWebsite->translations[48];//verborgen?
+				if($metainfo) $return_value.= $oWebsite->t('articles.created')." ".$created .' - ';//gemaakt op
+				if($metainfo && $last_edited) $return_value.= lcfirst($oWebsite->t('articles.last_edited'))." ".$last_edited . '<br />';//laatst bewerkt op
+				if($metainfo) $return_value.= $oWebsite->t('main.category').": ".$article_category;//categorie
+				if($metainfo) $return_value.= " - ".$oWebsite->t('articles.author').": $author";//auteur
+				if($metainfo && $pinned) $return_value.= " - ".$oWebsite->t('articles.pinned');//vastgepind?
+				if($metainfo && $hidden) $return_value.= " - ".$oWebsite->t('articles.hidden');//verborgen?
 				if($metainfo) $return_value.= '</p>';
 				
-				$return_value.= '<p >';
-				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" style=\"float:left;max-width:100px\" />";
+				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
+				
+				$return_value.= '<p class="intro">';
+				
 				$return_value.= $intro;
 				
 				$return_value.= "<br />";
-				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->translations[8].'</a>';
-				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->translations[0].'</a>&nbsp;&nbsp;'. //edit
-							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->translations[1].'</a>'; //delete
+				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
+				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp;&nbsp;'. //edit
+							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a>'; //delete
 				$return_value.= "</p>";
+				
+				$return_value.= '<p style="clear:both"></p>';
+				
 				$return_value.= "</div>";
 			}
 			
 			//paginanavigatie
 			$return_value.= '<p class="lijn">';
-			if($page>1) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page-1).'">'.$oWebsite->translations[103].'</a> ';//vorige pagina
-			$return_value.= $oWebsite->translations[10].' '.$page.' '.$oWebsite->translations[102].' '.ceil($resultcount/$articles_per_page);//pagina X van Y
-			if($resultcount>$start+$articles_per_page) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page+1).'">'.$oWebsite->translations[104].'</a>';//volgende pagina
+			if($page>1) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page-1).'">'.$oWebsite->t('articles.page.previous').'</a> ';//vorige pagina
+			$return_value.= str_replace("\$",ceil($resultcount/$articles_per_page),str_replace("#",$page,$oWebsite->t('articles.page.current')));//pagina X van Y
+			if($resultcount>$start+$articles_per_page) $return_value.= ' <a class="arrow" href="index.php?p=search&amp;searchbox='.urlencode($keywordunprotected).'&amp;page='.($page+1).'">'.$oWebsite->t('articles.page.next').'</a>';//volgende pagina
 			$return_value.= '</p>';
 		}
 		else
 		{
-			$return_value.='<p><em>'.$oWebsite->translations[86].'.</em></p>';//niets gevonden
+			$return_value.='<p><em>'.$oWebsite->t('articles.search.no_results_found').'</em></p>';//niets gevonden
 		}
 		
 		return $return_value;
@@ -438,14 +442,14 @@ EOT;
 		//MENUBALK WEERGEVEN
 		$return_value.= '<p class="lijn">';
 		//categorie
-			$return_value .= '<span style="width:5.5em;display:block;float:left">'.$oWebsite->translations[12].':</span> ';
+			$return_value .= '<span style="width:5.5em;display:block;float:left">'.$oWebsite->t('main.category').':</span> ';
 			if($cat_display==0)
 			{
-				$return_value .= '<strong>'.$oWebsite->translations[41].' '.strtolower($oWebsite->translations[16]).'</strong> ';
+				$return_value .= '<strong>'.$oWebsite->t('categories.all').'</strong> ';
 			}
 			else
 			{
-				$return_value .= '<a href="index.php?p=archive&amp;year='.$year.'&amp;events=0">'.$oWebsite->translations[41].' '.strtolower($oWebsite->translations[16]).'</a> ';
+				$return_value .= '<a href="index.php?p=archive&amp;year='.$year.'&amp;events=0">'.$oWebsite->t('categories.all').'</a> ';
 			}
 			foreach($cat_list as $id=>$name)
 			{
@@ -460,7 +464,7 @@ EOT;
 			}
 			
 		//jaren
-			$return_value .= '<br /><span style="width:5.5em;display:block;float:left">'.$oWebsite->translations[40].':</span>';
+			$return_value .= '<br /><span style="width:5.5em;display:block;float:left">'.$oWebsite->t('main.year').':</span>';
 			for($i=$startyear;$i<=$endyear;$i++)
 			{
 				if($i==$year)
@@ -497,8 +501,8 @@ EOT;
 				if($logged_in)
 				{
 					 $return_value.="<tr> <td style=\"width:71%\"> <a class=\"arrow\" href=\"index.php?p=view_article&amp;id=$id\"> $title </a> </td>";
-					 $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->translations[0].'</a>&nbsp; '.
-								'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->translations[1].'</a> </td>';
+					 $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp; '.
+								'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a> </td>';
 				}
 				else
 				{
@@ -512,16 +516,14 @@ EOT;
 			$return_value.='</table>';
 		}
 		else
-		{
+		{	//niets gevonden, geef suggesties
 			if($year==date('Y')&&$cat_display==0)
 			{
-				$searchyear=$year-1;//niks gevonden? zoek dan in het vorige jaar of in alle categorieen
-				$return_value.='<p>No articles were found in '.$year.'. <a href="index.php?p=archive&amp;year='.(date('Y')-1).'">Search all categories in '.(date('Y')-1).'</a>.</p>';
-				
+				$return_value.='<p>'.str_replace("#",$year,$oWebsite->t('articles.not_found.year')).' <a href="index.php?p=archive&amp;year='.(date('Y')-1).'">'.str_replace("#",date('Y')-1,$oWebsite->t('categories.search.all_in_year')).'</a>.</p>';
 			}
 			else
 			{
-				$return_value.='<p>No articles were found in '.$year.' in this category. <a href="index.php?p=archive&amp;year='.date('Y').'">Search all categories in '.date('Y').'</a>.</p>';
+				$return_value.='<p>'.str_replace("#",$year,$oWebsite->t('articles.not_found.year_in_category')).' <a href="index.php?p=archive&amp;year='.date('Y').'">'.str_replace("#",date('Y'),$oWebsite->t('categories.search.all_in_year')).'</a>.</p>';
 			}
 			
 		}

@@ -1,3 +1,4 @@
+read=Read more
 edit=Edit
 delete=Delete
 admin=Admin home
@@ -17,9 +18,4 @@ event=Event
 events=Events
 link=Research group
 links=Research groups
-pinned=Pinned
-ok=Ok
-cancel=Cancel
-save=Save
-savequit=Save and quit
-quit=Quit
+year=Year

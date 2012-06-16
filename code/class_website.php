@@ -96,7 +96,7 @@ class Website
 			if(!file_exists($this->get_uri_modules().$this->pagevars['file'].".inc"))
 			{
 				$this->pagevars['file'] = 'home';//bestaat pagina niet? dan naar homepage
-				$this->add_error("Page '".$this->pagevars['title']."' was not found.");//en laat een foutmelding zien
+				$this->add_error("Page '".$this->pagevars['title']."' ".$this->t('errors.not_found'));//en laat een foutmelding zien
 			}
 			
 		}
@@ -269,14 +269,14 @@ class Website
 		}
 		elseif($errors==1)
 		{
-			echo '<div class="fout"><h3>'.$this->t("errors.erroroccured").'</h3>';
+			echo '<div class="fout"><h3>'.$this->t("errors.error_occured").'</h3>';
 			echo $this->pagevars['errors'][0];
 			echo '</div>';
 		}
 		else
 		{
 			echo '<div class="fout">';
-			echo "   <h3>".str_replace("#",$errors,$this->t('errors.errorsoccured'))."</h3>";
+			echo "   <h3>".str_replace("#",$errors,$this->t('errors.errors_occured'))."</h3>";
 			echo '   <p>';
 			echo '      <ul>';
 			foreach($this->pagevars['errors'] as $nr=>$error)
@@ -308,8 +308,6 @@ class Website
 		if($this->has_access())
 		{	//geef de pagina weer
 			setcookie("key", $this->get_sitevar('password'), time()+3600*24*365,"/");
-			$this->add_error('test');
-			$this->add_error('test2');
 			new Themes($this);
 		}
 		else

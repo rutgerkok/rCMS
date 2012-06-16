@@ -1,0 +1,2 @@
+all=All categories
+search.all_in_year=Search all categories in #

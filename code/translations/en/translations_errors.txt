@@ -1,4 +1,5 @@
-serroroccured=An error has occured.
-errorsoccured=# errors have occured.
-notfound=was not found.
-systemerror=A system error has occured.
+error_occured=An error has occured.
+errors_occured=# errors have occured.
+not_found=was not found.
+not_public=is not public.
+too_short=is too short. Minimum lenght is # characters.
