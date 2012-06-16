@@ -94,12 +94,15 @@ EOT;
 		$oWebsite = $this->website_object;//afkorting
 		$oDB = $oWebsite->get_database();
 		
-		///////////
+		///////////NIEUWE WIDGETCODE
+		/*
 		$oWidgets = $this->widgets_object;
 		$oWidgets->echo_widgets_sidebar($area);
-		///////////
+		///////////*/
 		
-		/*if($area==0)
+		
+		///////////OUDE WIDGETCODE
+		if($area==0)
 		{
 			//ARTIKELEN
 			$oArticles = new Articles($oWebsite,$oDB);
@@ -168,7 +171,8 @@ EOT;
 						</script>
 TWITTER;
 				} 
-		}*/
+		}
+		///////////*/
 		
 	}
 	
