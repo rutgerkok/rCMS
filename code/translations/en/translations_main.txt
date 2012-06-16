@@ -7,7 +7,6 @@ login=Log in
 logout=Log out
 search=Search
 slogan=Universiteit Leiden. The university to discover.
-readmore=Read more
 article=Article
 articles=Articles
 page=Page
