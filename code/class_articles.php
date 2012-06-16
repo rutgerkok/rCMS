@@ -259,7 +259,9 @@ EOT;
 				
 				if(!empty($featured_image)) $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
 				
-				$return_value.= '<p class="intro">';
+				$return_value.= '<p class="intro ';
+				if(!empty($featured_image)) $return_value.= 'introsmall';//maak introtekst kleiner
+				$return_value.= '">';
 				
 				$return_value.= $intro;
 				

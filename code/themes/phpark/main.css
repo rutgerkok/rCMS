@@ -198,8 +198,8 @@
 		/*Pagina's met artikellijsten */
 		div.artikelintro
 		{	/*gebruikt bij de artikelpagina*/
-			margin:10px;
-			min-height: 7em;
+			margin:2%;
+			min-height: 5em;
 		}
 		div.artikelintro:hover
 		{
@@ -212,14 +212,17 @@
 		}
 		div.artikelintro img
 		{
-			max-height: 150px;
-			max-width: 20%;
+			max-width: 38%;
 			float: left;	
 		}
 		div.artikelintro p.intro
 		{
 			float:left;
-			width: 70%;
+			width: 95%;
+		}
+		div.artikelintro p.introsmall
+		{
+			width: 55%;
 		}
 		
 		/*Pagina's met een artikel */
