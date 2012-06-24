@@ -1,12 +1,12 @@
 read=Lees meer
 edit=Bewerk
 delete=Verwijder
-admin=Admin home
+admin=Beheer site
 account=Account
-login=Inloggen
-logout=Uitloggen
+log_in=Inloggen
+log_out=Uitloggen
 search=Zoek
-slogan=<a href="mailto:prinshendrikpark@gmail.com" style="color:white">prinshendrikpark@gmail.com</a> - Prins Hendrikpark Bussum
+copyright=<a href="mailto:prinshendrikpark@gmail.com" style="color:white">prinshendrikpark@gmail.com</a> - Prins Hendrikpark Bussum
 article=Artikel
 articles=Artikelen
 page=Pagina

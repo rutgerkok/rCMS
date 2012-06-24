@@ -24,16 +24,16 @@ class Themes
 		//Geef de inloglinks weer
 		if($this->website_object->logged_in(true)) 
 		{ //admin
-			echo '<li><a href="index.php?p=admin">'.$this->website_object->translations[2].'</a></li>';
+			echo '<li><a href="index.php?p=admin">'.$this->website_object->t("main.admin").'</a></li>';
 		}
 		if($this->website_object->logged_in(false))
 		{	//ingelogd
-			echo '<li><a href="index.php?p=account_management">'.$this->website_object->translations[3].'</a></li>';
-			echo '<li><a href="index.php?p=log_out">'.$this->website_object->translations[5].'</a></li>';
+			echo '<li><a href="index.php?p=account_management">'.$this->website_object->t("main.account").'</a></li>';
+			echo '<li><a href="index.php?p=log_out">'.$this->website_object->t("main.log_out").'</a></li>';
 		}
 		else
 		{
-			echo '<li><a href="index.php?p=log_in">'.$this->website_object->translations[4].'</a></li>';	
+			echo '<li><a href="index.php?p=log_in">'.$this->website_object->t("main.log_in").'</a></li>';	
 		}
 	}
 	
@@ -54,7 +54,7 @@ EOT;
 			
 	public function echo_copyright()
 	{
-		echo $this->website_object->translations[7];
+		echo $this->website_object->t("main.copyright");
 	}
 	
 	public function echo_menu()
@@ -78,13 +78,11 @@ EOT;
 		$keyword = "";
 		if(isset($_REQUEST['searchbox'])) $keyword =  htmlentities($_REQUEST['searchbox']);
 		
-		echo <<<EOT
-		<form id="searchform" name="searchform" action="index.php" method="get">
-			<input type="hidden" name="p" value="search" />
-			<input type="search" size="21" name="searchbox" id="searchbox" value="$keyword" />
-			<input type="submit" class="button" value="{$this->website_object->translations[6]}" name="searchbutton" id="searchbutton" />
-		</form>
-EOT;
+		echo '<form id="searchform" name="searchform" action="index.php" method="get">';
+		echo '<input type="hidden" name="p" value="search" />';
+		echo '<input type="search" size="21" name="searchbox" id="searchbox" value="'.$keyword.'" />';
+		echo '<input type="submit" class="button" value="'.$this->website_object->t("main.search").'" name="searchbutton" id="searchbutton" />';
+		echo '</form>';
 	}
 	
 	//Geeft de widgets weer. Geldige area's: 0, 1, 2, ... , 100 (voor backstage), 101, 102, ...
@@ -128,9 +126,9 @@ EOT;
 				if($oWebsite->get_pagevar('site')=='phpark')
 				{
 					$oCal = new Calendar($this,$oDB);
-					echo '<h3>'.$oWebsite->translations[44].' '.strftime('%B').' '.date('Y').'</h3>';//huidige maand en jaar
+					echo '<h3>'.$oWebsite->t("calendar.calendar_for").' '.strftime('%B').' '.date('Y').'</h3>';//huidige maand en jaar
 					echo $oCal->get_calendar(291);
-					echo "\n".'<p> <a class="arrow" href="index.php?p=calendar">'.$oWebsite->translations[43].'</a> </p>';//link voor jaarkalender
+					echo "\n".'<p> <a class="arrow" href="index.php?p=calendar">'.$oWebsite->t("calendar.calendar_for_twelve_months").'</a> </p>';//link voor jaarkalender
 				}
 				unset($oDB,$oCategories,$oMenu,$oArticles,$oCal);
 			

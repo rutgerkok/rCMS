@@ -1,0 +1,2 @@
+calendar_for=Agenda voor
+calendar_for_twelve_months=Agenda voor de komende twaalf maanden
