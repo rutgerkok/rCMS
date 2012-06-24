@@ -34,7 +34,7 @@ if(empty($text_to_display))
 	$text_to_display.= "<p>\n";
 	foreach($cats as $cat_id=>$name)
 	{
-		$text_to_display.= '<a class="arrow" href="index.php?p=view_category&amp;cat_id='.$cat_id.'">'.$name."</a> <br /> \n";
+		$text_to_display.= '<a class="arrow" href="index.php?p=category&amp;cat_id='.$cat_id.'">'.$name."</a> <br /> \n";
 	}
 	$text_to_display.= '</p>';
 }
