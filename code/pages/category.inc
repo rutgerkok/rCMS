@@ -15,7 +15,7 @@ if($cat_id>0)
 	if(!empty($name))
 	{	//geef artikelen in die categorie weer
 		echo "<h2>{$this->translations[16]} {$this->translations[84]} ".lcfirst($this->translations[12])." \"".$oCats->get_category_name($cat_id)."\"</h2> \n";//artikelen in categorie
-		echo '<p style="position:relative;top:-.9em">&nbsp;&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=view_category">'.$this->translations[85].' '.$this->translations[17].'</a></p>'."\n";//toon alle categorieën
+		echo '<p style="position:relative;top:-.9em">&nbsp;&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=category">'.$this->translations[85].' '.$this->translations[17].'</a></p>'."\n";//toon alle categorieën
 		$oArticles = new Articles($this,$oDB);
 		$text_to_display.= $oArticles->get_articles_list_category($cat_id,false,true);
 		unset($oArticles);//niet meer nodig

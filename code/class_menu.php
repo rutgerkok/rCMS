@@ -78,7 +78,7 @@ class Menu
 			{
 				if($id==1) continue; //geef niet alle categorieën weer
 				$return_value.='<li>';
-				$return_value.='<a href="index.php?p=view_category&amp;cat_id=';
+				$return_value.='<a href="index.php?p=category&amp;cat_id=';
 				$return_value.= (int) ($id);//id voor url
 				$return_value.='">';
 				$return_value.=htmlentities($cat_name);//naam

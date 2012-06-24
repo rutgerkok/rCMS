@@ -1,4 +1,7 @@
 <?php
+//Maakt geen gebruik van oude vertaalmethode
+
+
 class Articles
 {
 	/*
@@ -246,7 +249,7 @@ EOT;
 			foreach($result as $row)
 			{
 				list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
-				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=view_article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
+				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
 				$return_value.= "<h3>$title</h3>";
 				if($metainfo) $return_value.= '<p class="meta">';
 				if($metainfo) $return_value.= $oWebsite->t('articles.created')." ".$created .' - ';//gemaakt op
@@ -266,7 +269,7 @@ EOT;
 				$return_value.= $intro;
 				
 				$return_value.= "<br />";
-				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
+				$return_value.= '<a class="arrow" href="index.php?p=article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
 				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp;&nbsp;'. //edit
 							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a>'; //delete
 				$return_value.= "</p>";
@@ -357,7 +360,7 @@ EOT;
 			foreach($result as $row)
 			{
 				list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
-				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=view_article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
+				$return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='index.php?p=article&amp;id=$id'\" onmouseover=\"this.style.cursor='pointer'\">";
 				$return_value.= "<h3>$title</h3>";
 				if($metainfo) $return_value.= '<p class="meta">';
 				if($metainfo) $return_value.= $oWebsite->t('articles.created')." ".$created .' - ';//gemaakt op
@@ -375,7 +378,7 @@ EOT;
 				$return_value.= $intro;
 				
 				$return_value.= "<br />";
-				$return_value.= '<a class="arrow" href="index.php?p=view_article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
+				$return_value.= '<a class="arrow" href="index.php?p=article&amp;id='.$id.'">'.$oWebsite->t('main.read').'</a>';
 				if($logged_in) $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp;&nbsp;'. //edit
 							'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a>'; //delete
 				$return_value.= "</p>";
@@ -502,13 +505,13 @@ EOT;
 				
 				if($logged_in)
 				{
-					 $return_value.="<tr> <td style=\"width:71%\"> <a class=\"arrow\" href=\"index.php?p=view_article&amp;id=$id\"> $title </a> </td>";
+					 $return_value.="<tr> <td style=\"width:71%\"> <a class=\"arrow\" href=\"index.php?p=article&amp;id=$id\"> $title </a> </td>";
 					 $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="index.php?p=edit_article&amp;id='.$id.'">'.$oWebsite->t('main.edit').'</a>&nbsp; '.
 								'<a class="arrow" href="index.php?p=delete_article&amp;id='.$id.'">'.$oWebsite->t('main.delete').'</a> </td>';
 				}
 				else
 				{
-					$return_value.="<tr><td style=\"width:87%\" colspan=\"2\"> <a class=\"arrow\" href=\"index.php?p=view_article&amp;id=$id\">$title</a> </td>";
+					$return_value.="<tr><td style=\"width:87%\" colspan=\"2\"> <a class=\"arrow\" href=\"index.php?p=article&amp;id=$id\">$title</a> </td>";
 				}
 				$return_value.="<td style=\"width:12%\">$category</td>\n";				
 				$return_value.="</tr>\n";
