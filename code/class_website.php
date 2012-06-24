@@ -116,9 +116,9 @@ class Website
 			case "home":
 				$this->pagevars['type'] = "NORMAL";
 				break;
-			case "view_category":
+			case "category":
 			case "search":
-			case "view_article":
+			case "article":
 			case "archive":
 			case "calendar":
 			case "add_comment":

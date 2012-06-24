@@ -415,7 +415,7 @@ EOT;
 			echo <<<EOT
 			<script type="text/javascript">
 			//<![CDATA[
-			location.href = "index.php?p=view_article&id={$this->id}";
+			location.href = "index.php?p=article&id={$this->id}";
 			//]]>
 			</script>
 			
