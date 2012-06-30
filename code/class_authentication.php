@@ -37,7 +37,7 @@ class Authentication
 	
 	function __construct($oWebsite,$oDB)
 	{
-		if(!isset($oWebsite->translations))
+		if(!isset($oWebsite->IS_WEBSITE_OBJECT))
 		{
 			//website object is geen website object, argumenten zijn verkeerd om aangeleverd
 			//(voor 5 november 2011 was dat de standaard)
@@ -123,18 +123,18 @@ class Authentication
 		//huidige pagina ophalen
 		$oWebsite = $this->website_object;
 		$p= urlencode($oWebsite->get_pagevar('file'));
-		$logintext = $oWebsite->translations[56];
-		if($admin) $logintext.=' <strong><em>'.$oWebsite->translations[57].'</em></strong>';
+		$logintext = $oWebsite->t("users.please_log_in");
+		if($admin) $logintext.=' <strong><em> '.$oWebsite->t("users.as_administrator").'</em></strong>';
 		echo <<<EOT
-		<form method="post" action="index.php">
+		<form method="post" action="{$oWebsite->get_url_main()}">
 			<h3>$logintext</h3>
 			<p>
-				<label for="user">{$oWebsite->translations[58]}:</label> <br />
+				<label for="user">{$oWebsite->t('users.username')}:</label> <br />
 				<input type="text" name="user" id="user" autofocus="autofocus" /> <br />
-				<label for="pass">{$oWebsite->translations[59]}:</label> <br />
+				<label for="pass">{$oWebsite->t('users.password')}:</label> <br />
 				<input type="password" name="pass" id="pass" /> <br />
 				
-				<input type="submit" value="{$oWebsite->translations[4]}" class="button" />
+				<input type="submit" value="{$oWebsite->t('main.log_in')}" class="button" />
 				
 				<input type="hidden" name="p" value="$p" />
 			</p>
@@ -258,8 +258,8 @@ EOT;
 		$result = $oDB->query($sql);
 		
 		$return_value ="<table style=\"width:98%\">\n";
-		$return_value.="<tr><th>{$oWebsite->translations[58]}</th><th>{$oWebsite->translations[71]}</th><th>{$oWebsite->translations[72]}</th><th>{$oWebsite->translations[90]}</th><th>{$oWebsite->translations[0]}</th></tr>\n";//login-naam-email-admin-bewerk
-		$return_value.="<tr><td colspan=\"5\"><a class=\"arrow\" href=\"index.php?p=create_account\">{$oWebsite->translations[93]}...</a></td></tr>\n";//maak nieuwe account
+		$return_value.="<tr><th>".$oWebsite->t("users.username")."</th><th>".$oWebsite->t("users.display_name")."</th><th>".$oWebsite->t("users.email")."</th><th>".$oWebsite->t("users.administrator")."</th><th>".$oWebsite->t("main.edit")."</th></tr>\n";//login-naam-email-admin-bewerk
+		$return_value.='<tr><td colspan="5"><a class="arrow" href="'.$oWebsite->get_url_page("create_account").'">'.$oWebsite->t("users.create_new")."...</a></td></tr>\n";//maak nieuwe account
 		if($oDB->rows($result)>0)
 		{
 			while(list($id,$admin,$login,$name,$email)=$oDB->fetch($result))
@@ -269,7 +269,7 @@ EOT;
 				
 					//email als link weergeven
 					$emaillink = "<a href=\"mailto:$email\">$email</a>";
-					if(empty($email)){ $emaillink = '<em>'.$oWebsite->translations[89].'</em>'; }//niet ingesteld
+					if(empty($email)){ $emaillink = '<em>'.$oWebsite->t("main.not_set").'</em>'; }//niet ingesteld
 					
 					$return_value.="<tr>";
 					$return_value.="<td title=\"$login\">$login</td>";
@@ -277,15 +277,15 @@ EOT;
 					$return_value.="<td title=\"$email\">$emaillink</td>";
 					if($admin)
 					{
-						$return_value.="<td>Yes</td>";
-						$return_value.="<td style=\"font-size:80%\"><em>{$oWebsite->translations[90]}!</em></td>\n";//beheerder!
+						$return_value.="<td>".$oWebsite->t("main.yes")."</td>";
+						$return_value.="<td style=\"font-size:80%\"><em>{$oWebsite->t('users.administrator')}!</em></td>\n";//beheerder!
 					}
 					else
 					{
-						$return_value.="<td>No</td>";
+						$return_value.="<td>".$oWebsite->t("main.no")."</td>";
 						$return_value.="<td style=\"font-size:80%\">";
-						$return_value.="<a href=\"index.php?p=password_other&amp;id=$id\">{$oWebsite->translations[59]}</a>|";//wachtwoord
-						$return_value.="<a href=\"index.php?p=email_other&amp;id=$id\">{$oWebsite->translations[72]}</a></td>\n";//email
+						$return_value.='<a href="'.$oWebsite->get_url_page("password_other",$id).'">'.$oWebsite->t("users.password").'</a>|';//wachtwoord
+						$return_value.='<a href="'.$oWebsite->get_url_page("email_other",$id).'">'.$oWebsite->t("users.email")."</a></td>\n";//email
 					}
 				}
 			}

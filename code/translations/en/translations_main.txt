@@ -18,3 +18,7 @@ events=Events
 link=Research group
 links=Research groups
 year=Year
+not_set=Not set
+yes=Yes
+no=No
+fields_required=Fields with a <span class="required">*</span> are required.

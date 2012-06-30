@@ -1,0 +1,9 @@
+username=Username
+name=Name
+display_name=Display name
+password=Password
+email=E-mail
+administrator=Site administrator
+please_log_in=Please log in
+as_administrator=as a site administrator
+create_new=Create new account

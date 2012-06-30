@@ -57,14 +57,14 @@ class Menu
 		}
 		else
 		{
-			return '<p><em>'.$oWebsite->translations[86].'.</em></p>';//niets gevonden
+			return '<p><em>'.$oWebsite->t("errors.nothing_found").'.</em></p>';//niets gevonden
 		}
 		
 	}
 	
 	function get_menu_top()
 	{	//geeft het menu boven aan de site ZONDER <UL>
-	
+		$oWebsite = $this->website_object;
 		$oCats = $this->categories_object;
 	
 		$items=$oCats->get_categories();
@@ -72,14 +72,13 @@ class Menu
 		
 		if($items)
 		{
-			$return_value.="<li><a href=\"index.php\">Home</a></li>";
+			$return_value.='<li><a href="'.$oWebsite->get_url_main().'">Home</a></li>';
 			
 			foreach($items as $id=>$cat_name)
 			{
 				if($id==1) continue; //geef niet alle categorieën weer
 				$return_value.='<li>';
-				$return_value.='<a href="index.php?p=category&amp;cat_id=';
-				$return_value.= (int) ($id);//id voor url
+				$return_value.='<a href="'.$oWebsite->get_url_page("category",$id);
 				$return_value.='">';
 				$return_value.=htmlentities($cat_name);//naam
 				$return_value.='</a>';
@@ -90,8 +89,8 @@ class Menu
 		else
 		{	//nog geen menu gevonden
 			//link om de database te installeren (en een om naar de homepage te gaan)
-			$return_value.='<li><a href="index.php">Home</a></li>';
-			$return_value.='<li><a href="index.php?p=installing_database">Install database</a></li>';
+			$return_value.='<li><a href="'.$oWebsite->get_url_main().'">Home</a></li>';
+			$return_value.='<li><a href="'.$oWebsite->get_url_page("installing_database").'">Install database</a></li>';
 		}
 		
 		$return_value.='</ul>';
@@ -122,8 +121,8 @@ class Menu
 				//bewerk- en verwijderlinks
 				if($logged_in)
 				{
-					$return_value.='<a class="arrow" href="index.php?p=change_link&id='.$id.'">'.$oWebsite->translations[0].'</a> ';
-					$return_value.='<a class="arrow" href="index.php?p=delete_link&id='.$id.'">'.$oWebsite->translations[1].'</a> ';
+					$return_value.='<a class="arrow" href="'.$oWebsite->get_url_page("change_link",$id).'">'.$oWebsite->t("main.edit").'</a> ';
+					$return_value.='<a class="arrow" href="'.$oWebsite->get_url_page("delete_link",$id).'">'.$oWebsite->t("main.delete").'</a> ';
 				}
 				
 				
@@ -132,7 +131,7 @@ class Menu
 			
 		}
 		$return_value.= '</ul>';
-		if($logged_in) $return_value.= '<p><a href="index.php?p=create_link" class="arrow">'.$oWebsite->translations[32].'</a></p>';
+		if($logged_in) $return_value.= '<p><a href="'.$oWebsite->get_url_page("create_link").'" class="arrow">'.$oWebsite->t("links.create").'</a></p>';
 		
 		return $return_value;
 	}
@@ -190,7 +189,7 @@ class Menu
 	{
 		$oWebsite = $this->website_object;
 		$oDB = $this->database_object;
-		$sql = "INSERT INTO `menuitem` (`menuitem_naam`,`menuitem_url`,`menuitem_type`) VALUES ('(New research group)','index.php','4');";
+		$sql = "INSERT INTO `menuitem` (`menuitem_naam`,`menuitem_url`,`menuitem_type`) VALUES ('(".$oWebsite->t("links.new_link").")','http://www.example.com/','4');";
 		if($oDB->query($sql))
 		{
 			$id = $oDB->inserted_id();//haal id op van net ingevoegde rij
@@ -200,8 +199,8 @@ class Menu
 			
 			<p>A new link has been created named '(New research group)'.</p>
 			<p>
-				<a href="index.php?p=change_link&amp;id=$id">Change link</a>|
-				<a href="index.php?p=delete_link&amp;id=$id&amp;confirm=1">Undo</a>
+				<a href="{$oWebsite->get_page_url("change_link",$id)}">Change link</a>|
+				<a href="{$oWebsite->get_page_url("delete_link",$id,array("confirm"=>1))}">Undo</a>
 			</p>
 EOT;
 		}
@@ -310,7 +309,7 @@ EOT;
 		
 		return <<<EOT
 		
-		<form action="index.php" method="post">
+		<form action="{$oWebsite->get_url_main()}" method="post">
 			<p>
 				<label for="name">New name for link '$oldname':</label><br />
 				<input type="text" size="30" id="name" name="name" value="$name" /><br />
@@ -321,7 +320,7 @@ EOT;
 				<input type="hidden" name="p" value="change_link" />
 				<br />
 				<input type="submit" value="Save" class="button" /> 
-				<a href="index.php?p=change_link" class="button">Cancel</a>
+				<a href="{$oWebsite->get_url_page("change_link")}" class="button">Cancel</a>
 			</p>
 		</form>
 EOT;
@@ -369,8 +368,8 @@ EOT;
 			{
 				$return_value = '<p>Are you sure you want to remove the link \''.$menuitem_name.'\'?';
 				$return_value.= ' This action cannot be undone.</p>';
-				$return_value.= '<p><a href="index.php?p=delete_link&confirm=1&id='.$id.'">Yes</a>|';
-				$return_value.= '<a href="index.php?p=delete_link">No</a></p>';
+				$return_value.= '<p><a href="'.$oWebsite->get_url_page("delete_link",$id,array("confirm"=>1)).'">Yes</a>|';
+				$return_value.= '<a href="'.$oWebsite->get_url_page("delete_link").'">No</a></p>';
 				return $return_value;
 			}
 			else

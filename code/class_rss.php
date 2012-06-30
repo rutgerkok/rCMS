@@ -55,7 +55,7 @@ class Rss
 				$pubdate = date('r',strtotime($created));
 				$return_value.="<item>\n";
 				$return_value.="<title>".htmlspecialchars($title)."</title>\n";
-				$return_value.="<link>index.php?p=view_article&amp;id=$id</link>\n";
+				$return_value.="<link>".$oWebsite->get_url_page("article",$id)."</link>\n";
 				$return_value.="<description>".htmlspecialchars($intro)."</description>\n";
 				$return_value.="<pubDate>".htmlspecialchars($pubdate)."</pubDate>\n";
 				$return_value.="</item>\n\n";

@@ -136,65 +136,65 @@ class Edit
 			<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
 			<script type="text/javascript">
 				var text_select_date;
-				text_select_date = "{$oWebsite->translations[51]}";
+				text_select_date = $oWebsite->t("articles.event_date.select");
 			</script>
 			<script type="text/javascript" src="{$oWebsite->get_url_scripts()}article_editor.js"></script>
-			<form action="index.php" method="post">
+			<form action="{$oWebsite->get_url_main()}" method="post">
 				<p style="position:absolute;top:.2em;right:2em;">
-					<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->translations[29]}" />
-					<script type="text/javascript">document.write('<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->translations[30]}" />'); </script>
-					<a href="index.php" class="button" >{$oWebsite->translations[31]}</a>
+					<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save')}" />
+					<script type="text/javascript">document.write('<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save_and_quit')}" />'); </script>
+					<a href="{$oWebsite->get_url_main()}" class="button" >{$oWebsite->t('editor.quit')}</a>
 				</p>
 				<p>
-					<em>{$oWebsite->translations[21]}</em> <!-- velden met een * zijn verplicht -->
+					<em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
 				</p>
 				<table class="layout">
 					<tr>    <!-- gepind, verborgen en reacties -->
 						<td style="width:170px">&nbsp;</td>
 						<td>
-							<label for="article_hidden" title="{$oWebsite->translations[49]}" style="cursor:help">
+							<label for="article_hidden" title="{$oWebsite->t("articles.hidden.explained")}" style="cursor:help">
 								<input type="checkbox" id="article_hidden" name="article_hidden" class="checkbox" $hidden />
-								{$oWebsite->translations[48]}
+								{$oWebsite->t("articles.hidden")}
 							</label> 
-							<label for="article_pinned" title="{$oWebsite->translations[24]}" style="cursor:help">
+							<label for="article_pinned" title="{$oWebsite->t("articles.pinned.explained")}" style="cursor:help">
 								<input type="checkbox" id="article_pinned" name="article_pinned" class="checkbox" $pinned />
-								{$oWebsite->translations[23]}
+								{$oWebsite->t("articles.pinned")}
 							</label> 
-							<label for="article_comments" title="{$oWebsite->translations[67]}" style="cursor:help">
+							<label for="article_comments" title="{$oWebsite->t("articles.comments")}" style="cursor:help">
 								<input type="checkbox" id="article_comments" name="article_comments" class="checkbox" $comments />
-								{$oWebsite->translations[66]}
+								{$oWebsite->t("articles.comments.explained")}
 							</label>
 						</td>
 					</tr>
 					<tr>	<!-- titel -->
-						<td><label for="article_title">{$oWebsite->translations[22]}<span class="required">*</span></td>
+						<td><label for="article_title">{$oWebsite->t("articles.title")}<span class="required">*</span></td>
 						<td><input type="text" id="article_title" name="article_title" style="width:98%" value="{$contents[1]}" /></td>
 					</tr>
 					<tr>    <!-- intro -->
-						<td><label for="article_intro">{$oWebsite->translations[25]}<span class="required">*</span></label></td>
+						<td><label for="article_intro">{$oWebsite->t("articles.intro")}<span class="required">*</span></label></td>
 						<td><textarea id="article_intro" name="article_intro" style="width:98%" rows="3">{$contents[2]}</textarea></td>
 					</tr>
 					<tr>    <!-- categorie -->
-						<td><label for="article_category">{$oWebsite->translations[12]}<span class="required">*</span></label></td>
+						<td><label for="article_category">{$oWebsite->t("main.category")}<span class="required">*</span></label></td>
 						<td>$cat_list</td>
 					</tr>
 					<tr>    <!-- afbeelding --->
-						<td><label for="article_featured_image">{$oWebsite->translations[26]}</label></td>
+						<td><label for="article_featured_image">{$oWebsite->t("article.featured_image")}</label></td>
 						<td>
 							<input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:64%"  />
-							<input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->translations[27]}" onclick="BrowseServer();" style="width:33%" />
+							<input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->t("articles.featured_image.select")}" onclick="BrowseServer();" style="width:33%" />
 						</td>
 					</tr>
 					
 					<tr>    <!-- datum voor kalender -->
-						<td title="{$oWebsite->translations[64]}" style="cursor:help">{$oWebsite->translations[42]}</td>
+						<td title="{$oWebsite->t("articles.event_date.explained")}" style="cursor:help">{$oWebsite->t("articles.event_date")}</td>
 						<td>
 							<label for="article_eventdate">
-								{$oWebsite->translations[53]}:<!--datum-->
+								{$oWebsite->t("articles.date")}:<!--datum-->
 								<input type="text" id="article_eventdate" name="article_eventdate" value="$date" style="width:8em" />
 							</label>
 							<label for="article_eventtime">
-								{$oWebsite->translations[54]}:<!--tijd-->
+								{$oWebsite->t("articles.time")}:<!--tijd-->
 								<input type="text" id="article_eventtime" name="article_eventtime" value="$time" style="width:8em" />
 							</label>
 							<script type="text/javascript">fieldsInit()</script><!-- maak knop voor datumveld -->
@@ -202,7 +202,7 @@ class Edit
 					</tr>
 					<tr>   <!-- inhoud bericht -->
 						<td colspan="2">
-							<label for="article_body">{$oWebsite->translations[28]}<span class="required">*</span></label><br />	
+							<label for="article_body">{$oWebsite->t("articles.body")}<span class="required">*</span></label><br />	
 EOT;
 							if(file_exists('./ckeditor/ckeditor_php5.php'))
 							{
@@ -359,7 +359,7 @@ EOT;
 			$sql.=" NOW() );";
 			if($oDB->query($sql))
 			{
-				echo '<p><em>'.$oWebsite->translations[11].' '.$oWebsite->translations[46].'.</em></p>';//bericht gemaakt
+				echo '<p><em>'.$oWebsite->t("main.article").' '.$oWebsite->t("editor.is_created").'.</em></p>';//bericht gemaakt
 				
 				//array bijwerken
 				$this->contents[1] = $title;
@@ -393,7 +393,7 @@ EOT;
 			$sql.=" WHERE `artikel_id` = {$this->id};";
 			if($oDB->query($sql))
 			{
-				echo '<p><em>'.$oWebsite->translations[11].' '.$oWebsite->translations[45].'.</em></p>';//bericht bijgewerkt
+				echo '<p><em>'.$oWebsite->t("main.article").' '.$oWebsite->t("editor.is_edited").'.</em></p>';//bericht bijgewerkt
 				//array bijwerken
 				$this->contents[1] = $title;
 				$this->contents[2] = $intro;
@@ -410,16 +410,15 @@ EOT;
 		
 		
 		//echo "<p>Saved with id {$this->id}.</p>";
-		if($submit==$oWebsite->translations[30])
+		if($submit==$oWebsite->t("editor.save_and_quit"))
 		{
 			echo <<<EOT
 			<script type="text/javascript">
 			//<![CDATA[
-			location.href = "index.php?p=article&id={$this->id}";
+			location.href = "{$oWebsite->get_url_page('article',$this->id)}";
 			//]]>
 			</script>
-			
-			
+
 EOT;
 		}
 	}
@@ -435,13 +434,13 @@ EOT;
 				$sql = 'DELETE FROM `artikel` WHERE artikel_id = '.$this->id;
 				if($oDB->query($sql)&&$oDB->affected_rows()==1)
 				{
-					$return_value = '<p>'.$oWebsite->translations[11].' '.$oWebsite->translations[82].'</p>';//artikel verwijderd
-					$return_value.= '<p><a href="index.php">Home</a></p>';
+					$return_value = '<p>'.$oWebsite->t("main.article").' '.$oWebsite->t("editor.is_deleted").'</p>';//artikel verwijderd
+					$return_value.= '<p><a href="'.$oWebsite->get_url_main().'">Home</a></p>';
 					return $return_value;
 				}
 				else
 				{
-					$oWebsite->add_error($oWebsite->translations[11].' '.$oWebsite->translations[83]);//artikel kan niet verwijderd worden
+					$oWebsite->add_error($oWebsite->t("main.article").' '.$oWebsite->t("errors.not_saved"));//artikel kan niet verwijderd worden
 					return '';
 				}
 			}
@@ -457,8 +456,8 @@ EOT;
 					
 					$return_value = '<p>Are you sure you want to remove the article \''.$result.'\'?';
 					$return_value.= ' This action cannot be undone.</p>';
-					$return_value.= '<p><a href="index.php?p=delete_article&confirm=1&id='.$this->id.'">Yes</a>|';
-					$return_value.= '<a href="index.php">No</a></p>';
+					$return_value.= '<p><a href="'.$oWebsite->get_url_page('delete_article',$this->id,array("confirm"=>1)).'">Yes</a>|';
+					$return_value.= '<a href="'.$oWebsite->get_url_main().'">No</a></p>';
 					return $return_value;
 				}
 				else

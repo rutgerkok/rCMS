@@ -12,7 +12,7 @@ class Categories
 	
 	function __construct($oWebsite,$oDB)
 	{
-		if(!isset($oWebsite->translations))
+		if(!isset($oWebsite->IS_WEBSITE_OBJECT))
 		{
 			//website object is geen website object, argumenten zijn verkeerd om aangeleverd
 			//(voor 5 november 2011 was dat de standaard bij class_authentication, vanaf 24 januari 2012 ook hier)
@@ -81,8 +81,8 @@ class Categories
 			
 			<p>A new category has been created named 'New category'.</p>
 			<p>
-				<a href="index.php?p=rename_category&id=$id">Rename</a>|
-				<a href="index.php?p=delete_category&id=$id&confirm=1">Undo</a>
+				<a href="{$oWebsite->get_url_page('rename_category',$id)}">Rename</a>|
+				<a href="{$oWebsite->get_url_page('delete_category',$id,array('confirm'=>1))}">Undo</a>
 			</p>
 			
 			
@@ -172,7 +172,7 @@ EOT;
 		}
 		return <<<EOT
 		
-		<form action="index.php" method="post">
+		<form action="{$oWebsite->get_url_main()}" method="post">
 			<p>
 				<label for="name"> New name for category '$oldname':</label>
 				<input type="text" size="30" id="name" name="name" value="$name" />
@@ -180,7 +180,7 @@ EOT;
 				<input type="hidden" name="p" value="rename_category" />
 				<br />
 				<input type="submit" value="Save" class="button" /> 
-				<a href="index.php?p=rename_category" class="button">Cancel</a>
+				<a href="{$oWebsite->get_url_page('rename_category')}" class="button">Cancel</a>
 			</p>
 		</form>
 EOT;
@@ -239,8 +239,8 @@ EOT;
 			{
 				$return_value = '<p>Are you sure you want to remove the category \''.$cat_name.'\'?';
 				$return_value.= ' This action cannot be undone. Please note that some articles might get uncatogorized.</p>';
-				$return_value.= '<p><a href="index.php?p=delete_category&confirm=1&id='.$id.'">Yes</a>|';
-				$return_value.= '<a href="index.php?p=delete_category">No</a></p>';
+				$return_value.= '<p><a href="'.$oWebsite->get_url_page("delete_category",$id,array("confirm"=>1)).'">Yes</a>|';
+				$return_value.= '<a href="'.$oWebsite->get_url_page("delete_category").'">No</a></p>';
 				return $return_value;
 			}
 			else

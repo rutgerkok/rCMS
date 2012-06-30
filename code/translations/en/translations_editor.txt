@@ -1,0 +1,6 @@
+save=Save
+sava_and_quit=Save and  quit
+quit=Quit
+is_created=is created.
+is_edited=is edited.
+is_deleted=is deleted.

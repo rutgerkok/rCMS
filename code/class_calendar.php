@@ -119,7 +119,7 @@ class Calendar
 		            	$tooltip = '<strong>'.$daynumber.' '.strftime('%B',mktime(0, 0, 0, $month, 1, 2011)).' '.$year.'</strong><br />';
 			            foreach($events[$daynumber] as $event)
 		            	{
-			            	$tooltip.= addslashes('<a href=\'index.php?p=view_article&amp;id='.$event[0].'\'>'.$event[1].'</a> <br />');
+			            	$tooltip.= addslashes('<a href=\''.$oWebsite->get_url_page("view_article",$event[0]).'\'>'.$event[1].'</a> <br />');
 		            	}
 		            	$return_value .= "<td onmouseover=\"createTooltip(event,'$tooltip')\"><span class=\"eventdate\">". $daynumber . '</span></td>' . "\n";
 		            }

@@ -1,0 +1,6 @@
+save=Opslaan
+save_and_quit=Opslaan en weggaan
+quit=Weggaan
+is_created=is toegevoegd.
+is_edited=is bijgewerkt.
+is_deleted=is verwijderd.

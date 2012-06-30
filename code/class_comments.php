@@ -42,34 +42,34 @@ class Comments
 		
 		if(!isset($_REQUEST['id'])||((int) $_REQUEST['id'])==0) 
 		{
-			$oWebsite->add_error($oWebsite->translations[11].' '.$oWebsite->translations[20]);//Artikel niet gevonden
+			$oWebsite->add_error($oWebsite->t("main.article").' '.$oWebsite->t("errors.not_found"));//Artikel niet gevonden
 		}
 		if(!$oWebsite->logged_in())
 		{
 			if(!isset($_REQUEST['name'])||trim($_REQUEST['name'])=='') 
 			{
-				$oWebsite->add_error($oWebsite->translations[71].' '.$oWebsite->translations[34]);//Naam niet ingevuld
+				$oWebsite->add_error($oWebsite->t("users.name").' '.$oWebsite->t("errors.not_entered"));//Naam niet ingevuld
 			}
 			if(isset($_REQUEST['name'])&&strlen(trim($_REQUEST['name']))>20) 
 			{
-				$oWebsite->add_error($oWebsite->translations[71].' '.$oWebsite->translations[35]);//Naam te lang
+				$oWebsite->add_error($oWebsite->t("users.name").' '.str_replace("#",20,$oWebsite->t("errors.too_long")));//Naam te lang
 			}
 			if(isset($_REQUEST['email'])&& !empty($_REQUEST['email']) && !$oAuth->valid_email($_REQUEST['email']) )
 			{	//wel verzonden, wel ingevuld maar niet geldig
-				$oWebsite->add_error($oWebsite->translations[72].' '.$oWebsite->translations[77]);//email niet correct
+				$oWebsite->add_error($oWebsite->t("users.email").' '.$oWebsite->t("errors.not_correct"));//email niet correct
 			}
 			if(isset($_REQUEST['email'])&&strlen(trim($_REQUEST['email']))>100) 
 			{	//wel 
-				$oWebsite->add_error($oWebsite->translations[72].' '.$oWebsite->translations[35]);//email te lang
+				$oWebsite->add_error($oWebsite->t("users.email").' '.str_replace("#",100,$oWebsite->t("errors.too_long")));//email te lang
 			}
 		}
 		if(!isset($_REQUEST['comment'])||trim($_REQUEST['comment'])=='')
 		{
-			$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[34]);//Reactie niet ingevuld
+			$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_entered"));//Reactie niet ingevuld
 		}
 		if(isset($_REQUEST['comment'])&&strip_tags($_REQUEST['comment'])!=$_REQUEST['comment'])
 		{
-			$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[77].' '.$oWebsite->translations[87]);//Reactie niet correct: bevat HTML!
+			$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_correct").' '.$oWebsite->t("errors.contains_html"));//Reactie niet correct: bevat HTML!
 		}
 		return ($oWebsite->error_count()==0);
 	}
@@ -112,7 +112,7 @@ class Comments
 		}
 		else
 		{
-			$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[78]);//reactie is niet opgeslagen
+			$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_saved"));//reactie is niet opgeslagen
 			return false;
 		}
 	}
@@ -132,13 +132,13 @@ class Comments
 			}
 			else
 			{
-				$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[20]);//reactie niet gevonden
+				$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_found"));//reactie niet gevonden
 				return false;//meldt dat het mislukt is
 			}
 		}
 		else
 		{
-			$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[20]);//reactie niet gevonden
+			$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_found"));//reactie niet gevonden
 			return false;//heeft geen zin om met id=0 of iets anders query uit te voeren
 		}
 		
@@ -150,7 +150,7 @@ class Comments
 		$oWebsite = $this->website_object;
 		if(!isset($_REQUEST['id'])||((int) $_REQUEST['id'])==0)
 		{
-			$oWebsite->add_error($oWebsite->translations[11].' '.$oWebsite->translations[20]);//Artikel niet gevonden
+			$oWebsite->add_error($oWebsite->t("main.article").' '.$oWebsite->t("errors.not_found"));//Artikel niet gevonden
 			return false;
 		}
 		
@@ -171,19 +171,19 @@ class Comments
 		$id = (int) $_REQUEST['id'];
 		
 		echo <<<EOT
-		<form action="index.php" method="post">
+		<form action="{$oWebsite->get_url_main()}" method="post">
 			<p>
-					<em>{$oWebsite->translations[21]}</em> <!-- velden met een * zijn verplicht -->
+					<em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
 			</p>
 			<p>	
 				<!-- reactie -->
-				{$oWebsite->translations[73]}<span class="required">*</span>:<br />
+				{$oWebsite->t("articles.comment")}<span class="required">*</span>:<br />
 				<textarea name="comment" id="comment" rows="10" cols="60" style="width:98%"></textarea>
 			</p>
 			<p>
 				<input type="hidden" name="id" value="$id" />
 				<input type="hidden" name="p" value="add_comment" />
-				<input type="submit" name="submit" value="{$oWebsite->translations[70]}" class="button" />
+				<input type="submit" name="submit" value="{$oWebsite->t('articles.comment.add')}" class="button" />
 			</p>
 		</form>
 EOT;
@@ -195,30 +195,30 @@ EOT;
 		$id = (int) $_REQUEST['id'];
 		
 		echo <<<EOT
-		<form action="index.php" method="post">
+		<form action="{$oWebsite->get_url_main()}" method="post">
 			<p>
-					<em>{$oWebsite->translations[21]}</em> <!-- velden met een * zijn verplicht -->
+					<em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
 			</p>
 			<p>
 				<!-- naam -->
-				{$oWebsite->translations[71]}<span class="required">*</span>:<br />
+				{$oWebsite->t("users.main")}<span class="required">*</span>:<br />
 				<input type="text" name="name" id="name" maxlength="20" style="width:98%" /><br />
 			</p>
 			<p>
 				<!-- email -->
-				{$oWebsite->translations[72]}:<br />
+				{$oWebsite->t("users.email")}:<br />
 				<input type="email" name="email" id="email" style="width:98%" /><br />
-				<em>{$oWebsite->translations[74]}</em><br />
+				<em>{$oWebsite->t("articles.comments.email_explained")}</em><br />
 			</p>
 			<p>	
 				<!-- reactie -->
-				{$oWebsite->translations[73]}<span class="required">*</span>:<br />
+				{$oWebsite->t("articles.comment")}<span class="required">*</span>:<br />
 				<textarea name="comment" id="comment" rows="10" cols="60" style="width:98%"></textarea>
 			</p>
 			<p>
 				<input type="hidden" name="id" value="$id" />
 				<input type="hidden" name="p" value="add_comment" />
-				<input type="submit" name="submit" value="{$oWebsite->translations[70]}" class="button" />
+				<input type="submit" name="submit" value="{$oWebsite->t('articles.comment.add')}" class="button" />
 			</p>
 		</form>
 EOT;
@@ -245,7 +245,7 @@ EOT;
 		}
 		else
 		{
-			$oWebsite->add_error($oWebsite->translations[73].' '.$oWebsite->translations[20]);	
+			$oWebsite->add_error($oWebsite->t("articles.comment").' '.$oWebsite->t("errors.not_found"));	
 			return '';
 		}
 	}

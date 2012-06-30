@@ -18,3 +18,7 @@ events=PHParool
 link=Zie ook
 links='Zie ook'-links
 year=Jaar
+not_set=Niet ingevuld
+yes=Ja
+no=Nee
+fields_required=Velden met een <span class="required">*</span> zijn verplicht.

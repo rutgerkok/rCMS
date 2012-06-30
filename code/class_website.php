@@ -31,6 +31,7 @@ class Website
 	
 	protected $errorsdisplayed = false;
 	
+	public /*final*/ $IS_WEBSITE_OBJECT = true;
 	
 	public $translations = array();//oude vertaalarray
 	
@@ -194,6 +195,40 @@ class Website
 	public function get_uri_modules()
 	{
 		return $this->get_uri_scripts()."pages/";
+	}
+	
+	//Geeft de url van de hoofdpagina terug, zoals example.com/index.php
+	public function get_url_main()
+	{
+		return $this->pagevars['base_url']."index.php";
+	}
+	
+	public function get_url_page($name, $id=-1051414, $args = array())
+	{
+		if($id==-1051414)
+		{	//geen id
+			if(count($args)==0)
+				return $this->pagevars['base_url'].$name; //geen andere variabelen, geef weer als example.com/naam
+			else
+			{	//wel andere variabelen
+				$url = $this->pagevars['base_url']."index.php?p=".$name;
+				foreach($args as $key=>$value)
+					$url.="&amp;$key=".urlencode($value);
+				return $url;
+			}
+		}
+		else
+		{	//wel id
+			if(count($args)==0)
+				return $this->pagevars['base_url'].$name."/".$id; //geen andere variabelen, geef weer als example.com/naam/id
+			else
+			{	//wel andere variabelen
+				$url = $this->pagevars['base_url']."index.php?p=".$name."&amp;id=".$id;
+				foreach($args as $key=>$value)
+					$url.="&amp;$key=".urlencode($value);
+				return $url;
+			}
+		}
 	}
 	
 	//Geeft de map van alle thema's terug als url
@@ -374,7 +409,7 @@ class Website
 				foreach($file_contents as $line)
 				{
 					$translation = explode("=",$line,2);
-					$this->translations[$keys[0]][$translation[0]] = $translation[1];
+					$this->translations[$keys[0]][$translation[0]] = trim($translation[1]);
 				}
 				unset($file_contents);
 				

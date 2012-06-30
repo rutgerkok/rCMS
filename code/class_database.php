@@ -66,10 +66,8 @@ class Database
 		}
 		
 		//menutabel
-		if($this->query("CREATE TABLE `menuitem` (`menuitem_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menuitem_url` VARCHAR(200) NOT NULL, `menuitem_naam` VARCHAR(50) NOT NULL, `menuitem_type` INT UNSIGNED NOT NULL) ENGINE = MyISAM",false))
-		{
-			$this->query("INSERT INTO `menuitem` ( `menuitem_url`, `menuitem_naam`) VALUES ( 'index.php', 'Home', '1')");//Home link toevoegen
-		}
+		$this->query("CREATE TABLE `menuitem` (`menuitem_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menuitem_url` VARCHAR(200) NOT NULL, `menuitem_naam` VARCHAR(50) NOT NULL, `menuitem_type` INT UNSIGNED NOT NULL) ENGINE = MyISAM",false);
+
 		//artikeltabel
 		$this->query("CREATE TABLE  `artikel` (`artikel_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NOT NULL, `artikel_titel` VARCHAR(100) NOT NULL, `artikel_afbeelding` VARCHAR(150) NULL, `artikel_gepind` TINYINT(1) NOT NULL, `artikel_verborgen` TINYINT(1) NOT NULL, `artikel_reacties` TINYINT(1) NOT NULL, `artikel_intro` TEXT NOT NULL, `artikel_inhoud` TEXT NULL, `artikel_gemaakt` DATETIME NOT NULL, `artikel_verwijsdatum` DATETIME NULL,`artikel_bewerkt` DATETIME NULL) ENGINE = MyISAM",false);
 		$this->query("ALTER TABLE `artikel` ADD FULLTEXT `zoeken` (`artikel_titel`,`artikel_intro`,`artikel_inhoud`) ");

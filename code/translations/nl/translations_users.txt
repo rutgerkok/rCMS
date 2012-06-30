@@ -1,0 +1,9 @@
+username=Gebruikersnaam
+name=Naam
+display_name=Weergavenaam
+password=Wachtwoord
+email=E-mail
+administrator=Sitebeheerder
+please_log_in=Log alstublieft in
+as_administrator=als sitebeheerder
+create_new=Maak nieuwe account aan

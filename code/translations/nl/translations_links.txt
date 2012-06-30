@@ -1,0 +1,2 @@
+create=Voeg een nieuwe link toe
+new_link=Nieuwe link

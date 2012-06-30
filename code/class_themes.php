@@ -21,32 +21,36 @@ class Themes
 	
 	public function echo_accounts_menu()
 	{
+		$oWebsite = $this->website_object;
+		
 		//Geef de inloglinks weer
 		if($this->website_object->logged_in(true)) 
 		{ //admin
-			echo '<li><a href="index.php?p=admin">'.$this->website_object->t("main.admin").'</a></li>';
+			echo '<li><a href="'.$oWebsite->get_url_page("admin").'">'.$oWebsite->t("main.admin").'</a></li>';
 		}
 		if($this->website_object->logged_in(false))
 		{	//ingelogd
-			echo '<li><a href="index.php?p=account_management">'.$this->website_object->t("main.account").'</a></li>';
-			echo '<li><a href="index.php?p=log_out">'.$this->website_object->t("main.log_out").'</a></li>';
+			echo '<li><a href="'.$oWebsite->get_url_page("account_management").'">'.$this->website_object->t("main.account").'</a></li>';
+			echo '<li><a href="'.$oWebsite->get_url_page("log_out").'">'.$this->website_object->t("main.log_out").'</a></li>';
 		}
 		else
 		{
-			echo '<li><a href="index.php?p=log_in">'.$this->website_object->t("main.log_in").'</a></li>';	
+			echo '<li><a href="'.$oWebsite->get_url_page("log_in").'">'.$this->website_object->t("main.log_in").'</a></li>';	
 		}
 	}
 	
 	public function echo_breadcrumbs()
 	{
+		$oWebsite = $this->website_object;
+		
 		echo <<<EOT
 			<a href="http://www.leiden.edu/" class="first">Leiden University</a>
 			<a href="http://www.research.leiden.edu/">Research Portal</a>
 			<a href="http://www.research.leiden.edu/research-profiles/">Leiden Research Profiles</a>
-			<a href="index.php">Bioscience</a>
+			<a href="{$oWebsite->get_url_main()}">Bioscience</a>
 EOT;
 		//Nog de laatste link?
-		if($this->website_object->get_pagevar('file')!='home') 
+		if($oWebsite->get_pagevar('file')!='home') 
 		{ 
 			echo '<a href="#">'.$this->get_page_shorttitle().'</a>';
 		}
@@ -74,14 +78,16 @@ EOT;
 	//Geeft een zoekformulier weer
 	public function echo_search_form()
 	{
+		$oWebsite=$this->website_object;
+		
 		//Zoekwoord
 		$keyword = "";
 		if(isset($_REQUEST['searchbox'])) $keyword =  htmlentities($_REQUEST['searchbox']);
 		
-		echo '<form id="searchform" name="searchform" action="index.php" method="get">';
+		echo '<form id="searchform" name="searchform" action="'.$oWebsite->get_url_main().'" method="get">';
 		echo '<input type="hidden" name="p" value="search" />';
 		echo '<input type="search" size="21" name="searchbox" id="searchbox" value="'.$keyword.'" />';
-		echo '<input type="submit" class="button" value="'.$this->website_object->t("main.search").'" name="searchbutton" id="searchbutton" />';
+		echo '<input type="submit" class="button" value="'.$oWebsite->t("main.search").'" name="searchbutton" id="searchbutton" />';
 		echo '</form>';
 	}
 	
@@ -117,7 +123,7 @@ EOT;
 		if($area==1)
 		{
 			//LINKS
-				echo "<h2>{$oWebsite->translations[19]}</h2>";
+				echo "<h2>{$oWebsite->t('main.link')}</h2>";
 				$oMenu = new Menu($oWebsite,$oDB);
 				echo $oMenu->get_menu_sidebar();
 							
@@ -128,7 +134,7 @@ EOT;
 					$oCal = new Calendar($this,$oDB);
 					echo '<h3>'.$oWebsite->t("calendar.calendar_for").' '.strftime('%B').' '.date('Y').'</h3>';//huidige maand en jaar
 					echo $oCal->get_calendar(291);
-					echo "\n".'<p> <a class="arrow" href="index.php?p=calendar">'.$oWebsite->t("calendar.calendar_for_twelve_months").'</a> </p>';//link voor jaarkalender
+					echo "\n".'<p> <a class="arrow" href="'.$oWebsite->get_url_page("calendar").'">'.$oWebsite->t("calendar.calendar_for_twelve_months").'</a> </p>';//link voor jaarkalender
 				}
 				unset($oDB,$oCategories,$oMenu,$oArticles,$oCal);
 			
