@@ -12,6 +12,7 @@ tmp/**/*
 *.tmp
 *.bak
 *.bat
+*.prj
 *.swp
 *~.nib
 local.properties
