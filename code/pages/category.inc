@@ -5,9 +5,9 @@ $text_to_display = '';
 $oDB = new Database($this);
 $oCats = new Categories($oDB,$this);
 
-if(isset($_REQUEST['cat_id']))
+if(isset($_REQUEST['id']))
 {
-	$cat_id = (int) $_REQUEST['cat_id'];
+	$cat_id = (int) $_REQUEST['id'];
 }
 if($cat_id>0)
 {	//geef artikelen in die categorie weer
@@ -34,7 +34,7 @@ if(empty($text_to_display))
 	$text_to_display.= "<p>\n";
 	foreach($cats as $cat_id=>$name)
 	{
-		$text_to_display.= '<a class="arrow" href="index.php?p=category&amp;cat_id='.$cat_id.'">'.$name."</a> <br /> \n";
+		$text_to_display.= '<a class="arrow" href="index.php?p=category&amp;id='.$cat_id.'">'.$name."</a> <br /> \n";
 	}
 	$text_to_display.= '</p>';
 }
