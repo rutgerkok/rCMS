@@ -7,13 +7,16 @@ class Authentication
 	* __construct($database_object,$oWebsite)
 	* check($admin,$showform)
 	* log_in($user,$pass,$admin)
+	* log_in_other($id)
 	* echo_login_form($admin=false)
 	* log_out()
 	 Gebruikersinformatie
 	* get_current_username()
 	* get_current_email()
 	* get_username($id)
+	* get_password_hashed($id)
 	* get_email($id)
+	* get_admin($id)
 	* get_users_table()
 	 Formuliercontrole
 	* valid_username($user)
@@ -82,6 +85,7 @@ class Authentication
 		}
 	}
 	
+	//Log in op de normale manier
 	function log_in($user,$pass,$admin)
 	{	//geeft terug of gebruiker ingelogd kon worden. Werkt ook de sessies bij. Geeft ook relevante foutmeldingen door.
 		$oDB = $this->database_object;
@@ -114,6 +118,35 @@ class Authentication
 		{
 			return false;
 		}
+	}
+	
+	//GEVAARLIJKE FUNCTIE: log in met alleen een id. Mag alleen worden aangeroepen als de momenteel ingelogde gebruiker admin is
+	function log_in_other($id)
+	{
+		$oWebsite = $this->website_object;
+		
+		$id = (int) $id;
+		if($id==0)
+		{
+			$oWebsite->add_error("Cannot login as other account. Invalid ID! ID: ".$id);
+			return false;
+		}
+		
+		$username = $this->get_username($id);
+		if(empty($username))
+		{
+			$oWebsite->add_error("Cannot login as other account. ID: ".$id);
+			return false;
+		}
+		else
+		{
+			$_SESSION['user'] = $username;
+			$_SESSION['pass'] = $this->get_password_hashed($id);
+			$_SESSION['email'] =$this->get_email($id);
+			$_SESSION['admin'] = $this->get_admin($id);
+			$_SESSION['id'] = $id;
+		}
+		
 	}
 	
 	function echo_login_form($admin=false)
@@ -194,6 +227,33 @@ EOT;
 		}
 	}
 	
+	function get_password_hashed($id)
+	{
+		$oWebsite = $this->website_object;
+		$oDB = $this->database_object;
+		$id = (int) $id;
+		
+		if($id==0)
+		{	//heeft geen zin om door te gaan
+			$oWebsite->add_error('User not found while searching for a password (id='.$id.').');
+			return '';
+		}
+		
+		$sql = 'SELECT gebruiker_wachtwoord FROM `gebruikers` WHERE gebruiker_id = \''.$id.'\' ';
+		$result = $oDB->query($sql);
+		if($oDB->rows($result)==1)
+		{
+			$result = $oDB->fetch($result);
+			$result = $result[0];
+			return $result;
+		}
+		else
+		{
+			$oWebsite->add_error('User not found while searching for a password (id='.$id.').');
+			return '';
+		}
+	}
+	
 	function get_email($id)
 	{
 		$oWebsite = $this->website_object;
@@ -229,7 +289,7 @@ EOT;
 		
 		if($id==0)
 		{	//heeft geen zin om door te gaan
-			$oWebsite->add_error('User not found.');
+			$oWebsite->add_error('User not found in get_admin(). ID: 0','User not found');
 			return '';
 		}
 		
@@ -244,7 +304,7 @@ EOT;
 		}
 		else
 		{
-			$oWebsite->add_error('User not found.');
+			$oWebsite->add_error('User not found in get_admin(). ID: '.$id,'User not found');
 			return '';
 		}
 	}
@@ -259,7 +319,7 @@ EOT;
 		
 		$return_value ="<table style=\"width:98%\">\n";
 		$return_value.="<tr><th>".$oWebsite->t("users.username")."</th><th>".$oWebsite->t("users.display_name")."</th><th>".$oWebsite->t("users.email")."</th><th>".$oWebsite->t("users.administrator")."</th><th>".$oWebsite->t("main.edit")."</th></tr>\n";//login-naam-email-admin-bewerk
-		$return_value.='<tr><td colspan="5"><a class="arrow" href="'.$oWebsite->get_url_page("create_account").'">'.$oWebsite->t("users.create_new")."...</a></td></tr>\n";//maak nieuwe account
+		$return_value.='<tr><td colspan="5"><a class="arrow" href="'.$oWebsite->get_url_page("create_account").'">'.$oWebsite->t("users.create")."...</a></td></tr>\n";//maak nieuwe account
 		if($oDB->rows($result)>0)
 		{
 			while(list($id,$admin,$login,$name,$email)=$oDB->fetch($result))
