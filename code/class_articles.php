@@ -459,11 +459,11 @@ EOT;
 			{
 				if($id==$cat_display)
 				{
-					$return_value .= "<strong>$name</strong> ";
+					$return_value .= "<strong>$name</strong>\n";
 				}
 				else
 				{
-					$return_value .= '<a href="'.$oWebsite->get_url_page("archive",0,array("year"=>$year,"cat"=>$id)).'">$name</a> ';
+					$return_value .= '<a href="'.$oWebsite->get_url_page("archive",0,array("year"=>$year,"cat"=>$id)).'">'. $name."</a> \n";
 				}
 			}
 			
@@ -489,6 +489,7 @@ EOT;
 		if($result&&$oDB->rows($result)>0)
 		{
 			$lastmonth = -1;
+			//geef de tabel weer
 			while(list($id,$title,$category,$month)=$oDB->fetch($result))
 			{
 				if($month!=$lastmonth)
@@ -504,13 +505,13 @@ EOT;
 				
 				if($logged_in)
 				{
-					 $return_value.='<tr> <td style="width:71%"> <a class="arrow" href="'.$oWebsite->get_url_page("article",$id).'"> $title </a> </td>';
-					 $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="'.$oWebsite->get_url_page("edit_article",$id).'">'.$oWebsite->t('main.edit').'</a>&nbsp; '.
-								'<a class="arrow" href="'.$oWebsite->get_url_page("delete_article",$id).'">'.$oWebsite->t('main.delete').'</a> </td>';
+					 $return_value.='<tr> <td style="width:71%"> <a class="arrow" href="'.$oWebsite->get_url_page("article",$id).'">'.$title.'</a> </td>';//titel invoegen
+					 $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="'.$oWebsite->get_url_page("edit_article",$id).'">'.$oWebsite->t('main.edit').'</a>&nbsp; '. //bewerken
+								'<a class="arrow" href="'.$oWebsite->get_url_page("delete_article",$id).'">'.$oWebsite->t('main.delete').'</a> </td>'; //verwijderen
 				}
 				else
 				{
-					$return_value.='<tr><td style="width:87%" colspan="2"> <a class="arrow" href="'.$oWebsite->get_url_page("article",$id).'"> $title </a> </td>';
+					$return_value.='<tr><td style="width:87%" colspan="2"> <a class="arrow" href="'.$oWebsite->get_url_page("article",$id).'">'.$title.'</a> </td>';//title invoegen
 				}
 				$return_value.="<td style=\"width:12%\">$category</td>\n";				
 				$return_value.="</tr>\n";
