@@ -131,7 +131,7 @@ EOT;
 				//Geeft bij phpark kalender weer
 				if($oWebsite->get_pagevar('site')=='phpark')
 				{
-					$oCal = new Calendar($this,$oDB);
+					$oCal = new Calendar($oWebsite,$oDB);
 					echo '<h3>'.$oWebsite->t("calendar.calendar_for").' '.strftime('%B').' '.date('Y').'</h3>';//huidige maand en jaar
 					echo $oCal->get_calendar(291);
 					echo "\n".'<p> <a class="arrow" href="'.$oWebsite->get_url_page("calendar").'">'.$oWebsite->t("calendar.calendar_for_twelve_months").'</a> </p>';//link voor jaarkalender
