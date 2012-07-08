@@ -25,3 +25,4 @@ ok=OK
 cancel=Cancel
 fields_required=Fields with a <span class="required">*</span> are required.
 reset=Reset site
+code_request=Fill in the code to get access to the site.

@@ -9,7 +9,7 @@
 			<h1><?php echo $this->get_sitevar('hometitle') ?></h1>
 			<form action="" method="post">
 				<p>
-					<?php  echo $this->translations['55'] ?>
+					<?php  echo $this->t("main.code_request") ?>
 				</p>
 				<p>
 					<input type="password" name="key" id="key" style="width:10em;" />
@@ -18,7 +18,7 @@
 					</script>
 				</p>
 				<p>
-					<input type="submit" class="button" style="width:11em;" value="<?php  echo $this->translations['4'] ?>" />
+					<input type="submit" class="button" style="width:11em;" value="<?php  echo $this->t("main.log_in") ?>" />
 				</p>
 			</form>
 		</div>

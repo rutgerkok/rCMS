@@ -25,3 +25,4 @@ ok=OK
 cancel=Annuleren
 fields_required=Velden met een <span class="required">*</span> zijn verplicht.
 reset=Reset site
+code_request=Vul de code in om toegang te krijgen tot deze site. Vanaf juli 2012 kunt u deze vinden in het PHParool onder "Colofon".
