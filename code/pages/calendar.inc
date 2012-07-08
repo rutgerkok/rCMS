@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[43] ?></h2>
+<h2><?php echo $this->t("calendar.calendar_for_twelve_months") ?></h2>
 <?php
 $text_to_display='';
 

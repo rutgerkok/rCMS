@@ -22,7 +22,7 @@ if($logged_in)
 			if($oAuth->set_email($_POST['email']))
 			{
 				$text_to_display.='<p>Your email address has been changed.</p>';
-				$text_to_display.='<p><a href="index.php?p=account_management" class="arrow">Account management</a></p>';
+				$text_to_display.='<p><a href="'.$this->get_url_page("account_management").'" class="arrow">Account management</a></p>';
 				
 				$display_form = false;
 			}
@@ -47,7 +47,7 @@ if($logged_in)
 			Fill out the form below to change your email address. 
 		</p>
 		
-		<form action="index.php" method="post">
+		<form action="{$this->get_url_main()}" method="post">
 			<p>
 				<label for="email">Email address:</label><br /><input type="email" id="email" name="email" value="$email"/><br />
 			</p>
@@ -58,7 +58,7 @@ if($logged_in)
 		</form>
 		
 		<p>
-			<a href="index.php?p=account_management" class="arrow">Account management</a>
+			<a href="{$this->get_url_main('account_management')}" class="arrow">Account management</a>
 		</p>
 		
 EOT;

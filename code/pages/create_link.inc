@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[32] ?></h2>
+<h2><?php echo $this->t("links.create") ?></h2>
 <?php
 $text_to_display='';
 

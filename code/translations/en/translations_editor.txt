@@ -1,6 +1,8 @@
 save=Save
-sava_and_quit=Save and  quit
+sava_and_quit=Save and quit
 quit=Quit
 is_created=is created.
 is_edited=is edited.
+is_changed=has been changed.
 is_deleted=is deleted.
+confirmation.delete.comment=Are you sure you want to delete this comment?

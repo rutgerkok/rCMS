@@ -1,2 +1,4 @@
 create=Create a new link
 new_link=New link
+edit=Change a link
+delete=Delete a link

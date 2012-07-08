@@ -56,7 +56,7 @@ if($display_form)
 		Please note that the username must be at least 4 characters long and the that the username must be at least 5 characters long.
 	</p>
 	
-	<form action="index.php" method="post">
+	<form action="{$this->get_url_main()}" method="post">
 		<p>
 			<label for="user">Username<span class="required">*</span>:</label><br /><input type="text" id="user" name="user" value="$user" /><br />
 			<label for="user">Display name<span class="required">*</span>:</label><br /><input type="text" id="name" name="name" value="$name" /><br />
@@ -81,8 +81,8 @@ EOT;
 unset($oAuth);
 
 //nog wat links
-$text_to_display.='<p><a href="index.php?p=account_management" class="arrow">Accounts</a></p>';
-$text_to_display.='<p><a href="index.php?p=admin" class="arrow">Admin</a></p>';
+$text_to_display.='<p><a href="'.$this->get_url_page("account_management").'" class="arrow">Accounts</a></p>';
+$text_to_display.='<p><a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a></p>';
 
 
 //FOUTAFHANDELING

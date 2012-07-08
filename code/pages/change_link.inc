@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[106] ?> <?php echo lcfirst($this->translations[14]) ?></h2>
+<h2><?php echo $this->t("links.edit") ?></h2>
 <?php
 $text_to_display='';
 
@@ -29,7 +29,7 @@ if($logged_in)
 	{	//voor de zekerheid
 		foreach($menu_array as $id=>$name)
 		{
-			$text_to_display.= '<a href="index.php?p=change_link&amp;id='.$id.'" class="arrow">';
+			$text_to_display.= '<a href="'.$this->get_url_page("change_link",$id).'" class="arrow">';
 			$text_to_display.= 'Change \''.$name[1].'\' </a><br />';
 		}
 	}
@@ -39,11 +39,11 @@ if($logged_in)
 	}
 	
 	$text_to_display.= '</p><p>';
-	$text_to_display.= '<a href="index.php?p=create_link" class="arrow">Create a new research group</a><br />';
-	$text_to_display.= '<a href="index.php?p=delete_link" class="arrow">Remove a research group</a>';
+	$text_to_display.= '<a href="'.$this->get_url_page("create_link").'" class="arrow">Create a new research group</a><br />';
+	$text_to_display.= '<a href="'.$this->get_url_page("delete_link").'" class="arrow">Remove a research group</a>';
 	$text_to_display.= '</p><p>';
-	if($is_admin) $text_to_display.= '<a href="index.php?p=admin" class="arrow">Admin</a><br />';
-	$text_to_display.= '<a href="index.php" class="arrow">Home</a>';
+	if($is_admin) $text_to_display.= '<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a><br />';
+	$text_to_display.= '<a href="'.$this->get_url_main().'" class="arrow">Home</a>';
 	$text_to_display.= '</p>';
 }
 	

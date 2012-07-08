@@ -1,7 +1,7 @@
 <?php
 
 //KOPREGEL
-echo '<h2>'.$this->translations[4].'...</h2>';
+echo '<h2>'.$this->t("main.log_in").'...</h2>';
 
 //INLOGGEN
 $authentication = new Authentication(new Database($this),$this);
@@ -17,9 +17,10 @@ if(!$this->errorsdisplayed)
 //EVENTUEEL BERICHT TONEN
 if($logged_in)
 {
-	echo "<h3>{$this->translations[60]} <!-- ingelogd --> </h3>";
-	echo "<p>{$this->translations[61]} <!-- je bent nu ingelogd --> </p>";
-	echo '<p><a href="index.php" class="arrow">Home</a><br />';
-	echo '<a href="index.php?p=account_management" class="arrow">'.$this->translations[3].'</a></p>';
+	echo "<h3>{$this->t('users.logged_in')}</h3>"; //ingelogd
+	echo "<p>{$this->t('users.succesfully_logged_in')}</p>"; //u bent nu ingelogd
+	echo '<p><a href="'.$this->get_url_main().'" class="arrow">Home</a><br />';
+	echo '<a href="'.$this->get_url_page("account_management").'" class="arrow">'.$this->t("main.account").'</a></p>';
+
 }
 ?>

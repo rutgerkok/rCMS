@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[36] ?></h2>
+<h2><?php echo $this->t("articles.archive") ?></h2>
 <?php
 $oDB = new Database($this);
 $oArticles = new Articles($this,$oDB,new Categories($oDB,$this));

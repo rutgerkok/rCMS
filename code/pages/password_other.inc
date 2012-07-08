@@ -26,8 +26,8 @@ if($logged_in)
 				if($oAuth->set_password($_POST['pass'],$id))
 				{
 					$text_to_display.='<p>The password has been changed.</p>';
-					$text_to_display.='<p><a href="index.php?p=account_management" class="arrow">Account management</a><br />';
-					$text_to_display.='<a href="index.php?p=admin" class="arrow">Admin</a></p>';
+					$text_to_display.='<p><a href="'.$this->get_url_page("account_management").'" class="arrow">Account management</a><br />';
+					$text_to_display.='<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a></p>';
 					
 					$display_form = false;
 				}
@@ -48,7 +48,7 @@ if($logged_in)
 			$text_to_display.=<<<EOT
 			<h3>Changing the password of $name</h3>
 			
-			<form action="index.php" method="post">
+			<form action="{$this->get_url_main()}" method="post">
 				<p>
 					<label for="pass">Password:</label><br /><input type="password" id="pass" name="pass" value=""/><br />
 					<label for="pass2">Repeat password:</label><br /><input type="password" id="pass2" name="pass2" value=""/><br />
@@ -61,8 +61,8 @@ if($logged_in)
 			</form>
 			
 			<p>
-				<a href="index.php?p=account_management" class="arrow">Account management</a><br />
-				<a href="index.php?p=admin" class="arrow">Admin</a>
+				<a href="{$this->get_url_page("account_management")}" class="arrow">Account management</a><br />
+				<a href="{$this->get_url_page("admin")}" class="arrow">Admin</a>
 			</p>
 			
 EOT;
@@ -71,11 +71,9 @@ EOT;
 }
 else
 {	//niet goed ingelogd
-	?>
-		<p>
-		This function is for administrators only. To change your password, <a href="index.php?p=change_password">click here</a>.
-		</p>
-	<?php
+	echo "<p>\n";
+	echo 'This function is for administrators only. To change your password, <a href="'.$this->get_url_main().'">click here</a>.'."\n";
+	echo "</p>\n";
 }
 unset($oAuth);
 

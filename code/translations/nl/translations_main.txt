@@ -21,4 +21,7 @@ year=Jaar
 not_set=Niet ingevuld
 yes=Ja
 no=Nee
+ok=OK
+cancel=Annuleren
 fields_required=Velden met een <span class="required">*</span> zijn verplicht.
+reset=Reset site

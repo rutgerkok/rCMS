@@ -35,7 +35,7 @@ else
 	echo <<<EOT
 	<p>
 		Search for the article you want to remove:
-		<form id="removesearchform" name="removesearchform" action="index.php" method="GET">
+		<form id="removesearchform" name="removesearchform" action="{$this->get_url_main()}" method="GET">
 			<input type="hidden" name="p" value="search" />
 			<input type="text" size="21" value="" name="searchbox" id="searchbox" />
 			<input type="submit" class="button" value="Search" name="searchbutton" id="searchbutton" />

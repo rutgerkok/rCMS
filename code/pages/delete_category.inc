@@ -28,20 +28,20 @@ if($logged_in)
 	{
 		if($id!=1&&$id!=2)
 		{	
-			$text_to_display.= '<a href="index.php?p=delete_category&id='.$id.'" class="arrow">';
+			$text_to_display.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow">';
 			$text_to_display.= 'Delete \''.$name.'\'</a><br />';
 		}
 		else
 		{	//eerste en tweede categorie mogen niet verwijderd worden, geef grijze link weer
-			$text_to_display.= '<a href="index.php?p=delete_category&id='.$id.'" class="arrow-disabled" title="Cannot delete a standard category!">';
+			$text_to_display.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow-disabled" title="Cannot delete a standard category!">';
 			$text_to_display.= 'Delete \''.$name.'\'</a><br />';
 		}
 	}
 	$text_to_display.= '</p><p>';
-	$text_to_display.= '<a href="index.php?p=create_category" class="arrow">Create a new category</a><br />';
-	$text_to_display.= '<a href="index.php?p=rename_category" class="arrow">Rename a category</a>';
+	$text_to_display.= '<a href="'.$this->get_url_page("create_category").'" class="arrow">Create a new category</a><br />';
+	$text_to_display.= '<a href="'.$this->get_url_page("rename_category").'" class="arrow">Rename a category</a>';
 	$text_to_display.= '</p><p>';
-	$text_to_display.= '<a href="index.php?p=admin" class="arrow">Admin</a>';
+	$text_to_display.= '<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a>';
 	$text_to_display.= '</p>';
 }
 

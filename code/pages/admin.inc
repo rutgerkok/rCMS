@@ -27,19 +27,19 @@ if(count($cat_array)>0)
 	foreach($cat_array as $id=>$name)
 	{
 		//hernoemlijst
-		$cat_rename_list.= '<a href="index.php?p=rename_category&amp;id='.$id.'" class="arrow">';
-		$cat_rename_list.= $this->translations[109].' \''.$name.'\'</a><br />';
+		$cat_rename_list.= '<a href="'.$this->get_url_page("rename_category",$id).'" class="arrow">';
+		$cat_rename_list.= $this->t("main.edit").' \''.$name.'\'</a><br />';
 		
 		//verwijderlijst
 		if($id!=1&&$id!=2)
 		{	
-			$cat_delete_list.= '<a href="index.php?p=delete_category&id='.$id.'" class="arrow">';
-			$cat_delete_list.= $this->translations[1].' \''.$name.'\'</a><br />';
+			$cat_delete_list.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow">';
+			$cat_delete_list.= $this->t("main.delete").' \''.$name.'\'</a><br />';
 		}
 		else
 		{	//eerste drie categorieen mogen niet verwijderd worden, geef grijze link weer
-			$cat_delete_list.= '<a href="index.php?p=delete_category&id='.$id.'" class="arrow-disabled" title="Cannot delete a standard category!">';
-			$cat_delete_list.= $this->translations[1].' \''.$name.'\'</a><br />';
+			$cat_delete_list.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow-disabled" title="Cannot delete a standard category!">';
+			$cat_delete_list.= $this->t("main.delete").' \''.$name.'\'</a><br />';
 		}
 	}
 	
@@ -58,48 +58,38 @@ if($logged_in)
 {	
 	?>
 	
-	<fieldset class="panel">
-		<legend><?php echo $this->translations[16] ?></legend> <!-- artikelen -->
-		<p><a href="index.php?p=edit_article&amp;id=0" class="arrow"><?php echo $this->translations[9] ?></a></p> <!-- nieuw artikel -->
-	</fieldset>
+	<h3><?php echo $this->t("main.articles") ?></h3> <!-- artikelen -->
+	<p><a href="<?php echo $this->get_url_page("edit_article",0) ?>" class="arrow"><?php echo $this->t("articles.create") ?></a></p> <!-- nieuw artikel -->
 	
-	<fieldset class="panel">
-		<legend><?php echo $this->translations[88] ?></legend> <!-- accounts -->
-		<p>
-			<a href="index.php?p=create_account" class="arrow"><?php echo $this->translations[93] ?></a><br /> <!-- voeg account toe -->
-			<a class="arrow" href="index.php?p=change_password"><?php echo $this->translations[94]. ' ' .strtolower($this->translations[59]) ?></a><br /><!-- verander wachtwoord -->
-			<a class="arrow" href="index.php?p=change_email"><?php echo $this->translations[94]. ' ' .strtolower($this->translations[72]) ?></a><br /><!-- verander email -->
-			<a href="index.php?p=account_management" class="arrow"><?php echo $this->translations[88] ?></a><br /> <!-- accountbeheer -->
-		</p>
-	</fieldset>
+	<h3><?php echo $this->t("users.account_management") ?></h3> <!-- accounts -->
+	<p>
+		<a href="<?php echo $this->get_url_page("create_account") ?>" class="arrow"><?php echo $this->t("users.create") ?></a><br /> <!-- voeg account toe -->
+		<a class="arrow" href="<?php echo $this->get_url_page("change_password") ?>"><?php echo $this->t("users.password.edit") ?></a><br /><!-- verander wachtwoord -->
+		<a class="arrow" href="<?php echo $this->get_url_page("change_email") ?>"><?php echo $this->t("users.email.edit") ?></a><br /><!-- verander email -->
+		<a href="<?php echo $this->get_url_page("account_management") ?>" class="arrow"><?php echo $this->t("users.account_management") ?></a><br /> <!-- accountbeheer -->
+	</p>
 	
-	<fieldset class="panel">
-		<legend><?php echo ucfirst($this->translations[99]) ?></legend> <!-- research groups -->
-		<p>
-			<a href="index.php?p=create_link" class="arrow"><?php echo $this->translations[32] ?></a><br />
-			<a href="index.php?p=change_link" class="arrow"><?php echo $this->translations[106] ?> <?php echo $this->translations[14] ?></a><br />
-			<a href="index.php?p=delete_link" class="arrow"><?php echo $this->translations[107] ?> <?php echo $this->translations[14] ?></a>
-		</p>
-	</fieldset>
+	<h3><?php echo $this->t("main.links") ?></h3> <!-- research groups -->
+	<p>
+		<a href="<?php echo $this->get_url_page("create_link") ?>" class="arrow"><?php echo $this->t("links.create") ?></a><br />
+		<a href="<?php echo $this->get_url_page("change_link") ?>" class="arrow"><?php echo $this->t("links.edit") ?></a><br />
+		<a href="<?php echo $this->get_url_page("delete_link") ?>" class="arrow"><?php echo $this->t("links.delete") ?></a>
+	</p>
 	
-	<fieldset class="panel">
-		<legend><?php echo $this->translations[17] ?></legend><!--categorie-->
-		<p>
-			<a href="index.php?p=create_category" class="arrow"><?php echo $this->translations[108] ?></a><!--nieuwe categorie-->
-		</p>
-		<?php
-			echo $cat_rename_list;
-			echo $cat_delete_list;
-		?>
-	</fieldset>
+	<h3><?php echo $this->t("main.categories") ?></h3><!--categorie-->
+	<p>
+		<a href="<?php echo $this->get_url_page("create_category") ?>" class="arrow"><?php echo $this->t("categories.create") ?></a><!--nieuwe categorie-->
+	</p>
+	<?php
+		echo $cat_rename_list;
+		echo $cat_delete_list;
+	?>
 	
-	<fieldset class="panel">
-		<legend><?php echo $this->translations[105] ?></legend><!--reset-->
-		<p>
-			<a href="index.php?p=installing_database" class="arrow"><?php echo $this->translations[110] ?></a>
-		</p>
-	</fieldset>
-	
+	<h3><?php echo $this->t("main.reset") ?></h3><!--reset-->
+	<p>
+		<a href="<?php echo $this->get_url_page("installing_database") ?>" class="arrow"><?php echo $this->t("main.reset") ?></a>
+	</p>
+
 	
 	<?php
 }

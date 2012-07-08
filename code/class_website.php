@@ -15,7 +15,6 @@ class Website
 	 *  $pagevars['base_uri']
 	 *  $pagevars['base_url']
 	 *  $sites['name']['setting']
-	 *  $translations - (array) bevat alle vertaalzinnen voor de site
 	 *  $errorsdisplayed - (bool) of alle foutmeldingen al weergegeven zijn (belangrijk voor fouten die daarna voorkomen)
 	 *
 	 * METHODES:
@@ -32,8 +31,6 @@ class Website
 	protected $errorsdisplayed = false;
 	
 	public /*final*/ $IS_WEBSITE_OBJECT = true;
-	
-	public $translations = array();//oude vertaalarray
 	
 	function __construct()
 	{
@@ -56,32 +53,6 @@ class Website
 		{
 			$this->pagevars['base_uri'] = $this->get_sitevar('external_uri');
 			$this->pagevars['base_url'] = $this->get_sitevar('external_url');
-		}
-
-		
-		
-		//OUDE VERTALINGEN
-		if(file_exists($this->get_uri_themes().$this->get_sitevar("theme")."/translations.txt")) //zoek naar thema-specifiek bestand
-		{
-			$this->translations = file( $this->get_uri_themes().$this->get_sitevar("theme")."/translations.txt" );
-			setlocale(LC_ALL, $this->get_sitevar('locales') );
-			foreach($this->translations as $id=>$value)
-			{
-				$this->translations[$id]=trim($value);
-			}
-		}
-		else if(file_exists($this->get_uri_scripts())."translations.txt") //val terug op algemene bestand
-		{
-			$this->translations = file( $this->get_uri_scripts()."translations.txt" );
-			setlocale(LC_ALL, $this->get_sitevar('locales') );
-			foreach($this->translations as $id=>$value)
-			{
-				$this->translations[$id]=trim($value);
-			}
-		}
-		else
-		{
-			die("Translations file (<code>"+$this->get_uri_scripts()."translations.txt</code>) not found! Corrupted installation?");
 		}
 		
 		//PAGINASPECIFIEKE GEGEVENS OPHALEN
@@ -207,15 +178,7 @@ class Website
 	{
 		if($id==-1051414)
 		{	//geen id
-			if(count($args)==0)
-				return $this->pagevars['base_url'].$name; //geen andere variabelen, geef weer als example.com/naam
-			else
-			{	//wel andere variabelen
-				$url = $this->pagevars['base_url']."index.php?p=".$name;
-				foreach($args as $key=>$value)
-					$url.="&amp;$key=".urlencode($value);
-				return $url;
-			}
+			return $this->pagevars['base_url'].$name; //dus ook geen andere variabelen, geef weer als example.com/naam
 		}
 		else
 		{	//wel id

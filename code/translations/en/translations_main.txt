@@ -21,4 +21,7 @@ year=Year
 not_set=Not set
 yes=Yes
 no=No
+ok=OK
+cancel=Cancel
 fields_required=Fields with a <span class="required">*</span> are required.
+reset=Reset site

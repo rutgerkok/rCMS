@@ -26,8 +26,8 @@ if($logged_in)
 				if($oAuth->set_email($_POST['email'],$id))
 				{
 					$text_to_display.='<p>The email address has been changed.</p>';
-					$text_to_display.='<p><a href="index.php?p=account_management" class="arrow">Account management</a><br />';
-					$text_to_display.='<a href="index.php?p=admin" class="arrow">Admin</a></p>';
+					$text_to_display.='<p><a href="'.$this->get_url_page("account_management").'" class="arrow">Account management</a><br />';
+					$text_to_display.='<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a></p>';
 					
 					$display_form = false;
 				}
@@ -50,7 +50,7 @@ if($logged_in)
 			$text_to_display.=<<<EOT
 			<h3>Changing the email address of $name</h3>
 			
-			<form action="index.php" method="post">
+			<form action="{$this->get_url_main()}" method="post">
 				<p>
 					<label for="email">Email:</label><br /><input type="email" id="email" name="email" value="$email"/>
 				</p>
@@ -62,8 +62,8 @@ if($logged_in)
 			</form>
 			
 			<p>
-				<a href="index.php?p=account_management" class="arrow">Account management</a><br />
-				<a href="index.php?p=admin" class="arrow">Admin</a>
+				<a href="'.$this->get_url_page("account_management").'" class="arrow">Account management</a><br />
+				<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a>
 			</p>
 EOT;
 		}
@@ -73,7 +73,7 @@ else
 {	//niet goed ingelogd
 	?>
 		<p>
-			This function is for administrators only. To change your email address, <a href="index.php?p=change_email">click here</a>.
+			This function is for administrators only. To change your email address, <a href="'.$this->get_url_page("change_email").'">click here</a>.
 		</p>
 	<?php
 }

@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[1] ?>  <?php echo strtolower($this->translations[73]) ?></h2>
+<h2><?php echo $this->t("articles.comment.delete") ?></h2>
 <?php
 //OBJECTEN
 $oDB = new Database($this);
@@ -20,19 +20,19 @@ if($logged_in)
 		//verwijder
 		if($oComments->delete_comment($id))
 		{
-			$text_to_display.= '<p>'.$this->translations[73].' '.$this->translations[82].'</p>';//reactie is verwijderd
-			$text_to_display.= '<p><a href="index.php" onclick="history.go(-2);return false">'.$this->translations[75].'</a></p>';//ok en terug
+			$text_to_display.= '<p>'.$this->t("articles.comment").' '.$this->t("editor.is_removed").'</p>';//reactie is verwijderd
+			$text_to_display.= '<p><a href="'.$this->get_url_main().'" onclick="history.go(-2);return false">'.$this->t("main.ok").'</a></p>';//ok en terug
 		}
 		else
 		{
-			$text_to_display.= '<p>'.$this->translations[73].' '.$this->translations[83].'</p>';//reactie is NIET verwijderd
-			$text_to_display.= '<p><a href="index.php" onclick="history.go(-2);return false">'.$this->translations[75].'</a></p>';//ok en terug
+			$text_to_display.= '<p>'.$this->t("articles.comment").' '.$this->t("errors.is_not_removed").'</p>';//reactie is NIET verwijderd
+			$text_to_display.= '<p><a href="'.$this->get_url_main().'" onclick="history.go(-2);return false">'.$this->t("main.ok").'</a></p>';//ok en terug
 		}
 	}
 	else
 	{
 		//toon bevestigingsvraag
-		$text_to_display.= '<p>'.$this->translations[79].'</p>';
+		$text_to_display.= '<p>'.$this->t("editor.confirmation.delete.comment").'</p>';
 		
 		//en laat daarbij de comment zien
 		$comment = $oComments->get_comment($id);
@@ -44,8 +44,8 @@ if($logged_in)
 		else
 		{
 			$text_to_display.= $comment;
-			$text_to_display.= '<p><a href="index.php?p=delete_comment&amp;confirm=1&amp;id='.$id.'">'.$this->translations[80].'</a>|';
-			$text_to_display.= '<a href="index.php" onclick="history.back();return false">'.$this->translations[81].'</a></p>';
+			$text_to_display.= '<p><a href="'.$this->get_url_page("delete_comment",$id,array("confirm"=>1)).'">'.$this->t("main.yes").'</a>|';
+			$text_to_display.= '<a href="'.$this->get_url_main().'" onclick="history.back();return false">'.$this->t("main.no").'</a></p>';
 		}
 	}
 }

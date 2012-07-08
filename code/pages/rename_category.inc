@@ -27,15 +27,15 @@ if($logged_in)
 	
 	foreach($cat_array as $id=>$name)
 	{
-		$text_to_display.= '<a href="index.php?p=rename_category&id='.$id.'" class="arrow">';
+		$text_to_display.= '<a href="'.$this->get_url_page("rename_category",$id).'" class="arrow">';
 		$text_to_display.= 'Rename \''.$name.'\'</a><br />';
 	}
 	
 	$text_to_display.= '</p><p>';
-	$text_to_display.= '<a href="index.php?p=create_category" class="arrow">Create a new category</a><br />';
-	$text_to_display.= '<a href="index.php?p=delete_category" class="arrow">Delete a category</a>';
+	$text_to_display.= '<a href="'.$this->get_url_page("create_category").'" class="arrow">Create a new category</a><br />';
+	$text_to_display.= '<a href="'.$this->get_url_page("delete_category").'" class="arrow">Delete a category</a>';
 	$text_to_display.= '</p><p>';
-	$text_to_display.= '<a href="index.php?p=admin" class="arrow">Admin</a>';
+	$text_to_display.= '<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a>';
 	$text_to_display.= '</p>';
 }
 	

@@ -29,7 +29,7 @@ else
 			</p>
 			<table>
 				<tr>
-					<td colspan="2"><strong><em>Please <a href="index.php?p=change_password">change your password</a> as soon as possible</em></strong></td>
+					<td colspan="2"><strong><em>Please <a href="{$this->get_url_page('change_password')}">change your password</a> as soon as possible</em></strong></td>
 				</tr>
 				<tr>
 					<th>Username</th><td>admin</td>
@@ -44,16 +44,15 @@ EOT;
 		}
 		else
 		{	//toon bevestigingsvraag
+			$link_confirm = $this->get_url_page("installing_database",0,array("confirm"=>1));
 			echo <<<EOT
-			
-			
 			
 			<h2>Installing database</h2>
 			<p>
 				Are you sure to (re-)install the database? If the database is already installed, <strong><em>the site will be reset!</em></strong>
 			</p>
 			<p>
-				<a  href="index.php?p=installing_database&amp;confirm=1">Yes</a>|<a href="index.php">No</a>
+				<a  href="$link_confirm">Yes</a>|<a href="{$this->get_url_main()}">No</a>
 			</p>
 EOT;
 		}

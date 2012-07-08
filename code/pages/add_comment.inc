@@ -1,4 +1,4 @@
-<h2><?php echo $this->translations[70] ?></h2>
+<h2><?php echo $this->t("comment.add") ?></h2>
 <?php
 //OBJECTEN
 $oDB = new Database($this);
@@ -25,8 +25,8 @@ if(!$this->errorsdisplayed)
 //EDITOR OF MELDING TONEN
 if($saved)
 {
-	echo "<p>".$this->translations[73]." ".$this->translations[46].".</p>";
-	echo '<p><a href="index.php?p=view_article&amp;id='.$_REQUEST['id'].'">'.$this->translations[75].'</p>';
+	echo "<p>".$this->t("articles.comment")." ".$this->t("editor.is_created").".</p>\n\n";
+	echo '<p><a href="'.$this->get_url_page("article",$_REQUEST['id']).'">'.$this->t("main.ok").'</p>';
 }
 else
 {

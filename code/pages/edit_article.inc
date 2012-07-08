@@ -1,7 +1,7 @@
 <?php
 $this->set_pagevar('sidebars',false);
 //KOPREGEL
-echo '<h2>'.$this->translations[0].' '.strtolower($this->translations[11]).'</h2>';
+echo '<h2>'.$this->t("articles.edit").'</h2>';
 
 //OBJECTEN
 $oDB = new Database($this);

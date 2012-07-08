@@ -3,4 +3,6 @@ save_and_quit=Opslaan en weggaan
 quit=Weggaan
 is_created=is toegevoegd.
 is_edited=is bijgewerkt.
+is_changed=is gewijzigd.
 is_deleted=is verwijderd.
+confirmation.delete.comment=Weet u zeker dat u deze reactie wilt verwijderen?

@@ -1,2 +1,5 @@
 all=All categories
 search.all_in_year=Search all categories in #
+create=Create a new category
+articles_in_category=Articles in category
+show_all=Show all categories

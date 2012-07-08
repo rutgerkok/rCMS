@@ -1,7 +1,7 @@
 <?php
 
 //KOPREGEL
-echo '<h2>'.$this->translations[5].'...</h2>';
+echo '<h2>'.$this->t("main.log_out").'...</h2>';
 
 //UITLOGGEN
 $authentication = new Authentication(new Database($this),$this);
@@ -15,7 +15,8 @@ if(!$this->errorsdisplayed)
 }
 
 //BERICHT TONEN
-echo "<h3>{$this->translations[62]} <!-- uitgelogd --> </h3>";
-echo "<p>{$this->translations[63]} <!-- je bent nu uitgelogd --> </p>";
-echo '<p><a href="index.php" class="button">Home</a></p>';
+echo "<h3>{$this->t("users.logged_out")}</h3>"; //uitgelogd
+echo "<p>{$this->t("users.succesfully_logged_out")}</p>"; //u bent nu uitgelogd
+echo '<p><a href="'.$this->get_url_main().'" class="button">Home</a></p>';
+
 ?>
