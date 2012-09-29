@@ -1,4 +1,7 @@
 <?php
+// Correct header
+header("Content-type: application/rss+xml");
+
 // Site settings
 error_reporting(E_ALL);
 session_start();
@@ -26,7 +29,7 @@ else
 }
 
 // Get the data
-$result = $oArticles->get_articles_data();
+$result = $oArticles->get_articles_data("", 20);
 
 // Parse it
 $text_to_display = '';
@@ -37,10 +40,13 @@ if($result)
 		list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
 		$pubdate = date('r',strtotime($created));
 		$text_to_display.="<item>\n";
-		$text_to_display.="  <title>".htmlentities($title)."</title>\n";
+		$text_to_display.="  <title>".htmlspecialchars($title)."</title>\n";
 		$text_to_display.="  <link>".$oWebsite->get_url_page('article',$id)."</link>\n";
-		$text_to_display.="  <description>".htmlentities($intro)."</description>\n";
+		$text_to_display.="  <description>".htmlspecialchars($intro)."</description>\n";
 		$text_to_display.="  <pubDate>".$pubdate."</pubDate>\n";
+		$text_to_display.="  <author>".$author."</author>\n";
+		$text_to_display.="  <image>".$featured_image."</image>\n";
+		$text_to_display.="  <category>".$article_category."</category>\n";
 		$text_to_display.="</item>\n\n";
 	}
 }
