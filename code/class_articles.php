@@ -20,7 +20,7 @@ class Articles
 	protected $database_object;
 	protected $category_object;//nodig voor get_articles_archive
 	
-	function __construct($website_object,$database_object,$category_object=null)
+	function __construct(Website $website_object, Database $database_object, Categories $category_object=null)
 	{
 		$this->website_object = $website_object;
 		$this->database_object = $database_object;
@@ -72,7 +72,7 @@ class Articles
 		if(!empty($where_clausule)) $sql.= "AND $where_clausule ";//nog een extra voorwaarde?
 		$sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt DESC ";//sorteren
 		$sql.= "LIMIT $start , $limit";//nooit teveel
-		
+
 		$result = $oDB->query($sql);
 		if($result&&$oDB->rows($result)>0)
 		{

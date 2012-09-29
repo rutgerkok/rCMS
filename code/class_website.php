@@ -171,7 +171,7 @@ class Website
 	//Geeft de url van de hoofdpagina terug, zoals example.com/index.php
 	public function get_url_main()
 	{
-		return $this->pagevars['base_url']."index.php";
+		return $this->pagevars['base_url'];
 	}
 	
 	public function get_url_page($name, $id=-1051414, $args = array())

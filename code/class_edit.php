@@ -133,10 +133,10 @@ class Edit
 		
 		//geef alles weer
 		echo <<<EOT
-			<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+			<script type="text/javascript" src="{$oWebsite->get_url_main()}ckfinder/ckfinder.js"></script>
 			<script type="text/javascript">
 				var text_select_date;
-				text_select_date = $oWebsite->t("articles.event_date.select");
+				text_select_date = "{$oWebsite->t("articles.event_date.select")}";
 			</script>
 			<script type="text/javascript" src="{$oWebsite->get_url_scripts()}article_editor.js"></script>
 			<form action="{$oWebsite->get_url_main()}" method="post">
@@ -160,9 +160,9 @@ class Edit
 								<input type="checkbox" id="article_pinned" name="article_pinned" class="checkbox" $pinned />
 								{$oWebsite->t("articles.pinned")}
 							</label> 
-							<label for="article_comments" title="{$oWebsite->t("articles.comments")}" style="cursor:help">
+							<label for="article_comments" title="{$oWebsite->t("articles.comments.explained")}" style="cursor:help">
 								<input type="checkbox" id="article_comments" name="article_comments" class="checkbox" $comments />
-								{$oWebsite->t("articles.comments.explained")}
+								{$oWebsite->t("articles.comments")}
 							</label>
 						</td>
 					</tr>
@@ -179,7 +179,7 @@ class Edit
 						<td>$cat_list</td>
 					</tr>
 					<tr>    <!-- afbeelding --->
-						<td><label for="article_featured_image">{$oWebsite->t("article.featured_image")}</label></td>
+						<td><label for="article_featured_image">{$oWebsite->t("articles.featured_image")}</label></td>
 						<td>
 							<input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:64%"  />
 							<input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->t("articles.featured_image.select")}" onclick="BrowseServer();" style="width:33%" />
@@ -213,8 +213,8 @@ EOT;
 								
 								//Instantie maken en textarea #article_edit maken
 								$CKEditor = new CKEditor();
-								$CKEditor->basePath = './ckeditor/';
-								CKFinder::SetupCKEditor( $CKEditor, './ckfinder/' ) ;
+								$CKEditor->basePath = '/ckeditor/';
+								CKFinder::SetupCKEditor( $CKEditor, '/ckfinder/' ) ;
 								$CKEditor->editor("article_body", $contents[3]);
 							}
 							else

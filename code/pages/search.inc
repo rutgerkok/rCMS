@@ -13,7 +13,7 @@ else
 	$page = 1;
 }
 ?>
-<h2><?php echo $this->t("articles.search_for")] ?> "<?php if(!empty($keyword)) echo $_REQUEST['searchbox']; ?>" </h2>
+<h2><?php echo $this->t("articles.search_for") ?> "<?php if(!empty($keyword)) echo $_REQUEST['searchbox']; ?>" </h2>
 <?php
 if(strlen($keyword)<3)
 {
