@@ -154,8 +154,8 @@ EOT;
                         $return_value.="<h3 class=\"notable\">" . $oWebsite->t('articles.comments') . " (" . $oDB->rows($result) . ")</h3>";
                         $return_value.='<p><a href="' . $oWebsite->get_url_page("add_comment", $id) . '\" class="arrow">' . $oWebsite->t('articles.comment.add') . "</a></p>"; //link: reageer
 
-                        while (list($comment_id, $comment_email, $comment_name, $comment_date, $comment, $account_name) = $oDB->fetch($result)) { //geef alle reacties weer //geef reactie weer
-                            $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date)));
+                        while (list($comment_id, $comment_email, $comment_name, $comment_date_raw, $comment, $account_name) = $oDB->fetch($result)) { //geef alle reacties weer //geef reactie weer
+                            $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date_raw)));
                             if (empty($comment_name))
                                 $comment_name = $account_name; //ingelogde gebruikers correct weergeven
                             $return_value.= "<h3>$comment_name ($comment_date)</h3>"; //naam en datum
@@ -163,7 +163,7 @@ EOT;
                             if ($logged_in && !empty($comment_email))
                                 $return_value.= "<a href=\"mailto:$comment_email\">$comment_email</a> &nbsp;&nbsp;&nbsp;"; //mail
                             if ($logged_in)
-                                $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $comment_id) . '">' . $oWebsite->t('main.delete') . '</a> </p>'; //verwijder
+                                $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("delete_comment", $comment_id) . '">' . $oWebsite->t('main.delete') . '</a> </p>'; //verwijder
                             $return_value.= "<p>" . nl2br($comment) . "</p>";
                         }
 

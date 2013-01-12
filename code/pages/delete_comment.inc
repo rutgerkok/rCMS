@@ -1,9 +1,8 @@
 <h2><?php echo $this->t("articles.comment.delete") ?></h2>
 <?php
 //OBJECTEN
-$oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
-$oComments = new Comments($this,$oDB,$oAuth);
+$oAuth = new Authentication($this);
+$oComments = new Comments($this,$oAuth);
 $logged_in = $oAuth->check(false,true);//admin niet noodzakelijk
 unset($oDB,$oAuth);//niet meer nodig
 
