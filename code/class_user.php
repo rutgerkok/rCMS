@@ -22,10 +22,10 @@ class User {
      * @param boolean $admin Will be fetched from the database if omitted.
      * @throws InvalidArgumentException If the id is 0, but one of the other arguments is omitted.
      */
-    public function __construct(Website $oWebsite, $id, $username = "", $display_name = "", $password_hashed = "", $email = "", $status = -1) {
+    public function __construct(Website $oWebsite, $id, $username = "", $display_name = "", $password_hashed = "", $email = "NOT_FETCHED", $status = -1) {
         if ($id == 0) {
             // New user, check for arguments
-            if (empty($username) || empty($display_name) || ($status < 0)) {
+            if (empty($username) || empty($display_name) || $email == "NOT_FETCHED" || ($status < 0)) {
                 throw new InvalidArgumentException("For new accounts, you need to supply all arguments!");
             }
         }
@@ -244,7 +244,7 @@ class User {
                 $changed = true;
             }
 
-            if (!empty($this->email)) {
+            if ($this->email != "NOT_FETCHED") {
                 $sql.= ", `gebruiker_email` = \"" . $oDB->escape_data($this->email) . "\" ";
                 $changed = true;
             }

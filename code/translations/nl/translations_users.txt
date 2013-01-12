@@ -7,6 +7,7 @@ password.edit.explained=Vul onderstaand formulier in om uw wachtwoord te wijzige
 password.repeat=Herhaal wachtwoord
 email=E-mail
 email.edit=Wijzig e-mailadres
+email.edit.explained=Vul onderstaand formulier in om uw e-mailadres te wijzigen.
 please_log_in=Log alstublieft in
 as_administrator=als sitebeheerder
 create=Maak nieuwe account aan

@@ -1,4 +1,4 @@
-<h2>Change your email address</h2>
+<h2><?php echo $this->t("users.email.edit") ?></h2>
 <?php
 $text_to_display = '';
 
@@ -20,17 +20,18 @@ if ($logged_in) {
             if ($user->save()) {
                 $oAuth->set_current_user($user);
 
-                $text_to_display.='<p>Your email address has been changed.</p>';
-                $text_to_display.='<p><a href="' . $this->get_url_page("account_management") . '" class="arrow">Account management</a></p>';
+                $text_to_display.='<p>' . $this->t("users.email") . ' ' . $this->t("editor.is_changed") . '</p>'; //email changed
+                $text_to_display.='<p><a href="' . $this->get_url_page("account_management") . '" class="arrow">' . $this->t("users.account_management") . '</a></p>'; //account management
 
                 $display_form = false;
             } else {
-                $text_to_display.='<p>Your email address has <strong>not</strong> been changed.</p>';
+                // Save error
+                $text_to_display.='<p>' . $this->t("users.email") . ' ' . $this->t("errors.not_saved") . '</p>';
                 $display_form = true;
             }
         } else {
-            $this->add_error($this->t("users.the_email") . " " . Validate::get_last_error($this));
-            $text_to_display.='<p>Your email address has <strong>not</strong> been changed.</p>';
+            $this->add_error($this->t("users.email") . ' ' . Validate::get_last_error($this) . '.');
+            $text_to_display.='<p>' . str_replace("#", $this->t("users.email"), $this->t("errors.your_input_has_not_been_changed")) . '</p>';
             $display_form = true;
         }
     }
@@ -39,21 +40,21 @@ if ($logged_in) {
 
         $text_to_display.=<<<EOT
 		<p>
-			Fill out the form below to change your email address. 
+			{$this->t('users.email.edit.explained')} 
 		</p>
 		
 		<form action="{$this->get_url_main()}" method="post">
 			<p>
-				<label for="email">Email address:</label><br /><input type="text" id="email" name="email" value="$email"/><br />
+				<label for="email">{$this->t('users.email')}:</label><br /><input type="text" id="email" name="email" value="$email"/><br />
 			</p>
 			<p>
 				<input type="hidden" name="p" value="change_email" />
-				<input type="submit" value="Change email address" class="button" />
+				<input type="submit" value="{$this->t('users.email.edit')} " class="button" />
 			</p>
 		</form>
 		
 		<p>
-			<a href="{$this->get_url_main('account_management')}" class="arrow">Account management</a>
+			<a href="'{$this->get_url_page("account_management")}.'" class="arrow">{$this->t("users.account_management")}</a>
 		</p>
 		
 EOT;

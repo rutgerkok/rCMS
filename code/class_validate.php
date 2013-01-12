@@ -4,10 +4,12 @@ class Validate {
 
     private static $last_error;
     private static $replace_in_last_error = "";
+    
+    public static $MIN_PASSWORD_LENGHT = 5;
 
     private static function set_error($code, $replace_in_code = "") {
         Validate::$last_error = $code;
-        Validate::$replace_in_last_error = "";
+        Validate::$replace_in_last_error = $replace_in_code;
     }
 
     /**
@@ -19,7 +21,7 @@ class Validate {
         if (Validate::$replace_in_last_error === "") {
             $message = $oWebsite->t("errors." . Validate::$last_error);
         } else {
-            $message = str_replace("#", $replace_in_last_error, $oWebsite->t("errors" . Validate::$last_error));
+            $message = str_replace("#", Validate::$replace_in_last_error, $oWebsite->t("errors." . Validate::$last_error));
         }
         Validate::$last_error = "";
         Validate::$replace_in_last_error = "";
@@ -41,7 +43,7 @@ class Validate {
     public static function password($password1, $password2) {
         $valid = true;
 
-        if (strlen($password1) < 5) {
+        if (strlen($password1) < self::MIN_PASSWORD_LENGHT) {
             Validate::set_error("is_too_short");
             $valid = false;
         }

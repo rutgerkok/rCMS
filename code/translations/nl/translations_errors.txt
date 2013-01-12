@@ -17,3 +17,4 @@ not_set=Niet ingesteld.
 too_short=is te kort. Minimale lengte is # tekens.
 too_long=is te lang. Maximale lengte is # tekens.
 contains_html=Het bevat HTML-tags!
+your_input_has_not_been_changed=Uw # is niet opgeslagen!
