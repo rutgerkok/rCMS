@@ -10,9 +10,6 @@ class Authentication {
 
     function __construct(Website $oWebsite) {
         $this->website_object = $oWebsite;
-        print("<pre>");
-        print_r($_SESSION);
-        print("</pre>");
     }
 
     /**
