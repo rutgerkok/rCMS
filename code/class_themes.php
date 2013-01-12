@@ -129,7 +129,7 @@ EOT;
 							
 			//KALENDER
 				//Geeft bij phpark kalender weer
-				if($oWebsite->get_pagevar('site')=='phpark')
+				if($oWebsite->get_sitevar('theme')=='phpark')
 				{
 					$oCal = new Calendar($oWebsite,$oDB);
 					echo '<h3>'.$oWebsite->t("calendar.calendar_for").' '.strftime('%B').' '.date('Y').'</h3>';//huidige maand en jaar

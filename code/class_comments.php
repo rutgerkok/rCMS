@@ -201,7 +201,7 @@ EOT;
 			</p>
 			<p>
 				<!-- naam -->
-				{$oWebsite->t("users.main")}<span class="required">*</span>:<br />
+				{$oWebsite->t("users.name")}<span class="required">*</span>:<br />
 				<input type="text" name="name" id="name" maxlength="20" style="width:98%" /><br />
 			</p>
 			<p>

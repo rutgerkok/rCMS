@@ -1,8 +1,8 @@
-<h2><?php echo $this->translations[2] ?></h2> <!-- admin -->
+<h2><?php echo $this->t("main.admin") ?></h2> <!-- admin -->
 <?php
 //OBJECTEN
 $oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
+$oAuth = new Authentication($this);
 $oCat = new Categories($oDB,$this);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 

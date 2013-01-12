@@ -1,23 +1,12 @@
 <?php
-$oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
-if(!$oDB->dbc)
-{	//niet verbonden!
-	echo "
-	<h2>Installing database</h2>
-	<p>
-		No database-connection! The database could not be installed. Please check 'scripts/class_database.php'. You can find the database settings there on lines 6-9.
-	</p>
-	";
-}
-else
-{	//wel verbonden
-	if($oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1',false))==0||$oAuth->check(true,true))
-	{	//Je bent ingelogd als admin, of de site is nog leeg. 
-		if(isset($_REQUEST['confirm'])&&$_REQUEST['confirm']==1)
-		{	//installeer de database!/reset de site!
-			$oDB->create_tables();
-			echo <<<EOT
+
+$oDB = $this->get_database();
+$oDB->create_tables();
+exit;
+if ($oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) == 0 || $this->logged_in(true)) { //Je bent ingelogd als admin, of de site is nog leeg. 
+    if (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1) { //installeer de database!/reset de site!
+        $oDB->create_tables();
+        echo <<<EOT
 			
 			
 			<h2>Installing database</h2>
@@ -41,11 +30,9 @@ else
 			
 			
 EOT;
-		}
-		else
-		{	//toon bevestigingsvraag
-			$link_confirm = $this->get_url_page("installing_database",0,array("confirm"=>1));
-			echo <<<EOT
+    } else { //toon bevestigingsvraag
+        $link_confirm = $this->get_url_page("installing_database", 0, array("confirm" => 1));
+        echo <<<EOT
 			
 			<h2>Installing database</h2>
 			<p>
@@ -55,8 +42,6 @@ EOT;
 				<a  href="$link_confirm">Yes</a>|<a href="{$this->get_url_main()}">No</a>
 			</p>
 EOT;
-		}
-	}
-}	
+    }
+}
 ?>
-	

@@ -5,7 +5,7 @@ echo '<h2>'.$this->t("articles.edit").'</h2>';
 
 //OBJECTEN
 $oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
+$oAuth = new Authentication($this);
 $oCats = new Categories($oDB,$this);
 $oEdit = new Edit($oDB,$oCats,$this);
 unset($oDB,$oCats);//niet meer nodig

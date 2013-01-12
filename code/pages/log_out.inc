@@ -4,7 +4,7 @@
 echo '<h2>'.$this->t("main.log_out").'...</h2>';
 
 //UITLOGGEN
-$authentication = new Authentication(new Database($this),$this);
+$authentication = new Authentication($this);
 $authentication->log_out();
 unset($authentication);
 

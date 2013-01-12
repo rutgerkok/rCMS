@@ -73,7 +73,7 @@ else
 {	//niet goed ingelogd
 	?>
 		<p>
-			This function is for administrators only. To change your email address, <a href="'.$this->get_url_page("change_email").'">click here</a>.
+			This function is for administrators only. To change your email address, <a href="'.$this->get_url_page('change_email').'">click here</a>.
 		</p>
 	<?php
 }

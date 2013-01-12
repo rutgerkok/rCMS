@@ -6,7 +6,7 @@ class Menu
 	protected $database_object;
 	protected $categories_object;
 
-	function __construct(Website $oWebsite,Database $oDB,Categories $oCats=null)
+	function __construct(Website $oWebsite,Database $oDB,$oCats=null)
 	{
 		$this->database_object = $oDB;
 		$this->website_object = $oWebsite;
@@ -76,7 +76,7 @@ class Menu
 				
 			foreach($items as $id=>$cat_name)
 			{
-				if($id==1) continue; //geef niet alle categorieën weer
+				if($id==1) continue; //geef niet alle categorieï¿½n weer
 				$return_value.='<li>';
 				$return_value.='<a href="'.$oWebsite->get_url_page("category",$id);
 				$return_value.='">';

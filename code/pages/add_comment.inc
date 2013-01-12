@@ -1,8 +1,8 @@
-<h2><?php echo $this->t("comment.add") ?></h2>
+<h2><?php echo $this->t("articles.comment.add") ?></h2>
 <?php
 //OBJECTEN
 $oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
+$oAuth = new Authentication($this);
 $oComments = new Comments($this,$oDB,$oAuth);
 unset($oDB,$oAuth);//niet meer nodig
 

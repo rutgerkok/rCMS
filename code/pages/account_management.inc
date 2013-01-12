@@ -5,7 +5,7 @@ $text_to_display = '';
 echo '<h2>'.$this->t("users.account_management").'</h2>';//accountbeheer
 
 //INLOGGEN
-$oAuth = new Authentication(new Database($this),$this);
+$oAuth = new Authentication($this);
 $logged_in = $oAuth->check(false,true);//wel formulier, geen admin
 $is_admin = $oAuth->check(true,false);//geen formulier, wel admin
 
@@ -14,13 +14,13 @@ $is_admin = $oAuth->check(true,false);//geen formulier, wel admin
 //ACCOUNT WIJZIGEN
 if($logged_in)
 {
-	$user = $oAuth->get_current_username();
-	$email = $oAuth->get_current_email();
+	$user = $oAuth->get_current_user()->get_username();
+	$email = $oAuth->get_current_user()->get_email();
 	if(empty($email))
 		$email = '<em>'.$this->t('errors.not_set').'</em>';//niet ingesteld
 
-	$password_text = strtolower($this->t("users.username"));
-	$email_text = strtolower($this->t("users.password"));
+	$password_text = strtolower($this->t("users.password"));
+	$email_text = strtolower($this->t("users.email"));
 	
 	$text_to_display.= <<<EOT
 	<p>

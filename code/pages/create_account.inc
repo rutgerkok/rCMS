@@ -5,7 +5,7 @@ $text_to_display = '';
 echo '<h2>Create a new account</h2>';
 
 //ACCOUNTGEGEVENS CONTROLEREN
-$oAuth = new Authentication(new Database($this),$this);
+$oAuth = new Authentication($this);
 $logged_in = $oAuth->check(true,true);//admin verplicht
 
 //variabelen voor formulier en het maken van een account
@@ -14,35 +14,43 @@ $name = isset($_POST['name'])? $_POST['name'] : '';
 $pass = isset($_POST['pass'])? $_POST['pass'] : '';
 $pass2 = isset($_POST['pass2'])? $_POST['pass2'] : '';
 $email = isset($_POST['email'])? $_POST['email'] : '';
-$admin = isset($_POST['admin'])? (int) $_POST['admin'] : '';
+$rank = isset($_POST['rank'])? (int) $_POST['rank'] : '';
 
 
 $display_form = true;//vooralsnog
 
-if($_SERVER['REQUEST_METHOD'] == 'POST')
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user']))
 {
-	$oAuth->valid_username($user);//genereert zelf foutmeldingen
-	$oAuth->valid_name($name);//idem
-	$oAuth->valid_password($pass,$pass2);//idem
-	$oAuth->valid_email($email);//idem
+    $valid = true;
+    if(!Validate::username($user, $this)) {
+        $valid = false;
+        $this->add_error($this->t("users.the_username") . " " . Validate::get_last_error($this));
+    }
+    if(!Validate::display_name($name)) {
+        $valid = false;
+        $this->add_error($this->t("users.the_display_name") . " " . Validate::get_last_error($this));
+    }
+    if(!Validate::password($pass, $pass2)) {
+        $valid = false;
+        $this->add_error($this->t("users.the_password") . " " . Validate::get_last_error($this));
+    }
+    if(!Validate::email($email)) {
+        $valid = false;
+        $this->add_error($this->t("users.the_email") . " " . Validate::get_last_error($this));
+    }
 	
-	if($this->error_count()==0)
+	if($valid)
 	{	//maak gebruiker aan
 		$display_form = false;
 		
-		if($oAuth->add_user($user,$pass,$email,$admin,$name))
-		{
-			$text_to_display.='<p>Account is created.</p>';
-		}
-		else
-		{	//account kan niet gemaakt worden
-			$this->add_error('Account could not be created.');
-			$display_form = true;
-		}
+		$user = new User($this, 0, $user, $name, '', $email, $rank);
+                $user->set_password($pass);
+                $user->save();
+                
+                $text_to_display .= "<p>User with the name " . $user->get_username() . " is created!</p>";
 	}
 	else
 	{	//fout opgetreden
-		
 		$display_form = true;
 	}
 }
@@ -63,10 +71,14 @@ if($display_form)
 			<label for="pass">Password<span class="required">*</span>:</label><br /><input type="password" id="pass" name="pass" value="$pass"/><br />
 			<label for="pass2">Repeat password<span class="required">*</span>:</label><br /><input type="password" id="pass2" name="pass2" value="$pass2"/><br />
 			<label for="email">E-mail address:</label><br /><input type="email" id="email" name="email" value="$email" /><br />
-			<label for="admin">Admin:</label><br />
-				<select class="button" id="admin" name="admin">
-					<option value="0">No</option>
-					<option value="1">Yes (cannot be undone!)</option>
+			<label for="rank">Rank:</label><br />
+				<select class="button" id="rank" name="rank">
+EOT;
+        // Echo all ranks
+        for($i = 0; $i <=$oAuth->get_highest_rank_id(); $i++) {
+            $text_to_display .= '<option value="' . $i . '">' . $oAuth->get_rank_name($i) . '</option>' . "\n";
+        }
+        $text_to_display .= <<<EOT
 				</select>
 		</p>
 		<p>

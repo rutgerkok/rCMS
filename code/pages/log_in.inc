@@ -4,7 +4,7 @@
 echo '<h2>'.$this->t("main.log_in").'...</h2>';
 
 //INLOGGEN
-$authentication = new Authentication(new Database($this),$this);
+$authentication = new Authentication($this);
 $logged_in = $authentication->check(false,true);
 unset($authentication);
 
