@@ -1,51 +1,56 @@
 <h2>Change someone else's password</h2>
 <?php
-$text_to_display='';
+$text_to_display = '';
 
 //OBJECTEN
-$oDB = new Database($this);
+$oDB = $this->get_database();
 $oAuth = new Authentication($this);
-$oMenu = new Menu($this,$oDB);
-unset($oDB);//al niet meer nodig, want doorgegeven als parameter
-
+$oMenu = new Menu($this, $oDB);
 //INLOGGEN
-$logged_in = $oAuth->check(true,true);
+$logged_in = $oAuth->check(true, true);
 
 
-if($logged_in)
-{
-	$id = isset($_REQUEST['id'])? $_REQUEST['id']: 0;
-	$name = $oAuth->get_username($id);
-	if(!empty($name))
-	{	//alleen als gebruiker bestaat
-		$display_form = true;//vooralsnog weergeven
-		if(isset($_POST['pass'])&&isset($_POST['pass2']))
-		{
-			if($oAuth->valid_password($_POST['pass'],$_POST['pass2']))
-			{
-				if($oAuth->set_password($_POST['pass'],$id))
-				{
-					$text_to_display.='<p>The password has been changed.</p>';
-					$text_to_display.='<p><a href="'.$this->get_url_page("account_management").'" class="arrow">Account management</a><br />';
-					$text_to_display.='<a href="'.$this->get_url_page("admin").'" class="arrow">Admin</a></p>';
-					
-					$display_form = false;
-				}
-				else
-				{
-					$text_to_display.='<p>The password has <strong>not</strong> been changed.</p>';
-					$display_form = true;
-				}
-			}
-			else
-			{
-				$text_to_display.='<p>The password has <strong>not</strong> been changed.</p>';
-				$display_form = true;
-			}
-		}
-		if($display_form)
-		{
-			$text_to_display.=<<<EOT
+if ($logged_in) {
+    // Get the user object
+    $id = isset($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
+    $user = null;
+    if ($id > 0) {
+        $user = User::get_by_id($this, $id);
+    }
+
+    if ($user != null) { 
+        // Only continue if user was found
+        $name = $user->get_username() . " (" .$user->get_display_name() . ")";
+        $display_form = true; //vooralsnog weergeven
+        
+        // Form sent
+        if (isset($_POST['pass']) && isset($_POST['pass2'])) {
+            if (Validate::password($_POST['pass'], $_POST['pass2'])) {
+                $user->set_password($_POST['pass']);
+                if ($user->save()) {
+                    $text_to_display.='<p>The password has been changed.</p>';
+                    $text_to_display.='<p><a href="' . $this->get_url_page("account_management") . '" class="arrow">Account management</a><br />';
+                    $text_to_display.='<a href="' . $this->get_url_page("admin") . '" class="arrow">Admin</a></p>';
+
+                    if($user->get_id() == $oAuth->get_current_user()->get_id()) {
+                        // Update user if needed
+                        $oAuth->set_current_user($user);
+                    }
+                    
+                    $display_form = false;
+                } else {
+                    $text_to_display.='<p>Database error; the password has <strong>not</strong> been changed.</p>';
+                    $display_form = true;
+                }
+            } else {
+                $this->add_error($this->t("users.the_password") . " " . Validate::get_last_error($this));
+                $text_to_display.='<p>The password has <strong>not</strong> been changed.</p>';
+                $display_form = true;
+            }
+        }
+        // No input, or something went wrong. Display form.
+        if ($display_form) {
+            $text_to_display.=<<<EOT
 			<h3>Changing the password of $name</h3>
 			
 			<form action="{$this->get_url_main()}" method="post">
@@ -66,21 +71,19 @@ if($logged_in)
 			</p>
 			
 EOT;
-		}
-	}
-}
-else
-{	//niet goed ingelogd
-	echo "<p>\n";
-	echo 'This function is for administrators only. To change your password, <a href="'.$this->get_url_main().'">click here</a>.'."\n";
-	echo "</p>\n";
+        }
+    }
+} else {
+    // Not an admin
+    echo "<p>\n";
+    echo 'This function is for administrators only. To change your password, <a href="' . $this->get_url_main() . '">click here</a>.' . "\n";
+    echo "</p>\n";
 }
 unset($oAuth);
 
 //FOUTAFHANDELING
-if(!$this->errorsdisplayed)
-{
-	$this->echo_errors();
+if (!$this->errorsdisplayed) {
+    $this->echo_errors();
 }
 
 //WEERGEVEN

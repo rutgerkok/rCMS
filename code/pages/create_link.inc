@@ -3,8 +3,8 @@
 $text_to_display='';
 
 //OBJECTEN
-$oDB = new Database($this);
-$oAuth = new Authentication($oDB,$this);
+$oDB = $this->get_database();
+$oAuth = new Authentication($this);
 $oMenu = new Menu($this,$oDB);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 

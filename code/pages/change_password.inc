@@ -54,7 +54,7 @@ if ($logged_in) {
 		</form>
 		
 		<p>
-			<a href="'{$this->get_url_page("account_management")}.'" class="arrow">{$this->t("users.account_management")}</a>
+			<a href="{$this->get_url_page("account_management")}" class="arrow">{$this->t("users.account_management")}</a>
 		</p>
 EOT;
     }

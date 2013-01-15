@@ -7,19 +7,20 @@
 		<title><?php echo $this->get_page_title(); ?></title>
 	</head>
 	<body>
-		<div id="container">
-			<div id="containerwrapper">
-				<div id="header">
-					<div id="search">
-						<?php $this->echo_search_form(); ?>
-					</div>
-					<h1>
-						<?php echo $this->get_page_title(); ?>
-					</h1>
+                <div id="header">
+                        <div id="hornav">
+                                <h1> <?php echo $this->get_page_title(); ?> </h1>
+                                <ul>
+                                    <?php $this->echo_menu(); ?>
+                                    <?php $this->echo_accounts_menu(); ?>
+                                </ul>
+                                <div id="search">
+                                    <?php $this->echo_search_form(); ?>
 				</div>
-				<div id="hornav">
-					<?php $this->echo_menu(); ?>
-				</div>
+                        </div>
+                </div>
+                <div id="container">
+			<div id="containerwrapper">				
 				<div <?php
 					if($this->get_page_type()=="NORMAL")
 					{

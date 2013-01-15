@@ -68,7 +68,7 @@ class Menu
 		$oCats = $this->categories_object;
 
 		$items=$oCats->get_categories();
-		$return_value = "<ul>\n";
+		$return_value = "\n";
 
 		if($items)
 		{
@@ -92,8 +92,6 @@ class Menu
 			$return_value.='<li><a href="'.$oWebsite->get_url_main().'">Home</a></li>';
 			$return_value.='<li><a href="'.$oWebsite->get_url_page("installing_database").'">Install database</a></li>';
 		}
-
-		$return_value.='</ul>';
 
 		return $return_value;
 	}

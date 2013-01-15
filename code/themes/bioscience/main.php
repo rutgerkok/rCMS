@@ -25,7 +25,9 @@
 					</h1>
 				</div>
 				<div id="hornav">
-					<?php $this->echo_menu(); ?>
+                                        <ul>
+                                                <?php $this->echo_menu(); ?>
+                                        </ul>
 				</div>
 				<div <?php
 					if($this->get_page_type()=="NORMAL")

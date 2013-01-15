@@ -39,10 +39,10 @@ class User {
     }
 
     /**
-     * Get the user by name
-     * @param Website $oWebsite
-     * @param String $username
-     * @return User
+     * Get the user by name. Returns null if the user isn't found.
+     * @param Website $oWebsite The Website object.
+     * @param string $username The username. Case insensitive.
+     * @return User The User, or null if it isn't found.
      */
     public static function get_by_name(Website $oWebsite, $username) {
         $oDB = $oWebsite->get_database();
@@ -55,8 +55,32 @@ class User {
 
         // Parse the result
         if ($oDB->rows($result) === 1) {
-            list($id, $admin, $display_name, $password_hashed, $email) = $oDB->fetch($result);
-            return new User($oWebsite, (int) $id, $username, $display_name, $password_hashed, $email, (boolean) $admin);
+            list($id, $rank, $display_name, $password_hashed, $email) = $oDB->fetch($result);
+            return new User($oWebsite, (int) $id, $username, $display_name, $password_hashed, $email, $rank);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Safe way of getting the user object when you know the id. Returns null if
+     * the user doesn't exist.
+     * @param Website $oWebsite The Website object.
+     * @param int $id The user id.
+     * @return User The User, or null if it isn't found.
+     */
+    public static function get_by_id(Website $oWebsite, $user_id) {
+        $oDB = $oWebsite->get_database();
+        // Escape the user id
+        $user_id = (int) $user_id;
+        // Query
+        $sql = 'SELECT `gebruiker_login`, `gebruiker_admin`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email` FROM `gebruikers` WHERE `gebruiker_id` = \'' . $user_id . '\' ';
+        $result = $oDB->query($sql);
+
+        // Parse the result
+        if ($oDB->rows($result) === 1) {
+            list($username, $rank, $display_name, $password_hashed, $email) = $oDB->fetch($result);
+            return new User($oWebsite, $user_id, $username, $display_name, $password_hashed, $email, $rank);
         } else {
             return null;
         }

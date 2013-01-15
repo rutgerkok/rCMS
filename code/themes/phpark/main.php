@@ -19,7 +19,9 @@
 					</h1>
 				</div>
 				<div id="hornav">
-					<?php $this->echo_menu(); ?>
+                                        <ul>
+                                            <?php $this->echo_menu(); ?>
+                                        </ul>
 					<ul id="accountlinks">
 						<?php $this->echo_accounts_menu(); ?>
 					</ul>
