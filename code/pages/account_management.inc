@@ -6,8 +6,8 @@ echo '<h2>'.$this->t("users.account_management").'</h2>';//accountbeheer
 
 //INLOGGEN
 $oAuth = new Authentication($this);
-$logged_in = $oAuth->check(false,true);//wel formulier, geen admin
-$is_admin = $oAuth->check(true,false);//geen formulier, wel admin
+$logged_in = $oAuth->check(Authentication::$USER_RANK, true);//wel formulier, geen admin
+$is_admin = $oAuth->check(Authentication::$ADMIN_RANK, false);//geen formulier, wel admin
 
 
 

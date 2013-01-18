@@ -44,7 +44,7 @@ class Validate {
         $valid = true;
 
         if (strlen($password1) < self::$MIN_PASSWORD_LENGHT) {
-            Validate::set_error("is_too_short");
+            Validate::set_error("is_too_short_num", Validate::$MIN_PASSWORD_LENGHT);
             $valid = false;
         }
         if ($password1 != $password2) {
@@ -92,7 +92,7 @@ class Validate {
             $oDB = $oWebsite->get_database();
             $username = $oDB->escape_data(htmlentities(strtolower($username)));
             if ($oDB->rows($oDB->query('SELECT gebruiker_id FROM `gebruikers` WHERE gebruiker_login = \'' . $username . '\' LIMIT 0 , 1')) > 0) {
-                $oWebsite->add_error("An user named $username already exists. Please choose a different name.");
+                Validate::set_error("already_exists");
                 $valid = false;
             }
         }

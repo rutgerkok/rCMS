@@ -204,9 +204,9 @@ EOT;
         $sql = "SELECT reactie_id, reactie_naam, reactie_gemaakt, reactie_inhoud, gebruiker_naam FROM `reacties` LEFT JOIN `gebruikers` USING ( gebruiker_id ) WHERE reactie_id = $id";
         $result = $oDB->query($sql);
         if ($oDB->rows($result) > 0) { //geef reactie terug
-            list($comment_id, $comment_name, $comment_date, $comment, $account_name) = $oDB->fetch($result);
+            list($comment_id, $comment_name, $comment_date_raw, $comment, $account_name) = $oDB->fetch($result);
 
-            $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date)));
+            $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date_raw)));
             if (empty($comment_name))
                 $comment_name = $account_name; //ingelogde gebruikers correct weergeven
             $return_value = "<h3>$comment_name ($comment_date)</h3>"; //naam en datum

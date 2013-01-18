@@ -130,7 +130,7 @@ class User {
             $this->rank = (int) $this->database_call('gebruiker_admin');
         }
         
-        return $this->rank;
+        return ($this->rank == 1);
     }
     
     public function get_rank() {

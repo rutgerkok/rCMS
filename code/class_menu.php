@@ -72,7 +72,7 @@ class Menu
 
 		if($items)
 		{
-			$return_value.='<li><a href="'.$oWebsite->get_url_main().'">Home</a></li>';
+			$return_value.='<li><a href="'.$oWebsite->get_url_main().'">'. $oWebsite->t("main.home") .'</a></li>';
 				
 			foreach($items as $id=>$cat_name)
 			{
@@ -101,7 +101,7 @@ class Menu
 		$oWebsite = $this->website_object;
 
 		$items=$this->get_items();
-		$logged_in = $this->website_object->logged_in(false);
+		$logged_in = $this->website_object->logged_in_staff(false);
 
 		$return_value = '<ul>';
 

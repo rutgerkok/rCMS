@@ -24,11 +24,11 @@ class Themes
 		$oWebsite = $this->website_object;
 		
 		//Geef de inloglinks weer
-		if($this->website_object->logged_in(true)) 
+		if($this->website_object->logged_in_staff(true)) 
 		{ //admin
 			echo '<li><a href="'.$oWebsite->get_url_page("admin").'">'.$oWebsite->t("main.admin").'</a></li>';
 		}
-		if($this->website_object->logged_in(false))
+		if($this->website_object->logged_in())
 		{	//ingelogd
 			echo '<li><a href="'.$oWebsite->get_url_page("account_management").'">'.$this->website_object->t("main.account").'</a></li>';
 			echo '<li><a href="'.$oWebsite->get_url_page("log_out").'">'.$this->website_object->t("main.log_out").'</a></li>';

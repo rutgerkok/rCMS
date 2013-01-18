@@ -52,7 +52,7 @@ class Articles {
     function get_articles_data($where_clausule = "", $limit = 9, $start = 0) { //WAARSCHUWING: ZORG DAT ER NIKS GEVAARLIJKS STAAT IN DE $where_clausule
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
+        $logged_in = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
         $limit = (int) $limit; //stuk veiliger
 
         $sql = "SELECT artikel_id, artikel_titel, artikel_intro, "; //haal id, titel, intro ...
@@ -83,7 +83,7 @@ class Articles {
         $oWebsite = $this->website_object; //afkorting
 
         $id = (int) $id; //maak id veilig voor in gebruik query;
-        $logged_in = $oWebsite->logged_in();
+        $logged_in = $oWebsite->logged_in_staff();
         $return_value = '';
         $article_data = $this->get_article_data($id);
 
@@ -192,7 +192,7 @@ EOT;
     function get_articles_list_category($categories, $not = false, $metainfo = true, $limit = 9) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in(); //ingelogd? (nodig voor links om te bewerken)
+        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
 
         if (!is_array($categories)) { //maak een array
             $category_id = $categories;
@@ -300,7 +300,7 @@ EOT;
     function get_articles_search($keywordunprotected, $page) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in(); //ingelogd? (nodig voor links om te bewerken)
+        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
         $metainfo = true; //waarom zou je anders willen?
         $articles_per_page = 5; //vijf resultaten per pagina
         $start = ($page - 1) * $articles_per_page;
@@ -409,7 +409,7 @@ EOT;
 
         $events = false;
 
-        $logged_in = $oWebsite->logged_in(); //ingelogd? (nodig voor links om te bewerken)
+        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
         $return_value = '';
 
         //CATEGORIE BEPALEN (bepaal welke categorieen moeten worden weergegeven)

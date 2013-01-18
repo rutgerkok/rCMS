@@ -1,5 +1,6 @@
 username=Username
 name=Name
+account=Account
 display_name=Display name
 password=Password
 password.edit=Change password
@@ -27,3 +28,6 @@ the_username=The username
 the_display_name=The display name
 the_password=The password
 the_email=The email
+create.title=Create an account
+create.link=Sign up
+create.explained=You can create a new account here.

@@ -5,7 +5,7 @@ echo '<h2>'.$this->t("main.log_in").'...</h2>';
 
 //INLOGGEN
 $authentication = new Authentication($this);
-$logged_in = $authentication->check(false,true);
+$logged_in = $authentication->check(Authentication::$USER_RANK, true);
 unset($authentication);
 
 //FOUTAFHANDELING

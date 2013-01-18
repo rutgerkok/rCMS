@@ -3,7 +3,7 @@
 $oDB = $this->get_database();
 $oDB->create_tables();
 exit;
-if ($oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) == 0 || $this->logged_in(true)) { //Je bent ingelogd als admin, of de site is nog leeg. 
+if ($oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) == 0 || $this->logged_in_staff(true)) { //Je bent ingelogd als admin, of de site is nog leeg. 
     if (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1) { //installeer de database!/reset de site!
         $oDB->create_tables();
         echo <<<EOT

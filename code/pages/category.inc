@@ -21,7 +21,7 @@ if($cat_id>0)
 		
 		if(empty($text_to_display))
 		{	//nog leeg? dan zijn er blijkbaar geen artikelen in die categorie
-			$text_to_display.= "<p><em>{$this->t("errors.nothing_found")}.</em></p>";
+			$text_to_display.= "<p><em>{$this->t("errors.nothing_found")}</em></p>";
 		}
 	}
 }

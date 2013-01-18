@@ -6,7 +6,7 @@ $text_to_display = '';
 $oAuth = new Authentication($this);
 
 //INLOGGEN
-$logged_in = $oAuth->check(false, true);
+$logged_in = $oAuth->check(Authentication::$USER_RANK, true);
 
 
 if ($logged_in) {

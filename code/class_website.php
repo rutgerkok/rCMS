@@ -148,6 +148,10 @@ class Website {
             }
         }
     }
+    
+    public function get_uri_page($name) {
+        return $this->get_uri_modules() . $name . ".inc";
+    }
 
     //Geeft de map van alle thema's terug als url
     public function get_url_themes() {
@@ -243,24 +247,36 @@ class Website {
 
     public function echo_page_content() { //geeft de hoofdpagina weer
         if ($this->has_access()) {
-            if (file_exists($this->get_uri_modules() . $this->pagevars['file'] . ".inc")) { //voeg de module in als die bestaat (al gecheckt in constructor)
-                include($this->get_uri_modules() . $this->pagevars['file'] . ".inc");
+            if (file_exists($this->get_uri_page($this->pagevars['file']))) { //voeg de module in als die bestaat (al gecheckt in constructor)
+                require($this->get_uri_page($this->pagevars['file']));
             }
         }
     }
+    
+    public function logged_in() {
+        if (
+                isset($_SESSION['user']) &&
+                isset($_SESSION['pass']) &&
+                isset($_SESSION['display_name']) &&
+                isset($_SESSION['email']) &&
+                isset($_SESSION['admin'])) {
+            return true;
+        }
+    }
 
-    public function logged_in($admin = false) {
+    public function logged_in_staff($admin = false) {
         if (
                 isset($_SESSION['user']) &&
                 isset($_SESSION['pass']) &&
                 isset($_SESSION['display_name']) &&
                 isset($_SESSION['email']) &&
                 isset($_SESSION['admin']) &&
-                $_SESSION['admin'] >= $admin) { //ingelogd met voldoende rechten
-            return true;
-        } else {
-            return false;
+                ($_SESSION['admin'] == 0 || $_SESSION['admin'] == 1)) {
+            if($admin == false || $_SESSION['admin'] == 1) {
+                return true;
+            }
         }
+        return false;
     }
 
     public function site_settings() {
@@ -272,6 +288,8 @@ class Website {
             die();
         }
     }
+    
+    // TRANSLATIONS
 
     public function t($key) {
         $keys = explode(".", $key, 2);
@@ -293,6 +311,22 @@ class Website {
                 echo "<br /><br /><code>$translations_file</code> was not found!";
                 die();
             }
+        }
+    }
+    
+    public function t_replaced_key($key, $replace_in_key, $lowercase = false) {
+        if($lowercase) {
+            return str_replace("#", strtolower($this->t($replace_in_key)), $this->t($key));
+        } else {
+            return str_replace("#", $this->t($replace_in_key), $this->t($key));
+        }
+    }
+    
+    public function t_replaced($key, $replace_in_key, $lowercase = false) {
+        if($lowercase) {
+            return str_replace("#", strtolower($replace_in_key), $this->t($key));
+        } else {
+            return str_replace("#", $replace_in_key, $this->t($key));
         }
     }
 

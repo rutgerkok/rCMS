@@ -19,7 +19,7 @@ if($logged_in)
 		//verwijder
 		if($oComments->delete_comment($id))
 		{
-			$text_to_display.= '<p>'.$this->t("articles.comment").' '.$this->t("editor.is_removed").'</p>';//reactie is verwijderd
+			$text_to_display.= '<p>'.$this->t("articles.comment").' '.$this->t("editor.is_deleted").'</p>';//reactie is verwijderd
 			$text_to_display.= '<p><a href="'.$this->get_url_main().'" onclick="history.go(-2);return false">'.$this->t("main.ok").'</a></p>';//ok en terug
 		}
 		else
