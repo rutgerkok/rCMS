@@ -11,7 +11,6 @@ event_date.select=Selecteer datum
 is_hidden=Dit artikel is verborgen.
 comment=Reactie
 comment.add=Reageer
-comment.delete=Verwijder reactie
 comments=Reacties
 comments.allowed=Reacties toegestaan.
 comments.explained=Bepaalt of er wel of geen reacties worden toegestaan op dit artikel.

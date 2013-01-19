@@ -78,7 +78,7 @@ class Articles {
         }
     }
 
-    function get_article($id) {
+    function get_article($id, Comments $oComments = null) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
 
@@ -88,15 +88,15 @@ class Articles {
         $article_data = $this->get_article_data($id);
 
         if ($article_data != null) {
-            list($title, $created, $last_edited, $intro, $featured_image, $body, $article_category, $author, $pinned, $hidden, $comments) = $article_data;
+            list($title, $created, $last_edited, $intro, $featured_image, $body, $article_category, $author, $pinned, $hidden, $show_comments) = $article_data;
             unset($article_data); //ruimt op
 
             if (!$hidden || $logged_in) {
 
                 $return_value.= "<h2>$title</h2>";
 
+                // Echo the sidebar
                 $return_value.= '<div class="artikelzijkolom">';
-                //zijbalk
                 if (!empty($featured_image))
                     $return_value.= "<p><img src=\"$featured_image\" alt=\"$title\" /></p>";
                 $return_value.= '<p class="meta">';
@@ -109,7 +109,7 @@ class Articles {
                     $return_value.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
                 if ($hidden)
                     $return_value.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
-                if ($logged_in && $comments)
+                if ($logged_in && $show_comments)
                     $return_value.= "<br />" . $oWebsite->t('articles.comments.allowed'); //reacties
                 $return_value.= '</p>';
                 if ($logged_in)
@@ -119,60 +119,63 @@ class Articles {
                             '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
                 if ($logged_in)
                     $return_value.= "</p>";
-                if ($comments)
+                if ($show_comments) {
                     $return_value.= <<<EOT
-
-					<!-- AddThis Button BEGIN -->
-					<div class="addthis_toolbox addthis_default_style ">
-					<a class="addthis_button_facebook_like"></a>
-					<br />
-					<br />
-					<a class="addthis_button_tweet"></a>
-					<br />
-					<br />
-					<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4ee269aa4314962e"></script>
-					<!-- AddThis Button END -->
+                        <!-- AddThis Button BEGIN -->
+                            <div class="addthis_toolbox addthis_default_style ">
+                                <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+                                <br /><br />
+                                <a class="addthis_button_tweet"></a>
+                                <br /><br />
+                                <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+                                <br /><br />
+                                <a class="addthis_counter addthis_pill_style"></a>
+                            </div>
+                            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-50f99223106b78e7"></script>
+                        <!-- AddThis Button END -->   
 EOT;
+                }
                 $return_value.= '</div>';
-
-
-
+                
                 $return_value.= '<div class="artikel">';
                 //artikel
                 if ($logged_in && $hidden)
                     $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
                 $return_value.= '<p class="intro">' . $intro . '</p>';
                 $return_value.= $body;
-                //reacties
-                if ($comments) {
-
-                    $sql = "SELECT reactie_id, reactie_email, reactie_naam, reactie_gemaakt, reactie_inhoud, gebruiker_naam FROM `reacties` LEFT JOIN `gebruikers` USING ( gebruiker_id ) WHERE artikel_id = $id";
-                    $result = $oDB->query($sql);
-                    if ($oDB->rows($result) > 0) { //geef reacties weer
-                        $return_value.="<h3 class=\"notable\">" . $oWebsite->t('articles.comments') . " (" . $oDB->rows($result) . ")</h3>";
-                        $return_value.='<p><a href="' . $oWebsite->get_url_page("add_comment", $id) . '\" class="arrow">' . $oWebsite->t('articles.comment.add') . "</a></p>"; //link: reageer
-
-                        while (list($comment_id, $comment_email, $comment_name, $comment_date_raw, $comment, $account_name) = $oDB->fetch($result)) { //geef alle reacties weer //geef reactie weer
-                            $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date_raw)));
-                            if (empty($comment_name))
-                                $comment_name = $account_name; //ingelogde gebruikers correct weergeven
-                            $return_value.= "<h3>$comment_name ($comment_date)</h3>"; //naam en datum
-                            $return_value.= "<p>";
-                            if ($logged_in && !empty($comment_email))
-                                $return_value.= "<a href=\"mailto:$comment_email\">$comment_email</a> &nbsp;&nbsp;&nbsp;"; //mail
-                            if ($logged_in)
-                                $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("delete_comment", $comment_id) . '">' . $oWebsite->t('main.delete') . '</a> </p>'; //verwijder
-                            $return_value.= "<p>" . nl2br($comment) . "</p>";
-                        }
-
-                        $return_value.='<p><a href="' . $oWebsite->get_url_page("add_comment", $id) . '\" class="arrow">' . $oWebsite->t('articles.comment.add') . "</a></p>"; //link: reageer
+                // Show comments
+                if ($show_comments && $oComments != null) {
+                    $comments = $oComments->get_comments($id);
+                    $comment_count = count($comments);
+                    
+                    // Title 
+                    $return_value.= '<h3 class="notable">' . $oWebsite->t("articles.comments");
+                    if($comment_count > 0 ) {
+                        $return_value.= ' (' . $comment_count . ')';
                     }
-                    else {
-                        $return_value.="<h3 class=\"notable\">" . $oWebsite->t('articles.comments') . "</h3>";
-                        $return_value.= "<p><em>" . $oWebsite->t('articles.comments.not_found') . "</em></p>"; //geen reacties gevonden
-                        $return_value.='<p><a href="' . $oWebsite->get_url_page("add_comment", $id) . '\" class="arrow">' . $oWebsite->t('articles.comment.add') . "</a></p>"; //link: reageer
+                    $return_value.= "</h3>\n\n";
+                    
+                    // "No comments found" if needed
+                    if($comment_count == 0) {
+                        $return_value.= '<p><em>' . $oWebsite->t("articles.comments.not_found") . '</em></p>';
+                    }
+                    
+                    // Comment add link
+                    $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("articles.comment.add") . "</a></p>";
+                    // Show comments
+                    
+                    $current_user_id = $oWebsite->get_current_user_id();
+                    $show_actions = $oWebsite->logged_in_staff();
+                    foreach($comments as $comment) {
+                        if($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
+                            $return_value.= $oComments->get_comment_html($comment, true);
+                        } else {
+                            $return_value.= $oComments->get_comment_html($comment, false);
+                        }
+                    }
+                    // Comment add link
+                    if($comment_count > 0) {
+                        $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("articles.comment.add") . "</a></p>";
                     }
                 }
                 $return_value.= '</div>';

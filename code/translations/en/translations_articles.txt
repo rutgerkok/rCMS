@@ -11,7 +11,6 @@ event_date.select=Browse calendar
 is_hidden=This article is hidden.
 comment=Comment
 comment.add=Add a comment
-comment.delete=Delete comment
 comments=Comments
 comments.allowed=Comments are allowed.
 comments.explained=Decide whether or not to allow comments on this article.

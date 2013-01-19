@@ -24,7 +24,7 @@ class Website {
         $this->pagevars['errors'] = array();
         $this->site_settings();
         setlocale(LC_ALL, $this->config['locales']);
-        $this->pagevars['debug'] = true; // TODO: change this
+        $this->pagevars['debug'] = false;
         $this->pagevars['database_object'] = null;
         
         // Database
@@ -62,7 +62,6 @@ class Website {
             case "view_article":
             case "archive":
             case "calendar":
-            case "add_comment":
                 $this->pagevars['type'] = "NOWIDGETS";
                 break;
             default:
@@ -255,6 +254,7 @@ class Website {
     
     public function logged_in() {
         if (
+                isset($_SESSION['id']) &&
                 isset($_SESSION['user']) &&
                 isset($_SESSION['pass']) &&
                 isset($_SESSION['display_name']) &&
@@ -266,6 +266,7 @@ class Website {
 
     public function logged_in_staff($admin = false) {
         if (
+                isset($_SESSION['id']) &&
                 isset($_SESSION['user']) &&
                 isset($_SESSION['pass']) &&
                 isset($_SESSION['display_name']) &&
@@ -277,6 +278,14 @@ class Website {
             }
         }
         return false;
+    }
+    
+    /**
+     * Returns the id of the user currently logged in. Returns -1 if the user isn't logged in.
+     * @return int The id of the user currently logged in.
+     */
+    public function get_current_user_id() {
+        return isset($_SESSION['id'])? (int) $_SESSION['id'] : -1;
     }
 
     public function site_settings() {
