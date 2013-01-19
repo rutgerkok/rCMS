@@ -24,18 +24,23 @@ class Themes
 		$oWebsite = $this->website_object;
 		
 		//Geef de inloglinks weer
-		if($this->website_object->logged_in_staff(true)) 
+		if($oWebsite->logged_in_staff(true)) 
 		{ //admin
 			echo '<li><a href="'.$oWebsite->get_url_page("admin").'">'.$oWebsite->t("main.admin").'</a></li>';
 		}
-		if($this->website_object->logged_in())
+		if($oWebsite->logged_in())
 		{	//ingelogd
 			echo '<li><a href="'.$oWebsite->get_url_page("account_management").'">'.$this->website_object->t("main.account").'</a></li>';
 			echo '<li><a href="'.$oWebsite->get_url_page("log_out").'">'.$this->website_object->t("main.log_out").'</a></li>';
 		}
 		else
 		{
-			echo '<li><a href="'.$oWebsite->get_url_page("log_in").'">'.$this->website_object->t("main.log_in").'</a></li>';	
+			// Not logged in
+                        if($oWebsite->get_sitevar("userscancreateaccounts")) {
+                            // Show account creation link
+                            echo '<li><a href="'.$oWebsite->get_url_page("create_account").'">'.$this->website_object->t("main.create_account").'</a></li>';
+                        }
+                        echo '<li><a href="'.$oWebsite->get_url_page("log_in").'">'.$this->website_object->t("main.log_in").'</a></li>';	
 		}
 	}
 	

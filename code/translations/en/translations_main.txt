@@ -4,6 +4,7 @@ delete=Delete
 admin=Admin home
 home=Home
 account=Account Management
+create_account=Create account
 log_in=Log in
 log_out=Log out
 search=Search

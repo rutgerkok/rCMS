@@ -4,6 +4,7 @@ delete=Verwijder
 admin=Beheer site
 home=Home
 account=Accountbeheer
+create_account=Maak account
 log_in=Inloggen
 log_out=Uitloggen
 search=Zoek
