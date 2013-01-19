@@ -49,7 +49,7 @@ class Database {
         }
 
         //gebruikerstabel
-        if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(40) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam", false)) {
+        if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(20) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam", false)) {
             $this->query("INSERT INTO `gebruikers` ( `gebruiker_admin`, `gebruiker_login`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email`) VALUES ( '1', 'admin', 'De beheerder', '" . md5(sha1('admin')) . "', '')");
         }
 
@@ -71,7 +71,7 @@ class Database {
     /**
      * Sanitizes a String.
      * @param type $string
-     * @return string
+     * @return string Sanitized string
      */
     public function escape_data($string) {
         //Magic quotes oplossen

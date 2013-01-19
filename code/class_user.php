@@ -160,7 +160,7 @@ class User {
      * @param string $username
      */
     public function set_username($username) {
-        $this->username = htmlentities(strtolower($username));
+        $this->username = htmlentities(strtolower(trim($username)));
     }
 
     /**
@@ -168,7 +168,7 @@ class User {
      * @param string $display_name
      */
     public function set_display_name($display_name) {
-        $this->display_name = htmlentities($display_name);
+        $this->display_name = htmlentities(trim($display_name));
     }
 
     /**

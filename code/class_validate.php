@@ -32,6 +32,11 @@ class Validate {
         if ($email === '')
             return true; // Email is optional, so allow empty email addresses
 
+        if (strlen($email) > 100) {
+            Validate::set_error("is_too_long_num", "100");
+            return false;
+        }
+        
         if (preg_match('/^([*+!.&#$�\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i', $email)) { //ingewikkeld, maar werkt
             return true;
         } else {
@@ -61,8 +66,8 @@ class Validate {
             Validate::set_error("is_too_short_num", "4");
             $valid = false;
         }
-        if (strlen($display_name) > 30) {
-            Validate::set_error("is_too_long_num", "30");
+        if (strlen($display_name) > 20) {
+            Validate::set_error("is_too_long_num", "20");
             $valid = false;
         }
         if ($display_name != strip_tags($display_name)) {

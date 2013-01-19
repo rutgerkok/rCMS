@@ -192,7 +192,8 @@ EOT;
             // CKEditor insluiten
             echo '<script src="/ckeditor/ckeditor.js"></script>';
             echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . $contents[3] . '</textarea>';
-            echo '<script> CKEDITOR.replace("article_body"); </script>';
+            echo '<script> var editor = CKEDITOR.replace("article_body");';
+            echo "CKFinder.setupCKEditor( editor, '/ckfinder/' );</script>\n\n";
         } else { 
             //Maar sluit niet in als CKEditor niet gevonden is
             echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . $contents[3] . '</textarea>';
