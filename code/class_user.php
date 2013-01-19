@@ -245,8 +245,12 @@ class User {
             $sql.= "'" . $oDB->escape_data($this->email) . "'";
             $sql.= ");";
             // Call query and update ID
-            $oDB->query($sql);
-            $this->id = $oDB->inserted_id();
+            if($oDB->query($sql)) {
+                $this->id = $oDB->inserted_id();
+                return true;
+            } else {
+                return false;
+            }
         } else {
             // Update existing user
             $changed = false;

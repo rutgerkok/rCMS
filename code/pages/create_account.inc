@@ -61,7 +61,8 @@ if (!$display_page) {
                 $user = new User($this, 0, $creating_username, $creating_display_name, '', $creating_email, $oAuth->get_standard_rank_id());
                 $user->set_password($creating_password1);
                 if($user->save()) {
-                    $text_to_display .= "<p>User with the name " . $user->get_username() . " is created!</p>";
+                    $text_to_display .= "<p>" . $this->t("users.account") . " " . $this->t("editor.is_created") . "</p>";
+                    $text_to_display .= '<p><a class="arrow" href="' . $this->get_url_page("log_in") . '">' . $this->t("main.log_in") . "</a></p>";
                 } else {
                     // Internal error occured
                     $text_to_display .= "<p><strong>" . $this->t_replaced_key("errors.your_input_has_not_been_created", "users.account", true) . "</strong></p>";
