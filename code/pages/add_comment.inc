@@ -20,13 +20,13 @@ if ($article_id == 0) {
         // Logged in
         $comment_body = $_POST["comment"];
         $poster = $oAuth->get_current_user();
-        $comment = $oComments->make_comment(true, 0, "", "", $comment_body, $poster->get_id(), $poster->get_display_name(), $article_id);
+        $comment = $oComments->make_comment(true, 0, "", "", $comment_body, $poster->get_id(), $article_id);
     } elseif (isset($_POST["comment"]) && isset($_POST["name"]) && isset($_POST["email"])) {
         // Logged out, can still comment
         $comment_body = $_POST["comment"];
         $author_name = $_POST["name"];
         $author_email = $_POST["email"];
-        $comment = $oComments->make_comment(true, 0, $author_name, $author_email, $comment_body, 0, "", $article_id);
+        $comment = $oComments->make_comment(true, 0, $author_name, $author_email, $comment_body, 0, $article_id);
     }
     if ($comment != null && $this->error_count() == 0) {
         if ($oComments->save($comment)) {

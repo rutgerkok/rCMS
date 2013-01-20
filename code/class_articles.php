@@ -173,10 +173,6 @@ EOT;
                             $return_value.= $oComments->get_comment_html($comment, false);
                         }
                     }
-                    // Comment add link
-                    if($comment_count > 0) {
-                        $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("articles.comment.add") . "</a></p>";
-                    }
                 }
                 $return_value.= '</div>';
             } else {

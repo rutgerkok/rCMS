@@ -1,4 +1,4 @@
-<h2><?php echo $this->t("articles.comment.delete") ?></h2>
+<h2><?php echo $this->t("editor.comment.delete") ?></h2>
 <?php
 //OBJECTEN
 $oAuth = new Authentication($this);
@@ -30,12 +30,12 @@ if ($logged_in) {
                 }
             } else {
                 // Show confirmation message
-                $text_to_display.= '<p>' . $this->t("editor.confirmation.delete.comment") . '</p>';
+                $text_to_display.= '<p>' . $this->t("editor.comment.delete.confirm") . '</p>';
 
                 //en laat daarbij de comment zien
                 $comment_html = $oComments->get_comment_html($comment, false);
                 $text_to_display.= $comment_html;
-                $text_to_display.= '<p><a href="' . $this->get_url_page("delete_comment", $comment_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . '</a>|';
+                $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("delete_comment", $comment_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . "</a> | \n";
                 $text_to_display.= '<a class="arrow" href="' . $this->get_url_main() . '" onclick="history.back();return false">' . $this->t("main.no") . '</a></p>';
             }
         } else {
@@ -54,12 +54,4 @@ if (!$this->errorsdisplayed) {
 }
 
 //WEERGEVEN
-if($saved)
-{
-	echo "<p>".$this->t("articles.comment")." ".$this->t("editor.is_created").".</p>\n\n";
-	echo '<p><a href="'.$this->get_url_page("article",$_REQUEST['id']).'">'.$this->t("main.ok").'</p>';
-}
-elseif($display_page)
-{
-	$oComments->echo_editor($article_id, $comment);
-}
+echo $text_to_display;

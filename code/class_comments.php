@@ -59,7 +59,7 @@ class Comments {
             }
 
             // Comment
-            if (!check_comment_body($comment_body)) {
+            if (!$this->check_comment_body($comment_body)) {
                 $valid = false;
             }
         }

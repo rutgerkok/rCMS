@@ -4,7 +4,7 @@
 	{
 		/* opent een popup */
 		if(popup) {popup.close();}
-		popup = window.open('datepicker.php','','menubar=no,width=230,height=200');
+		popup = window.open('/datepicker.php','','menubar=no,width=230,height=200');
 	}
 	function receiveDate(eventDate)
 	{

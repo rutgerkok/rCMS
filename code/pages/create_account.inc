@@ -94,7 +94,7 @@ if (!$display_page) {
                     </p>
                     <p>
                         <input type="hidden" name="p" value="create_account" />
-                        <input type="submit" value="Create account" class="button" />
+                        <input type="submit" value="{$this->t("main.create_account")}" class="button" />
                     </p>
                 </form>
 EOT;
