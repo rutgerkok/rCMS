@@ -330,12 +330,6 @@
 			float:left;
 			height:100%;
 		}
-	
-	/* verticale balk rechts */
-		div#nav
-		{
-			display:none;
-		}
 	/* header, menu en zoekvak */
                 div#header
                 {

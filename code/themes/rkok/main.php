@@ -49,9 +49,6 @@
 					<div id="sidebar">
 						<?php $this->echo_widgets(0); ?>
 					</div>
-					<div id="nav">
-						<?php $this->echo_widgets(1); ?>
-					</div>
 				<?php } ?>
 				
 				<div id="footer">
