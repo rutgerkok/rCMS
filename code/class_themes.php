@@ -63,7 +63,7 @@ EOT;
 			
 	public function echo_copyright()
 	{
-		echo $this->website_object->t("main.copyright");
+		echo $this->website_object->get_sitevar("copyright");
 	}
 	
 	public function echo_menu()

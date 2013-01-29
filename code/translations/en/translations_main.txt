@@ -8,7 +8,6 @@ create_account=Create account
 log_in=Log in
 log_out=Log out
 search=Search
-copyright=Universiteit Leiden. The university to discover.
 article=Article
 articles=Articles
 page=Page

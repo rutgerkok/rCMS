@@ -8,7 +8,6 @@ create_account=Maak account
 log_in=Inloggen
 log_out=Uitloggen
 search=Zoek
-copyright=<a href="mailto:prinshendrikpark@gmail.com" style="color:white">prinshendrikpark@gmail.com</a> - Prins Hendrikpark Bussum
 article=Artikel
 articles=Artikelen
 page=Pagina
