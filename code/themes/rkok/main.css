@@ -2,67 +2,54 @@
 	/*lettertype en lettergrote */
 		body, html
 		{
-			font-size: 90%;
+			font-size: 92%;
                         margin: 0;
 		}
 		p, h1, h2, h3, h4
 		{
-			font-family: verdana, sans-serif;
-			color: #595959;
+			font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+			color: #454545;
 			margin: 1px 3px 10px 3px;
-			padding:1px;
+			padding: 1px;
 		}
 		h2
 		{
-			font-family: "Eras Demi ITC", sans-serif;
-			font-size:150%;
+			font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+			font-size: 300%;
+                        font-weight: normal;
 			margin: 3px 3px 10px 3px;
 		}
 		h3
 		{
-			font-size: 100%;
-			margin: 12px 3px 1px 3px;
-		}
-		li
-		{
-			font-family: verdana, sans-serif;
-			color: #4a7180;
+                        font-size: 100%;
+                        font-weight: bold;
+			margin: 12px 3px 2px 3px;
 		}
 	
 	/*tabellen*/
 		table
 		{
 			border-collapse:separate;
-			border: 1px solid black;
-			background: #c0c0c0;
+                        margin-top: 10px;
+                        margin-bottom: 10px;
 		}
 		th,td
 		{
-			border: 1px solid black;
-			background: white;
 			font-family: verdana, sans-serif;
 			text-align:left;
 		}
 		th
 		{
-			color: black;
-			background:#eeeeee;
+
 		}
 		table.layout
 		{
-			background:transparent;
 			width:98%;
 			border:0;
 		}
 		table.layout th,table.layout td
 		{
-			background: transparent;
-			border: none;
 			padding:5px;
-		}
-		div#contentadmin th,div#contentadmin td
-		{
-			border-color: #e9e9e9;
 		}
 		
 	/*formulieren*/
@@ -131,37 +118,32 @@
 		a
 		{
 			text-decoration: none;
+                        color: #00ccff;
 		}
-		a.arrow
-		{
-			padding-left:5px;
-			background: transparent url(images/arrow.gif) center left no-repeat;
-			text-transform: uppercase;
-			font-size:85%;
-		}
-		a.arrow-disabled
-		{
-			padding-left:5px;
-			/*background: transparent url(images/arrow.gif) center left no-repeat;*/
-			text-transform: uppercase;
-			color:gray;
-			font-size:85%;
-		}
-		a:link
+                a:link
 		{
 			text-decoration: none;
 		}
 		a:hover
 		{
 			text-decoration: none;
-			border-bottom: 1px solid;
+                        color: #5252ff;
 		}
 		a:active
 		{
-			text-decoration: underline;
-			border-bottom: 1px solid #990000;
+			text-decoration: none;
 		}
-		
+		a.arrow
+		{
+			text-transform: uppercase;
+                        font-size: 85%;
+		}
+		a.arrow-disabled
+		{
+			text-transform: uppercase;
+			color:gray;
+			font-size:85%;
+		}
 	/* afbeeldingen */
 		img
 		{
@@ -177,13 +159,16 @@
 	/* klassen */
 		div.fout
 		{
-			font-family: verdana, sans-serif;
-			color: #990000;
-			margin: 3px;
-			border-bottom: 1px dotted #c9c9c9;
-			border-top: 1px dotted #c9c9c9;
-			background: #fafbfd;
-		}
+			color: #6c0000;
+			margin: 3px 3px 10px 3px;
+                        padding: 5px;
+			background-color: #ffd0d9;
+                        font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+                }
+                div.fout h3
+                {
+                        margin: 0;
+                }
 		div.artikelzijkolom
 		{
 			float:left;
@@ -200,13 +185,13 @@
 		div.artikelintro
 		{	/*gebruikt bij de artikelpagina*/
 			margin:10px;
-			background: #eee;
 			min-height: 8em;
-			box-shadow: 0 0 10px #999;
 		}
-		div.artikelintro:hover
-		{
-			background: #fafafa;
+                div.artikelintro h3
+		{	/*gebruikt bij de artikelpagina*/
+			font-weight: normal;
+                        font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+                        font-size: 150%;
 		}
 		p.meta
 		{
@@ -229,7 +214,6 @@
 		div.artikel
 		{	/*gebruikt bij de artikelpagina*/
 			float:left;
-			border-left: 1px #bbbbbb dotted;
 			padding-left: 1%;
 			width:69%;
 			margin-left:0;
@@ -237,13 +221,12 @@
 		}
 		div.artikel p.intro
 		{
-			font-weight: bold;
 			font-style: italic;
 		}
 		p.lijn
 		{
-			border-top: 1px #c9c9c9 dotted;
-			border-bottom: 1px #c9c9c9 dotted;
+			border-top: 1px #c9c9c9 solid;
+			border-bottom: 1px #c9c9c9 solid;
 			padding-top: 5px;
 			padding-bottom: 5px;
 		}
@@ -266,9 +249,9 @@
 		}
 		h3.notable
 		{
-			color:#9d8a0a;
-			font-size: 110%;
-			font-family: Georgia, "Times New Roman", Times, serif;
+			font-size: 200%;
+			font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+                        font-weight: normal;
 		}
 	/* tooltip */
 		#tooltip
@@ -321,7 +304,6 @@
 		}
 		div#contentwide
 		{
-			background: white;
 			width:95%;
 			padding-right:5%;
 			clear:left;
@@ -332,7 +314,6 @@
 		}
 		div#contentadmin
 		{
-			background: #eeeeee;
 			width:95%;
 			padding-right:5%;
 			clear:left;
@@ -374,9 +355,9 @@
                                 padding: 0;
                                 padding-top: 40px;
                                 font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-				font-size: 2.5em;
+				font-size: 3em;
                                 font-weight: normal;
-                                color: white;
+                                color: #66ff66;
 			}
 			div#hornav ul
 			{
@@ -395,13 +376,14 @@
 				height: 100%;
 				color: white;
                                 width: 9em;
-			}
+                                display: block;
+                        }
 			div#hornav ul li a
 			{
 				text-decoration: none;
                                 text-transform: lowercase;
 				font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-				font-size: 1.5em;
+				font-size: 130%;
                                 color: white;
 			}
 			div#hornav ul li a:hover
@@ -433,9 +415,6 @@
 		div#footer
 		{
 			clear:both;
-			background: #eee;
-			box-shadow: 0 0 10px #999;
-			color: #bbb;
 			padding:2px 0 0 0;
 			min-height:19px;
 			text-align: right;

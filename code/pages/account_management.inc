@@ -21,6 +21,7 @@ if($logged_in)
 
 	$password_text = strtolower($this->t("users.password"));
 	$email_text = strtolower($this->t("users.email"));
+        $display_name_text = strtolower($this->t("users.display_name"));
 	
 	$text_to_display.= <<<EOT
 	<p>
@@ -34,10 +35,11 @@ if($logged_in)
 		</table>
 	</p>
 	
-	<h3>{$this->t("users.edit")}</h3><!-- bewerk account -->
+	<h3>{$this->t("users.edit")}</h3>
 	<p>
-		<a class="arrow" href="{$this->get_url_page('change_password')}">{$this->t("main.edit")} {$password_text}</a><br /><!-- verander wachtwoord -->
-		<a class="arrow" href="{$this->get_url_page('change_email')}">{$this->t("main.edit")} {$email_text}</a>
+		<a class="arrow" href="{$this->get_url_page('change_password')}">{$this->t("main.edit")} {$password_text}</a><br />
+		<a class="arrow" href="{$this->get_url_page('change_email')}">{$this->t("main.edit")} {$email_text}</a><br />
+                <a class="arrow" href="{$this->get_url_page('change_display_name')}">{$this->t("main.edit")} {$display_name_text}</a><br />    
 	</p>
 EOT;
 }

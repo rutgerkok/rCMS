@@ -331,7 +331,8 @@ EOT;
         $sql = "SELECT `reactie_id`, `reactie_naam`, `reactie_email`, `reactie_gemaakt`,";
         $sql.= "`reactie_inhoud`, `gebruiker_id`, `gebruiker_naam`, `gebruiker_email`, `artikel_id` FROM `reacties`";
         $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` )";
-        $sql.= "WHERE `artikel_id` = $article_id";
+        $sql.= "WHERE `artikel_id` = $article_id ";
+        $sql.= "ORDER BY `reactie_gemaakt` ASC";
 
         $result = $oDB->query($sql);
         $comments = array();

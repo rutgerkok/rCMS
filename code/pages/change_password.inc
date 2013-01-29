@@ -1,4 +1,4 @@
-<h2><?php echo $this->t("users.password.edit") /* verander wachtwoord */ ?></h2>
+<h2><?php echo $this->t("editor.password.edit") /* verander wachtwoord */ ?></h2>
 <?php
 $text_to_display = '';
 
@@ -30,13 +30,13 @@ if ($logged_in) {
                 $display_form = true;
             }
         } else {
-            $this->add_error($this->t("users.password") . ' ' . Validate::get_last_error($this) . '.');
-            $text_to_display.='<p>' . str_replace("#", $this->t("users.password"), $this->t("errors.your_input_has_not_been_changed")) . '</p>';
+            $this->add_error($this->t("users.password") . ' ' . Validate::get_last_error($this));
+            $text_to_display.='<p>' . $this->t_replaced_key("errors.your_input_has_not_been_changed", "users.password", true) . '</p>';
             $display_form = true;
         }
     }
     if ($display_form) {
-        $password_message ="<p>\n" . str_replace("#", Validate::$MIN_PASSWORD_LENGHT, $this->t("users.password.edit.explained")) . "\n</p>\n\n"; //hardcoded totdat gebruikersklasse opnieuw geschreven wordt
+        $password_message ="<p>\n" . $this->t_replaced("editor.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "\n</p>\n\n"; //hardcoded totdat gebruikersklasse opnieuw geschreven wordt
         
         $text_to_display.=<<<EOT
                 <p>
@@ -45,11 +45,11 @@ if ($logged_in) {
 		<form action="{$this->get_url_main()}" method="post">
 			<p>
 				<label for="pass">{$this->t("users.password")}:</label><br /><input type="password" id="pass" name="pass" value=""/><br />
-				<label for="pass2">{$this->t("users.password.repeat")}</label><br /><input type="password" id="pass2" name="pass2" value=""/><br />
+				<label for="pass2">{$this->t("editor.password.repeat")}</label><br /><input type="password" id="pass2" name="pass2" value=""/><br />
 			</p>
 			<p>
 				<input type="hidden" name="p" value="change_password" />
-				<input type="submit" value="{$this->t("users.password.edit")}" class="button" />
+				<input type="submit" value="{$this->t("editor.password.edit")}" class="button" />
 			</p>
 		</form>
 		
