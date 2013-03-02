@@ -110,7 +110,7 @@ class Articles {
                 if ($hidden)
                     $return_value.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
                 if ($logged_in && $show_comments)
-                    $return_value.= "<br />" . $oWebsite->t('articles.comments.allowed'); //reacties
+                    $return_value.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
                 $return_value.= '</p>';
                 if ($logged_in)
                     $return_value.= "<p style=\"clear:both\">";
@@ -145,11 +145,11 @@ EOT;
                 $return_value.= $body;
                 // Show comments
                 if ($show_comments && $oComments != null) {
-                    $comments = $oComments->get_comments($id);
+                    $comments = $oComments->get_comments_article($id);
                     $comment_count = count($comments);
                     
                     // Title 
-                    $return_value.= '<h3 class="notable">' . $oWebsite->t("articles.comments");
+                    $return_value.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
                     if($comment_count > 0 ) {
                         $return_value.= ' (' . $comment_count . ')';
                     }
@@ -157,11 +157,11 @@ EOT;
                     
                     // "No comments found" if needed
                     if($comment_count == 0) {
-                        $return_value.= '<p><em>' . $oWebsite->t("articles.comments.not_found") . '</em></p>';
+                        $return_value.= '<p><em>' . $oWebsite->t("comments.no_comments_found") . '</em></p>';
                     }
                     
                     // Comment add link
-                    $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("articles.comment.add") . "</a></p>";
+                    $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
                     // Show comments
                     
                     $current_user_id = $oWebsite->get_current_user_id();

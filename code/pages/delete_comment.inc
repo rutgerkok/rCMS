@@ -22,10 +22,10 @@ if ($logged_in) {
             if (isset($_REQUEST['confirm'])) {
                 // Confirmed
                 if ($oComments->delete_comment($comment_id)) {
-                    $text_to_display.= '<p>' . $this->t("articles.comment") . ' ' . $this->t("editor.is_deleted") . '</p>';
+                    $text_to_display.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("editor.is_deleted") . '</p>';
                     $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
                 } else {
-                    $text_to_display.= '<p>' . $this->t("articles.comment") . ' ' . $this->t("errors.is_not_removed") . '</p>';
+                    $text_to_display.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("errors.is_not_removed") . '</p>';
                     $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
                 }
             } else {
@@ -40,7 +40,7 @@ if ($logged_in) {
             }
         } else {
             // Not enough rights
-            $text_to_display.= '<p>' . $this->t("articles.comment") . ' ' . $this->t("errors.not_removeable") . '</p>';
+            $text_to_display.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("errors.not_removeable") . '</p>';
             $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
         }
     }

@@ -24,7 +24,7 @@ class Website {
         $this->pagevars['errors'] = array();
         $this->site_settings();
         setlocale(LC_ALL, $this->config['locales']);
-        $this->pagevars['debug'] = false;
+        $this->pagevars['debug'] = true;
         $this->pagevars['database_object'] = null;
         
         // Database

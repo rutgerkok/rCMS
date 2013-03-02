@@ -144,9 +144,9 @@ class Edit {
 								<input type="checkbox" id="article_pinned" name="article_pinned" class="checkbox" $pinned />
 								{$oWebsite->t("articles.pinned")}
 							</label> 
-							<label for="article_comments" title="{$oWebsite->t("articles.comments.explained")}" style="cursor:help">
+							<label for="article_comments" title="{$oWebsite->t("comments.allow_explained")}" style="cursor:help">
 								<input type="checkbox" id="article_comments" name="article_comments" class="checkbox" $comments />
-								{$oWebsite->t("articles.comments")}
+								{$oWebsite->t("comments.comments")}
 							</label>
 						</td>
 					</tr>

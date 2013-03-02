@@ -1,4 +1,4 @@
-<h2><?php echo $this->t("articles.comment.add") ?></h2>
+<h2><?php echo $this->t("comments.add") ?></h2>
 <?php
 //OBJECTEN
 $oAuth = new Authentication($this);
@@ -42,7 +42,7 @@ if (!$this->errorsdisplayed) {
 
 //EDITOR OF MELDING TONEN
 if ($saved) {
-    echo "<p>" . $this->t("articles.comment") . " " . $this->t("editor.is_created") . ".</p>\n\n";
+    echo "<p>" . $this->t("comments.comment") . " " . $this->t("editor.is_created") . ".</p>\n\n";
     echo '<p><a href="' . $this->get_url_page("article", $article_id) . '">' . $this->t("main.ok") . '</p>';
 } elseif ($display_page) {
     echo <<<EOT
@@ -53,7 +53,7 @@ EOT;
             <p>
                 <input type="hidden" name="id" value="$article_id" />
                 <input type="hidden" name="p" value="add_comment" />
-                <input type="submit" name="submit" value="{$this->t('articles.comment.add')}" class="button" />
+                <input type="submit" name="submit" value="{$this->t('comments.add')}" class="button" />
             </p>
         </form>
 EOT;

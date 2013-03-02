@@ -1,0 +1,9 @@
+comment=Reactie
+add=Reageer
+comments=Reacties
+allowed=Reacties toegestaan.
+allow_explained=Bepaalt of er wel of geen reacties worden toegestaan op dit artikel.
+no_comments_found=Geen reacties gevonden.
+email_explained=Het opgeven van uw emailadres is niet verplicht. Vul het alleen in als u wil dat wij met u in contact kunnen komen. Het emailadres wordt niet weergegeven.
+view_latest_on_site=Op deze pagina worden de laatste reacties (verspreid over de hele site) weergegeven.
+view_context=Bekijk context

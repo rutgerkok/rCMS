@@ -59,7 +59,10 @@ if($logged_in)
 	?>
 	
 	<h3><?php echo $this->t("main.articles") ?></h3> <!-- artikelen -->
-	<p><a href="<?php echo $this->get_url_page("edit_article",0) ?>" class="arrow"><?php echo $this->t("articles.create") ?></a></p> <!-- nieuw artikel -->
+	<p>
+            <a href="<?php echo $this->get_url_page("edit_article") ?>" class="arrow"><?php echo $this->t("articles.create") ?></a><br /> <!-- new article -->
+            <a href="<?php echo $this->get_url_page("comments") ?>" class="arrow"><?php echo $this->t("comments.comments") ?></a> <!-- latest comments -->
+        </p>
 	
 	<h3><?php echo $this->t("users.account_management") ?></h3> <!-- accounts -->
 	<p>

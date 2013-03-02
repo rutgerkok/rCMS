@@ -84,23 +84,23 @@ class Comments {
         $valid = true;
         
         if (!isset($comment_body) || strlen(trim($comment_body)) === 0) {
-            $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.not_entered"));
+            $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_entered"));
             $valid = false;
         } else {
             if ($comment_body != strip_tags($comment_body)) {
-                $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.contains_html"));
+                $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.contains_html"));
                 $valid = false;
             }
             if (strlen($comment_body) < 10) {
                 // WAY too long
-                $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t_replaced("errors.is_too_short_num", 10));
+                $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t_replaced("errors.is_too_short_num", 10));
                 $valid = false;
             }
 
             $comment_body = htmlentities($comment_body);
             if (strlen($comment_body) > 65565) {
                 // WAY too long
-                $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.is_too_long"));
+                $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.is_too_long"));
                 $valid = false;
             }
         }
@@ -156,7 +156,7 @@ class Comments {
         if ($oDB->query($sql)) {
             return true;
         } else {
-            $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.not_saved")); //reactie is niet opgeslagen
+            $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_saved")); //reactie is niet opgeslagen
             return false;
         }
     }
@@ -171,11 +171,11 @@ class Comments {
             if ($oDB->query($sql) && $oDB->affected_rows() > 0) {
                 return true;
             } else {
-                $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
+                $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
                 return false; //meldt dat het mislukt is
             }
         } else {
-            $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
+            $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
             return false; //heeft geen zin om met id=0 of iets anders query uit te voeren
         }
     }
@@ -212,7 +212,7 @@ class Comments {
             </p>
             <p>	
                 <!-- reactie -->
-                {$oWebsite->t("articles.comment")}<span class="required">*</span>:<br />
+                {$oWebsite->t("comments.comment")}<span class="required">*</span>:<br />
                 <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
             </p>	
 EOT;
@@ -244,11 +244,11 @@ EOT;
                 <!-- email -->
                 {$oWebsite->t("users.email")}:<br />
                 <input type="email" name="email" id="email" style="width:98%" value="$email" /><br />
-                <em>{$oWebsite->t("articles.comments.email_explained")}</em><br />
+                <em>{$oWebsite->t("comments.email_explained")}</em><br />
             </p>
             <p>	
                 <!-- reactie -->
-                {$oWebsite->t("articles.comment")}<span class="required">*</span>:<br />
+                {$oWebsite->t("comments.comment")}<span class="required">*</span>:<br />
                 <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
             </p>
 EOT;
@@ -271,7 +271,7 @@ EOT;
             $author_email = $account_email;
         }
         // Header
-        $return_value = "<h3>$author_name ($comment_date)</h3>"; //naam en datum
+        $return_value = "<h3 id=\"comment-$comment_id\">$author_name ($comment_date)</h3>"; //naam en datum
         // Show email, edit and delete links
         if ($show_actions) {
             $oWebsite = $this->website_object;
@@ -314,25 +314,46 @@ EOT;
         if ($oDB->rows($result) == 1) {
             return $oDB->fetch($result);
         } else {
-            $oWebsite->add_error($oWebsite->t("articles.comment") . ' ' . $oWebsite->t("errors.not_found"));
+            $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found"));
             return null;
         }
     }
 
     /**
-     * Get all comments for an article
-     * @param int $article_id The article of the comments
+     * Get all comments for an article. Safe method.
+     * @param int $article_id The article of the comments.
      * @return array[][] The comments.
      */
-    function get_comments($article_id) {
+    function get_comments_article($article_id) {
         $article_id = (int) $article_id;
+        return $this->get_comments_query("`artikel_id` = $article_id ", 0, false);
+    }
+    
+    /**
+     * Get the latest comments on the site. Safe method.
+     * @return array[][] The comments.
+     */
+    function get_comments_latest() {
+        return $this->get_comments_query("", 20, true);
+    }
+    
+    // Unsafe method - doesn't sanitize input
+    private function get_comments_query($where_clausule, $limit, $new_comments_first) {
         $oDB = $this->database_object;
 
         $sql = "SELECT `reactie_id`, `reactie_naam`, `reactie_email`, `reactie_gemaakt`,";
         $sql.= "`reactie_inhoud`, `gebruiker_id`, `gebruiker_naam`, `gebruiker_email`, `artikel_id` FROM `reacties`";
         $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` )";
-        $sql.= "WHERE `artikel_id` = $article_id ";
-        $sql.= "ORDER BY `reactie_gemaakt` ASC";
+        if(strlen($where_clausule) > 0) {
+            $sql.= " WHERE $where_clausule";
+        }
+        $sql.= "ORDER BY `reactie_gemaakt`";
+        if($new_comments_first) {
+            $sql.= " DESC";
+        }
+        if($limit > 0) {
+            $sql.= " LIMIT " . $limit;
+        }
 
         $result = $oDB->query($sql);
         $comments = array();
@@ -350,11 +371,15 @@ EOT;
      * @return int The id of the user that posted the comment.
      */
     function get_user_id($comment) {
-        return $comment[5];
+        return (int) $comment[5];
     }
 
     function get_article_id($comment) {
-        return $comment[8];
+        return (int) $comment[8];
+    }
+    
+    function get_comment_id($comment) {
+        return (int) $comment[0];
     }
 
     

@@ -29,13 +29,13 @@ if ($logged_in) {
                 if ($this->error_count() === 0 && $oComments->save($comment)) {
                     $display_form = false;
                     
-                    $text_to_display.="<p>" . $this->t("articles.comment") . " " . $this->t("editor.is_edited") . "</p>\n";
+                    $text_to_display.="<p>" . $this->t("comments.comment") . " " . $this->t("editor.is_edited") . "</p>\n";
                     $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
                 }
             }
         } else {
             // Not enough rights
-            $text_to_display.= '<p>' . $this->t("articles.comment") . ' ' . $this->t("errors.not_editable") . '</p>';
+            $text_to_display.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("errors.not_editable") . '</p>';
             $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
         }
     }
