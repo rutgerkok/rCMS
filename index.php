@@ -1,18 +1,21 @@
 <?php
 
+// Report all errors
 error_reporting(E_ALL);
 
-//SITEINSTELLINGEN
+// We'll need this for every page
 session_start();
-ini_set('arg_separator.output','&amp;'); 
-function __autoload($klasse)
-{	//automatisch laden van klassen
-	require_once('./code/class_'.strtolower($klasse).'.php');
+
+// Valid HTML please
+ini_set('arg_separator.output', '&amp;');
+
+// Classloader
+function __autoload($class) {
+    //echo "<br />Loading " . $class;
+    require_once('./code/class_' . strtolower($class) . '.php');
 }
 
-//SITE WEERGEVEN
+// Display site
 $oWebsite = new Website();
-//$oWebsite->echo_header();
 $oWebsite->echo_page();
-//$oWebsite->echo_footer();
 ?>

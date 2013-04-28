@@ -12,7 +12,7 @@ function __autoload($klasse)
 
 //OBJECTEN
 $oWebsite = new Website();
-$oCalendar = new Calendar($oWebsite,new Database($oWebsite));
+$oCalendar = new Calendar($oWebsite, $oWebsite->get_database());
 
 //JAAR- EN MAANDLIJST
 $selected_month=(int)isset($_POST['month'])? $_POST['month']:date('n');//geselecteerd of huidig

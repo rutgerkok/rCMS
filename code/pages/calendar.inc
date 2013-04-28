@@ -3,7 +3,7 @@
 $text_to_display='';
 
 //OBJECTEN
-$oDB = new Database($this);
+$oDB = $this->get_database();
 $oCalendar = new Calendar($this,$oDB);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 

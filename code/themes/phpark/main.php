@@ -52,10 +52,10 @@
 				
 				<?php if($this->get_page_type()=="NORMAL") { ?>
 					<div id="sidebar">
-						<?php $this->echo_widgets(0); ?>
+						<?php $this->echo_widgets(1); ?>
 					</div>
 					<div id="nav">
-						<?php $this->echo_widgets(1); ?>
+						<?php $this->echo_widgets(2); ?>
 					</div>
 				<?php } ?>
 				

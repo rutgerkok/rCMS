@@ -1,6 +1,8 @@
 save=Opslaan
 save_and_quit=Opslaan en weggaan
 quit=Weggaan
+with_html_tags=Met HTML tags
+message=Bericht
 is_created=is toegevoegd.
 is_edited=is bijgewerkt.
 is_changed=is gewijzigd.
@@ -15,3 +17,6 @@ comment.delete=Reactie verwijderen
 comment.delete.confirm=Weet u zeker dat u deze reactie wil verwijderen?
 display_name.edit=Wijzig weergavenaam
 display_name.edit.explained=Dit is de naam die overal op de site weergegeven wordt. Er wordt aangeraden uw voornaam en achternaam te gebruiken, maar dit is niet verplicht.
+widget.edit=Bewerk een widget
+widget.delete=Verwijder een widget van de zijbalk
+widget.delete.confirm=Weet u zeker dat u deze widget wil verwijderen van de zijbalk?

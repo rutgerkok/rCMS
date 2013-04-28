@@ -1,10 +1,9 @@
 <?php
-$this->set_pagevar('sidebars',false);
 //KOPREGEL
 echo '<h2>'.$this->t("articles.edit").'</h2>';
 
 //OBJECTEN
-$oDB = new Database($this);
+$oDB = $this->get_database();
 $oAuth = new Authentication($this);
 $oCats = new Categories($oDB,$this);
 $oEdit = new Edit($oDB,$oCats,$this);

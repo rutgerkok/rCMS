@@ -1,6 +1,7 @@
 read=Read more
 edit=Edit
 delete=Delete
+manage=Manage
 admin=Admin home
 home=Home
 account=Account Management
@@ -16,8 +17,8 @@ category=Category
 categories=Categories
 event=Event
 events=Events
-link=Research group
-links=Research groups
+link=Link
+links=Links
 year=Year
 not_set=Not set
 yes=Yes
@@ -27,3 +28,5 @@ cancel=Cancel
 fields_required=Fields with a <span class="required">*</span> are required.
 reset=Reset site
 code_request=Fill in the code to get access to the site.
+widget=Widget
+widgets=Widgets

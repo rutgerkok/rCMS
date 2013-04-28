@@ -1,6 +1,6 @@
 <?php
-$oArticles = new Articles($this,new Database($this));
-$article_code = $oArticles->get_articles_list_category($this->get_sitevar("sidebarcategories"),true,false);//alles behalve de zijbalkcategorieën, geen metainfo
+$oArticles = new Articles($this,$this->get_database());
+$article_code = $oArticles->get_articles_list_category($this->get_sitevar("sidebarcategories"),true,false);//alles behalve de zijbalkcategorieï¿½n, geen metainfo
 unset($articles);
 
 //FOUTAFHANDELING

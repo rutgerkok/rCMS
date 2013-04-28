@@ -22,7 +22,7 @@ if(strlen($keyword)<3)
 }
 else
 {
-	$oDB = new Database($this);
+	$oDB = $this->get_database();
 	
 	$result = "<h3 class=\"notable\">".$this->t('articles.search.results_in_articles')."</h3>\n";//resultaten in artikelen
 	$oArticles = new Articles($this,$oDB);

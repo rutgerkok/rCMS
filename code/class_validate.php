@@ -104,7 +104,22 @@ class Validate {
 
         return $valid;
     }
-
+    
+    public static function range($number, $min, $max) {
+        if(!is_numeric($number)) {
+            Validate::set_error("is_not_numeric");
+            return false;
+        }
+        $number = (int) $number;
+        if($number < $min) {
+            Validate::set_error("is_too_low_num", $min);
+            return false;
+        }
+        if($number > $max) {
+            Validate::set_error("is_not_high_num", $max);
+            return false;
+        }
+        return true;
+    }
 }
-
 ?>

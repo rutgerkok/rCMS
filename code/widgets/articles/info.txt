@@ -1,0 +1,6 @@
+name=Display articles
+description=Displays a list of articles.
+version=1.0
+website=http://www.rutgerkok.nl/
+author=Rutger Kok
+author.website=http://www.rutgerkok.nl/

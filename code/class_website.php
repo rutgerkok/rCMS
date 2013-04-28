@@ -1,60 +1,51 @@
 <?php
 
 class Website {
-    /*
-     * ATTRIBUTEN:
-     * 	$pagevars['title'] - (string) huidige paginatitel, gegenereerd aan de hand van $_REQUEST['p'] in de constructor
-     * 	$pagevars['shorttitle'] - (string) kortere paginatitel (zonder Bioscience), gegenereerd aan de hand van $_REQUEST['p'] in de constructor
-     *  $pagevars['file'] - (string) huidig paginabestand (zonder extensie of map)
-     *  $pagevars['errors'] - (array) huidige paginafouten
-     *  $pagevars['debug'] - (bool) geeft aan of alle foutmeldingen weergegeven moeten worden.
-     *  $pagevars['database_object'] - (object) de databaseverbinding, opgeslagen door class_database.php
-     *  $pagevars['site'] - (string) de geladen site, bioscience of phpark
-     *  $pagevars['type'] - (string) het type pagina, "NORMAL", "NOWIDGETS" of "BACKSTAGE"
-     *  $pagevars['local']
-     */
-
-    protected $pagevars = array();
+    protected $errors = array();
+    protected $debug = true;
     protected $errorsdisplayed = false;
+    protected $database_object;
+    protected $current_page_id;
+    protected $current_page_title; // Site title [- page title]
+    protected $current_page_title_short; // Based on page id
+    protected $current_page_type; // NORMAL, NOWIDGETS or BACKSTAGE
     public /* final */ $IS_WEBSITE_OBJECT = true;
-    
+
     function __construct() {
-        
+
         // Pagevars and settings
-        $this->pagevars['errors'] = array();
         $this->site_settings();
         setlocale(LC_ALL, $this->config['locales']);
-        $this->pagevars['debug'] = true;
-        $this->pagevars['database_object'] = null;
         
         // Database
-        $this->get_database();
+        $this->database_object = new Database($this);
 
         // Get page to display
         if (isset($_REQUEST['p']) && !empty($_REQUEST['p']) && $_REQUEST['p'] != 'home') {
-            $this->pagevars['file'] = $_REQUEST['p'];
+            $this->current_page_id = $_REQUEST['p'];
 
             //Titel instellen
-            $this->pagevars['title'] = $this->get_sitevar('title'); //begin met alleen de naam van de site...
-            $this->pagevars['shorttitle'] = ucfirst(str_replace('_', ' ', $_REQUEST['p'])); //korte titel
+            $this->current_page_title = $this->get_sitevar('title'); //begin met alleen de naam van de site...
+            $this->current_page_title_short = ucfirst(str_replace('_', ' ', $_REQUEST['p'])); //korte titel
             if ($this->get_sitevar('showpage'))
-                $this->pagevars['title'].= ' - ' . $this->pagevars['shorttitle']; //...verleng eventueel met paginanaam
+                $this->current_page_title.= ' - ' . $this->current_page_title_short; //...verleng eventueel met paginanaam
 
-            if (!file_exists($this->get_uri_modules() . $this->pagevars['file'] . ".inc")) {
-                $this->pagevars['file'] = 'home'; //bestaat pagina niet? dan naar homepage
-                $this->add_error("Page '" . $this->pagevars['title'] . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
+            if (!file_exists($this->get_uri_page($this->current_page_id))) {
+                // Page doesn't exist, redirect
+                $this->current_page_id = 'home';
+                $this->add_error($this->t("main.page") . " '" . $this->current_page_title_short . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
             }
         } else {
-            $this->pagevars['file'] = 'home';
+            $this->current_page_id = 'home';
             //Titel instellen
-            $this->pagevars['title'] = $this->get_sitevar('hometitle');
-            $this->pagevars['shorttitle'] = 'Home';
+            $this->current_page_title = $this->get_sitevar('hometitle');
+            $this->current_page_title_short = 'Home';
         }
 
         // Get the layout of the page
-        switch ($this->pagevars['file']) {
+        switch ($this->current_page_id) {
             case "home":
-                $this->pagevars['type'] = "NORMAL";
+                $this->current_page_type = "NORMAL";
                 break;
             case "category":
             case "search":
@@ -62,10 +53,10 @@ class Website {
             case "view_article":
             case "archive":
             case "calendar":
-                $this->pagevars['type'] = "NOWIDGETS";
+                $this->current_page_type = "NOWIDGETS";
                 break;
             default:
-                $this->pagevars['type'] = "BACKSTAGE";
+                $this->current_page_type = "BACKSTAGE";
                 break;
         }
 
@@ -75,13 +66,36 @@ class Website {
         }
     }
 
-    public function set_pagevar($var, $value) {
-        $this->pagevars[$var] = $value;
-        return true;
+    /**
+     * Returns the full title that should be displayed at the top of this page.
+     * @return string The title.
+     */
+    public function get_page_title() {
+        return $this->current_page_title;
+    }
+    
+    /**
+     * Returns the current page id, like "article" or "account_management". Can
+     * be converted to an url/uri using the get_ur*_page methods.
+     */
+    public function get_page_id() {
+        return $this->current_page_id;
     }
 
-    public function get_pagevar($var) {
-        return($this->pagevars[$var]);
+    /**
+     * Returns a shorter title of this page that can be used in breadcrumbs.
+     * @return string The shorter title.
+     */
+    public function get_page_shorttitle() {
+        return $this->current_page_title_short;
+    }
+
+    /**
+     * Returns the current page type: NORMAL, NOWIDGETS or BACKSTAGE.
+     * @return string The current page type.
+     */
+    public function get_page_type() {
+        return $this->current_page_type;
     }
 
     /**
@@ -89,10 +103,7 @@ class Website {
      * @return Database The database
      */
     public function get_database() {
-        if ($this->pagevars["database_object"] == null) {
-            $this->pagevars["database_object"] = new Database($this);
-        }
-        return $this->pagevars["database_object"];
+        return $this->database_object;
     }
 
     public function get_sitevar($var) {
@@ -101,6 +112,13 @@ class Website {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Returns the number of sidebars that this theme supports.
+     */
+    public function get_theme_sidebar_count() {
+        return 2; // Always two for now :). Don't hardcode it, though.
     }
 
 //Alle paden hier
@@ -128,7 +146,7 @@ class Website {
     public function get_url_main() {
         return $this->get_sitevar('url');
     }
-    
+
     public function get_uri_main() {
         return $this->get_sitevar('uri');
     }
@@ -147,7 +165,7 @@ class Website {
             }
         }
     }
-    
+
     public function get_uri_page($name) {
         return $this->get_uri_modules() . $name . ".inc";
     }
@@ -175,10 +193,10 @@ class Website {
 //Einde paden
 
     public function add_error($message, $public_message = false) {
-        if ($this->pagevars['debug'] || !$public_message) { //foutmelding alleen weergeven als melding ongevaarlijk is of als debuggen aan is gezet
-            $this->pagevars['errors'][count($this->pagevars['errors'])] = $message;
+        if ($this->debug || !$public_message) { //foutmelding alleen weergeven als melding ongevaarlijk is of als debuggen aan is gezet
+            $this->errors[count($this->errors)] = $message;
         } else {
-            $this->pagevars['errors'][count($this->pagevars['errors'])] = $public_message;
+            $this->errors[count($this->errors)] = $public_message;
         }
         if ($this->errorsdisplayed) {//geef ook nieuwe foutmeldingen weer, als normale al weergegeven zijn
             $this->echo_errors();
@@ -186,30 +204,30 @@ class Website {
     }
 
     public function error_count() {
-        return count($this->pagevars['errors']);
+        return count($this->errors);
     }
 
     public function error_clear_all() {
-        unset($this->pagevars['errors']);
-        $this->pagevars['errors'] = array();
+        unset($this->errors);
+        $this->errors = array();
     }
 
     public function echo_errors() { //geeft alle foutmeldingen weer
         $this->errorsdisplayed = true;
 
-        $errors = count($this->pagevars['errors']); //totaal aantal foutmeldingen
-        if ($errors == 0) {
+        $error_count = count($this->errors); //totaal aantal foutmeldingen
+        if ($error_count == 0) {
             return true;
-        } elseif ($errors == 1) {
+        } elseif ($error_count == 1) {
             echo '<div class="fout"><h3>' . $this->t("errors.error_occured") . '</h3>';
-            echo $this->pagevars['errors'][0];
+            echo $this->errors[0];
             echo '</div>';
         } else {
             echo '<div class="fout">';
-            echo "   <h3>" . str_replace("#", $errors, $this->t('errors.errors_occured')) . "</h3>";
+            echo "   <h3>" . str_replace("#", $error_count, $this->t('errors.errors_occured')) . "</h3>";
             echo '   <p>';
             echo '      <ul>';
-            foreach ($this->pagevars['errors'] as $nr => $error) {
+            foreach ($this->errors as $nr => $error) {
                 echo '<li>' . $error . '</li>';
             }
             echo '      </ul>';
@@ -246,12 +264,12 @@ class Website {
 
     public function echo_page_content() { //geeft de hoofdpagina weer
         if ($this->has_access()) {
-            if (file_exists($this->get_uri_page($this->pagevars['file']))) { //voeg de module in als die bestaat (al gecheckt in constructor)
-                require($this->get_uri_page($this->pagevars['file']));
+            if (file_exists($this->get_uri_page($this->current_page_id))) { //voeg de module in als die bestaat (al gecheckt in constructor)
+                require($this->get_uri_page($this->current_page_id));
             }
         }
     }
-    
+
     public function logged_in() {
         if (
                 isset($_SESSION['id']) &&
@@ -273,19 +291,19 @@ class Website {
                 isset($_SESSION['email']) &&
                 isset($_SESSION['admin']) &&
                 ($_SESSION['admin'] == 0 || $_SESSION['admin'] == 1)) {
-            if($admin == false || $_SESSION['admin'] == 1) {
+            if ($admin == false || $_SESSION['admin'] == 1) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
      * Returns the id of the user currently logged in. Returns -1 if the user isn't logged in.
      * @return int The id of the user currently logged in.
      */
     public function get_current_user_id() {
-        return isset($_SESSION['id'])? (int) $_SESSION['id'] : -1;
+        return isset($_SESSION['id']) ? (int) $_SESSION['id'] : -1;
     }
 
     public function site_settings() {
@@ -297,7 +315,7 @@ class Website {
             die();
         }
     }
-    
+
     // TRANSLATIONS
 
     public function t($key) {
@@ -322,17 +340,17 @@ class Website {
             }
         }
     }
-    
+
     public function t_replaced_key($key, $replace_in_key, $lowercase = false) {
-        if($lowercase) {
+        if ($lowercase) {
             return str_replace("#", strtolower($this->t($replace_in_key)), $this->t($key));
         } else {
             return str_replace("#", $this->t($replace_in_key), $this->t($key));
         }
     }
-    
+
     public function t_replaced($key, $replace_in_key, $lowercase = false) {
-        if($lowercase) {
+        if ($lowercase) {
             return str_replace("#", strtolower($replace_in_key), $this->t($key));
         } else {
             return str_replace("#", $replace_in_key, $this->t($key));

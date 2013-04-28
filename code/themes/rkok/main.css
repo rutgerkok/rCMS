@@ -209,6 +209,19 @@
 			float:left;
 			width: 98%;
 		}
+                
+                /* Linklijsten */
+                ul.linklist
+		{
+			margin:0;
+			padding:0;
+			list-style-type:none;
+		}
+		ul.linklist li
+		{
+			padding:5px;
+			font-family: verdana, sans-serif;
+		}
 		
                 /*Pagina's met een artikel */
 		div.artikel

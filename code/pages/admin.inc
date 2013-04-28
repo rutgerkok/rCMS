@@ -1,7 +1,7 @@
 <h2><?php echo $this->t("main.admin") ?></h2> <!-- admin -->
 <?php
 //OBJECTEN
-$oDB = new Database($this);
+$oDB = $this->get_database();
 $oAuth = new Authentication($this);
 $oCat = new Categories($oDB,$this);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
@@ -58,13 +58,13 @@ if($logged_in)
 {	
 	?>
 	
-	<h3><?php echo $this->t("main.articles") ?></h3> <!-- artikelen -->
+	<h3><?php echo $this->t("main.articles") ?></h3>
 	<p>
             <a href="<?php echo $this->get_url_page("edit_article") ?>" class="arrow"><?php echo $this->t("articles.create") ?></a><br /> <!-- new article -->
             <a href="<?php echo $this->get_url_page("comments") ?>" class="arrow"><?php echo $this->t("comments.comments") ?></a> <!-- latest comments -->
         </p>
 	
-	<h3><?php echo $this->t("users.account_management") ?></h3> <!-- accounts -->
+	<h3><?php echo $this->t("users.account_management") ?></h3>
 	<p>
 		<a href="<?php echo $this->get_url_page("create_account") ?>" class="arrow"><?php echo $this->t("users.create") ?></a><br /> <!-- voeg account toe -->
 		<a class="arrow" href="<?php echo $this->get_url_page("change_password") ?>"><?php echo $this->t("editor.password.edit") ?></a><br /><!-- verander wachtwoord -->
@@ -73,14 +73,14 @@ if($logged_in)
 		<a class="arrow" href="<?php echo $this->get_url_page("account_management") ?>"><?php echo $this->t("users.account_management") ?></a><br /> <!-- accountbeheer -->
 	</p>
 	
-	<h3><?php echo $this->t("main.links") ?></h3> <!-- research groups -->
+	<h3><?php echo $this->t("main.links") ?></h3>
 	<p>
 		<a href="<?php echo $this->get_url_page("create_link") ?>" class="arrow"><?php echo $this->t("links.create") ?></a><br />
 		<a href="<?php echo $this->get_url_page("change_link") ?>" class="arrow"><?php echo $this->t("links.edit") ?></a><br />
 		<a href="<?php echo $this->get_url_page("delete_link") ?>" class="arrow"><?php echo $this->t("links.delete") ?></a>
 	</p>
 	
-	<h3><?php echo $this->t("main.categories") ?></h3><!--categorie-->
+	<h3><?php echo $this->t("main.categories") ?></h3>
 	<p>
 		<a href="<?php echo $this->get_url_page("create_category") ?>" class="arrow"><?php echo $this->t("categories.create") ?></a><!--nieuwe categorie-->
 	</p>
@@ -88,8 +88,13 @@ if($logged_in)
 		echo $cat_rename_list;
 		echo $cat_delete_list;
 	?>
+        
+        <h3><?php echo $this->t("main.widgets") ?></h3>
+	<p>
+		<a href="<?php echo $this->get_url_page("widgets") ?>" class="arrow"><?php echo $this->t("main.edit") ?></a>
+	</p>
 	
-	<h3><?php echo $this->t("main.reset") ?></h3><!--reset-->
+	<h3><?php echo $this->t("main.reset") ?></h3>
 	<p>
 		<a href="<?php echo $this->get_url_page("installing_database") ?>" class="arrow"><?php echo $this->t("main.reset") ?></a>
 	</p>

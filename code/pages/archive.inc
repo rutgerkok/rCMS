@@ -1,6 +1,6 @@
 <h2><?php echo $this->t("articles.archive") ?></h2>
 <?php
-$oDB = new Database($this);
+$oDB = $this->get_database();
 $oArticles = new Articles($this,$oDB,new Categories($oDB,$this));
 if(isset($_REQUEST['year']))
 {

@@ -1,23 +1,23 @@
 <?php
-
+// EXECUTE LOGIC
 $article_id = 0;
 if (isset($_REQUEST['id'])) {
-    $article_id = $_REQUEST['id'];
+    $article_id = (int) $_REQUEST['id'];
 }
 
 $oArticles = new Articles($this, $this->get_database());
-$article_code = $oArticles->get_article($article_id, new Comments($this, new Authentication($this)));
-unset($oArticles);
+$article = $oArticles->get_article($article_id);
+$article_code = $oArticles->get_article_text_full($article, new Comments($this, new Authentication($this)));
 
-//FOUTAFHANDELING
+unset($oArticles, $article);
+
+// ERROR HANDLING
 if (!$this->errorsdisplayed) {
     $this->echo_errors();
 }
 
-//ARTIKELEN WEERGEVEN
-if ($article_code) {
+// DISPLAY PAGE
+if($article_code) {
     echo $article_code;
-} else {
-    echo '&nbsp;';
 }
 ?>

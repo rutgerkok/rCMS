@@ -13,19 +13,14 @@ class Database {
         $this->website_object = $oWebsite;
 
         //Verbinding maken of laden
-        if ($oWebsite->get_pagevar('database_object')) {
-            $this->dbc = $oWebsite->get_pagevar('database_object')->get_connection();
-        } else {
-            $this->dbc = @mysqli_connect($oWebsite->get_sitevar('database_location'), $oWebsite->get_sitevar('database_user'), $oWebsite->get_sitevar('database_password'), $oWebsite->get_sitevar('database_name'));
-            $oWebsite->set_pagevar('db_connection', $this->dbc);
-        }
+        $this->dbc = @mysqli_connect("p:" . $oWebsite->get_sitevar('database_location'), $oWebsite->get_sitevar('database_user'), $oWebsite->get_sitevar('database_password'), $oWebsite->get_sitevar('database_name'));
 
         //Tabelprefix opslaan (scheelt weer een hoop functieaanroepen)
         $this->database_table_prefix = $oWebsite->get_sitevar('database_table_prefix');
 
         //Eventueel foutmelding
         if (!$this->dbc) {
-            exit("Failed to connect to database."); 
+            exit("Failed to connect to database.");
         }
     }
 
@@ -42,6 +37,7 @@ class Database {
         $this->query("DROP TABLE `menuitem`", false);
         $this->query("DROP TABLE `artikel`", false);
         $this->query("DROP TABLE `reacties`", false);
+        $this->query("DROP TABLE `widgets`", false);
 
         //categorietabel
         if ($this->query("CREATE TABLE `categorie` (`categorie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_naam` VARCHAR(30) NOT NULL) ENGINE = MyISAM", false)) {
@@ -61,11 +57,11 @@ class Database {
         $this->query("ALTER TABLE `artikel` ADD FULLTEXT `zoeken` (`artikel_titel`,`artikel_intro`,`artikel_inhoud`) ");
 
         //reactiestabel
-        $this->query("CREATE TABLE `reacties` ( `reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,  `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE= MyISAM;", false);
+        $this->query("CREATE TABLE `reacties` ( `reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM;", false);
         $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)");
 
         //widgettabel
-        $this->query("CREATE TABLE `widgets` ( `widget_id` INT NOT NULL , `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `sidebar_id` INT NOT NULL)");
+        $this->query("CREATE TABLE `widgets` ( `widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_order` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL)");
     }
 
     /**
@@ -84,7 +80,8 @@ class Database {
     }
 
     /**
-     * Fetches a row. Returns null if there are no more rows left.
+     * Fetches a row. Keys will be numeric. Returns null if there are no more
+     * rows left.
      * @param type $result
      * @return string[]
      */
@@ -131,7 +128,7 @@ class Database {
      * @return int
      */
     public function rows($result) {
-        if($result === false || $result == null) {
+        if ($result === false || $result == null) {
             return 0;
         }
         return(@mysqli_num_rows($result));

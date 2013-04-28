@@ -14,7 +14,7 @@ if($cat_id>0)
 	if(!empty($name))
 	{	//geef artikelen in die categorie weer
 		echo "<h2>" . $oCats->get_category_name($cat_id) . "</h2> \n";
-		echo '<p style="position:relative;top:-.9em">&nbsp;&nbsp;&nbsp;&nbsp;<a class="arrow" href="'.$this->get_url_page("category",$cat_id).'">'.$this->t("categories.show_all").'</a></p>'."\n";//toon alle categorie�n
+		echo '<p style="position:relative;top:-.9em">&nbsp;&nbsp;&nbsp;&nbsp;<a class="arrow" href="'.$this->get_url_page("category").'">'.$this->t("categories.show_all").'</a></p>'."\n";//toon alle categorie�n
 		$oArticles = new Articles($this,$this->get_database());
 		$text_to_display.= $oArticles->get_articles_list_category($cat_id,false,true);
 		unset($oArticles);//niet meer nodig

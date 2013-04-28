@@ -4,16 +4,6 @@
 
 
 class Articles {
-    /*
-     * Alles met artikelen: laat een overzicht zien van de nieuwste artikelen, of alleen een simpele lijst. Een artikel bekijken is ook mogelijk.
-     * METHODES
-     * - get_article_data($id) - geeft een array terug met informatie over het opgegeven artikel
-     * - get_articles_data($where_clausule) - geeft een array terug met informatie over de opgegeven artikelen (max 10 artikelen worden teruggegeven)
-     * - get_articles_list_category($category,$not = false,$metainfo = true,$lines_in_metainfo = false) - laat alle artikelen zien die (niet = arg1) tot de opgegeven categorie(=arg0) behoren. arg2 zorgt voor al dan niet metadata
-     * - get_article($id) - laat het artikel zien met de opgegeven id (=arg0)
-     * - get_articles_search($keywordunprotected,$page) - arg0 zoekwoord, arg1 het paginanummer
-     * - get_articles_archive($year = -1) arg0 het jaar, laat weg voor huidige jaar
-     */
 
     protected $website_object;
     protected $database_object;
@@ -25,52 +15,54 @@ class Articles {
         $this->category_object = $category_object;
     }
 
-    function get_article_data($id) {
-        $oDB = $this->database_object; //afkorting
-        $oWebsite = $this->website_object; //afkorting
+    // DATA FUNCTIONS
 
-        $id = (int) $id; //maak id veilig voor in gebruik query;
-
-        $sql = "SELECT artikel_titel, artikel_gemaakt, artikel_bewerkt, ";
-        $sql.= "artikel_intro, artikel_afbeelding, artikel_inhoud, ";
-        $sql.= "categorie_naam, gebruiker_naam, artikel_gepind, ";
-        $sql.= "artikel_verborgen, artikel_reacties FROM `artikel` ";
-        $sql.= "LEFT JOIN `categorie` USING ( categorie_id ) ";
-        $sql.= "LEFT JOIN `gebruikers` USING ( gebruiker_id) ";
-        $sql.= "WHERE artikel_id = $id ";
-
-        $result = $oDB->query($sql);
-
-        if ($result && $oDB->rows($result) == 1) {
-            //$title,$created, $last_edited,$intro,$featured_image,$body,$article_category, $author, $pinned, $hidden, $comments
-            return $oDB->fetch($result);
-        } else {
-            return null;
-        }
+    /**
+     * Returns an article with an id. Respects page protection. Id is casted.
+     * @param int $id The id of the article
+     * @return Article2|null The article, or null if it isn't found.
+     */
+    function get_article($id) {
+        return new Article($id, $this->database_object);
     }
 
-    function get_articles_data($where_clausule = "", $limit = 9, $start = 0) { //WAARSCHUWING: ZORG DAT ER NIKS GEVAARLIJKS STAAT IN DE $where_clausule
+    /**
+     * Gets more articles at once. Protected because of it's dangerous
+     * $where_clausule, which can be vulnerable to SQL injection.
+     * @param type $where_clausule Everything that should come after WHERE.
+     * @param type $limit Limit the number of rows.
+     * @param type $start Start position of the limit.
+     * @return array Array of Articles.
+     */
+    protected function get_articles($where_clausule = "", $limit = 9, $start = 0) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
+        $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
         $limit = (int) $limit; //stuk veiliger
+        $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
+        $sql.= "`artikel_intro`, `artikel_afbeelding`, `categorie_naam`, ";
+        $sql.= "`gebruiker_naam`, `artikel_gepind`, `artikel_verborgen`, ";
+        $sql.= "`artikel_id` FROM `artikel` ";
+        $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
+        $sql.= "LEFT JOIN `gebruikers` USING (`gebruiker_id`) ";
+        if (!$logged_in_staff) {
+            $sql.= "WHERE artikel_verborgen = 0 ";
+            if (!empty($where_clausule)) {
+                $sql.= "AND $where_clausule ";
+            }
+        } else {
+            if (!empty($where_clausule)) {
+                $sql.= "WHERE $where_clausule ";
+            }
+        }
 
-        $sql = "SELECT artikel_id, artikel_titel, artikel_intro, "; //haal id, titel, intro ...
-        $sql.= "artikel_afbeelding, artikel_gemaakt, artikel_bewerkt, "; //... afbeelding, datums, ...
-        $sql.= "categorie_naam, gebruiker_naam, artikel_gepind, artikel_verborgen "; //... categorie, auteur, gepind en verborgen op
-        $sql.= "FROM `artikel` "; //uit de tabel artikel
-        $sql.= "LEFT JOIN `categorie` USING ( categorie_id ) "; //join 1
-        $sql.= "LEFT JOIN `gebruikers` USING ( gebruiker_id ) "; //join 2
-        $sql.= "WHERE artikel_verborgen <= $logged_in "; //verborgen artikelen niet voor niet ingelogde gebruikers
-        if (!empty($where_clausule))
-            $sql.= "AND $where_clausule "; //nog een extra voorwaarde?
-        $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt DESC "; //sorteren
-        $sql.= "LIMIT $start , $limit"; //nooit teveel
+        $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt DESC ";
+        $sql.= "LIMIT $start , $limit";
 
         $result = $oDB->query($sql);
         if ($result && $oDB->rows($result) > 0) {
             while ($row = $oDB->fetch($result)) {
-                $return_value[] = $row;
+                $return_value[] = new Article($row[9], $row);
             }
             return $return_value;
         } else {
@@ -78,38 +70,35 @@ class Articles {
         }
     }
 
-    function get_article($id, Comments $oComments = null) {
-        $oDB = $this->database_object; //afkorting
-        $oWebsite = $this->website_object; //afkorting
+    // DISPLAY FUNCTIONS FOR INDIVIDUAL ARTICLES
 
-        $id = (int) $id; //maak id veilig voor in gebruik query;
+    function get_article_text_full(Article $article, Comments $oComments = null) {
+        // Store some variables for later use
+        $oWebsite = $this->website_object;
+        $id = (int) $article->id;
         $logged_in = $oWebsite->logged_in_staff();
         $return_value = '';
-        $article_data = $this->get_article_data($id);
 
-        if ($article_data != null) {
-            list($title, $created, $last_edited, $intro, $featured_image, $body, $article_category, $author, $pinned, $hidden, $show_comments) = $article_data;
-            unset($article_data); //ruimt op
+        if ($article->exists) {
+            if (!$article->hidden || $logged_in) {
 
-            if (!$hidden || $logged_in) {
-
-                $return_value.= "<h2>$title</h2>";
+                $return_value.= "<h2>{$article->title}</h2>";
 
                 // Echo the sidebar
                 $return_value.= '<div class="artikelzijkolom">';
-                if (!empty($featured_image))
-                    $return_value.= "<p><img src=\"$featured_image\" alt=\"$title\" /></p>";
+                if (!empty($article->featured_image))
+                    $return_value.= "<p><img src=\"{$article->featured_image}\" alt=\"{$article->title}\" /></p>";
                 $return_value.= '<p class="meta">';
-                $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $created;
-                if ($last_edited)
-                    $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $last_edited . "";
-                $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article_category;
-                $return_value.= " <br /> " . $oWebsite->t('articles.author') . ": $author"; //auteur
-                if ($pinned)
+                $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
+                if ($article->last_edited)
+                    $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited . "";
+                $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
+                $return_value.= " <br /> " . $oWebsite->t('articles.author') . ": $article->author"; //auteur
+                if ($article->pinned)
                     $return_value.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
-                if ($hidden)
+                if ($article->hidden)
                     $return_value.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
-                if ($logged_in && $show_comments)
+                if ($logged_in && $article->show_comments)
                     $return_value.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
                 $return_value.= '</p>';
                 if ($logged_in)
@@ -119,7 +108,7 @@ class Articles {
                             '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
                 if ($logged_in)
                     $return_value.= "</p>";
-                if ($show_comments) {
+                if ($article->show_comments) {
                     $return_value.= <<<EOT
                         <!-- AddThis Button BEGIN -->
                             <div class="addthis_toolbox addthis_default_style ">
@@ -136,38 +125,38 @@ class Articles {
 EOT;
                 }
                 $return_value.= '</div>';
-                
+
                 $return_value.= '<div class="artikel">';
                 //artikel
-                if ($logged_in && $hidden)
+                if ($logged_in && $article->hidden)
                     $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
-                $return_value.= '<p class="intro">' . $intro . '</p>';
-                $return_value.= $body;
+                $return_value.= '<p class="intro">' . $article->intro . '</p>';
+                $return_value.= $article->body;
                 // Show comments
-                if ($show_comments && $oComments != null) {
+                if ($article->show_comments && $oComments != null) {
                     $comments = $oComments->get_comments_article($id);
                     $comment_count = count($comments);
-                    
+
                     // Title 
                     $return_value.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
-                    if($comment_count > 0 ) {
+                    if ($comment_count > 0) {
                         $return_value.= ' (' . $comment_count . ')';
                     }
                     $return_value.= "</h3>\n\n";
-                    
+
                     // "No comments found" if needed
-                    if($comment_count == 0) {
+                    if ($comment_count == 0) {
                         $return_value.= '<p><em>' . $oWebsite->t("comments.no_comments_found") . '</em></p>';
                     }
-                    
+
                     // Comment add link
                     $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
                     // Show comments
-                    
+
                     $current_user_id = $oWebsite->get_current_user_id();
                     $show_actions = $oWebsite->logged_in_staff();
-                    foreach($comments as $comment) {
-                        if($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
+                    foreach ($comments as $comment) {
+                        if ($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
                             $return_value.= $oComments->get_comment_html($comment, true);
                         } else {
                             $return_value.= $oComments->get_comment_html($comment, false);
@@ -185,13 +174,67 @@ EOT;
         return $return_value;
     }
 
-///////////////////////////////////////////	
+    function get_article_text_small(Article $article, $show_metainfo, $show_edit_delete_links) {
+        $oWebsite = $this->website_object;
+        $return_value = "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
+        $return_value.= "<h3>" . $article->title . "</h3>\n";
+        if ($show_metainfo) {
+            $return_value.= '<p class="meta">';
+            $return_value.= $oWebsite->t('articles.created') . " " . $article->created . ' - '; //gemaakt op
+            if ($article->last_edited) {
+                $return_value.= lcfirst($oWebsite->t('articles.last_edited')) . " " . $article->last_edited . '<br />'; //laatst bewerkt op
+            }
+            $return_value.= $oWebsite->t('main.category') . ": " . $article->category; //categorie
+            $return_value.= " - " . $oWebsite->t('articles.author') . ": $article->author"; //auteur
+            if ($article->pinned) {
+                $return_value.= " - " . $oWebsite->t('articles.pinned'); //vastgepind?
+            }
+            if ($article->hidden) {
+                $return_value.= " - " . $oWebsite->t('articles.hidden'); //verborgen?
+            }
+            $return_value.= '</p>';
+        }
 
+        if (!empty($article->featured_image)) {
+            $return_value.= "<img src=\"$article->featured_image\" alt=\"{$article->title}\" />";
+        }
 
-    function get_articles_list_category($categories, $not = false, $metainfo = true, $limit = 9) {
-        $oDB = $this->database_object; //afkorting
-        $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
+        $return_value.= '<p class="intro ';
+        if (!empty($article->featured_image)) {
+            $return_value.= 'introsmall'; //maak introtekst kleiner
+        }
+        $return_value.= '">';
+
+        $return_value.= $article->intro;
+
+        $return_value.= "<br />";
+        $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
+        if ($show_edit_delete_links) {
+            $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+                    '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $article->id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
+        }
+        $return_value.= "</p>";
+
+        $return_value.= '<p style="clear:both"></p>';
+
+        $return_value.= "</div>";
+
+        return $return_value;
+    }
+
+    function get_article_text_listentry(Article $article) {
+        $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
+        $return_value.= 'title="' . $article->intro . '">' . $article->title . "</a></li>\n";
+        return $return_value;
+    }
+
+    // DISPLAY FUNCTIONS FOR MULTIPLE ARTICLES
+
+    function get_articles_list_category($categories, $outside_categories = false, $show_metainfo = false, $limit = 9) {
+        $oWebsite = $this->website_object;
+
+        // Should hidden articles be shown?
+        $logged_in_staff = $oWebsite->logged_in_staff();
 
         if (!is_array($categories)) { //maak een array
             $category_id = $categories;
@@ -203,7 +246,7 @@ EOT;
         foreach ($categories as $count => $category_id) {
             $category_id = (int) $category_id; //beveiliging
 
-            if ($not) { //alles behalve deze categorie
+            if ($outside_categories) { //alles behalve deze categorie
                 if ($count > 0)
                     $where_clausule.=" AND ";
                 $where_clausule.="categorie_id != $category_id";
@@ -216,67 +259,29 @@ EOT;
         }
 
         //haal resultaten op
-        $result = $this->get_articles_data($where_clausule, $limit);
+        $result = $this->get_articles($where_clausule, $limit);
 
         //verwerk resultaten
         if ($result) {
             $return_value = '';
-            $category = ($not) ? 0 : $categories[0];
+            $category = ($outside_categories) ? 0 : $categories[0];
 
-
-            if ($logged_in) {
-                if ($not) {
+            if ($logged_in_staff) {
+                if ($outside_categories) {
                     $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
                 }//maak nieuw artikel
                 else {
                     $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
                 }//maak nieuw artikel in categorie
             }
-            foreach ($result as $row) {
-                list($id, $title, $intro, $featured_image, $created, $last_edited, $article_category, $author, $pinned, $hidden) = $row;
-                $return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
-                $return_value.= "<h3>$title</h3>";
-                if ($metainfo)
-                    $return_value.= '<p class="meta">';
-                if ($metainfo)
-                    $return_value.= $oWebsite->t('articles.created') . " " . $created . ' - '; //gemaakt op
-                if ($metainfo && $last_edited)
-                    $return_value.= lcfirst($oWebsite->t('articles.last_edited')) . " " . $last_edited . '<br />'; //laatst bewerkt op
-                if ($metainfo)
-                    $return_value.= $oWebsite->t('main.category') . ": " . $article_category; //categorie
-                if ($metainfo)
-                    $return_value.= " - " . $oWebsite->t('articles.author') . ": $author"; //auteur
-                if ($metainfo && $pinned)
-                    $return_value.= " - " . $oWebsite->t('articles.pinned'); //vastgepind?
-                if ($metainfo && $hidden)
-                    $return_value.= " - " . $oWebsite->t('articles.hidden'); //verborgen?
-                if ($metainfo)
-                    $return_value.= '</p>';
-
-                if (!empty($featured_image))
-                    $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
-
-                $return_value.= '<p class="intro ';
-                if (!empty($featured_image))
-                    $return_value.= 'introsmall'; //maak introtekst kleiner
-                $return_value.= '">';
-
-                $return_value.= $intro;
-
-                $return_value.= "<br />";
-                $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $id) . '">' . $oWebsite->t('main.read') . '</a>';
-                if ($logged_in)
-                    $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                            '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
-                $return_value.= "</p>";
-
-                $return_value.= '<p style="clear:both"></p>';
-
-                $return_value.= "</div>";
+            
+            // Display articles
+            foreach ($result as $article) {
+                $return_value .= $this->get_article_text_small($article, $show_metainfo, $logged_in_staff);
             }
 
-            if ($logged_in) {
-                if ($not) {
+            if ($logged_in_staff) {
+                if ($outside_categories) {
                     $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
                 }//maak nieuw artikel
                 else {
@@ -287,20 +292,41 @@ EOT;
             return $return_value;
         } else {
 
-            if ($logged_in) {
+            if ($logged_in_staff) {
                 return '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
             } else {
                 return '';
             }
         }
     }
+    
+    function get_articles_small_list($categories, $limit = 9) {
+        if (!is_array($categories)) { // Create array if needed
+            $category_id = $categories;
+            unset($categories);
+            $categories[0] = $category_id;
+        }
+        
+        $where_clausule = "";
+        foreach ($categories as $count => $category_id) {
+            $category_id = (int) $category_id; // Security
+            if ($count > 0)
+                $where_clausule.=" OR ";
+            $where_clausule.="`categorie_id` = $category_id";
+        }
+        
+        $result = $this->get_articles($where_clausule, $limit);
+        $return_value = '<ul class="linklist">';
+        foreach ($result as $article) {
+            $return_value.= $this->get_article_text_listentry($article);
+        }
+        return $return_value . "</ul>";
+    }
 
-///////////////////////////////////////////	
     function get_articles_search($keywordunprotected, $page) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
-        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
-        $metainfo = true; //waarom zou je anders willen?
+        $logged_in_staff = $oWebsite->logged_in_staff();
         $articles_per_page = 5; //vijf resultaten per pagina
         $start = ($page - 1) * $articles_per_page;
 
@@ -312,26 +338,22 @@ EOT;
 
 
         //aantal ophalen
-        $sql = "SELECT count(*) FROM `artikel` WHERE artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%' ";
-        $result = $oDB->query($sql);
-        $result = $oDB->fetch($result);
-        $resultcount = (int) $result[0];
-
-
+        $articlecount_sql = "SELECT count(*) FROM `artikel` WHERE artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%' ";
+        $articlecount_result = $oDB->query($articlecount_sql);
+        $articlecount_resultrow = $oDB->fetch($articlecount_result);
+        $resultcount = (int) $articlecount_resultrow[0];
+        unset($articlecount_sql, $articlecount_result, $articlecount_resultrow);
 
         //resultaat ophalen
-        $result = $this->get_articles_data(
-                "(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start
-        );
+        $results = $this->get_articles("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start);
 
         //artikelen ophalen
         $return_value = '';
 
-        if ($result) {
+        if ($results) {
             //Geef aantal resultaten weer
-            $return_value.= ($resultcount == 1) ? "<p>" . $oWebsite->t('articles.search.result_found') . "</p>" : "<p>" . str_replace('#', $resultcount, $oWebsite->t('articles.search.results_found')) . "</p>";
+            $return_value.= ($resultcount == 1) ? "<p>" . $oWebsite->t('articles.search.result_found') . "</p>" : "<p>" . $oWebsite->t_replaced('articles.search.results_found', $resultcount) . "</p>";
 
-            $i = 0; //vijf keer artikel weergeven, zesde keer alleen linkje met meer
             //paginanavigatie
             $return_value.= '<p class="lijn">';
             if ($page > 1)
@@ -341,47 +363,8 @@ EOT;
                 $return_value.= ' <a class="arrow" href="' . $oWebsite->get_url_page("search", 0, array("searchbox" => $keywordunprotected, "page" => $page + 1)) . '">' . $oWebsite->t('articles.page.next') . '</a>'; //volgende pagina
             $return_value.= '</p>';
 
-            foreach ($result as $row) {
-                list($id, $title, $intro, $featured_image, $created, $last_edited, $article_category, $author, $pinned, $hidden) = $row;
-                $return_value.= "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
-                $return_value.= "<h3>$title</h3>";
-                if ($metainfo)
-                    $return_value.= '<p class="meta">';
-                if ($metainfo)
-                    $return_value.= $oWebsite->t('articles.created') . " " . $created . ' - '; //gemaakt op
-                if ($metainfo && $last_edited)
-                    $return_value.= lcfirst($oWebsite->t('articles.last_edited')) . " " . $last_edited . '<br />'; //laatst bewerkt op
-                if ($metainfo)
-                    $return_value.= $oWebsite->t('main.category') . ": " . $article_category; //categorie
-                if ($metainfo)
-                    $return_value.= " - " . $oWebsite->t('articles.author') . ": $author"; //auteur
-                if ($metainfo && $pinned)
-                    $return_value.= " - " . $oWebsite->t('articles.pinned'); //vastgepind?
-                if ($metainfo && $hidden)
-                    $return_value.= " - " . $oWebsite->t('articles.hidden'); //verborgen?
-                if ($metainfo)
-                    $return_value.= '</p>';
-
-                if (!empty($featured_image))
-                    $return_value.= "<img src=\"$featured_image\" alt=\"$title\" />";
-
-                $return_value.= '<p class="intro ';
-                if (!empty($featured_image))
-                    $return_value.= 'introsmall'; //maak introtekst kleiner
-                $return_value.= '">';
-
-                $return_value.= $intro;
-
-                $return_value.= "<br />";
-                $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $id) . '">' . $oWebsite->t('main.read') . '</a>';
-                if ($logged_in)
-                    $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                            '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
-                $return_value.= "</p>";
-
-                $return_value.= '<p style="clear:both"></p>';
-
-                $return_value.= "</div>";
+            foreach ($results as $result) {
+                $return_value .= $this->get_article_text_small($result, true, $logged_in_staff);
             }
 
             //paginanavigatie
@@ -400,7 +383,8 @@ EOT;
         return $return_value;
     }
 
-///////////////////////////////////////////	
+    // MISCELLANEOUS FUNCTIONS
+
     function get_articles_archive($year = 0, $cat_display = 0) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
@@ -508,6 +492,65 @@ EOT;
             }
         }
         return $return_value;
+    }
+
+}
+
+/**
+ * Represents a single article
+ */
+class Article {
+
+    public $exists;
+    public $id;
+    public $title;
+    public $created;
+    public $last_edited;
+    public $intro;
+    public $featured_image;
+    public $category;
+    public $author;
+    public $pinned;
+    public $hidden;
+    public $body;
+    public $show_comments;
+
+    public function __construct($id, $data) {
+        $id = (int) $id;
+        $this->id = $id;
+        if ($data instanceof Database) {
+            // Fetch from database
+            $this->id = (int) $id;
+            $oDatabase = $data;
+            $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
+            $sql.= "`artikel_intro`, `artikel_afbeelding`, ";
+            $sql.= "`categorie_naam`, `gebruiker_naam`, `artikel_gepind`, ";
+            $sql.= "`artikel_verborgen`, `artikel_inhoud`, `artikel_reacties` FROM `artikel` ";
+            $sql.= "LEFT JOIN `categorie` USING ( `categorie_id` ) ";
+            $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` ) ";
+            $sql.= "WHERE artikel_id = {$this->id} ";
+            $result = $oDatabase->query($sql);
+            $data = $oDatabase->fetch($result);
+        }
+        // Set all variables
+        if (is_array($data) && count($data) >= 9) {
+            $this->title = $data[0];
+            $this->created = $data[1];
+            $this->last_edited = $data[2];
+            $this->intro = $data[3];
+            $this->featured_image = $data[4];
+            $this->category = $data[5];
+            $this->author = $data[6];
+            $this->pinned = (boolean) $data[7];
+            $this->hidden = (boolean) $data[8];
+            if (count($data) >= 11) {
+                $this->body = $data[9];
+                $this->show_comments = (boolean) $data[10];
+            }
+            $this->exists = true;
+        } else {
+            $this->exists = false;
+        }
     }
 
 }

@@ -224,6 +224,20 @@
 		{
 			width: 55%;
 		}
+                
+                /* Linklijsten */
+                ul.linklist
+		{
+			margin:0;
+			padding:0;
+			list-style-type:none;
+		}
+		ul.linklist li
+		{
+			border-bottom: 1px dotted #999999;
+			padding:5px;
+			font-family: verdana, sans-serif;
+		}
 		
 		/*Pagina's met een artikel */
 		div.artikel
@@ -391,18 +405,6 @@
 			{
 				width:30%;
 				float:left;
-			}
-			div#nav ul
-			{
-				margin:0;
-				padding:0;
-				list-style-type:none;
-			}
-			div#nav ul li
-			{
-				border-bottom: 1px dotted #999999;
-				padding:5px;
-				font-family: verdana, sans-serif;
 			}
 		
 		/* horizontale balk */

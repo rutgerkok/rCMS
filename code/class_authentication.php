@@ -83,7 +83,7 @@ class Authentication {
         return false;
     }
 
-    function check($minimum_rank, $showform) {
+    function check($minimum_rank, $showform = true) {
         $minimum_rank = (int) $minimum_rank;
         $current_user = $this->get_current_user();
 
@@ -108,7 +108,7 @@ class Authentication {
     function echo_login_form($minimum_rank = 0) { //laat een inlogformulier zien
         //huidige pagina ophalen
         $oWebsite = $this->website_object;
-        $p = urlencode($oWebsite->get_pagevar('file'));
+        $p = urlencode($oWebsite->get_page_id());
         $logintext = $oWebsite->t("users.please_log_in");
         if ($minimum_rank != self::$USER_RANK)
             $logintext.=' <strong><em> ' . $oWebsite->t("users.as_administrator") . '</em></strong>';

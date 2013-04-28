@@ -1,0 +1,8 @@
+no_widgets_found=Geen widgets gevonden.
+installed_widgets=Geïnstalleerde widgets
+view_website=Bekijk de website van deze widget
+created_by=Gemaakt door
+add_to_sidebar=Voeg toe aan zijbalk #
+widgets_in_sidebar=Widgets in zijbalk #
+sidebar=Zijbalk
+title=Titel
