@@ -5,11 +5,9 @@ $this->config['theme'] =  "rkok";//name of theme directory
 $this->config['title'] =  "Test site van rCMS";//title of site
 $this->config['hometitle'] =  "Test site van rCMS";
 $this->config['copyright'] = "Copyright 2013 - built with rCMS";
-$this->config['sidebarcategories'] = array(2);//categories to display in sidebar
 $this->config['locales'] = array('nl_NL', 'nl', 'du','nld','dutch');//locales
 $this->config['password'] = "";//password to view your site
-$this->config['twitter'] = array("Twitter","Test van twitter",'CMS');//Twitter feed! Title-description-search
-$this->config['language'] = "en";
+$this->config['language'] = "nl";
 $this->config['userscancreateaccounts'] = true; // Whether visitors can create accounts
 
 //DATABASE SETTINGS

@@ -13,14 +13,14 @@ class Database {
         $this->website_object = $oWebsite;
 
         //Verbinding maken of laden
-        $this->dbc = @mysqli_connect("p:" . $oWebsite->get_sitevar('database_location'), $oWebsite->get_sitevar('database_user'), $oWebsite->get_sitevar('database_password'), $oWebsite->get_sitevar('database_name'));
+        $this->dbc = @mysqli_connect($oWebsite->get_sitevar('database_location'), $oWebsite->get_sitevar('database_user'), $oWebsite->get_sitevar('database_password'), $oWebsite->get_sitevar('database_name'));
 
         //Tabelprefix opslaan (scheelt weer een hoop functieaanroepen)
         $this->database_table_prefix = $oWebsite->get_sitevar('database_table_prefix');
 
         //Eventueel foutmelding
         if (!$this->dbc) {
-            exit("Failed to connect to database.");
+            exit("Failed to connect to database: " . mysqli_connect_error());
         }
     }
 
@@ -34,7 +34,7 @@ class Database {
         //oude tabellen verwijderen
         $this->query("DROP TABLE `categorie`", false);
         $this->query("DROP TABLE `gebruikers`", false);
-        $this->query("DROP TABLE `menuitem`", false);
+        $this->query("DROP TABLE `links`", false);
         $this->query("DROP TABLE `artikel`", false);
         $this->query("DROP TABLE `reacties`", false);
         $this->query("DROP TABLE `widgets`", false);
@@ -46,22 +46,23 @@ class Database {
 
         //gebruikerstabel
         if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(20) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam", false)) {
-            $this->query("INSERT INTO `gebruikers` ( `gebruiker_admin`, `gebruiker_login`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email`) VALUES ( '1', 'admin', 'De beheerder', '" . md5(sha1('admin')) . "', '')");
+            $this->query("INSERT INTO `gebruikers` ( `gebruiker_admin`, `gebruiker_login`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email`) VALUES ( '1', 'admin', 'admin', '" . md5(sha1('admin')) . "', '')");
         }
 
         //menutabel
-        $this->query("CREATE TABLE `menuitem` (`menuitem_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menuitem_url` VARCHAR(200) NOT NULL, `menuitem_naam` VARCHAR(50) NOT NULL, `menuitem_type` INT UNSIGNED NOT NULL) ENGINE = MyISAM", false);
+        $this->query("CREATE TABLE `links` (`link_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_id` INT UNSIGNED NOT NULL, `link_url` VARCHAR(200) NOT NULL, `link_text` VARCHAR(50) NOT NULL) ENGINE = MyISAM", false);
+        $this->query("CREATE TABLE `menus` (`menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_name` VARCHAR(50) NOT NULL) ENGINE = MyISAM", false);
 
         //artikeltabel
         $this->query("CREATE TABLE  `artikel` (`artikel_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NOT NULL, `artikel_titel` VARCHAR(100) NOT NULL, `artikel_afbeelding` VARCHAR(150) NULL, `artikel_gepind` TINYINT(1) NOT NULL, `artikel_verborgen` TINYINT(1) NOT NULL, `artikel_reacties` TINYINT(1) NOT NULL, `artikel_intro` TEXT NOT NULL, `artikel_inhoud` TEXT NULL, `artikel_gemaakt` DATETIME NOT NULL, `artikel_verwijsdatum` DATETIME NULL,`artikel_bewerkt` DATETIME NULL) ENGINE = MyISAM", false);
         $this->query("ALTER TABLE `artikel` ADD FULLTEXT `zoeken` (`artikel_titel`,`artikel_intro`,`artikel_inhoud`) ");
 
         //reactiestabel
-        $this->query("CREATE TABLE `reacties` ( `reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM;", false);
-        $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)");
+        $this->query("CREATE TABLE `reacties` ( `reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM", false);
+        $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)", false);
 
         //widgettabel
-        $this->query("CREATE TABLE `widgets` ( `widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_order` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL)");
+        $this->query("CREATE TABLE `widgets` ( `widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_priority` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL) ENGINE=MyISAM", false);
     }
 
     /**

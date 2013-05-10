@@ -7,43 +7,42 @@ body, html
 p, h1, h2, h3, h4
 {
     font-family: verdana, sans-serif;
-    color: #595959;
+    color: #4a7180;
     margin: 1px 3px 10px 3px;
     padding:1px;
 }
 h2
 {
+    color:#8bb0c8;
+    text-transform:uppercase;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size:150%;
+    font-size:130%;
     margin: 3px 3px 10px 3px;
 }
 h3
 {
+    color: #990000;
     font-size: 100%;
     margin: 12px 3px 1px 3px;
 }
 li
 {
     font-family: verdana, sans-serif;
-    color: #595959;
+    color: #4a7180;
 }
 
 /*tabellen*/
 table
 {
+    background:#ddd;
     border-collapse:collapse;
 }
 th,td
 {
     border: 2px solid white;
-    background: #d6d6c3;
     font-family: verdana, sans-serif;
+    color: #4a7180;
     text-align:left;
-}
-th
-{
-    color: white;
-    background:#9a9a79;
 }
 table.layout
 {
@@ -54,7 +53,6 @@ table.layout th,table.layout td
 {
     background: transparent;
     border: none;
-    padding:5px;
 }
 div#contentadmin th,div#contentadmin td
 {
@@ -67,7 +65,7 @@ input, textarea
     font-family: verdana, sans-serif;
     color: #4a7180;
     background:#fafafa;
-    border:1px solid #9a9a79;
+    border:1px solid #8592bb;
     border-radius: 4px;
     box-shadow: inset 2px 2px 2px #ddd;
     padding:3px;
@@ -79,18 +77,18 @@ input:focus,textarea:focus,select:focus
 }
 fieldset
 {
-    border: 2px solid #9a9a79;
+    border: 2px solid #8592bb;
 }
 fieldset.panel
 {
-    width:29%;
+    width:45%;
     float:left;
     min-height:200px;
     margin:0.5%;
 }
 legend
 {
-    font-family: verdana,sans-serif;
+    font-family:verdana,sans-serif;
     font-weight:bold;
 }
 .button,button/*ook geschikt voor links*/
@@ -118,17 +116,16 @@ legend
 }
 .checkbox
 {
-    background:white;
-    padding:0;
+    background:transparent;
     border:0;
-    border-radius:0;
     box-shadow:none;
 }
+
 
 /*links*/
 a
 {
-    color:#6b966b;
+    color:#990000;
     text-decoration: none;
 }
 a.arrow
@@ -173,7 +170,7 @@ a img
 }
 
 
-/* klassen */
+/* Errors */
 div.fout
 {
     font-family: verdana, sans-serif;
@@ -182,36 +179,6 @@ div.fout
     border-bottom: 1px dotted #999999;
     border-top: 1px dotted #999999;
     background: #fafbfd;
-}
-
-/*Pagina's met artikellijsten */
-div.artikelintro
-{	/*gebruikt bij de artikelpagina*/
-    margin:2%;
-    min-height: 5em;
-}
-div.artikelintro:hover
-{
-    background: #f7f7f7;
-}
-p.meta
-{
-    color: #bbb;
-    font-style: italic;
-}
-div.artikelintro img
-{
-    max-width: 38%;
-    float: left;	
-}
-div.artikelintro p.intro
-{
-    float:left;
-    width: 95%;
-}
-div.artikelintro p.introsmall
-{
-    width: 55%;
 }
 
 /* Linklijsten */
@@ -227,22 +194,7 @@ ul.linklist li
     padding:5px;
     font-family: verdana, sans-serif;
 }
-
-/* Pages with an extra sidebar on the left */
-div#sidebarpagecontent
-{	/*gebruikt bij de artikelpagina*/
-    float:left;
-    border-left: 1px #bbbbbb dotted;
-    padding-left: 1%;
-    width:69%;
-    margin-left:0;
-    margin-right:0;
-}
-div#sidebarpagecontent p.intro
-{
-    font-weight: bold;
-    font-style: italic;
-}
+/* Page sidebars */
 div#sidebarpagesidebar
 {
     float:left;
@@ -254,7 +206,29 @@ div#sidebarpagesidebar img
     max-width: 100%;
     margin:1px;
 }
-
+div#sidebarpagecontent
+{	/*gebruikt bij de artikelpagina*/
+    float:left;
+    border-left: 1px #bbbbbb dotted;
+    padding-left: 1%;
+    width:69%;
+    margin-left:0;
+    margin-right:0;
+}
+div#sidebarpagecontent img
+{	/*gebruikt bij de artikelenpagina*/
+    clear:both;
+    margin-bottom:10px;
+}
+p.meta
+{
+    color: #bbb;
+    font-style: italic;
+}
+p.intro
+{
+    color: #666666;
+}
 p.lijn
 {
     border-top: 1px #999999 dotted;
@@ -269,15 +243,12 @@ span.required
 }
 span.eventdate
 {
-    color:#fff;
-    display:block;
-    background-color:#6b966b;
+    color:#990000;
     font-weight:bold;
-    text-decoration:none;
 }
 td.highlight:hover
 {
-    background:#e4f2e9;
+    background:#fff;
     cursor:pointer;
 }
 h3.notable
@@ -289,67 +260,110 @@ h3.notable
 /* tooltip */
 #tooltip
 {
-    border:solid 1px white;
-    background: #e4f2e9;
-    background: rgba(228,242,233,0.8);
-    min-width:100px; 
-    padding:1px;
+    border:solid 1px #0c2577;
+    padding:3px;
     position:absolute; 
-    z-index:100;	
+    z-index:100;
+    background:#8592bb;	
     font-family: verdana, sans-serif;
-    box-shadow: white 0 0 20px;
+    color:white;
+}
+#tooltip a
+{
+    color:white;
 }
 
-/* BOXMODEL */
-/* inlogscherm */
+/* BOXMODEL 
+        /* inlogscherm */
 #login
 {
-    background:#e4f2e9;
+    background:white;
     width: 50%;
     margin: 100px auto auto auto;
-    padding:25px;
-    box-shadow: white 0 0 20px;
+    border: 1px solid #0c2577;
 }
 /* body en container */
 body
 {
-    background:#416f4a url(images/achtergrond.jpg) top center no-repeat;
+    background:#dfe3ee;
     height:100%;
 }
 div#container
 {
     margin: 22px auto;
     padding:0;
-    width:950px;
-    background:white url(images/stippellijntje.png) top right repeat-y;
+    width:751px;
+    background:white url(images/right.png) top right repeat-y;
 }
 div#containerwrapper
-{
-    background:transparent;
+{ /* nodig voor extra achtergrond */
+    background: transparent url(images/blocks.png) bottom right no-repeat;
 }
 
-/* header en zoekvak */
+/* header, breadcrumbs en zoekvak */
+div#breadcrumbs
+{
+    background:#dfe3ee;
+    padding-bottom:2px;
+    overflow:hidden;
+    position: relative; /* for div#breadcrumbs #accountlinks */
+}
+div#breadcrumbs a
+{
+    color:#336699;
+    font-family: verdana, sans-serif;
+    font-size:80%;
+    padding: 0 0 0 5px;
+    background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
+}
+div#breadcrumbs a.first
+{
+    padding: 0;
+    background: none;
+}
+div#breadcrumbs #accountlinks
+{
+    text-align: right;
+    position: absolute;
+    right: 0px;
+    top: -10px;
+}
+div#breadcrumbs #accountlinks li
+{
+    padding: 0 4px;
+    margin: 0;
+    list-style-type: none;
+    float: right;
+    border-right: 1px solid #90b7c6;
+}
+div#breadcrumbs #accountlinks li a
+{
+    background: none; /* disable those arrows */
+    padding: 0;
+    margin: 0;
+}
 div#header
 {
-    background:#e4f2e9 url(images/logo.png) 15px center no-repeat;
-    height:100px;
+    background:#0c2577 url(images/logo.gif) 15px center no-repeat;
+    min-height:85px;
 }
 div#header h1
 {
-    color:#6b966b;
+    float:right;
+    color:white;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size:485%;
-    margin:0;
-    padding:23px 0 0 180px;
+    font-size:140%;
+    margin:40px 10px 0 0;
     font-weight:normal;
-    text-align:left;
+    max-width:327px;
+    text-align:right;
     height:1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
 }
 div#header div#search
 {
     float:right;
     margin-right:20px;
-    margin-top:5px;
+    margin-top:40px;
 }
 div#header div#search #searchbox
 {
@@ -362,7 +376,8 @@ div#header div#search #searchbox
 /* content 	*/
 div#content
 {
-    width:39%;
+    background: white;
+    width:40%;
     clear:left;
     float:left;
     min-height:600px;
@@ -371,7 +386,7 @@ div#content
 }
 div#contentwide
 {
-    background: white;
+    background: white url(images/blocks.gif) bottom right no-repeat;
     width:95%;
     padding-right:5%;
     clear:left;
@@ -382,7 +397,7 @@ div#contentwide
 }
 div#contentadmin
 {
-    background: #e4f2e9;
+    background: #e9e9e9 url(images/blocks.gif) bottom right no-repeat;
     width:95%;
     padding-right:5%;
     clear:left;
@@ -397,6 +412,7 @@ div#sidebar
 {
     width:30%;
     float:left;
+    background:#f8f9fb;
     height:100%;
 }
 
@@ -406,13 +422,26 @@ div#nav
 {
     width:30%;
     float:left;
+    background:#f8eea9;
+}
+div#nav ul
+{
+    margin:0;
+    padding:0;
+    list-style-type:none;
+}
+div#nav ul li
+{
+    border-bottom: 1px dotted #999999;
+    padding:5px;
+    font-family: verdana, sans-serif;
 }
 
 /* horizontale balk */
 div#hornav
 {
-    background: #9a9a79;
-    min-height:19px;
+    background: #8592bb;
+    height:1.5em;
     padding-left:10px;
 }
 div#hornav ul
@@ -425,52 +454,40 @@ div#hornav ul
 div#hornav ul li
 {
     float:left;
-    background: transparent;
+    background: #8592bb;
     border-style: none dotted none none;
     border-width: 0 1px 0 0;
-    border-color: white;
+    border-color: #0c2577;
     height:100%;
     color:white;
 }
 div#hornav ul li a
 {
-    color: #fff;
+    color: white;
     text-decoration:none;
     padding: 2px 5px 2px 5px;
     font-family: verdana, sans-serif;
     font-size: 85%;
     display:block;
+
     height:100%;
 }
 div#hornav ul li a:hover
 {
-    background:transparent;
-    color: #303030;
-    text-decoration: none;
-    border: 0;
-}
-
-/* inlog */
-div#hornav ul#accountlinks
-{
-    float:right;
-}
-div#hornav ul#accountlinks li
-{
-    border-style: none none none dotted;
-    border-width: 0 0 0 1px;
-    border-color: white;
+    background:#dfe3ee;
+    color: #0c2577;
 }
 
 /* footer */
 div#footer
 {
     clear:both;
-    background: #9a9a79;
+    background: #0c2577 url(images/blue.png) bottom right repeat-y;
     color: white;
     padding:2px 0 0 0;
-    min-height:19px;
+    min-height:24px;
     text-align: right;
-    font-family: verdana, sans-serif;
-    padding-right:5px;
+    font-size: 125%;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    padding-right:35px;
 }

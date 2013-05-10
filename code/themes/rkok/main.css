@@ -1,430 +1,429 @@
 /* DITJES EN DATJES 
-	/*lettertype en lettergrote */
-		body, html
-		{
-			font-size: 92%;
-                        margin: 0;
-		}
-		p, h1, h2, h3, h4
-		{
-			font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
-			color: #454545;
-			margin: 1px 3px 10px 3px;
-			padding: 1px;
-		}
-		h2
-		{
-			font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-			font-size: 300%;
-                        font-weight: normal;
-			margin: 3px 3px 10px 3px;
-		}
-		h3
-		{
-                        font-size: 100%;
-                        font-weight: bold;
-			margin: 12px 3px 2px 3px;
-		}
-	
-	/*tabellen*/
-		table
-		{
-			border-collapse:separate;
-                        margin-top: 10px;
-                        margin-bottom: 10px;
-		}
-		th,td
-		{
-			font-family: verdana, sans-serif;
-			text-align:left;
-		}
-		th
-		{
+        /*lettertype en lettergrote */
+body, html
+{
+    font-size: 92%;
+    margin: 0;
+}
+p, h1, h2, h3, h4
+{
+    font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+    color: #454545;
+    margin: 1px 3px 10px 3px;
+    padding: 1px;
+}
+h2
+{
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 300%;
+    font-weight: normal;
+    margin: 3px 3px 10px 3px;
+}
+h3
+{
+    font-size: 100%;
+    font-weight: bold;
+    margin: 12px 3px 2px 3px;
+}
 
-		}
-		table.layout
-		{
-			width:98%;
-			border:0;
-		}
-		table.layout th,table.layout td
-		{
-			padding:5px;
-		}
-		
-	/*formulieren*/
-		input, textarea
-		{
-			font-family: verdana, sans-serif;
-			color: #4a7180;
-			background:#fafafa;
-			border:1px solid #c9c9c9;
-			padding:3px;
-			margin:2px;
-		}
-		input:focus,textarea:focus,select:focus
-		{
-			background:#efefef;
-		}
-		fieldset
-		{
-			border: 2px solid #c9c9c9;
-		}
-		fieldset.panel
-		{
-			width:29%;
-			float:left;
-			min-height:200px;
-			margin:0.5%;
-		}
-		legend
-		{
-			font-family: verdana,sans-serif;
-			font-weight:bold;
-		}
-		.button, button/*ook geschikt voor links*/
-		{
-			background: #ddd; 
-			border: 0;
-			color: #444444;
-			box-shadow: none;
-			text-decoration: none;
-			color: black;
-			padding: 3px;
-			border: 1px solid #ddd;
-                        cursor: pointer;
-			font-size: 100%;
-		}
-		.button:hover, button:hover
-		{
-			background:#f2f2f2;
-                        border: 1px solid #ddd;
-		}
-		.button:focus,button:focus
-		{
-			background:#eee; /*geen andere achtergrond */
-		}
-		.checkbox
-		{
-			background:white;
-			padding:0;
-			border:0;
-			border-radius:0;
-			box-shadow:none;
-		}
-		
-	
-	/*links*/
-		a
-		{
-			text-decoration: none;
-                        color: #00ccff;
-		}
-                a:link
-		{
-			text-decoration: none;
-		}
-		a:hover
-		{
-			text-decoration: none;
-                        color: #5252ff;
-		}
-		a:active
-		{
-			text-decoration: none;
-		}
-		a.arrow
-		{
-			text-transform: uppercase;
-                        font-size: 85%;
-		}
-		a.arrow-disabled
-		{
-			text-transform: uppercase;
-			color:gray;
-			font-size:85%;
-		}
-	/* afbeeldingen */
-		img
-		{
-			margin:3px;
-			max-width:100%;
-		}
-		a img
-		{
-			border:0;
-		}
-	
-	
-	/* klassen */
-		div.fout
-		{
-			color: #6c0000;
-			margin: 3px 3px 10px 3px;
-                        padding: 5px;
-			background-color: #ffd0d9;
-                        font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
-                }
-                div.fout h3
-                {
-                        margin: 0;
-                }
-		div.artikelzijkolom
-		{
-			float:left;
-			width:27%;
-			padding-right:2px;
-		}
-		div.artikelzijkolom img
-		{
-			max-width: 100%;
-			margin:1px;
-		}
-		
-                /* Pagina's met artikellijsten */
-		div.artikelintro
-		{	/*gebruikt bij de artikelpagina*/
-			margin:10px;
-			min-height: 8em;
-		}
-                div.artikelintro h3
-		{	/*gebruikt bij de artikelpagina*/
-			font-weight: normal;
-                        font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-                        font-size: 150%;
-		}
-		p.meta
-		{
-			color: #bbb;
-			font-style: italic;
-		}
-		div.artikelintro img
-		{
-			max-height: 150px;
-			max-width: 20%;
-			float: left;	
-		}
-		div.artikelintro p.intro
-		{
-			float:left;
-			width: 98%;
-		}
-                
-                /* Linklijsten */
-                ul.linklist
-		{
-			margin:0;
-			padding:0;
-			list-style-type:none;
-		}
-		ul.linklist li
-		{
-			padding:5px;
-			font-family: verdana, sans-serif;
-		}
-		
-                /*Pagina's met een artikel */
-		div.artikel
-		{	/*gebruikt bij de artikelpagina*/
-			float:left;
-			padding-left: 1%;
-			width:69%;
-			margin-left:0;
-			margin-right:0;
-		}
-		div.artikel p.intro
-		{
-			font-style: italic;
-		}
-		p.lijn
-		{
-			border-top: 1px #c9c9c9 solid;
-			border-bottom: 1px #c9c9c9 solid;
-			padding-top: 5px;
-			padding-bottom: 5px;
-		}
-		
-		span.required
-		{
-			color: #990000;
-			font-size:110%;
-		}
-		span.eventdate
-		{
-			color:#0000ff;
-			font-weight:bold;
-			text-decoration:underline;
-		}
-		td.highlight:hover
-		{
-			background:#eeeeee;
-			cursor:pointer;
-		}
-		h3.notable
-		{
-			font-size: 200%;
-			font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-                        font-weight: normal;
-		}
-	/* tooltip */
-		#tooltip
-		{
-			border:solid 1px white;
-			background: #eeeeee;
-			background: rgba(228,242,233,0.8);
-			min-width:100px; 
-			padding:1px;
-			position:absolute; 
-			z-index:100;	
-			font-family: verdana, sans-serif;
-			box-shadow: white 0 0 20px;
-		}
+/*tabellen*/
+table
+{
+    border-collapse:separate;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+th,td
+{
+    font-family: verdana, sans-serif;
+    text-align:left;
+}
+th
+{
+
+}
+table.layout
+{
+    width:98%;
+    border:0;
+}
+table.layout th,table.layout td
+{
+    padding:5px;
+}
+
+/*formulieren*/
+input, textarea
+{
+    font-family: verdana, sans-serif;
+    color: #4a7180;
+    background:#fafafa;
+    border:1px solid #c9c9c9;
+    padding:3px;
+    margin:2px;
+}
+input:focus,textarea:focus,select:focus
+{
+    background:#efefef;
+}
+fieldset
+{
+    border: 2px solid #c9c9c9;
+}
+fieldset.panel
+{
+    width:29%;
+    float:left;
+    min-height:200px;
+    margin:0.5%;
+}
+legend
+{
+    font-family: verdana,sans-serif;
+    font-weight:bold;
+}
+.button, button/*ook geschikt voor links*/
+{
+    background: #ddd; 
+    border: 0;
+    color: #444444;
+    box-shadow: none;
+    text-decoration: none;
+    color: black;
+    padding: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 100%;
+}
+.button:hover, button:hover
+{
+    background:#f2f2f2;
+    border: 1px solid #ddd;
+}
+.button:focus,button:focus
+{
+    background:#eee; /*geen andere achtergrond */
+}
+.checkbox
+{
+    background:white;
+    padding:0;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+}
+
+
+/*links*/
+a
+{
+    text-decoration: none;
+    color: #00ccff;
+}
+a:link
+{
+    text-decoration: none;
+}
+a:hover
+{
+    text-decoration: none;
+    color: #5252ff;
+}
+a:active
+{
+    text-decoration: none;
+}
+a.arrow
+{
+    margin-left: 10px;
+    text-transform: uppercase;
+    font-size: 85%;
+}
+a.arrow-disabled
+{
+    margin-left: 10px;
+    text-transform: uppercase;
+    color:gray;
+    font-size:85%;
+}
+/* afbeeldingen */
+img
+{
+    margin:3px;
+    max-width:100%;
+}
+a img
+{
+    border:0;
+}
+
+
+/* klassen */
+div.fout
+{
+    color: #6c0000;
+    margin: 3px 3px 10px 3px;
+    padding: 5px;
+    background-color: #ffd0d9;
+    font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+}
+div.fout h3
+{
+    margin: 0;
+}
+
+/* Pagina's met artikellijsten */
+div.artikelintro
+{	/*gebruikt bij de artikelpagina*/
+    margin:10px;
+    min-height: 8em;
+}
+div.artikelintro h3
+{	/*gebruikt bij de artikelpagina*/
+    font-weight: normal;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 150%;
+}
+p.meta
+{
+    color: #bbb;
+    font-style: italic;
+}
+div.artikelintro img
+{
+    max-height: 150px;
+    max-width: 20%;
+    float: left;	
+}
+div.artikelintro p.intro
+{
+    float:left;
+    width: 98%;
+}
+
+/* Lists of links */
+ul.linklist
+{
+    margin:0;
+    padding:0;
+    list-style-type:none;
+}
+ul.linklist li
+{
+    padding:5px;
+    font-family: verdana, sans-serif;
+}
+
+/* Pages with an extra sidebar on the left */
+div#sidebarpagecontent
+{	/*gebruikt bij de artikelpagina*/
+    float:left;
+    padding-left: 1%;
+    width:69%;
+    margin-left:0;
+    margin-right:0;
+}
+div#sidebarpagecontent p.intro
+{
+    font-style: italic;
+}
+div#sidebarpagesidebar
+{
+    float:left;
+    width:27%;
+    padding-right:2px;
+}
+div#sidebarpagesidebar img
+{
+    max-width: 100%;
+    margin: 1px;
+}
+p.lijn
+{
+    border-top: 1px #c9c9c9 solid;
+    border-bottom: 1px #c9c9c9 solid;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+span.required
+{
+    color: #990000;
+    font-size:110%;
+}
+span.eventdate
+{
+    color:#0000ff;
+    font-weight:bold;
+    text-decoration:underline;
+}
+td.highlight:hover
+{
+    background:#eeeeee;
+    cursor:pointer;
+}
+h3.notable
+{
+    font-size: 200%;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-weight: normal;
+}
+/* tooltip */
+#tooltip
+{
+    border:solid 1px white;
+    background: #eeeeee;
+    background: rgba(228,242,233,0.8);
+    min-width:100px; 
+    padding:1px;
+    position:absolute; 
+    z-index:100;	
+    font-family: verdana, sans-serif;
+    box-shadow: white 0 0 20px;
+}
 
 /* BOXMODEL */
-	/* inlogscherm */
-		#login
-		{
-			background:#eeeeee;
-			width: 50%;
-			margin: 100px auto auto auto;
-			padding:25px;
-			box-shadow: white 0 0 20px;
-		}
-	/* body en container */
-		body
-		{
-			background:#ffffff;
-			height:100%;
-		}
-		div#container
-		{
-			margin: 22px auto;
-			padding:0;
-			width: 80%;
-			min-width: 750px;
-		}
-		
-	/* content */
-		div#content
-		{
-			width:60%;
-			margin-right:9%;
-			clear:left;
-			float:left;
-			min-height:600px;
-			position:relative;
-			overflow:hidden;
-		}
-		div#contentwide
-		{
-			width:95%;
-			padding-right:5%;
-			clear:left;
-			float:left;
-			min-height:600px;
-			position:relative;
-			overflow:hidden;
-		}
-		div#contentadmin
-		{
-			width:95%;
-			padding-right:5%;
-			clear:left;
-			float:left;
-			min-height:600px;
-			position:relative;
-		}
-		
-	
-	/* sidebar */
-		div#sidebar
-		{
-			width:30%;
-			float:left;
-			height:100%;
-		}
-	/* header, menu en zoekvak */
-                div#header
-                {
-                        background: black;
-                        width: 100%;
-                }
-		/* horizontale balk */
-			div#hornav
-			{
-				width: 80%;
-                                margin: 0 auto;
-                                position: relative;
-			}
-                        div#hornav h1
-                        {
-                                margin: 0;
-                                padding: 0;
-                                padding-top: 40px;
-                                font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-				font-size: 3em;
-                                font-weight: normal;
-                                color: #66ff66;
-			}
-			div#hornav ul
-			{
-				margin: 0;
-                                padding: 0;
-                                padding-top: 0.5em;
-                                padding-bottom: 40px;
-                                height: 2.5em;
-				list-style-type: none;
-			}
-			div#hornav ul li
-			{
-				margin: 0;
-                                padding: 0;
-                                float: left;
-				height: 100%;
-				color: white;
-                                width: 9em;
-                                display: block;
-                        }
-			div#hornav ul li a
-			{
-				text-decoration: none;
-                                text-transform: lowercase;
-				font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-				font-size: 130%;
-                                color: white;
-			}
-			div#hornav ul li a:hover
-			{
-				text-decoration: none;
-                                border: 0;
-                                font-weight: bold;
-			}
-			
-			/* inlog */
-			div#hornav ul#accountlinks
-			{
-				float:right;
-			}
-			div#hornav ul#accountlinks li
-			{
-				border-style: none none none dotted;
-				border-width: 0 0 0 1px;
-				border-color: white;
-			}
-		/* zoekvak */
-                        div#search
-                        {
-                            position: absolute;
-                            right: 0;
-                            top: 40px;
-                        }
-	/* footer */
-		div#footer
-		{
-			clear:both;
-			padding:2px 0 0 0;
-			min-height:19px;
-			text-align: right;
-			font-family: verdana, sans-serif;
-			padding-right:5px;
-		}
+/* inlogscherm */
+#login
+{
+    background:#eeeeee;
+    width: 50%;
+    margin: 100px auto auto auto;
+    padding:25px;
+    box-shadow: white 0 0 20px;
+}
+/* body en container */
+body
+{
+    background:#ffffff;
+    height:100%;
+}
+div#container
+{
+    margin: 22px auto;
+    padding:0;
+    width: 80%;
+}
+
+/* content */
+div#content
+{
+    width:60%;
+    margin-right:9%;
+    clear:left;
+    float:left;
+    position:relative;
+    overflow:hidden;
+}
+div#contentwide
+{
+    width:95%;
+    padding-right:5%;
+    clear:left;
+    float:left;
+    position:relative;
+    overflow:hidden;
+}
+div#contentadmin
+{
+    width:95%;
+    padding-right:5%;
+    clear:left;
+    float:left;
+    position:relative;
+}
+
+
+/* sidebar */
+div#sidebar
+{
+    width:30%;
+    float:left;
+    height:100%;
+}
+/* header, menu en zoekvak */
+div#header
+{
+    background: black;
+    width: 100%;
+}
+/* horizontale balk */
+div#hornav
+{
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+}
+div#hornav h1
+{
+    margin: 0;
+    padding: 0;
+    padding-top: 40px;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 3em;
+    font-weight: normal;
+    color: #66ff66;
+}
+div#hornav ul
+{
+    margin: 0;
+    padding: 0;
+    padding-top: 0.5em;
+    padding-bottom: 40px;
+    height: 2.5em;
+    list-style-type: none;
+}
+div#hornav ul li
+{
+    margin: 0;
+    padding: 0;
+    float: left;
+    height: 100%;
+    color: white;
+    width: 9em;
+    display: block;
+}
+div#hornav ul li a
+{
+    text-decoration: none;
+    text-transform: lowercase;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 130%;
+    color: white;
+}
+div#hornav ul li a:hover
+{
+    text-decoration: none;
+    border: 0;
+    font-weight: bold;
+}
+
+/* inlog */
+div#hornav ul#accountlinks
+{
+    float:right;
+}
+div#hornav ul#accountlinks li
+{
+    border-style: none none none dotted;
+    border-width: 0 0 0 1px;
+    border-color: white;
+}
+/* zoekvak */
+div#search
+{
+    position: absolute;
+    right: 0;
+    top: 40px;
+}
+/* footer */
+div#footer
+{
+    clear:both;
+    padding:2px 0 0 0;
+    min-height:19px;
+    text-align: right;
+    font-family: verdana, sans-serif;
+    padding-right:5px;
+}

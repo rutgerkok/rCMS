@@ -1,0 +1,88 @@
+<h2><?php echo $this->t("main.links") ?></h2>
+<?php
+$text_to_display = '';
+
+// AUTHENTICATION
+$oAuth = new Authentication($this);
+$logged_in = $oAuth->check(Authentication::$ADMIN_RANK, true);
+unset($oAuth);
+
+// LOGIC
+if ($logged_in) {
+    $oMenu = new Menus($this);
+
+    // Handle new menus
+    if (isset($_REQUEST["new_menu_name"]) && !empty($_REQUEST["new_menu_name"])) {
+        $name = trim($_REQUEST["new_menu_name"]);
+        if (strlen($name) > Menus::MAX_MENU_NAME_LENGTH) {
+            $this->add_error($this->t("links.menu.name") . " " . $this->t_replaced("errors.too_long_num", Menus::MAX_MENU_NAME_LENGTH));
+            $text_to_display.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
+        } else {
+            if ($oMenu->add_menu($name)) {
+                $text_to_display.="<p><em>" . $this->t("links.menu") . " " . $this->t("editor.is_created") . "</em></p>";
+            } else {
+                $text_to_display.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
+            }
+        }
+    }
+
+    // Echo all menus
+    $menus = $oMenu->get_menus();
+    foreach ($menus as $menu_id => $menu_name) {
+        $links = $oMenu->get_links_menu($menu_id);
+        if (count($links) > 0) {
+            $links_html = $oMenu->get_as_html($links, false, true);
+        } else {
+            $links_html = "<li><em>" . $this->t("errors.nothing_found") . "</em></li>";
+        }
+        $text_to_display.= <<<EOT
+        <h3 class="notable">$menu_name</h3>
+        <p>
+            <a class="arrow" href="{$this->get_url_page("create_link", $menu_id)}">
+                {$this->t("links.create")}
+            </a>
+            <a class="arrow" href="{$this->get_url_page("rename_menu", $menu_id)}">
+                {$this->t("links.menu.rename")}
+            </a>
+            <a class="arrow" href="{$this->get_url_page("delete_menu", $menu_id)}">
+                {$this->t("links.menu.delete")}
+            </a>
+        </p>
+        <ul class="linklist">
+            $links_html
+        </ul>
+EOT;
+    }
+    if (count($menus) == 0) {
+        $text_to_display.= "<p><em>" . $this->t("errors.nothing_found") . "</em></p>\n";
+    }
+
+    unset($oMenu, $menus);
+    // Add box for new menu
+    $menu_name_maxlength = Menus::MAX_MENU_NAME_LENGTH;
+    $text_to_display.= <<<EOT
+        <form method="post" action="{$this->get_url_main()}">
+            <h3 class="notable">{$this->t("links.menu.add")}</h3>
+            <p>              
+                <input type="text" name="new_menu_name" size="20" maxlength="$menu_name_maxlength" />
+                <input type="hidden" name="p" value="links" />
+                <input class="button" type="submit" value="{$this->t("editor.save")}" />
+            </p>
+        </form>
+EOT;
+    // Add link
+    $text_to_display.= <<<EOT
+        <p>
+            <a class="arrow" href="{$this->get_url_page("admin")}">{$this->t("main.admin")}</a>
+        </p>
+EOT;
+}
+
+// DISPLAY ERRORS
+if (!$this->errorsdisplayed) {
+    $this->echo_errors();
+}
+
+// DISPLAY
+echo $text_to_display;
+?>

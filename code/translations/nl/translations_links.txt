@@ -1,4 +1,15 @@
 create=Voeg een nieuwe link toe
+create_another=Voeg nog een nieuwe link toe
 new_link=Nieuwe link
-edit=Bewerk link
-delete=Verwijder link
+edit=Bewerk een link
+edit_or_delete=Bewerk of verwijder links
+delete=Verwijder een link
+delete.confirm=Weet u zeker dat u de link "#" wil verwijderen? Dit kan niet ongedaan gemaakt worden.
+url=URL
+text=Tekst bij link
+menu=Menu
+menu.add=Voeg een nieuw menu toe
+menu.name=Menunaam
+menu.rename=Geef menu andere naam
+menu.delete=Verwijder menu
+menu.delete.confirm=Weet u zeker dat u dit menu wil verwijderen? Alle links erin zullen worden verwijderd.

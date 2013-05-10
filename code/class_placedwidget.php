@@ -12,7 +12,7 @@ class PlacedWidget {
     private $id;
     private $sidebar_id;
     private $data_string;
-    private $order;
+    private $priority;
     private $directory_name;
     private $directory_complete;
 
@@ -25,11 +25,11 @@ class PlacedWidget {
      * @param string $directory_name The name of the directory of the widget. 
      *    Do not include the path.
      * @param string $data_string JSON representation of the data of this widget. Can be null.
-     * @param int $order Order of the widget.
+     * @param int $priority Priority of the widget.
      * @param string $directory The full directory of where this widget is
      *    installed in.
      */
-    public function __construct($id, $sidebar_id, $directory_name, $data_string, $order, $directory) {
+    public function __construct($id, $sidebar_id, $directory_name, $data_string, $priority, $directory) {
         $this->id = (int) $id;
         $this->sidebar_id = (int) $sidebar_id;
         $this->directory_name = $directory_name;
@@ -37,7 +37,7 @@ class PlacedWidget {
         if ($this->data_string == null) {
             $this->data_string = "{}";
         }
-        $this->order = (int) $order;
+        $this->priority = (int) $priority;
         $this->directory_complete = $directory;
     }
 
@@ -69,12 +69,12 @@ class PlacedWidget {
         }
     }
 
-    public function get_order() {
-        return $this->order;
+    public function get_priority() {
+        return $this->priority;
     }
 
-    public function set_order($order) {
-        $this->order = (int) $order;
+    public function set_priority($priority) {
+        $this->priority = (int) $priority;
     }
 
     public function get_sidebar_id() {
@@ -101,7 +101,7 @@ class PlacedWidget {
     public function get_widget_info() {
         return new WidgetInfo($this->directory_name, $this->directory_complete . "/info.txt");
     }
-    
+
     /**
      * Returns the name of the directory this widget is in, like "text".
      * @return string The name of the directory this widget is in.
@@ -122,7 +122,7 @@ class PlacedWidget {
             $sql = "UPDATE `widgets` SET ";
             $sql.= '`widget_data` = "' . $oDatabase->escape_data($this->data_string) . '", ';
             $sql.= '`sidebar_id` = ' . $this->sidebar_id . ', ';
-            $sql.= '`widget_order` = ' . $this->order . ' ';
+            $sql.= '`widget_priority` = ' . $this->priority . ' ';
             $sql.= "WHERE `widget_id` = " . $this->id;
             if ($oDatabase->query($sql)) {
                 return true;
@@ -132,11 +132,11 @@ class PlacedWidget {
         } else {
             // Add
             $sql = "INSERT INTO `widgets` (`widget_naam`, `widget_data`, ";
-            $sql.= "`sidebar_id`, `widget_order`) VALUES (";
+            $sql.= "`sidebar_id`, `widget_priority`) VALUES (";
             $sql.= '"' . $oDatabase->escape_data($this->directory_name) . '", ';
             $sql.= '"' . $oDatabase->escape_data($this->data_string) . '", ';
             $sql.= $this->sidebar_id . ', ';
-            $sql.= $this->order . ')';
+            $sql.= $this->priority . ')';
             if ($oDatabase->query($sql)) {
                 $this->id = $oDatabase->inserted_id();
                 return true;
@@ -159,8 +159,6 @@ class PlacedWidget {
             return false;
         }
     }
-
-    
 
 }
 

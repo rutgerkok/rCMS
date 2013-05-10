@@ -3,25 +3,32 @@
 $this->register_widget(new WidgetRkokText());
 
 class WidgetRkokText extends WidgetDefinition {
-
-    public function echo_widget(Website $oWebsite, $id, $data) {
+    /*
+     * Implementation detail:
+     * (HTML) tags are saved unfiltered in the database, but filtered when displayed.
+     */
+    
+    
+    public function get_widget(Website $oWebsite, $id, $data) {
         if (!isset($data["text"]) || !isset($data["title"]) || !isset($data["with_html_tags"])) {
-            return;
+            return "";
         }
+        $return_value = "";
         if (strlen($data["title"]) > 0) {
-            echo "<h2>" . $data["title"] . "</h2>\n";
+            $return_value.= "<h2>" . htmlentities($data["title"]) . "</h2>\n";
         }
         if (!$data["with_html_tags"]) {
-            echo "<p>" . nl2br(htmlentities($data["text"])) . "</p>\n";
+            $return_value.= "<p>" . nl2br(htmlentities($data["text"])) . "</p>\n";
         } else {
-            echo $data["text"];
+            $return_value.= $data["text"];
         }
+        return $return_value;
     }
 
     public function get_editor(Website $oWebsite, $id, $data) {
         $with_html_tags = isset($data["with_html_tags"]) ? (boolean) $data["with_html_tags"] : true;
-        $title = isset($data["title"]) ? $data["title"] : "";
-        $text = isset($data["text"]) ? $data["text"] : "";
+        $title = isset($data["title"]) ? htmlentities($data["title"]) : "";
+        $text = isset($data["text"]) ? htmlentities($data["text"]) : "";
 
         // Title
         $text_to_display = "<p>\n";
@@ -55,11 +62,11 @@ class WidgetRkokText extends WidgetDefinition {
 
         // Title
         $return_array["title"] = isset($_REQUEST['title_' . $id]) ? $_REQUEST['title_' . $id] : "";
-        $return_array["title"] = htmlentities(trim($return_array["title"]));
+        $return_array["title"] = trim($return_array["title"]);
 
         // Text
         $return_array["text"] = isset($_REQUEST['text_' . $id]) ? $_REQUEST['text_' . $id] : "";
-        $return_array["text"] = htmlentities(trim($return_array["text"]));
+        $return_array["text"] = trim($return_array["text"]);
         if (strlen($return_array["text"]) == 0) {
             $oWebsite->add_error($oWebsite->t("editor.message") . " " . $oWebsite->t("errors.not_entered"));
             $return_array["valid"] = false;

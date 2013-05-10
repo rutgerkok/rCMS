@@ -76,8 +76,7 @@ if($logged_in)
 	<h3><?php echo $this->t("main.links") ?></h3>
 	<p>
 		<a href="<?php echo $this->get_url_page("create_link") ?>" class="arrow"><?php echo $this->t("links.create") ?></a><br />
-		<a href="<?php echo $this->get_url_page("change_link") ?>" class="arrow"><?php echo $this->t("links.edit") ?></a><br />
-		<a href="<?php echo $this->get_url_page("delete_link") ?>" class="arrow"><?php echo $this->t("links.delete") ?></a>
+		<a href="<?php echo $this->get_url_page("links") ?>" class="arrow"><?php echo $this->t("links.edit_or_delete") ?></a><br />
 	</p>
 	
 	<h3><?php echo $this->t("main.categories") ?></h3>

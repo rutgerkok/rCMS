@@ -2,21 +2,23 @@
 
 class Website {
     protected $errors = array();
-    protected $debug = true;
+    protected $debug = false;
     protected $errorsdisplayed = false;
     protected $database_object;
     protected $current_page_id;
     protected $current_page_title; // Site title [- page title]
     protected $current_page_title_short; // Based on page id
     protected $current_page_type; // NORMAL, NOWIDGETS or BACKSTAGE
-    public /* final */ $IS_WEBSITE_OBJECT = true;
+    public /* final */ $IS_WEBSITE_OBJECT = true; // Deprecated. Is this still used?
+    /** @var Themes $themes */
+    private $themes;
 
     function __construct() {
 
         // Pagevars and settings
         $this->site_settings();
         setlocale(LC_ALL, $this->config['locales']);
-        
+
         // Database
         $this->database_object = new Database($this);
 
@@ -73,7 +75,7 @@ class Website {
     public function get_page_title() {
         return $this->current_page_title;
     }
-    
+
     /**
      * Returns the current page id, like "article" or "account_management". Can
      * be converted to an url/uri using the get_ur*_page methods.
@@ -113,13 +115,6 @@ class Website {
             return false;
         }
     }
-    
-    /**
-     * Returns the number of sidebars that this theme supports.
-     */
-    public function get_theme_sidebar_count() {
-        return 2; // Always two for now :). Don't hardcode it, though.
-    }
 
 //Alle paden hier
     //Geeft de map van de scripts terug als url
@@ -151,13 +146,25 @@ class Website {
         return $this->get_sitevar('uri');
     }
 
-    public function get_url_page($name, $id = -1051414, $args = array()) {
-        if ($id == -1051414) { //geen id
-            return $this->get_url_main() . $name; //dus ook geen andere variabelen, geef weer als example.com/naam
-        } else { //wel id
+    public function get_url_page($name, $id = -1337, $args = array()) {
+        /* if ($id == -1337 && count($args) == 0) { // just the page name
+          return $this->get_url_main() . $name;
+          } else { // also the other arguments
+          if (count($args) == 0)
+          return $this->get_url_main() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
+          else { //wel andere variabelen
+          $url = $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id;
+          foreach ($args as $key => $value)
+          $url.="&amp;$key=" . urlencode($value);
+          return $url;
+          }
+          } */
+        if ($id == -1337 && count($args) == 0) { // just the page name
+            return $this->get_url_main() . "index.php?p=" . $name;
+        } else { // also the other arguments
             if (count($args) == 0)
-                return $this->get_url_main() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
-            else { //wel andere variabelen
+                return $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id; //geen andere variabelen, geef weer als example.com/naam/id
+            else {
                 $url = $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id;
                 foreach ($args as $key => $value)
                     $url.="&amp;$key=" . urlencode($value);
@@ -252,16 +259,22 @@ class Website {
         return $access;
     }
 
-    //Laat de gehele pagina zien
+    /**
+     * Echoes the whole page.
+     */
     public function echo_page() {
         if ($this->has_access()) { //geef de pagina weer
             setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
-            new Themes($this);
+            $this->themes = new Themes($this);
+            $this->themes->output();
         } else { //laat inlogscherm zien
             require($this->get_uri_scripts() . 'login_page.php');
         }
     }
 
+    /**
+     * Echoes only the main content of the page, without any clutter.
+     */
     public function echo_page_content() { //geeft de hoofdpagina weer
         if ($this->has_access()) {
             if (file_exists($this->get_uri_page($this->current_page_id))) { //voeg de module in als die bestaat (al gecheckt in constructor)
@@ -304,6 +317,25 @@ class Website {
      */
     public function get_current_user_id() {
         return isset($_SESSION['id']) ? (int) $_SESSION['id'] : -1;
+    }
+
+    /**
+     * Returns the number of sidebars that this theme supports. Won't work
+     * if echo_page is not yet called.
+     * @return int The number of sidebars.
+     */
+    public function get_theme_widget_area_count() {
+        // Defined sidebars plus one for the homepage
+        return count($this->get_theme_manager()->get_theme()->get_widget_areas($this)) + 1;
+    }
+
+    /**
+     * Gets the theme manager. Returns null if the theme hasn't been loaded yet
+     * (before echo_page is called).
+     * @return Themes The theme manager.
+     */
+    public function get_theme_manager() {
+        return $this->themes;
     }
 
     public function site_settings() {

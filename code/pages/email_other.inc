@@ -5,7 +5,7 @@ $text_to_display='';
 //OBJECTEN
 $oDB = $this->get_database();
 $oAuth = new Authentication($oDB,$this);
-$oMenu = new Menu($this,$oDB);
+$oMenu = new Menus($this,$oDB);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 
 //INLOGGEN

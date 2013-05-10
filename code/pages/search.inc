@@ -30,7 +30,7 @@ else
 	unset($oArticles);
 	
 	$result.= "<h3 class=\"notable\">".$this->t('articles.search.results_in_links')."</h3>\n";
-	$oMenu = new Menu($this,$oDB);
+	$oMenu = new Menus($this,$oDB);
 	$result.= $oMenu->get_menu_search($_REQUEST['searchbox']);
 	unset($oMenu,$oDB);
 }

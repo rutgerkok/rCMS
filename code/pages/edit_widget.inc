@@ -15,7 +15,7 @@ if ($logged_in) {
     if ($widget_id == 0) {
         // New widget
         $sidebar_id = isset($_REQUEST['sidebar_id']) ? (int) $_REQUEST['sidebar_id'] : -1;
-        if ($sidebar_id > 0 && $sidebar_id <= $this->get_theme_sidebar_count()) {
+        if ($sidebar_id > 0 && $sidebar_id <= $this->get_theme_widget_area_count()) {
             $directory_name = isset($_REQUEST['directory_name']) ? $_REQUEST['directory_name'] : "";
             $directory = $this->get_uri_widgets() . '/' . $_REQUEST['directory_name'];
             if ($directory_name != "" && is_dir($directory)) {
@@ -45,13 +45,18 @@ if ($logged_in) {
             $valid_sidebar_id = true; // Not mandatory, so no id is also good
             if (isset($_REQUEST["sidebar_id"])) {
                 $sidebar_id = (int) $_REQUEST["sidebar_id"];
-                if ($sidebar_id > 0 && $sidebar_id <= $this->get_theme_sidebar_count()) {
+                if ($sidebar_id > 0 && $sidebar_id <= $this->get_theme_widget_area_count()) {
                     $widget->set_sidebar_id($sidebar_id);
                 } else {
                     $this->add_error($this->t_replaced_key(""));
                     $valid_sidebar_id = false;
                 }
             }
+            // Set priority if filled in
+            if (isset($_REQUEST["priority"])) {
+                $widget->set_priority((int) $_REQUEST["priority"]);
+            }
+            // Set data
             $widget_data = $widget_definition->parse_data($this, $widget->get_id());
             if (!isset($widget_data["valid"]) || $widget_data["valid"]) {
                 // Only continue if there is tag about validation, or if the
@@ -62,9 +67,13 @@ if ($logged_in) {
                 $is_new_widget = ($widget->get_id() == 0);
                 if ($widget->save($this->get_database())) {
                     if ($is_new_widget) {
-                        $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_created") . "</em></p>\n";
+                        // Created
+                        $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_created") . "</em>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a></p>\n";
                     } else {
-                        $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_edited") . "</em></p>\n";
+                        // Updated
+                        $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_edited") . "</em>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a></p>\n";
                     }
                 } else {
                     // Database error, not saved
@@ -84,15 +93,21 @@ if ($logged_in) {
         $text_to_display.= '<p><label for="sidebar_id">' . $this->t("widgets.sidebar") . ":</label>";
         $text_to_display.= '<span class="required">*</span><br />' . "\n";
         $text_to_display.= '<select name="sidebar_id" id="sidebar_id">' . "\n";
-        $sidebar_count = $this->get_theme_sidebar_count();
-        for ($i = 1; $i <= $sidebar_count; $i++) {
+        $sidebar_count = $this->get_theme_widget_area_count();
+        foreach ($oWidgets->get_widget_areas() as $i => $name) {
             $text_to_display.= '<option ';
             if ($i == $widget->get_sidebar_id()) {
                 $text_to_display.= 'selected="selected" ';
             }
-            $text_to_display.= 'value="' . $i . '">' . $this->t("widgets.sidebar") . " " . $i . "</option>\n";
+            $text_to_display.= 'value="' . $i . '">' . $name . "</option>\n";
         }
         $text_to_display.= "</select></p>\n";
+
+        // Priority
+        $text_to_display.= '<p><label for="priority">' . $this->t("widgets.priority") . ":</label>";
+        $text_to_display.= '<span class="required">*</span><br />' . "\n";
+        $text_to_display.= '<input type="number" step="1" name="priority" id="priority" value="' . $widget->get_priority() . '" />';
+        $text_to_display.= '</p>';
 
         // Widget settings
         $text_to_display.= $widget_definition->get_editor($this, $widget->get_id(), $widget_data);
@@ -109,11 +124,11 @@ if ($logged_in) {
         // Close form
         $text_to_display.= "</form>";
     }
-    
+
     // Links
     $text_to_display.= "<p>\n";
-    $text_to_display.= '<a class="arrow" href="'.$this->get_url_page("widgets").'">' . $this->t("main.widgets") . "</a><br />\n";
-    $text_to_display.= '<a class="arrow" href="'.$this->get_url_page("admin").'">' . $this->t("main.admin") . "</a>\n";
+    $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a><br />\n";
+    $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("admin") . '">' . $this->t("main.admin") . "</a>\n";
     $text_to_display.= "</p>\n";
 }
 

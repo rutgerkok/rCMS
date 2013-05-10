@@ -1,5 +1,5 @@
 save=Save
-sava_and_quit=Save and quit
+save_and_quit=Save and quit
 quit=Quit
 with_html_tags=With HTML tags
 message=Message

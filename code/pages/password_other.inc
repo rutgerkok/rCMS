@@ -5,7 +5,7 @@ $text_to_display = '';
 //OBJECTEN
 $oDB = $this->get_database();
 $oAuth = new Authentication($this);
-$oMenu = new Menu($this, $oDB);
+$oMenu = new Menus($this, $oDB);
 //INLOGGEN
 $logged_in = $oAuth->check(true, true);
 

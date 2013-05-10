@@ -66,7 +66,7 @@ class Articles {
             }
             return $return_value;
         } else {
-            return null;
+            return array();
         }
     }
 
@@ -85,7 +85,7 @@ class Articles {
                 $return_value.= "<h2>{$article->title}</h2>";
 
                 // Echo the sidebar
-                $return_value.= '<div class="artikelzijkolom">';
+                $return_value.= '<div id="sidebarpagesidebar">';
                 if (!empty($article->featured_image))
                     $return_value.= "<p><img src=\"{$article->featured_image}\" alt=\"{$article->title}\" /></p>";
                 $return_value.= '<p class="meta">';
@@ -101,13 +101,12 @@ class Articles {
                 if ($logged_in && $article->show_comments)
                     $return_value.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
                 $return_value.= '</p>';
-                if ($logged_in)
+                if ($logged_in) {
                     $return_value.= "<p style=\"clear:both\">";
-                if ($logged_in)
                     $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
                             '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
-                if ($logged_in)
                     $return_value.= "</p>";
+                }
                 if ($article->show_comments) {
                     $return_value.= <<<EOT
                         <!-- AddThis Button BEGIN -->
@@ -126,7 +125,7 @@ EOT;
                 }
                 $return_value.= '</div>';
 
-                $return_value.= '<div class="artikel">';
+                $return_value.= '<div id="sidebarpagecontent">';
                 //artikel
                 if ($logged_in && $article->hidden)
                     $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
@@ -230,83 +229,68 @@ EOT;
 
     // DISPLAY FUNCTIONS FOR MULTIPLE ARTICLES
 
-    function get_articles_list_category($categories, $outside_categories = false, $show_metainfo = false, $limit = 9) {
+    function get_articles_list_category($categories, $show_metainfo = false, $limit = 9) {
         $oWebsite = $this->website_object;
 
         // Should hidden articles be shown?
         $logged_in_staff = $oWebsite->logged_in_staff();
 
-        if (!is_array($categories)) { //maak een array
+        // Categories can also be a single number, so convert
+        if (!is_array($categories)) {
             $category_id = $categories;
             unset($categories);
             $categories[0] = $category_id;
         }
 
+        // Build the 
         $where_clausule = '';
-        foreach ($categories as $count => $category_id) {
+        foreach ($categories as $i => $category_id) {
             $category_id = (int) $category_id; //beveiliging
 
-            if ($outside_categories) { //alles behalve deze categorie
-                if ($count > 0)
-                    $where_clausule.=" AND ";
-                $where_clausule.="categorie_id != $category_id";
+            if ($i > 0) {
+                $where_clausule.=" OR ";
             }
-            else { //niks behalve deze categorie
-                if ($count > 0)
-                    $where_clausule.=" OR ";
-                $where_clausule.="categorie_id = $category_id";
-            }
+            $where_clausule.="categorie_id = $category_id";
         }
 
         //haal resultaten op
         $result = $this->get_articles($where_clausule, $limit);
 
         //verwerk resultaten
+        $first_category = $categories[0];
         if ($result) {
             $return_value = '';
-            $category = ($outside_categories) ? 0 : $categories[0];
 
             if ($logged_in_staff) {
-                if ($outside_categories) {
-                    $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
-                }//maak nieuw artikel
-                else {
-                    $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
-                }//maak nieuw artikel in categorie
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
-            
+
             // Display articles
             foreach ($result as $article) {
                 $return_value .= $this->get_article_text_small($article, $show_metainfo, $logged_in_staff);
             }
 
             if ($logged_in_staff) {
-                if ($outside_categories) {
-                    $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
-                }//maak nieuw artikel
-                else {
-                    $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
-                }//maak nieuw artikel in categorie
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
-            $return_value.='<p><a href="' . $oWebsite->get_url_page("archive", 0, array("year" => date('Y'), "cat" => $category)) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>'; //archief
+            $return_value.='<p><a href="' . $oWebsite->get_url_page("archive", 0, array("year" => date('Y'), "cat" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>'; //archief
             return $return_value;
         } else {
-
+            $return_value = '<p><em>' . $oWebsite->t("errors.nothing_found") . "</em></p>";
             if ($logged_in_staff) {
-                return '<p><a href="' . $oWebsite->get_url_page("edit_article", 0) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
-            } else {
-                return '';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
             }
+            return $return_value;
         }
     }
-    
+
     function get_articles_small_list($categories, $limit = 9) {
         if (!is_array($categories)) { // Create array if needed
             $category_id = $categories;
             unset($categories);
             $categories[0] = $category_id;
         }
-        
+
         $where_clausule = "";
         foreach ($categories as $count => $category_id) {
             $category_id = (int) $category_id; // Security
@@ -314,7 +298,7 @@ EOT;
                 $where_clausule.=" OR ";
             $where_clausule.="`categorie_id` = $category_id";
         }
-        
+
         $result = $this->get_articles($where_clausule, $limit);
         $return_value = '<ul class="linklist">';
         foreach ($result as $article) {

@@ -38,6 +38,17 @@ class Widgets {
     }
 
     /**
+     * Shortcut to retrieve the widget areas. Also includes the home page as
+     * an option.
+     * @return array Array of widget, (numeric) id => name
+     */
+    public function get_widget_areas() {
+        $areas = $this->website_object->get_theme_manager()->get_theme()->get_widget_areas($this->website_object);
+        $areas[1] = $this->website_object->t("widgets.homepage");
+        return $areas;
+    }
+
+    /**
      * Returns a list of PlacedWidgets for the given sidebar.
      * @param int $sidebar_id The id of the sidebar.
      * @return \PlacedWidget List of placed widgets.
@@ -51,10 +62,10 @@ class Widgets {
 
         $widgets = array();
 
-        $result = $oDB->query("SELECT `widget_id`, `widget_naam`, `widget_data`, `widget_order` FROM `widgets` WHERE `sidebar_id` = $sidebar_id");
+        $result = $oDB->query("SELECT `widget_id`, `widget_naam`, `widget_data`, `widget_priority` FROM `widgets` WHERE `sidebar_id` = $sidebar_id ORDER BY `widget_priority` DESC");
 
-        while (list($id, $name, $data, $order) = $oDB->fetch($result)) {
-            $widgets[] = new PlacedWidget($id, $sidebar_id, $name, $data, $order, $widgets_directory . "/" . $name);
+        while (list($id, $name, $data, $priority) = $oDB->fetch($result)) {
+            $widgets[] = new PlacedWidget($id, $sidebar_id, $name, $data, $priority, $widgets_directory . "/" . $name);
         }
 
         return $widgets;
@@ -69,10 +80,10 @@ class Widgets {
         $widget_id = (int) $widget_id;
         $oWebsite = $this->website_object;
         $oDB = $oWebsite->get_database();
-        $result = $oDB->query("SELECT `widget_naam`, `widget_data`, `widget_order`, `sidebar_id` FROM `widgets` WHERE `widget_id` = $widget_id");
+        $result = $oDB->query("SELECT `widget_naam`, `widget_data`, `widget_priority`, `sidebar_id` FROM `widgets` WHERE `widget_id` = $widget_id");
         if ($result && $oDB->rows($result) > 0) {
-            list($name, $data, $order, $sidebar_id) = $oDB->fetch($result);
-            return new PlacedWidget($widget_id, $sidebar_id, $name, $data, $order, $oWebsite->get_uri_widgets() . "/" . $name);
+            list($name, $data, $priority, $sidebar_id) = $oDB->fetch($result);
+            return new PlacedWidget($widget_id, $sidebar_id, $name, $data, $priority, $oWebsite->get_uri_widgets() . "/" . $name);
         } else {
             return null;
         }
@@ -107,7 +118,7 @@ class Widgets {
         $sidebar_id = (int) $sidebar_id;
 
         // Get all widgets that should be displayed
-        $result = $oDB->query("SELECT `widget_id`, `widget_naam`, `widget_data` FROM `widgets` WHERE `sidebar_id` = $sidebar_id ORDER BY `widget_order`");
+        $result = $oDB->query("SELECT `widget_id`, `widget_naam`, `widget_data` FROM `widgets` WHERE `sidebar_id` = $sidebar_id  ORDER BY `widget_priority` DESC");
 
         while (list($id, $directory_name, $data) = $oDB->fetch($result)) {
             $this->widget_directory_name = $directory_name;
@@ -124,12 +135,12 @@ class Widgets {
 
             // Check if load was succesfull. Display widget or display error.
             if (isset(Widgets::$loaded_widgets[$directory_name])) {
-                Widgets::$loaded_widgets[$directory_name]->echo_widget($this->website_object, $id, json_decode($data, true));
+                echo Widgets::$loaded_widgets[$directory_name]->get_widget($this->website_object, $id, json_decode($data, true));
                 if ($logged_in_admin) {
                     // Links for editing and deleting
                     echo "<p>\n";
-                    echo '<a class="arrow" href="' . $oWebsite->get_url_page("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . '</a> ';
-                    echo '<a class="arrow" href="' . $oWebsite->get_url_page("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . '</a> ';
+                    echo '<a class="arrow" href="' . $oWebsite->get_url_page("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . " " . $oWebsite->t("main.widget") . '</a> ';
+                    echo '<a class="arrow" href="' . $oWebsite->get_url_page("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
                     echo "</p>\n";
                 }
             } else {
@@ -161,12 +172,12 @@ class Widgets {
 abstract class WidgetDefinition {
 
     /**
-     * Displays the widget.
+     * Gets the text of the widget.
      * @param Website $oWebsite The currently used website.
      * @param int $id The unique id of the widget.
      * @param array $data All data attached to the widget, key->value pairs.
      */
-    public abstract function echo_widget(Website $oWebsite, $id, $data);
+    public abstract function get_widget(Website $oWebsite, $id, $data);
 
     /**
      * Gets the widget's editor. The data is either the saved data, or the data

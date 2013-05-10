@@ -4,42 +4,44 @@ $this->register_widget(new WidgetRkokArticles());
 
 class WidgetRkokArticles extends WidgetDefinition {
 
-    private static $TYPE_WITHOUT_METADATA = 0;
-    private static $TYPE_WITH_METADATA = 1;
-    private static $TYPE_LIST = 2;
+    const TYPE_WITHOUT_METADATA = 0;
+    const TYPE_WITH_METADATA = 1;
+    const TYPE_LIST = 2;
 
-    public function echo_widget(Website $oWebsite, $id, $data) {
+    public function get_widget(Website $oWebsite, $id, $data) {
         if (!isset($data["title"]) || !isset($data["count"])
                 || !isset($data["display_type"]) || !isset($data["categories"])) {
             return;
         }
 
+        $return_value = "";
         if (strlen($data["title"]) > 0) {
-            echo "<h2>" . $data["title"] . "</h2>";
+            $return_value.= "<h2>" . $data["title"] . "</h2>";
         }
 
         $categories = $data["categories"];
         $articles_count = (int) $data["count"];
         $display_type = (int) $data["display_type"];
         $oArticles = new Articles($oWebsite, $oWebsite->get_database());
-        if ($display_type == self::$TYPE_LIST) {
+        if ($display_type == self::TYPE_LIST) {
             // As list
-            echo $oArticles->get_articles_small_list($categories, $articles_count);
-        } elseif ($display_type == self::$TYPE_WITH_METADATA) {
+            $return_value.= $oArticles->get_articles_small_list($categories, $articles_count);
+        } elseif ($display_type == self::TYPE_WITH_METADATA) {
             // As paragraphs with metadata
-            echo $oArticles->get_articles_list_category($categories, false, true, $articles_count);
+            $return_value.= $oArticles->get_articles_list_category($categories, true, $articles_count);
         } else { // So $display_type should be 0
             // As paragrapsh without metadata
-            echo $oArticles->get_articles_list_category($categories, false, false, $articles_count);
+            $return_value.= $oArticles->get_articles_list_category($categories, false, $articles_count);
         }
         unset($categories, $articles_count, $display_type, $oArticles);
+        return $return_value;
     }
 
     public function get_editor(Website $oWebsite, $widget_id, $data) {
         $title = isset($data["title"]) ? $data["title"] : "";
         $categories = isset($data["categories"]) ? $data["categories"] : array();
         $count = isset($data["count"]) ? $data["count"] : 4;
-        $display_type = isset($data["display_type"]) ? $data["display_type"] : self::$TYPE_WITHOUT_METADATA;
+        $display_type = isset($data["display_type"]) ? $data["display_type"] : self::TYPE_WITHOUT_METADATA;
 
         // Title
         $text_to_display = "<p>\n";
@@ -77,11 +79,11 @@ class WidgetRkokArticles extends WidgetDefinition {
         $text_to_display.= '<span class="required">*</span><br />' . "\n";
         $text_to_display.= '<select name="display_type_' . $widget_id . '" id="display_type_' . $widget_id . '">';
         $text_to_display.= $this->get_select_option(
-                $oWebsite->t("articles.display_type.without_metadata"), self::$TYPE_WITHOUT_METADATA, $display_type);
+                $oWebsite->t("articles.display_type.without_metadata"), self::TYPE_WITHOUT_METADATA, $display_type);
         $text_to_display.= $this->get_select_option(
-                $oWebsite->t("articles.display_type.with_metadata"), self::$TYPE_WITH_METADATA, $display_type);
+                $oWebsite->t("articles.display_type.with_metadata"), self::TYPE_WITH_METADATA, $display_type);
         $text_to_display.= $this->get_select_option(
-                $oWebsite->t("articles.display_type.list"), self::$TYPE_LIST, $display_type);
+                $oWebsite->t("articles.display_type.list"), self::TYPE_LIST, $display_type);
         $text_to_display.= "</select>\n";
         $text_to_display.= "</p>\n";
 
@@ -146,9 +148,9 @@ class WidgetRkokArticles extends WidgetDefinition {
         // Display type
         if (isset($_REQUEST["display_type_" . $id])) {
             $data["display_type"] = (int) $_REQUEST["display_type_" . $id];
-            if ($data["display_type"] != self::$TYPE_LIST &&
-                    $data["display_type"] != self::$TYPE_WITHOUT_METADATA &&
-                    $data["display_type"] != self::$TYPE_WITH_METADATA) {
+            if ($data["display_type"] != self::TYPE_LIST &&
+                    $data["display_type"] != self::TYPE_WITHOUT_METADATA &&
+                    $data["display_type"] != self::TYPE_WITH_METADATA) {
                 $oWebsite->add_error($oWebsite->t("articles.article_count") . " " . $oWebsite->t("errors.not_found"));
                 $data["valid"] = false;
             }

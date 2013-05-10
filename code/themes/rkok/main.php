@@ -39,7 +39,7 @@
 				 	?> >
 				<!-- Einde header -->
 				
-				<?php $this->echo_page(); ?>
+				<?php $this->echo_page_content(); ?>
 				
 				<!-- Begin footer -->
 		
@@ -47,7 +47,7 @@
 				
 				<?php if($this->get_page_type()=="NORMAL") { ?>
 					<div id="sidebar">
-						<?php $this->echo_widgets(1); ?>
+						<?php $this->echo_widgets(2); ?>
 					</div>
 				<?php } ?>
 				

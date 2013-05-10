@@ -4,9 +4,8 @@ class Validate {
 
     private static $last_error;
     private static $replace_in_last_error = "";
-    
     public static $MIN_PASSWORD_LENGHT = 5;
-    
+
     private static function set_error($code, $replace_in_code = "") {
         Validate::$last_error = $code;
         Validate::$replace_in_last_error = $replace_in_code;
@@ -36,7 +35,7 @@ class Validate {
             Validate::set_error("is_too_long_num", "100");
             return false;
         }
-        
+
         if (preg_match('/^([*+!.&#$�\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i', $email)) { //ingewikkeld, maar werkt
             return true;
         } else {
@@ -104,22 +103,48 @@ class Validate {
 
         return $valid;
     }
-    
+
     public static function range($number, $min, $max) {
-        if(!is_numeric($number)) {
+        if (!is_numeric($number)) {
             Validate::set_error("is_not_numeric");
             return false;
         }
         $number = (int) $number;
-        if($number < $min) {
+        if ($number < $min) {
             Validate::set_error("is_too_low_num", $min);
             return false;
         }
-        if($number > $max) {
+        if ($number > $max) {
             Validate::set_error("is_not_high_num", $max);
             return false;
         }
         return true;
     }
+
+    public static function url($link_url) {
+        if (strlen($link_url) <= 7) {
+            self::set_error("not_entered");
+            return false;
+        }
+        if (strlen($link_url) > Menus::MAX_URL_LENGTH) {
+            self::set_error("is_too_long_num", Menus::MAX_URL_LENGTH);
+            return false;
+        }
+        return true;
+    }
+
+    public static function link_text($link_text) {
+        if (strlen($link_text) == 0) {
+            self::set_error("not_entered");
+            return false;
+        }
+        if (strlen($link_text) > Menus::MAX_LINK_TEXT_LENGTH) {
+            self::set_error("is_too_long_num", Menus::MAX_LINK_TEXT_LENGTH);
+            return false;
+        }
+        return true;
+    }
+
 }
+
 ?>
