@@ -22,17 +22,13 @@
                 <div id="container">
 			<div id="containerwrapper">				
 				<div <?php
-					if($this->get_page_type()=="NORMAL")
-					{
-						echo 'id="content"';
-					}
-					elseif($this->get_page_type()=="BACKSTAGE")
+					if($this->get_page_type()=="BACKSTAGE")
 					{
 						echo 'id="contentadmin"';
 					}
-					else // dus $this->get_page_type()=="NOWIDGETS"
+					else
 					{
-						echo 'id="contentwide"';
+						echo 'id="content"';
 					}
 				 
 				 
@@ -43,9 +39,9 @@
 				
 				<!-- Begin footer -->
 		
-				</div><!-- id="content"/"contentwide" -->
+				</div><!-- id="content"/"contentadmin" -->
 				
-				<?php if($this->get_page_type()=="NORMAL") { ?>
+				<?php if($this->get_page_type()!="BACKSTAGE") { ?>
 					<div id="sidebar">
 						<?php $this->echo_widgets(2); ?>
 					</div>

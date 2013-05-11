@@ -147,18 +147,19 @@ class Website {
     }
 
     public function get_url_page($name, $id = -1337, $args = array()) {
-        /* if ($id == -1337 && count($args) == 0) { // just the page name
-          return $this->get_url_main() . $name;
-          } else { // also the other arguments
-          if (count($args) == 0)
-          return $this->get_url_main() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
-          else { //wel andere variabelen
-          $url = $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id;
-          foreach ($args as $key => $value)
-          $url.="&amp;$key=" . urlencode($value);
-          return $url;
-          }
-          } */
+        if ($id == -1337 && count($args) == 0) { // just the page name
+            return $this->get_url_main() . $name;
+        } else { // also the other arguments
+            if (count($args) == 0)
+                return $this->get_url_main() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
+            else { //wel andere variabelen
+                $url = $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id;
+                foreach ($args as $key => $value)
+                $url.="&amp;$key=" . urlencode($value);
+                return $url;
+            }
+        } 
+        /*
         if ($id == -1337 && count($args) == 0) { // just the page name
             return $this->get_url_main() . "index.php?p=" . $name;
         } else { // also the other arguments
@@ -170,7 +171,7 @@ class Website {
                     $url.="&amp;$key=" . urlencode($value);
                 return $url;
             }
-        }
+        }*/
     }
 
     public function get_uri_page($name) {

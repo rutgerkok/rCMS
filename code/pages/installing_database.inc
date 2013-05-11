@@ -1,10 +1,10 @@
 <?php
 
 $oDB = $this->get_database();
-$not_installed = $oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) == 0;
+$already_installed = $oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) > 0;
 $logged_in_staff = $this->logged_in_staff(true);
 $confirmed = isset($_REQUEST['confirm']);
-if ($not_installed || ($logged_in_staff && $confirmed)) {
+if (!$already_installed || ($logged_in_staff && $confirmed)) {
     // Create tables
     $oDB->create_tables();
 
@@ -28,7 +28,7 @@ if ($not_installed || ($logged_in_staff && $confirmed)) {
 			
 EOT;
 }
-if ($logged_in_staff && !$confirmed) {
+if ($logged_in_staff && !$confirmed && $already_installed) {
     $link_confirm = $this->get_url_page("installing_database", 0, array("confirm" => 1));
     echo <<<EOT
         <h2>Installing database</h2>

@@ -110,7 +110,7 @@ class Database {
         $prefix = $this->database_table_prefix;
 
         $sql = str_replace(
-                array('`categorie`', '`gebruikers`', '`menuitem`', '`artikel`', '`reacties`'), array("`{$prefix}categorie`", "`{$prefix}gebruikers`", "`{$prefix}menuitem`", "`{$prefix}artikel`", "`{$prefix}reacties`"), $sql);
+                array('`categorie`', '`gebruikers`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`'), array("`{$prefix}categorie`", "`{$prefix}gebruikers`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`"), $sql);
 
         $result = @mysqli_query($this->dbc, $sql);
 

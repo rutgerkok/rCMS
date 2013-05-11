@@ -87,7 +87,7 @@ if ($logged_in) {
 
         // Start form  
         $text_to_display.= '<p>' . $this->t("main.fields_required") . "</p>\n";
-        $text_to_display.= '<form action="' . $this->get_url_main() . '" method="get">' . "\n";
+        $text_to_display.= '<form action="' . $this->get_url_main() . '" method="post">' . "\n";
 
         // Sidebar id
         $text_to_display.= '<p><label for="sidebar_id">' . $this->t("widgets.sidebar") . ":</label>";

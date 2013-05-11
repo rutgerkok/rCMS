@@ -316,15 +316,6 @@ div#content
     position:relative;
     overflow:hidden;
 }
-div#contentwide
-{
-    width:95%;
-    padding-right:5%;
-    clear:left;
-    float:left;
-    position:relative;
-    overflow:hidden;
-}
 div#contentadmin
 {
     width:95%;
