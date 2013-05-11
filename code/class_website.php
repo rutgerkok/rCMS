@@ -1,6 +1,7 @@
 <?php
 
 class Website {
+
     protected $errors = array();
     protected $debug = true;
     protected $errorsdisplayed = false;
@@ -155,10 +156,10 @@ class Website {
             else { //wel andere variabelen
                 $url = $this->get_url_main() . "index.php?p=" . $name . "&amp;id=" . $id;
                 foreach ($args as $key => $value)
-                $url.="&amp;$key=" . urlencode($value);
+                    $url.="&amp;$key=" . urlencode($value);
                 return $url;
             }
-        } 
+        }
         /*
         if ($id == -1337 && count($args) == 0) { // just the page name
             return $this->get_url_main() . "index.php?p=" . $name;
@@ -387,6 +388,26 @@ class Website {
             return str_replace("#", strtolower($replace_in_key), $this->t($key));
         } else {
             return str_replace("#", $replace_in_key, $this->t($key));
+        }
+    }
+
+    /**
+     * Gets a variable from the $_REQUEST array, without extra "magic quotes"
+     * and with a default option if the $_REQUEST array doesn't contain the
+     * variable.
+     * @param string $name Key in the $_REQUEST array.
+     * @param string $default Default option, if value is not found.
+     * @return string The value in the $_REQUEST array, or the default value.
+     */
+    public function get_request_var($name, $default) {
+        if (isset($_REQUEST[$name])) {
+            if (ini_get("magic_quotes_gpc")) {
+                return stripslashes($_REQUEST[$name]);
+            } else {
+                return $_REQUEST[$name];
+            }
+        } else {
+            return $default;
         }
     }
 

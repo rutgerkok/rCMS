@@ -61,11 +61,11 @@ class WidgetRkokText extends WidgetDefinition {
         $return_array = array();
 
         // Title
-        $return_array["title"] = isset($_REQUEST['title_' . $id]) ? $_REQUEST['title_' . $id] : "";
+        $return_array["title"] = $oWebsite->get_request_var("title_" . $id, "");
         $return_array["title"] = trim($return_array["title"]);
 
         // Text
-        $return_array["text"] = isset($_REQUEST['text_' . $id]) ? $_REQUEST['text_' . $id] : "";
+        $return_array["text"] = $oWebsite->get_request_var("text_" . $id, "");
         $return_array["text"] = trim($return_array["text"]);
         if (strlen($return_array["text"]) == 0) {
             $oWebsite->add_error($oWebsite->t("editor.message") . " " . $oWebsite->t("errors.not_entered"));

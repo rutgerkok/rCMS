@@ -71,11 +71,6 @@ class Database {
      * @return string Sanitized string
      */
     public function escape_data($string) {
-        //Magic quotes oplossen
-        if (ini_get('magic_quotes_gpc')) {
-            $string = stripslashes($string);
-        }
-
         //Witruimte verwijderen en escapetekens toevoegen
         return @mysqli_real_escape_string($this->dbc, trim($string));
     }
