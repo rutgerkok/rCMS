@@ -38,7 +38,7 @@ class Menus {
         // Escape keyword
         $keyword = $oDB->escape_data($keyword);
 
-        $sql = "SELECT `link_id`,`link_url`,`link_text` FROM `links` WHERE `link_url` LIKE '%$keyword%' OR `link_naam` LIKE '%$keyword%'";
+        $sql = "SELECT `link_id`,`link_url`,`link_text` FROM `links` WHERE `link_url` LIKE '%$keyword%' OR `link_text` LIKE '%$keyword%'";
 
         $result = $oDB->query($sql);
         $links = array();

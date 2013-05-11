@@ -2,7 +2,7 @@
 
 class Website {
     protected $errors = array();
-    protected $debug = false;
+    protected $debug = true;
     protected $errorsdisplayed = false;
     protected $database_object;
     protected $current_page_id;
