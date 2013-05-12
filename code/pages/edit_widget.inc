@@ -69,11 +69,13 @@ if ($logged_in) {
                     if ($is_new_widget) {
                         // Created
                         $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_created") . "</em>\n";
-                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a></p>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("home") . '">' . $this->t("main.home") . "</a></p>\n";
                     } else {
                         // Updated
                         $text_to_display.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_edited") . "</em>\n";
-                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a></p>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
+                        $text_to_display.= '<a class="arrow" href="' . $this->get_url_page("home") . '">' . $this->t("main.home") . "</a></p>\n";
                     }
                 } else {
                     // Database error, not saved
