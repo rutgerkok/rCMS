@@ -7,12 +7,18 @@ class Articles {
 
     protected $website_object;
     protected $database_object;
-    protected $category_object; //nodig voor get_articles_archive
 
-    function __construct(Website $website_object, Database $database_object, Categories $category_object = null) {
+    /**
+     * Constructs the article displayer.
+     * @param Website $website_object The website to use.
+     * @param Database $database_object Not needed, for backwards compability.
+     */
+    public function __construct(Website $website_object, Database $database_object = null) {
         $this->website_object = $website_object;
         $this->database_object = $database_object;
-        $this->category_object = $category_object;
+        if ($this->database_object == null) {
+            $this->database_object = $website_object->get_database();
+        }
     }
 
     // DATA FUNCTIONS
@@ -20,10 +26,14 @@ class Articles {
     /**
      * Returns an article with an id. Respects page protection. Id is casted.
      * @param int $id The id of the article
-     * @return Article2|null The article, or null if it isn't found.
+     * @return Article|null The article, or null if it isn't found.
      */
-    function get_article($id) {
-        return new Article($id, $this->database_object);
+    public function get_article_data($id) {
+        try {
+            return new Article($id, $this->database_object);
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
     }
 
     /**
@@ -32,9 +42,9 @@ class Articles {
      * @param type $where_clausule Everything that should come after WHERE.
      * @param type $limit Limit the number of rows.
      * @param type $start Start position of the limit.
-     * @return array Array of Articles.
+     * @return \Article Array of Articles.
      */
-    protected function get_articles($where_clausule = "", $limit = 9, $start = 0) {
+    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
@@ -70,9 +80,59 @@ class Articles {
         }
     }
 
+    /**
+     * Gets a potentially long list of articles with the given year and
+     * category. 0 can be used for both the year and category as a wildcard.
+     * @param int $year The year to display.
+     * @param int $category_id The category id of the articles.
+     * @return \Article List of articles.
+     */
+    public function get_articles_data_archive($year = -1, $category_id = -1) {
+        $year = (int) $year;
+        $category_id = (int) $category_id;
+
+        // Set the limit extremely high when viewing the articles of just one
+        // year, to prevent strange missing articles at the end of the year.
+        $limit = ($year == 0) ? 50 : 500;
+
+        // Add where clausules
+        $where_clausules = array();
+        if ($year != 0) {
+            $where_clausules[] = "YEAR(`artikel_gemaakt`) = $year";
+        }
+        if ($category_id != 0) {
+            $where_clausules[] = "`categorie_id` = $category_id";
+        }
+
+        return $this->get_articles_data(join(" AND ", $where_clausules), $limit);
+    }
+
+    /**
+     * Gets an array with how many articles there are in each year in a given
+     * category.
+     * @param int $category_id The category id. Use 0 to search in all categories.
+     * @return array Key is year, value is count.
+     */
+    public function get_article_count_in_years($category_id = 0) {
+        $category_id = (int) $category_id;
+        $oDB = $this->database_object;
+
+        $sql = "SELECT YEAR(`artikel_gemaakt`), COUNT(*) FROM `artikel` ";
+        if ($category_id != 0) {
+            $sql.= "WHERE `categorie_id` = $category_id ";
+        }
+        $sql.= "GROUP BY YEAR(`artikel_gemaakt`)";
+        $result = $oDB->query($sql);
+        $return_array = array();
+        while (list($year, $count) = $oDB->fetch($result)) {
+            $return_array[$year] = $count;
+        }
+        return $return_array;
+    }
+
     // DISPLAY FUNCTIONS FOR INDIVIDUAL ARTICLES
 
-    function get_article_text_full(Article $article, Comments $oComments = null) {
+    public function get_article_text_full(Article $article, Comments $oComments = null) {
         // Store some variables for later use
         $oWebsite = $this->website_object;
         $id = (int) $article->id;
@@ -120,7 +180,7 @@ class Articles {
                                 <a class="addthis_counter addthis_pill_style"></a>
                             </div>
                             <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-50f99223106b78e7"></script>
-                        <!-- AddThis Button END -->   
+                        <!-- AddThis Button END -->
 EOT;
                 }
                 $return_value.= '</div>';
@@ -136,7 +196,7 @@ EOT;
                     $comments = $oComments->get_comments_article($id);
                     $comment_count = count($comments);
 
-                    // Title 
+                    // Title
                     $return_value.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
                     if ($comment_count > 0) {
                         $return_value.= ' (' . $comment_count . ')';
@@ -173,7 +233,7 @@ EOT;
         return $return_value;
     }
 
-    function get_article_text_small(Article $article, $show_metainfo, $show_edit_delete_links) {
+    public function get_article_text_small(Article $article, $show_metainfo, $show_edit_delete_links) {
         $oWebsite = $this->website_object;
         $return_value = "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $return_value.= "<h3>" . $article->title . "</h3>\n";
@@ -221,7 +281,7 @@ EOT;
         return $return_value;
     }
 
-    function get_article_text_listentry(Article $article) {
+    public function get_article_text_listentry(Article $article) {
         $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
         $return_value.= 'title="' . $article->intro . '">' . $article->title . "</a></li>\n";
         return $return_value;
@@ -229,7 +289,7 @@ EOT;
 
     // DISPLAY FUNCTIONS FOR MULTIPLE ARTICLES
 
-    function get_articles_list_category($categories, $show_metainfo = false, $limit = 9) {
+    public function get_articles_list_category($categories, $show_metainfo = false, $limit = 9) {
         $oWebsite = $this->website_object;
 
         // Should hidden articles be shown?
@@ -242,7 +302,7 @@ EOT;
             $categories[0] = $category_id;
         }
 
-        // Build the 
+        // Build the
         $where_clausule = '';
         foreach ($categories as $i => $category_id) {
             $category_id = (int) $category_id; //beveiliging
@@ -254,15 +314,15 @@ EOT;
         }
 
         //haal resultaten op
-        $result = $this->get_articles($where_clausule, $limit);
+        $result = $this->get_articles_data($where_clausule, $limit);
 
         //verwerk resultaten
-        $first_category = $categories[0];
+        $category_id_for_article_archive_and_creation = (count($categories) == 1) ? $categories[0] : 0;
         if ($result) {
             $return_value = '';
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
 
             // Display articles
@@ -271,20 +331,23 @@ EOT;
             }
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
-            $return_value.='<p><a href="' . $oWebsite->get_url_page("archive", 0, array("year" => date('Y'), "cat" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>'; //archief
+            // Archive
+            $return_value.='<p><a href="' . $oWebsite->get_url_page("archive", $category_id_for_article_archive_and_creation) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>'; //archief
             return $return_value;
         } else {
             $return_value = '<p><em>' . $oWebsite->t("errors.nothing_found") . "</em></p>";
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $first_category)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
             }
             return $return_value;
         }
     }
 
-    function get_articles_small_list($categories, $limit = 9) {
+    public function get_articles_small_list($categories, $limit = 9) {
+        $oWebsite = $this->website_object;
+        
         if (!is_array($categories)) { // Create array if needed
             $category_id = $categories;
             unset($categories);
@@ -299,15 +362,19 @@ EOT;
             $where_clausule.="`categorie_id` = $category_id";
         }
 
-        $result = $this->get_articles($where_clausule, $limit);
+        $result = $this->get_articles_data($where_clausule, $limit);
         $return_value = '<ul class="linklist">';
+        // Add all articles
         foreach ($result as $article) {
             $return_value.= $this->get_article_text_listentry($article);
         }
+        // Add archive link (only limit archive to one category if we are viewing one category)
+        $category_id_for_archive = (count($categories) == 1)? $categories[0] : 0;
+        $return_value.='<li><a href="' . $oWebsite->get_url_page("archive", $category_id_for_archive) . '">' . $oWebsite->t('articles.archive') . '</a></li>';
         return $return_value . "</ul>";
     }
 
-    function get_articles_search($keywordunprotected, $page) {
+    public function get_articles_search($keywordunprotected, $page) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff();
@@ -329,7 +396,7 @@ EOT;
         unset($articlecount_sql, $articlecount_result, $articlecount_resultrow);
 
         //resultaat ophalen
-        $results = $this->get_articles("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start);
+        $results = $this->get_articles_data("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start);
 
         //artikelen ophalen
         $return_value = '';
@@ -364,117 +431,6 @@ EOT;
             $return_value.='<p><em>' . $oWebsite->t('articles.search.no_results_found') . '</em></p>'; //niets gevonden
         }
 
-        return $return_value;
-    }
-
-    // MISCELLANEOUS FUNCTIONS
-
-    function get_articles_archive($year = 0, $cat_display = 0) {
-        $oDB = $this->database_object; //afkorting
-        $oWebsite = $this->website_object; //afkorting
-        $oCats = $this->category_object; //afkorting
-
-        $events = false;
-
-        $logged_in = $oWebsite->logged_in_staff(); //ingelogd? (nodig voor links om te bewerken)
-        $return_value = '';
-
-        //CATEGORIE BEPALEN (bepaal welke categorieen moeten worden weergegeven)
-        $cat_display = (int) $cat_display;
-
-        //where clausule voor query
-        $where = "`categorie_id`=$cat_display";
-        if ($cat_display == 0) {
-            $where = "1"; //alles
-        }
-        //lijstje met categorie�n maken
-        $cat_list = $oCats->get_categories();
-
-        //JAREN BEPALEN
-        $startyear = date('Y'); //vooralsnog, als de database zometeen iets anders meldt, wordt dat jaar gebruikt
-        $endyear = date('Y');
-
-        $year = (int) $year;
-        if ($year == 0) {
-            $year = (int) date('Y');
-        }
-
-
-        $sql = "SELECT YEAR(`artikel_gemaakt`) FROM artikel WHERE $where ORDER BY `artikel_gemaakt` LIMIT 0,1";
-        $result = $oDB->query($sql);
-
-        if ($result) {
-            $result = $oDB->fetch($result);
-            $result = $result[0];
-            if ($result > 0)
-                $startyear = $result;
-        }
-
-        //MENUBALK WEERGEVEN
-        $return_value.= '<p class="lijn">';
-        //categorie
-        $return_value .= '<span style="width:5.5em;display:block;float:left">' . $oWebsite->t('main.category') . ':</span> ';
-        if ($cat_display == 0) {
-            $return_value .= '<strong>' . $oWebsite->t('categories.all') . '</strong> ';
-        } else {
-            $return_value .= '<a href="' . $oWebsite->get_url_page("archive", 0, array("year" => $year)) . '">' . $oWebsite->t('categories.all') . '</a> ';
-        }
-        foreach ($cat_list as $id => $name) {
-            if ($id == $cat_display) {
-                $return_value .= "<strong>$name</strong>\n";
-            } else {
-                $return_value .= '<a href="' . $oWebsite->get_url_page("archive", 0, array("year" => $year, "cat" => $id)) . '">' . $name . "</a> \n";
-            }
-        }
-
-        //jaren
-        $return_value .= '<br /><span style="width:5.5em;display:block;float:left">' . $oWebsite->t('main.year') . ':</span>';
-        for ($i = $startyear; $i <= $endyear; $i++) {
-            if ($i == $year) {
-                $return_value .= '<strong>' . $i . '</strong> ';
-            } else {
-                $return_value .= '<a href="' . $oWebsite->get_url_page("archive", 0, array("year" => $i, "cat" => $cat_display)) . '">' . $i . '</a> ';
-            }
-        }
-
-        $return_value.= '</p>';
-
-        //RESULTATEN OPHALEN
-        $sql = "SELECT artikel_id, artikel_titel, categorie_naam, MONTH(artikel_gemaakt) FROM `artikel` LEFT JOIN `categorie` USING ( categorie_id ) WHERE $where AND YEAR(`artikel_gemaakt`)=$year ORDER BY `artikel_gemaakt`";
-        $result = $oDB->query($sql);
-        if ($result && $oDB->rows($result) > 0) {
-            $lastmonth = -1;
-            //geef de tabel weer
-            while (list($id, $title, $category, $month) = $oDB->fetch($result)) {
-                if ($month != $lastmonth) { //nieuwe maand, start nieuwe alinea
-                    if (isset($tablestarted))
-                        $return_value.="</table>\n";
-
-                    $return_value.="<br /><table style=\"width:100%;background:white\">\n";
-                    $return_value.="<tr><th colspan=\"3\">" . ucfirst(strftime('%B', mktime(0, 0, 0, $month, 1, $year))) . "</th></tr>\n";
-                    $lastmonth = $month;
-                    $tablestarted = true;
-                }
-
-
-                if ($logged_in) {
-                    $return_value.='<tr> <td style="width:71%"> <a class="arrow" href="' . $oWebsite->get_url_page("article", $id) . '">' . $title . '</a> </td>'; //titel invoegen
-                    $return_value.= '<td style=\"width:16%\"> <a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp; ' . //bewerken
-                            '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a> </td>'; //verwijderen
-                } else {
-                    $return_value.='<tr><td style="width:87%" colspan="2"> <a class="arrow" href="' . $oWebsite->get_url_page("article", $id) . '">' . $title . '</a> </td>'; //title invoegen
-                }
-                $return_value.="<td style=\"width:12%\">$category</td>\n";
-                $return_value.="</tr>\n";
-            }
-            $return_value.='</table>';
-        } else { //niets gevonden, geef suggesties
-            if ($year == date('Y') && $cat_display == 0) { //in alle categorieen van dit jaar is niks gevonden
-                $return_value.='<p>' . str_replace("#", $year, $oWebsite->t('articles.not_found.year')) . ' <a href="' . $oWebsite->get_url_page("archive", 0, array("year" => date('Y') - 1)) . '">' . str_replace("#", date('Y') - 1, $oWebsite->t('categories.search.all_in_year')) . '</a>.</p>';
-            } else {
-                $return_value.='<p>' . str_replace("#", $year, $oWebsite->t('articles.not_found.year_in_category')) . ' <a href="' . $oWebsite->get_url_page("archive", 0, array("year" => date('Y'))) . '">' . str_replace("#", date('Y'), $oWebsite->t('categories.search.all_in_year')) . '</a>.</p>';
-            }
-        }
         return $return_value;
     }
 
@@ -514,7 +470,11 @@ class Article {
             $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` ) ";
             $sql.= "WHERE artikel_id = {$this->id} ";
             $result = $oDatabase->query($sql);
-            $data = $oDatabase->fetch($result);
+            if ($result && $oDatabase->rows($result) >= 1) {
+                $data = $oDatabase->fetch($result);
+            } else {
+                throw new InvalidArgumentException("Article not found");
+            }
         }
         // Set all variables
         if (is_array($data) && count($data) >= 9) {

@@ -10,7 +10,6 @@ class Website {
     protected $current_page_title; // Site title [- page title]
     protected $current_page_title_short; // Based on page id
     protected $current_page_type; // NORMAL, NOWIDGETS or BACKSTAGE
-    public /* final */ $IS_WEBSITE_OBJECT = true; // Deprecated. Is this still used?
     /** @var Themes $themes */
     private $themes;
 

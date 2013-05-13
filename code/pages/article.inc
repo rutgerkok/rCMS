@@ -6,7 +6,7 @@ if (isset($_REQUEST['id'])) {
 }
 
 $oArticles = new Articles($this, $this->get_database());
-$article = $oArticles->get_article($article_id);
+$article = $oArticles->get_article_data($article_id);
 $article_code = $oArticles->get_article_text_full($article, new Comments($this, new Authentication($this)));
 
 unset($oArticles, $article);

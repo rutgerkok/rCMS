@@ -10,9 +10,9 @@ class Categories
 	protected $database_object;
 	protected $website_object;
 	
-	function __construct($oWebsite,$oDB)
+	function __construct($oWebsite, $oDB = null)
 	{
-		if(!isset($oWebsite->IS_WEBSITE_OBJECT))
+		if($oWebsite instanceof Database)
 		{
 			//website object is geen website object, argumenten zijn verkeerd om aangeleverd
 			//(voor 5 november 2011 was dat de standaard bij class_authentication, vanaf 24 januari 2012 ook hier)
@@ -21,8 +21,12 @@ class Categories
 		}
 		else
 		{
-			$this->database_object = $oDB;
 			$this->website_object = $oWebsite;
+                	$this->database_object = $oDB;
+			if($this->database_object == null)
+			{
+				$this->database_object = $oWebsite->get_database();
+			}
 		}
 	}
 	
