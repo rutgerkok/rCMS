@@ -430,7 +430,7 @@ EOT;
                     return '';
                 }
             } else { //laat bevestigingsvraag zien
-                $sql = "SELECT artikel_titel FROM artikel WHERE artikel_id = " . $this->id;
+                $sql = "SELECT artikel_titel FROM `artikel` WHERE artikel_id = " . $this->id;
                 $result = $oDB->query($sql);
 
                 if ($result) {
