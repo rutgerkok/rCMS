@@ -77,7 +77,7 @@ foreach ($articles as $article) {
 
         // Set new previous values
         $previous_month = $current_month;
-        $previous_year = $previous_year;
+        $previous_year = $current_year;
     }
 
     // The table cell
