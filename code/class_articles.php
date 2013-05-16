@@ -142,7 +142,7 @@ class Articles {
         if ($article->exists) {
             if (!$article->hidden || $logged_in) {
 
-                $return_value.= "<h2>{$article->title}</h2>";
+                $return_value.= "<h2>". htmlspecialchars($article->title) . "</h2>";
 
                 // Echo the sidebar
                 $return_value.= '<div id="sidebarpagesidebar">';
@@ -151,7 +151,7 @@ class Articles {
                 $return_value.= '<p class="meta">';
                 $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
                 if ($article->last_edited)
-                    $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited . "";
+                    $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited;
                 $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
                 $return_value.= " <br /> " . $oWebsite->t('articles.author') . ": $article->author"; //auteur
                 if ($article->pinned)
@@ -189,7 +189,7 @@ EOT;
                 //artikel
                 if ($logged_in && $article->hidden)
                     $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
-                $return_value.= '<p class="intro">' . $article->intro . '</p>';
+                $return_value.= '<p class="intro">' . htmlspecialchars($article->intro) . '</p>';
                 $return_value.= $article->body;
                 // Show comments
                 if ($article->show_comments && $oComments != null) {
@@ -236,7 +236,7 @@ EOT;
     public function get_article_text_small(Article $article, $show_metainfo, $show_edit_delete_links) {
         $oWebsite = $this->website_object;
         $return_value = "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
-        $return_value.= "<h3>" . $article->title . "</h3>\n";
+        $return_value.= "<h3>" . htmlspecialchars($article->title) . "</h3>\n";
         if ($show_metainfo) {
             $return_value.= '<p class="meta">';
             $return_value.= $oWebsite->t('articles.created') . " " . $article->created . ' - '; //gemaakt op
@@ -264,7 +264,7 @@ EOT;
         }
         $return_value.= '">';
 
-        $return_value.= $article->intro;
+        $return_value.= htmlentities($article->intro);
 
         $return_value.= "<br />";
         $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
@@ -283,7 +283,7 @@ EOT;
 
     public function get_article_text_listentry(Article $article) {
         $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
-        $return_value.= 'title="' . $article->intro . '">' . $article->title . "</a></li>\n";
+        $return_value.= 'title="' . $article->intro . '">' . htmlentities($article->title) . "</a></li>\n";
         return $return_value;
     }
 
@@ -437,7 +437,8 @@ EOT;
 }
 
 /**
- * Represents a single article
+ * Represents a single article. All data is raw HTML, handle with extreme
+ * caution (read: htmlspecialchars)
  */
 class Article {
 

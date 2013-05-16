@@ -85,7 +85,9 @@ class Edit {
         }
         $cat_list.="</select>";
 
-        //maak tekst voor al dan niet gepind,verborgen en met reacties
+        // Set variables
+        $title = htmlspecialchars($contents[1]);
+        $intro = htmlspecialchars($contents[2]);
         $pinned = ($contents[7] == 1) ? ' checked=\"checked\" ' : '';
         $hidden = ($contents[8] == 1) ? ' checked=\"checked\" ' : '';
         $comments = ($contents[10] == 1) ? ' checked=\"checked\" ' : '';
@@ -110,100 +112,97 @@ class Edit {
 
         //geef alles weer
         echo <<<EOT
-			<script type="text/javascript" src="{$oWebsite->get_url_main()}ckfinder/ckfinder.js"></script>
-			<script type="text/javascript">
-				var text_select_date;
-				text_select_date = "{$oWebsite->t("articles.event_date.select")}";
-			</script>
-			<script type="text/javascript" src="{$oWebsite->get_url_scripts()}article_editor.js"></script>
-			<form action="{$oWebsite->get_url_main()}" method="post">
-				<p style="position:absolute;top:.2em;right:2em;">
-					<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save')}" />
-					<script type="text/javascript">document.write('<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save_and_quit')}" />'); </script>
-					<a href="{$oWebsite->get_url_main()}" class="button" >{$oWebsite->t('editor.quit')}</a>
-				</p>
-				<p>
-					<em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
-				</p>
-				<table class="layout">
-					<tr>    <!-- gepind, verborgen en reacties -->
-						<td style="width:170px">&nbsp;</td>
-						<td>
-							<label for="article_hidden" title="{$oWebsite->t("articles.hidden.explained")}" style="cursor:help">
-								<input type="checkbox" id="article_hidden" name="article_hidden" class="checkbox" $hidden />
-								{$oWebsite->t("articles.hidden")}
-							</label> 
-							<label for="article_pinned" title="{$oWebsite->t("articles.pinned.explained")}" style="cursor:help">
-								<input type="checkbox" id="article_pinned" name="article_pinned" class="checkbox" $pinned />
-								{$oWebsite->t("articles.pinned")}
-							</label> 
-							<label for="article_comments" title="{$oWebsite->t("comments.allow_explained")}" style="cursor:help">
-								<input type="checkbox" id="article_comments" name="article_comments" class="checkbox" $comments />
-								{$oWebsite->t("comments.comments")}
-							</label>
-						</td>
-					</tr>
-					<tr>	<!-- titel -->
-						<td><label for="article_title">{$oWebsite->t("articles.title")}<span class="required">*</span></td>
-						<td><input type="text" id="article_title" name="article_title" style="width:98%" value="{$contents[1]}" /></td>
-					</tr>
-					<tr>    <!-- intro -->
-						<td><label for="article_intro">{$oWebsite->t("articles.intro")}<span class="required">*</span></label></td>
-						<td><textarea id="article_intro" name="article_intro" style="width:98%" rows="3">{$contents[2]}</textarea></td>
-					</tr>
-					<tr>    <!-- categorie -->
-						<td><label for="article_category">{$oWebsite->t("main.category")}<span class="required">*</span></label></td>
-						<td>$cat_list</td>
-					</tr>
-					<tr>    <!-- afbeelding --->
-						<td><label for="article_featured_image">{$oWebsite->t("articles.featured_image")}</label></td>
-						<td>
-							<input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:64%"  />
-							<input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->t("articles.featured_image.select")}" onclick="BrowseServer();" style="width:33%" />
-						</td>
-					</tr>
-					
-					<tr>    <!-- datum voor kalender -->
-						<td title="{$oWebsite->t("articles.event_date.explained")}" style="cursor:help">{$oWebsite->t("articles.event_date")}</td>
-						<td>
-							<label for="article_eventdate">
-								{$oWebsite->t("articles.date")}:<!--datum-->
-								<input type="text" id="article_eventdate" name="article_eventdate" value="$date" style="width:8em" />
-							</label>
-							<label for="article_eventtime">
-								{$oWebsite->t("articles.time")}:<!--tijd-->
-								<input type="text" id="article_eventtime" name="article_eventtime" value="$time" style="width:8em" />
-							</label>
-							<script type="text/javascript">fieldsInit()</script><!-- maak knop voor datumveld -->
-						</td>
-					</tr>
-					<tr>   <!-- inhoud bericht -->
-						<td colspan="2">
-							<label for="article_body">{$oWebsite->t("articles.body")}<span class="required">*</span></label><br />	
+            <script type="text/javascript" src="{$oWebsite->get_url_main()}ckfinder/ckfinder.js"></script>
+            <script type="text/javascript">
+                var text_select_date;
+                text_select_date = "{$oWebsite->t("articles.event_date.select")}";
+            </script>
+            <script type="text/javascript" src="{$oWebsite->get_url_scripts()}article_editor.js"></script>
+            <form action="{$oWebsite->get_url_main()}" method="post">
+                <p style="position:absolute;top:.2em;right:2em;">
+                    <input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save')}" />
+                    <script type="text/javascript">document.write('<input type="submit" class="button" name="article_submit" id="article_submit" value="{$oWebsite->t('editor.save_and_quit')}" />'); </script>
+                    <a href="{$oWebsite->get_url_page("article", $this->id)}" class="button" >{$oWebsite->t('editor.quit')}</a>
+                </p>
+                <p>
+                    <em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
+                </p>
+                <table class="layout">
+                    <tr>    <!-- gepind, verborgen en reacties -->
+                        <td style="width:170px">&nbsp;</td>
+                        <td>
+                            <label for="article_hidden" title="{$oWebsite->t("articles.hidden.explained")}" style="cursor:help">
+                                <input type="checkbox" id="article_hidden" name="article_hidden" class="checkbox" $hidden />
+                                {$oWebsite->t("articles.hidden")}
+                            </label>
+                            <label for="article_pinned" title="{$oWebsite->t("articles.pinned.explained")}" style="cursor:help">
+                                <input type="checkbox" id="article_pinned" name="article_pinned" class="checkbox" $pinned />
+                                {$oWebsite->t("articles.pinned")}
+                            </label>
+                            <label for="article_comments" title="{$oWebsite->t("comments.allow_explained")}" style="cursor:help">
+                                <input type="checkbox" id="article_comments" name="article_comments" class="checkbox" $comments />
+                                {$oWebsite->t("comments.comments")}
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>    <!-- titel -->
+                        <td><label for="article_title">{$oWebsite->t("articles.title")}<span class="required">*</span></td>
+                        <td><input type="text" id="article_title" name="article_title" style="width:98%" value="$title" /></td>
+                    </tr>
+                    <tr>    <!-- intro -->
+                        <td><label for="article_intro">{$oWebsite->t("articles.intro")}<span class="required">*</span></label></td>
+                        <td><textarea id="article_intro" name="article_intro" style="width:98%" rows="3">$intro</textarea></td>
+                    </tr>
+                    <tr>    <!-- categorie -->
+                        <td><label for="article_category">{$oWebsite->t("main.category")}<span class="required">*</span></label></td>
+                        <td>$cat_list</td>
+                    </tr>
+                    <tr>    <!-- afbeelding --->
+                        <td><label for="article_featured_image">{$oWebsite->t("articles.featured_image")}</label></td>
+                        <td>
+                            <input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:64%"  />
+                            <input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->t("articles.featured_image.select")}" onclick="BrowseServer();" style="width:33%" />
+                        </td>
+                    </tr>
+            
+                    <tr>    <!-- datum voor kalender -->
+                        <td title="{$oWebsite->t("articles.event_date.explained")}" style="cursor:help">{$oWebsite->t("articles.event_date")}</td>
+                        <td>
+                            <label for="article_eventdate">
+                                {$oWebsite->t("articles.date")}:<!--datum-->
+                                <input type="text" id="article_eventdate" name="article_eventdate" value="$date" style="width:8em" />
+                            </label>
+                            <label for="article_eventtime">
+                                {$oWebsite->t("articles.time")}:<!--tijd-->
+                                <input type="text" id="article_eventtime" name="article_eventtime" value="$time" style="width:8em" />
+                            </label>
+                            <script type="text/javascript">fieldsInit()</script><!-- maak knop voor datumveld -->
+                        </td>
+                    </tr>
+                    <tr>   <!-- inhoud bericht -->
+                        <td colspan="2">
+                            <label for="article_body">{$oWebsite->t("articles.body")}<span class="required">*</span></label><br />
 EOT;
         if (file_exists('./ckeditor/config.js')) {
             // CKEditor insluiten
             echo '<script src="/ckeditor/ckeditor.js"></script>';
-            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . $contents[3] . '</textarea>';
+            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . htmlspecialchars($contents[3]) . '</textarea>';
             echo '<script> var editor = CKEDITOR.replace("article_body");';
             echo "CKFinder.setupCKEditor( editor, '/ckfinder/' );</script>\n\n";
-        } else { 
+        } else {
             //Maar sluit niet in als CKEditor niet gevonden is
-            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . $contents[3] . '</textarea>';
+            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . htmlspecialchars($contents[3]) . '</textarea>';
             echo '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
         }
         echo <<<EOT
-						</td>	
-					</tr>
-				</table>
-			<!-- page and id -->
-			<input type="hidden" name="p" value="edit_article" />
-			<input type="hidden" name="id" value="{$this->id}" />
-			
-			<p>
-				
-			</p>
-			</form>
+                        </td>
+                    </tr>
+                </table>
+                <!-- page and id -->
+                <input type="hidden" name="p" value="edit_article" />
+                <input type="hidden" name="id" value="{$this->id}" />
+                <p></p>
+            </form>
 EOT;
     }
 
@@ -286,9 +285,6 @@ EOT;
 
         //intro
         $intro = trim($intro);
-        if (strip_tags($intro) != $intro) {
-            $oWebsite->add_error('Intro must not contain (X)HTML-tags.');
-        }
         if (strlen($intro) < 2) {
             $oWebsite->add_error('Please enter a intro.');
         }
@@ -431,7 +427,7 @@ EOT;
                     $result = $oDB->fetch($result);
                     $result = $result[0];
 
-                    $return_value = '<p>Are you sure you want to remove the article \'' . $result . '\'?';
+                    $return_value = '<p>Are you sure you want to remove the article \'' . htmlspecialchars($result) . '\'?';
                     $return_value.= ' This action cannot be undone.</p>';
                     $return_value.= '<p><a href="' . $oWebsite->get_url_page('delete_article', $this->id, array("confirm" => 1)) . '">Yes</a>|';
                     $return_value.= '<a href="' . $oWebsite->get_url_main() . '">No</a></p>';
