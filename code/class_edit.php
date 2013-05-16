@@ -16,7 +16,6 @@ class Edit {
      * check_input   - geeft terug of de ingevoerde gegevens correct zijn
      * save          - slaat de gegevens op
      * delete_article- verwijdert het artikel $_REQUEST['id']
-     * noslashes     - roept indien nodig stripslashes aan
      *
      */
 
@@ -28,7 +27,7 @@ class Edit {
     protected $contents = array();
 
     //constructor, zet gegevens artikel klaar
-    function __construct($oDB, $oCats, $oWebsite) {
+    function __construct($oDB, $oCats, Website $oWebsite) {
         $this->database_object = $oDB;
         $this->website_object = $oWebsite;
         $this->category_object = $oCats;
@@ -71,12 +70,6 @@ class Edit {
 
 
         $contents = $this->contents; //array met inhoud artikel
-        //haal de slashes weg
-        $contents[1] = $this->noslashes($contents[1]);
-        $contents[2] = $this->noslashes($contents[2]);
-        $contents[3] = $this->noslashes($contents[3]);
-
-        $contents[9] = trim($contents[9]);
 
         //maak array met categorieen
         $categories = $this->category_object->get_categories();
@@ -215,24 +208,25 @@ EOT;
     }
 
     function check_input() {
+        $oWebsite = $this->website_object;
         if (isset($_REQUEST['article_title'])) {
-            $title = $_REQUEST['article_title'];
+            $title = $oWebsite->get_request_var('article_title');
             $this->contents[1] = $title;
         }
         if (isset($_REQUEST['article_intro'])) {
-            $intro = $_REQUEST['article_intro'];
+            $intro = $oWebsite->get_request_var('article_intro');
             $this->contents[2] = $intro;
         }
         if (isset($_REQUEST['article_body'])) {
-            $body = $_REQUEST['article_body'];
+            $body = $oWebsite->get_request_var('article_body');
             $this->contents[3] = $body;
         }
         if (isset($_REQUEST['article_category'])) {
-            $cat = (int) $_REQUEST['article_category'];
+            $cat = (int) $oWebsite->get_request_var('article_category', 0);
             $this->contents[0] = $cat;
         }
         if (isset($_REQUEST['article_featured_image'])) {
-            $featured_image = $_REQUEST['article_featured_image'];
+            $featured_image = $oWebsite->get_request_var('article_featured_image');
             $this->contents[6] = $featured_image;
         }
         if (isset($_REQUEST['article_pinned'])) {
@@ -252,11 +246,11 @@ EOT;
         }
         //alleen verborgen status uitzetten als formulier ook daadwerkelijk is verzonden of als de $this->contents[8] leeg is
         if (isset($_REQUEST['article_eventdate'])) {
-            $eventdate = $_REQUEST['article_eventdate'];
+            $eventdate = $oWebsite->get_request_var('article_eventdate');
             $this->contents[9] = $eventdate;
         }
         if (isset($_REQUEST['article_eventtime'])) {
-            $eventtime = $_REQUEST['article_eventtime'];
+            $eventtime = $oWebsite->get_request_var('article_eventtime');
             $this->contents[9].= ' ' . $eventtime;
         }
         if (isset($_REQUEST['article_comments'])) {
@@ -325,14 +319,14 @@ EOT;
         $oDB = $this->database_object;
 
         //Gegevens opgehalen
-        $title = $_REQUEST['article_title'];
-        $intro = $_REQUEST['article_intro'];
-        $cat = (int) $_REQUEST['article_category'];
-        $body = str_replace(array('<h2>', '</h2>'), array('<h3>', '</h3>'), $_REQUEST['article_body']); //vervang <h2> door <h3>
-        $featured_image = $_REQUEST['article_featured_image'];
+        $title = $oWebsite->get_request_var('article_title');
+        $intro = $oWebsite->get_request_var('article_intro');
+        $cat = (int) $oWebsite->get_request_var('article_category', 0);
+        $body = str_replace(array('<h2>', '</h2>'), array('<h3>', '</h3>'), $oWebsite->get_request_var('article_body')); //vervang <h2> door <h3>
+        $featured_image = $oWebsite->get_request_var('article_featured_image');
         $pinned = isset($_REQUEST['article_pinned']) ? 1 : 0;
         $hidden = isset($_REQUEST['article_hidden']) ? 1 : 0;
-        $eventdatetime = $_REQUEST['article_eventdate'] . ' ' . $_REQUEST['article_eventtime'];
+        $eventdatetime = $oWebsite->get_request_var('article_eventdate') . ' ' . $oWebsite->get_request_var('article_eventtime');
         $comments = isset($_REQUEST['article_comments']) ? 1 : 0;
         $submit = $_REQUEST['article_submit'];
 
@@ -447,14 +441,6 @@ EOT;
                     return '';
                 }
             }
-        }
-    }
-
-    function noslashes($string) {
-        if (ini_get('magic_quotes_gpc')) {
-            return( stripslashes($string) );
-        } else {
-            return $string;
         }
     }
 

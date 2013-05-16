@@ -398,7 +398,7 @@ class Website {
      * @param string $default Default option, if value is not found.
      * @return string The value in the $_REQUEST array, or the default value.
      */
-    public function get_request_var($name, $default) {
+    public function get_request_var($name, $default = "") {
         if (isset($_REQUEST[$name])) {
             if (ini_get("magic_quotes_gpc")) {
                 return stripslashes($_REQUEST[$name]);
