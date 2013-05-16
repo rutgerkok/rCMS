@@ -1,5 +1,21 @@
 <?php
-if(!isset($this)) die(); //security
+/*
+ * The main configuration file. It is advisable to move this file one directory
+ * up (outside the web root) so that you can be sure that the source can never
+ * be viewed. PHP should normally prevent this from happening, but you can never
+ * know.
+ * 
+ * If you do that, create a new config.php at the current location with the
+ * following text. This will redirect rCMS.
+ * 
+ * <?php
+ *      require("../config.php");
+ * ?>
+ * 
+ */
+
+// Only execute if rCMS is loaded
+if(!isset($this)) die();
 
 $this->config['theme'] =  "rkok";//name of theme directory
 $this->config['title'] =  "Test site van rCMS";//title of site
@@ -9,6 +25,7 @@ $this->config['locales'] = array('en_US', 'en', 'english'); // Locales - use arr
 $this->config['password'] = ""; //Password needed to view your site
 $this->config['language'] = "en"; // Directory name of the translations (code/translations/NAME/)
 $this->config['userscancreateaccounts'] = true; // Whether visitors can create accounts
+$this->config['fancy_urls'] = true; // Enables fancy URLs. Requires a .htaccess file like the one provided.
 
 //DATABASE SETTINGS
 $this->config['database_location'] = 'localhost'; // Location of mysql server, for example: 'localhost' or 'mysql://example.net'. Prefix with p: to make connection pernament.
