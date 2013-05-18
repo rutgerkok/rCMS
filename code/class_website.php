@@ -421,17 +421,26 @@ class Website {
      */
     public function get_text_editor($field_name, $field_value, $first_time = true) {
         $return_value = "";
+        $field_value = htmlspecialchars($field_value);
+        $editor_color = $this->get_theme_manager()->get_theme()->get_text_editor_menu_color();
         if ($this->get_sitevar("ckeditor_url")) {
             // Put CKEditor in
             if ($first_time) {
-                $return_value .= '<script src="'. $this->get_sitevar("ckeditor_url") . 'ckeditor.js"></script>';
+                $return_value .= '<script type="text/javascript" src="'. $this->get_sitevar("ckeditor_url") . 'ckeditor.js"></script>';
             }
-            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . htmlspecialchars($field_value) . '</textarea>';
-            $return_value .= '<script> var editor = CKEDITOR.replace("' . $field_name . '");';
-            $return_value .= "CKFinder.setupCKEditor( editor, '/ckfinder/' );</script>\n\n";
+            $return_value .= <<<EOT
+            <textarea id="$field_name" rows="30" cols="40" style="width:95%">$field_value</textarea>
+            <script type="text/javascript">
+                CKEDITOR.replace( '$field_name', {
+                    uiColor: '$editor_color',
+                    format_tags : 'p;h3;pre',
+                    contentsCss : ['{$this->get_theme_manager()->get_url_theme()}main.css', '{$this->get_url_scripts()}whitebackground.css']
+                });
+            </script>
+EOT;
         } else {
             // Don't put CKEditor in
-            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . htmlspecialchars($field_value) . '</textarea>';
+            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . $field_value . '</textarea>';
             if ($first_time) {
                 $return_value .= '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
             }

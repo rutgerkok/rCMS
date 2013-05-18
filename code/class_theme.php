@@ -7,6 +7,14 @@ abstract class Theme {
      * @param Website $oWebsite The current website.
      */
     public abstract function get_widget_areas(Website $oWebsite);
+    
+    /**
+     * Gets the color of the CKEditor menu bar.
+     * @return string The color, in the format #aaaaaa.
+     */
+    public function get_text_editor_menu_color() {
+        return "#cccccc";
+    }
 }
 
 ?>

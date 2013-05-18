@@ -92,6 +92,8 @@ class Edit {
         $comments = ($contents[10] == 1) ? ' checked=\"checked\" ' : '';
 
         // Create date and time
+        $date = "";
+        $time = "";
         $date_time = explode(" ", $contents[9]);
         if (count($date_time) == 2) {
             $date = $date_time[0];
@@ -160,7 +162,7 @@ class Edit {
                     <tr>    <!-- afbeelding --->
                         <td><label for="article_featured_image">{$oWebsite->t("articles.featured_image")}</label></td>
                         <td>
-                            <input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:64%"  />
+                            <input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:63%"  />
                             <input type="button" class="button" id="browseserver" name="browseserver" value="{$oWebsite->t("articles.featured_image.select")}" onclick="BrowseServer();" style="width:33%" />
                         </td>
                     </tr>

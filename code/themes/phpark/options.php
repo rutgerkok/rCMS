@@ -6,6 +6,10 @@ class PrinsHendrikparkTheme extends Theme {
             3 => $oWebsite->t("widgets.sidebar") . " 2"
         );
     }
+    
+    public function get_text_editor_menu_color() {
+        return "#9a9a79";
+    }
 }
 
 $this->register_theme(new PrinsHendrikparkTheme());
