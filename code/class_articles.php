@@ -139,36 +139,35 @@ class Articles {
         $logged_in = $oWebsite->logged_in_staff();
         $return_value = '';
 
-        if ($article->exists) {
-            if (!$article->hidden || $logged_in) {
+        if (!$article->hidden || $logged_in) {
 
-                $return_value.= "<h2>". htmlspecialchars($article->title) . "</h2>";
+            $return_value.= "<h2>" . htmlspecialchars($article->title) . "</h2>";
 
-                // Echo the sidebar
-                $return_value.= '<div id="sidebarpagesidebar">';
-                if (!empty($article->featured_image))
-                    $return_value.= "<p><img src=\"{$article->featured_image}\" alt=\"{$article->title}\" /></p>";
-                $return_value.= '<p class="meta">';
-                $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
-                if ($article->last_edited)
-                    $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited;
-                $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
-                $return_value.= " <br /> " . $oWebsite->t('articles.author') . ": $article->author"; //auteur
-                if ($article->pinned)
-                    $return_value.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
-                if ($article->hidden)
-                    $return_value.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
-                if ($logged_in && $article->show_comments)
-                    $return_value.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
-                $return_value.= '</p>';
-                if ($logged_in) {
-                    $return_value.= "<p style=\"clear:both\">";
-                    $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                            '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
-                    $return_value.= "</p>";
-                }
-                if ($article->show_comments) {
-                    $return_value.= <<<EOT
+            // Echo the sidebar
+            $return_value.= '<div id="sidebarpagesidebar">';
+            if (!empty($article->featured_image))
+                $return_value.= "<p><img src=\"{$article->featured_image}\" alt=\"{$article->title}\" /></p>";
+            $return_value.= '<p class="meta">';
+            $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
+            if ($article->last_edited)
+                $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited;
+            $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
+            $return_value.= " <br /> " . $oWebsite->t('articles.author') . ": $article->author"; //auteur
+            if ($article->pinned)
+                $return_value.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
+            if ($article->hidden)
+                $return_value.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
+            if ($logged_in && $article->show_comments)
+                $return_value.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
+            $return_value.= '</p>';
+            if ($logged_in) {
+                $return_value.= "<p style=\"clear:both\">";
+                $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+                        '<a class="arrow" href="' . $oWebsite->get_url_page("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
+                $return_value.= "</p>";
+            }
+            if ($article->show_comments) {
+                $return_value.= <<<EOT
                         <!-- AddThis Button BEGIN -->
                             <div class="addthis_toolbox addthis_default_style ">
                                 <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -182,53 +181,51 @@ class Articles {
                             <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-50f99223106b78e7"></script>
                         <!-- AddThis Button END -->
 EOT;
-                }
-                $return_value.= '</div>';
-
-                $return_value.= '<div id="sidebarpagecontent">';
-                //artikel
-                if ($logged_in && $article->hidden)
-                    $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
-                $return_value.= '<p class="intro">' . htmlspecialchars($article->intro) . '</p>';
-                $return_value.= $article->body;
-                // Show comments
-                if ($article->show_comments && $oComments != null) {
-                    $comments = $oComments->get_comments_article($id);
-                    $comment_count = count($comments);
-
-                    // Title
-                    $return_value.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
-                    if ($comment_count > 0) {
-                        $return_value.= ' (' . $comment_count . ')';
-                    }
-                    $return_value.= "</h3>\n\n";
-
-                    // "No comments found" if needed
-                    if ($comment_count == 0) {
-                        $return_value.= '<p><em>' . $oWebsite->t("comments.no_comments_found") . '</em></p>';
-                    }
-
-                    // Comment add link
-                    $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
-                    // Show comments
-
-                    $current_user_id = $oWebsite->get_current_user_id();
-                    $show_actions = $oWebsite->logged_in_staff();
-                    foreach ($comments as $comment) {
-                        if ($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
-                            $return_value.= $oComments->get_comment_html($comment, true);
-                        } else {
-                            $return_value.= $oComments->get_comment_html($comment, false);
-                        }
-                    }
-                }
-                $return_value.= '</div>';
-            } else {
-                $oWebsite->add_error($oWebsite->t('main.article') . ' ' . $oWebsite->t('errors.not_public'));
             }
+            $return_value.= '</div>';
+
+            $return_value.= '<div id="sidebarpagecontent">';
+            //artikel
+            if ($logged_in && $article->hidden)
+                $return_value.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
+            $return_value.= '<p class="intro">' . htmlspecialchars($article->intro) . '</p>';
+            $return_value.= $article->body;
+            // Show comments
+            if ($article->show_comments && $oComments != null) {
+                $comments = $oComments->get_comments_article($id);
+                $comment_count = count($comments);
+
+                // Title
+                $return_value.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
+                if ($comment_count > 0) {
+                    $return_value.= ' (' . $comment_count . ')';
+                }
+                $return_value.= "</h3>\n\n";
+
+                // "No comments found" if needed
+                if ($comment_count == 0) {
+                    $return_value.= '<p><em>' . $oWebsite->t("comments.no_comments_found") . '</em></p>';
+                }
+
+                // Comment add link
+                $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
+                // Show comments
+
+                $current_user_id = $oWebsite->get_current_user_id();
+                $show_actions = $oWebsite->logged_in_staff();
+                foreach ($comments as $comment) {
+                    if ($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
+                        $return_value.= $oComments->get_comment_html($comment, true);
+                    } else {
+                        $return_value.= $oComments->get_comment_html($comment, false);
+                    }
+                }
+            }
+            $return_value.= '</div>';
         } else {
-            $oWebsite->add_error($oWebsite->t('main.article') . ' ' . $oWebsite->t('errors.not_found'));
+            $oWebsite->add_error($oWebsite->t('main.article') . ' ' . $oWebsite->t('errors.not_public'));
         }
+
 
         return $return_value;
     }
@@ -347,7 +344,7 @@ EOT;
 
     public function get_articles_small_list($categories, $limit = 9) {
         $oWebsite = $this->website_object;
-        
+
         if (!is_array($categories)) { // Create array if needed
             $category_id = $categories;
             unset($categories);
@@ -369,7 +366,7 @@ EOT;
             $return_value.= $this->get_article_text_listentry($article);
         }
         // Add archive link (only limit archive to one category if we are viewing one category)
-        $category_id_for_archive = (count($categories) == 1)? $categories[0] : 0;
+        $category_id_for_archive = (count($categories) == 1) ? $categories[0] : 0;
         $return_value.='<li><a href="' . $oWebsite->get_url_page("archive", $category_id_for_archive) . '">' . $oWebsite->t('articles.archive') . '</a></li>';
         return $return_value . "</ul>";
     }
@@ -442,7 +439,6 @@ EOT;
  */
 class Article {
 
-    public $exists;
     public $id;
     public $title;
     public $created;
@@ -492,9 +488,6 @@ class Article {
                 $this->body = $data[9];
                 $this->show_comments = (boolean) $data[10];
             }
-            $this->exists = true;
-        } else {
-            $this->exists = false;
         }
     }
 
