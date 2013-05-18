@@ -147,7 +147,7 @@ class Website {
     }
 
     public function get_url_page($name, $id = -1337, $args = array()) {
-        if($this->get_sitevar("fancy_urls")) {
+        if ($this->get_sitevar("fancy_urls")) {
             if ($id == -1337 && count($args) == 0) { // just the page name
                 return $this->get_url_main() . $name;
             } else { // also the other arguments
@@ -410,6 +410,33 @@ class Website {
         } else {
             return $default;
         }
+    }
+
+    /**
+     * Includes CKEditor, or a simple text box if CKEditor is not installed.
+     * @param string $field_name Field name. Should only contain letters, numbers and underscores.
+     * @param string $field_value Field value. Will be escaped with htmlspecialchars.
+     * @param boolean $first_time Whether the script should be included (not needed if this function has already been called on this page).
+     * @return string The correct HTML output.
+     */
+    public function get_text_editor($field_name, $field_value, $first_time = true) {
+        $return_value = "";
+        if ($this->get_sitevar("ckeditor_url")) {
+            // Put CKEditor in
+            if ($first_time) {
+                $return_value .= '<script src="'. $this->get_sitevar("ckeditor_url") . 'ckeditor.js"></script>';
+            }
+            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . htmlspecialchars($field_value) . '</textarea>';
+            $return_value .= '<script> var editor = CKEDITOR.replace("' . $field_name . '");';
+            $return_value .= "CKFinder.setupCKEditor( editor, '/ckfinder/' );</script>\n\n";
+        } else {
+            // Don't put CKEditor in
+            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . htmlspecialchars($field_value) . '</textarea>';
+            if ($first_time) {
+                $return_value .= '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
+            }
+        }
+        return $return_value;
     }
 
 }

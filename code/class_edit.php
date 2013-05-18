@@ -70,7 +70,6 @@ class Edit {
 
 
         $contents = $this->contents; //array met inhoud artikel
-
         //maak array met categorieen
         $categories = $this->category_object->get_categories();
 
@@ -92,22 +91,23 @@ class Edit {
         $hidden = ($contents[8] == 1) ? ' checked=\"checked\" ' : '';
         $comments = ($contents[10] == 1) ? ' checked=\"checked\" ' : '';
 
-        //maak datum en tijd
-        if (!empty($contents[9])) { //als er een datum-tijd is gevonden
-            $date = explode(" ", $contents[9]);
-            $date = $date[0];
-            $time = explode(" ", $contents[9]);
-            if (isset($time[1])) {
-                $time = $time[1];
-                $time = explode(":", $time);    //secondes
-                $time = $time[0] . ':' . $time[1]; //weghalen
+        // Create date and time
+        $date_time = explode(" ", $contents[9]);
+        if (count($date_time) == 2) {
+            $date = $date_time[0];
+            $time = $date_time[1];
+            // Make sure that time display is correct
+            $hours_minutes = explode(":", $time);
+            if(count($hours_minutes) >=2) {
+                $time = $hours_minutes[0] . ":" . $hours_minutes[1];
             } else {
                 $time = "";
             }
-        }
-        if (empty($contents[9]) || $date == "0000-00-00") { //als de datum-tijd 0 of leeg is
-            $date = "";
-            $time = "";
+            // Make sure that date display is correct
+            if($date == "0000-00-00") {
+                $data = "";
+                $time = "";
+            }
         }
 
         //geef alles weer
@@ -182,19 +182,7 @@ class Edit {
                     <tr>   <!-- inhoud bericht -->
                         <td colspan="2">
                             <label for="article_body">{$oWebsite->t("articles.body")}<span class="required">*</span></label><br />
-EOT;
-        if (file_exists('./ckeditor/config.js')) {
-            // CKEditor insluiten
-            echo '<script src="/ckeditor/ckeditor.js"></script>';
-            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . htmlspecialchars($contents[3]) . '</textarea>';
-            echo '<script> var editor = CKEDITOR.replace("article_body");';
-            echo "CKFinder.setupCKEditor( editor, '/ckfinder/' );</script>\n\n";
-        } else {
-            //Maar sluit niet in als CKEditor niet gevonden is
-            echo '<textarea name="article_body" id="article_body" rows="30" cols="40" style="width:95%">' . htmlspecialchars($contents[3]) . '</textarea>';
-            echo '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
-        }
-        echo <<<EOT
+                            {$oWebsite->get_text_editor("article_body", $contents[3])}
                         </td>
                     </tr>
                 </table>

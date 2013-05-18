@@ -37,5 +37,7 @@ $this->config['database_table_prefix'] = ''; // A prefix, if you are having tabl
 //PATHS
 $this->config['uri'] = 'C:/xampp/htdocs/';
 $this->config['url'] = 'http://localhost/';
+// CKEditor path. Leave blank to leave out CKEditor, leaving you with a simple textfield.
+$this->config['ckeditor_url'] = $this->config['url'] . 'ckeditor/';
 
 ?>
