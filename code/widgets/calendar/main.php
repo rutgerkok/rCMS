@@ -15,7 +15,7 @@ class WidgetRkokCalendar extends WidgetDefinition {
         
         $oCal = new Calendar($oWebsite, $oWebsite->get_database());
         $return_value.= '<h3>' . ucfirst(strftime('%B')) . ' ' . date('Y') . '</h3>'; // Current month and year
-        $return_value.= $oCal->get_calendar(291);
+        $return_value.= $oCal->get_calendar();
         $return_value.= "\n" . '<p> <a class="arrow" href="' . $oWebsite->get_url_page("calendar") . '">' . $oWebsite->t("calendar.calendar_for_twelve_months") . '</a> </p>'; //link voor jaarkalender
         return $return_value;
     }
