@@ -38,7 +38,7 @@ class Comments {
                     $oWebsite->add_error($oWebsite->t("users.name") . ' ' . $oWebsite->t("errors.not_entered"));
                     $valid = false;
                 } else {
-                    $author_name = htmlentities(trim($author_name));
+                    $author_name = htmlspecialchars(trim($author_name));
                     if (!Validate::display_name($author_name)) {
                         $oWebsite->add_error($oWebsite->t("users.name") . ' ' . Validate::get_last_error($oWebsite));
                         $valid = false;
@@ -97,7 +97,7 @@ class Comments {
                 $valid = false;
             }
 
-            $comment_body = htmlentities($comment_body);
+            $comment_body = htmlspecialchars($comment_body);
             if (strlen($comment_body) > 65565) {
                 // WAY too long
                 $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.is_too_long"));

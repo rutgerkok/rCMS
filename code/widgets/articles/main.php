@@ -105,7 +105,7 @@ class WidgetRkokArticles extends WidgetDefinition {
 
         // Title
         $data["title"] = isset($_REQUEST["title_" . $id]) ? $_REQUEST["title_" . $id] : "";
-        $data["title"] = htmlentities(trim($data["title"]));
+        $data["title"] = htmlspecialchars(trim($data["title"]));
         if (strlen($data["title"]) > 200) {
             $oWebsite->add_error($oWebsite->t("widgets.title") . " " . $oWebsite->t("errors.is_too_long_num", 200));
             $data["valid"] = false;

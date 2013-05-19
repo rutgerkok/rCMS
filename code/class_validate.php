@@ -94,7 +94,7 @@ class Validate {
 
         if ($valid) {
             $oDB = $oWebsite->get_database();
-            $username = $oDB->escape_data(htmlentities(strtolower($username)));
+            $username = $oDB->escape_data(htmlspecialchars(strtolower($username)));
             if ($oDB->rows($oDB->query('SELECT gebruiker_id FROM `gebruikers` WHERE gebruiker_login = \'' . $username . '\' LIMIT 0 , 1')) > 0) {
                 Validate::set_error("already_exists");
                 $valid = false;

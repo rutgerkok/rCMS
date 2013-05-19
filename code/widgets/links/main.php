@@ -15,7 +15,7 @@ class WidgetRkokLinks extends WidgetDefinition {
 
         // Title
         if (strlen($data["title"]) > 0) {
-            $return_value.= "<h2>" . htmlentities($data["title"]) . "</h2>\n";
+            $return_value.= "<h2>" . htmlspecialchars($data["title"]) . "</h2>\n";
         }
 
         // Links
@@ -28,7 +28,7 @@ class WidgetRkokLinks extends WidgetDefinition {
     }
 
     public function get_editor(Website $oWebsite, $id, $data) {
-        $title = isset($data["title"]) ? htmlentities($data["title"]) : "";
+        $title = isset($data["title"]) ? htmlspecialchars($data["title"]) : "";
         $menu_id = isset($data["menu_id"]) ? (int) $data["menu_id"] : 0;
         $return_value = "";
         $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doens't support constants

@@ -47,7 +47,7 @@ class User {
     public static function get_by_name(Website $oWebsite, $username) {
         $oDB = $oWebsite->get_database();
         // Escape the username
-        $username = htmlentities(strtolower($username));
+        $username = htmlspecialchars(strtolower($username));
         $escaped_username = $oDB->escape_data($username);
         // Query
         $sql = 'SELECT `gebruiker_id`, `gebruiker_admin`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email` FROM `gebruikers` WHERE `gebruiker_login` = \'' . $escaped_username . '\' ';
@@ -160,7 +160,7 @@ class User {
      * @param string $username
      */
     public function set_username($username) {
-        $this->username = htmlentities(strtolower(trim($username)));
+        $this->username = htmlspecialchars(strtolower(trim($username)));
     }
 
     /**
@@ -168,7 +168,7 @@ class User {
      * @param string $display_name
      */
     public function set_display_name($display_name) {
-        $this->display_name = htmlentities(trim($display_name));
+        $this->display_name = htmlspecialchars(trim($display_name));
     }
 
     /**

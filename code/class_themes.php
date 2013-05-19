@@ -105,7 +105,7 @@ EOT;
         //Zoekwoord
         $keyword = "";
         if (isset($_REQUEST['searchbox']))
-            $keyword = htmlentities($_REQUEST['searchbox']);
+            $keyword = htmlspecialchars($_REQUEST['searchbox']);
 
         echo '<form id="searchform" name="searchform" action="' . $oWebsite->get_url_main() . '" method="get">';
         echo '<input type="hidden" name="p" value="search" />';

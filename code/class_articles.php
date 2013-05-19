@@ -261,7 +261,7 @@ EOT;
         }
         $return_value.= '">';
 
-        $return_value.= htmlentities($article->intro);
+        $return_value.= htmlspecialchars($article->intro);
 
         $return_value.= "<br />";
         $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
@@ -280,7 +280,7 @@ EOT;
 
     public function get_article_text_listentry(Article $article) {
         $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
-        $return_value.= 'title="' . $article->intro . '">' . htmlentities($article->title) . "</a></li>\n";
+        $return_value.= 'title="' . $article->intro . '">' . htmlspecialchars($article->title) . "</a></li>\n";
         return $return_value;
     }
 

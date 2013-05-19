@@ -50,8 +50,8 @@ if ($logged_in) {
     }
     if ($show_form) {
         // Show form
-        $link_url = htmlentities($link_url);
-        $link_text = htmlentities($link_text);
+        $link_url = htmlspecialchars($link_url);
+        $link_text = htmlspecialchars($link_text);
         $text_to_display.= <<<EOT
             <p>
                 {$this->t("main.fields_required")}

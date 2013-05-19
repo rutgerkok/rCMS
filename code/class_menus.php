@@ -112,11 +112,11 @@ class Menus {
         $return_value = "";
         $oWebsite = $this->website_object;
         foreach ($menu_array as $id => $value) {
-            $return_value.= '<li><a href="' . htmlentities($value["url"]) . '"';
+            $return_value.= '<li><a href="' . htmlspecialchars($value["url"]) . '"';
             if ($open_in_new_window) {
                 $return_value.= ' target="_blank"';
             }
-            $return_value.= ">" . htmlentities($value["text"]) . "</a>";
+            $return_value.= ">" . htmlspecialchars($value["text"]) . "</a>";
             if($edit_links) {
                 $return_value.=' <a class="arrow" href="' . $oWebsite->get_url_page("edit_link", $id) . '">' . $oWebsite->t("main.edit") . "</a>";
                 $return_value.=' <a class="arrow" href="' . $oWebsite->get_url_page("delete_link", $id) . '">' . $oWebsite->t("main.delete") . "</a>";
@@ -192,7 +192,7 @@ class Menus {
     }
 
     /**
-     * Gets all menus. $id=>name. Names are parsed by htmlentities().
+     * Gets all menus. $id=>name. Names are parsed by htmlspecialchars().
      * @return array All menus. $id=>name.
      */
     public function get_menus() {
@@ -202,13 +202,13 @@ class Menus {
 
         $menus = array();
         while (list($id, $name) = $oDB->fetch($result)) {
-            $menus[$id] = htmlentities($name);
+            $menus[$id] = htmlspecialchars($name);
         }
         return $menus;
     }
     
     /**
-     * Gets the name of the menu with the given id. Name is parsed by htmlentities().
+     * Gets the name of the menu with the given id. Name is parsed by htmlspecialchars().
      * @param int $menu_id The id of the menu.
      * @return null|string The name of the menu, or null if the menu doesn't exist.
      */
@@ -219,7 +219,7 @@ class Menus {
         $result = $oDB->query($sql);
         if($oDB->rows($result) == 1) {
             $first_row = $oDB->fetch($result);
-            return htmlentities($first_row[0]);
+            return htmlspecialchars($first_row[0]);
         } else {
             return null;
         }
