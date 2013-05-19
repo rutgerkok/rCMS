@@ -78,6 +78,8 @@ class Validate {
 
     public static function username($username, Website $oWebsite) {
         $valid = true;
+        
+        $username = strtolower(trim($username));
 
         if (strlen($username) < 4) {
             Validate::set_error("is_too_short_num", "4");
@@ -87,8 +89,13 @@ class Validate {
             Validate::set_error("is_too_long_num", "30");
             $valid = false;
         }
-        if ($username != strip_tags($username)) {
-            Validate::set_error("contains_html");
+        if (!preg_match("/^[a-z0-9_]*$/", $username)) {
+            Validate::set_error("contains_invalid_chars");
+            $valid = false;
+        }
+        if (is_numeric($username)) {
+            // Require letters to avoid the username 125234186528752396592318659213 matching with 1252341865287523960000000000000
+            Validate::set_error("contains_no_letters");
             $valid = false;
         }
 

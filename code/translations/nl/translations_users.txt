@@ -25,4 +25,4 @@ the_password=Het wachtwoord
 the_email=Het e-mailadres
 create=Maak een nieuwe account aan
 create.title=Maak een account aan
-create.explained=U kunt zich hier opgeven voor een account. E-mail is niet verplicht, wel handig als wij met u in contact willen komen. Uw e-mailadres zal nergens op de site worden weergegeven. Uw e-mail wordt niet gecontroleerd, zorg dus dat u het goed gespeld heeft!
+create.explained=U kunt zich hier opgeven voor een account. Uw gebruikersnaam mag alleen simpele letters (geen é, ü of ç), cijfers en het teken "_" bevatten. E-mail is niet verplicht, wel handig als wij met u in contact willen komen. Uw e-mailadres zal nergens op de site worden weergegeven. Uw e-mail wordt niet gecontroleerd, zorg dus dat u het goed gespeld heeft!

@@ -25,4 +25,4 @@ the_password=The password
 the_email=The email
 create=Create a new account
 create.title=Create an account
-create.explained=You can create a new account here.
+create.explained=You can create a new account here. The username can only contains letters, numbers and the underscroe ("<code>_</code>"). E-mail address is optional.
