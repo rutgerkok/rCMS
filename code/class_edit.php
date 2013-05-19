@@ -148,7 +148,7 @@ class Edit {
                         </td>
                     </tr>
                     <tr>    <!-- titel -->
-                        <td><label for="article_title">{$oWebsite->t("articles.title")}<span class="required">*</span></td>
+                        <td><label for="article_title">{$oWebsite->t("articles.title")}<span class="required">*</span></label></td>
                         <td><input type="text" id="article_title" name="article_title" style="width:98%" value="$title" /></td>
                     </tr>
                     <tr>    <!-- intro -->
@@ -159,7 +159,7 @@ class Edit {
                         <td><label for="article_category">{$oWebsite->t("main.category")}<span class="required">*</span></label></td>
                         <td>$cat_list</td>
                     </tr>
-                    <tr>    <!-- afbeelding --->
+                    <tr>    <!-- afbeelding -->
                         <td><label for="article_featured_image">{$oWebsite->t("articles.featured_image")}</label></td>
                         <td>
                             <input id="article_featured_image" name="article_featured_image" type="text" value="{$contents[6]}" onclick="BrowseServer();" style="width:63%"  />
@@ -250,7 +250,7 @@ EOT;
             $this->contents[10] = $comments;
         }
         //alleen comments uitzetten als formulier ook daadwerkelijk is verzonden of als de $this->contents[10] leeg is
-
+        
         if (!isset($title) ||
                 !isset($intro) ||
                 !isset($body) ||
@@ -261,8 +261,6 @@ EOT;
         ) {
             return false;
         }
-
-        $oWebsite = $this->website_object;
 
         //titel
         $title = trim($title);

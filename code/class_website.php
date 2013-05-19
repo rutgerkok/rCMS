@@ -429,7 +429,7 @@ class Website {
                 $return_value .= '<script type="text/javascript" src="'. $this->get_sitevar("ckeditor_url") . 'ckeditor.js"></script>';
             }
             $return_value .= <<<EOT
-            <textarea id="$field_name" rows="30" cols="40" style="width:95%">$field_value</textarea>
+            <textarea id="$field_name" name="$field_name" rows="30" cols="40" style="width:95%">$field_value</textarea>
             <script type="text/javascript">
                 CKEDITOR.replace( '$field_name', {
                     uiColor: '$editor_color',

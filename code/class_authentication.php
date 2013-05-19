@@ -123,7 +123,12 @@ class Authentication {
 
                             <input type="submit" value="{$oWebsite->t('main.log_in')}" class="button" />
 
-                            <input type="hidden" name="p" value="$p" />
+EOT;
+       foreach($_REQUEST as $key=>$value) {
+           // Repost all variables
+           echo '<input type="hidden" name="'.  htmlspecialchars($key).'" value="'.  htmlspecialchars($value).'" />';
+       }
+       echo <<<EOT
                     </p>
             </form>
 EOT;

@@ -58,18 +58,12 @@ class Calendar {
     function get_calendar() {
         $oWebsite = $this->website_object;
         $oDB = $this->database_object;
-        $logged_in_staff = $oWebsite->logged_in_staff();
 
         $month = (int) $this->month;
         $year = (int) $this->year;
 
-        // Build query
-        $sql = "SELECT `artikel_id`,`artikel_titel`,DAYOFMONTH(`artikel_verwijsdatum`) FROM `artikel` WHERE MONTH(`artikel_verwijsdatum`)=$month AND YEAR(`artikel_verwijsdatum`)=$year";
-        if(!$logged_in_staff) {
-            $sql.= " AND `artikel_verborgen` = 0";
-        }
-        $sql.= " ORDER BY `artikel_verwijsdatum` DESC";
-        // Get results
+        //gegevens ophalen
+        $sql = "SELECT `artikel_id`,`artikel_titel`,DAYOFMONTH(`artikel_verwijsdatum`) FROM `artikel` WHERE MONTH(`artikel_verwijsdatum`)=$month AND YEAR(`artikel_verwijsdatum`)=$year ORDER BY `artikel_verwijsdatum` DESC";
         $result = $oDB->query($sql);
         while (list($id, $title, $daynumber) = $oDB->fetch($result)) {
             $events[$daynumber][] = array($id, $title);
@@ -126,7 +120,7 @@ class Calendar {
         $calendar = str_replace(
                 array('href=', '<td '), 
                 array(htmlspecialchars('target="_blank" href='), '<td class="highlight" onclick="sendAndClose(this)" '), $calendar
-                );
+        );
         return $calendar;
     }
 
@@ -151,5 +145,4 @@ class Calendar {
     }
 
 }
-
 ?>
