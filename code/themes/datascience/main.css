@@ -13,15 +13,17 @@ p, h1, h2, h3, h4
 }
 h2
 {
-    color:#8bb0c8;
-    text-transform:uppercase;
+    color: #4a7184;
+    text-transform: uppercase;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size:130%;
-    margin: 3px 3px 10px 3px;
+    font-size: 100%;
+    margin: 15px 15px 10px 3px;
+    padding: 0 0 5px 0;
+    border-bottom: 1px dotted #ccd5d3;
 }
 h3
 {
-    color: #990000;
+    color: #9d8a0a;
     font-size: 100%;
     margin: 12px 3px 1px 3px;
 }
@@ -377,18 +379,19 @@ div#header div#search #searchbox
 div#content
 {
     background: white;
-    width:40%;
+    width: 36%;
     clear:left;
     float:left;
     min-height:600px;
     position:relative;
     overflow:hidden;
+    padding: 0 2% 0 2%;
 }
 div#contentwide
 {
     background: white url(images/blocks.gif) bottom right no-repeat;
-    width:95%;
-    padding-right:5%;
+    width: 93%;
+    padding: 0 5% 0 2%;
     clear:left;
     float:left;
     min-height:600px;
