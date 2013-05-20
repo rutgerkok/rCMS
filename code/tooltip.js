@@ -43,7 +43,7 @@ function createTooltip(evt,tooltipText)
     } else {
         // Get existing tooltip
         tooltip = document.getElementById('tooltip');
-        if(tooltip.getAttribute("data-original-text") == tooltipText) {
+        if(tooltip.getAttribute("data-original-text") == tooltipText && tooltip.style.visibility != "hidden") {
             // Don't reposition the same tooltip on every mouse move
             return;
             // Note: we can't simply compare the innerHTML, since browsers

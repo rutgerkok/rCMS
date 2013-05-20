@@ -159,7 +159,7 @@ a img
 
 
 /* klassen */
-div.fout
+div.error
 {
     color: #6c0000;
     margin: 3px 3px 10px 3px;
@@ -167,7 +167,7 @@ div.fout
     background-color: #ffd0d9;
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
 }
-div.fout h3
+div.error h3
 {
     margin: 0;
 }

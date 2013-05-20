@@ -229,11 +229,11 @@ class Website {
         if ($error_count == 0) {
             return true;
         } elseif ($error_count == 1) {
-            echo '<div class="fout"><h3>' . $this->t("errors.error_occured") . '</h3>';
+            echo '<div class="error"><h3>' . $this->t("errors.error_occured") . '</h3>';
             echo $this->errors[0];
             echo '</div>';
         } else {
-            echo '<div class="fout">';
+            echo '<div class="error">';
             echo "   <h3>" . str_replace("#", $error_count, $this->t('errors.errors_occured')) . "</h3>";
             echo '   <p>';
             echo '      <ul>';

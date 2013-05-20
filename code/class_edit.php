@@ -185,6 +185,9 @@ class Edit {
                         <td colspan="2">
                             <label for="article_body">{$oWebsite->t("articles.body")}<span class="required">*</span></label><br />
                             {$oWebsite->get_text_editor("article_body", $contents[3])}
+                            <script type="text/javascript">
+                                CKFinder.setupCKEditor( null, '/ckfinder/' );
+                            </script>
                         </td>
                     </tr>
                 </table>
@@ -383,12 +386,9 @@ EOT;
         //echo "<p>Saved with id {$this->id}.</p>";
         if ($submit == $oWebsite->t("editor.save_and_quit")) {
             echo <<<EOT
-			<script type="text/javascript">
-			//<![CDATA[
-			location.href = "{$oWebsite->get_url_page('article', $this->id)}";
-			//]]>
-			</script>
-
+                <script type="text/javascript">
+                     location.href = "{$oWebsite->get_url_page('article', $this->id)}";
+                </script>
 EOT;
         }
     }

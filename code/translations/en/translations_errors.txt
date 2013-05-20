@@ -28,3 +28,4 @@ contains_no_letters=contains no letters.
 your_input_has_not_been_changed=Your # has not been changed!
 your_input_has_not_been_created=Your # has not been created!
 must_be_logged_out=You must be logged out to do this.
+invalid_username_or_password=Invalid username or password

@@ -86,11 +86,14 @@ class Authentication {
     function check($minimum_rank, $showform = true) {
         $minimum_rank = (int) $minimum_rank;
         $current_user = $this->get_current_user();
+        $failed_login = false;
 
         // Try to login if data was sent
         if (isset($_POST['user']) && isset($_POST['pass'])) {
             if ($this->log_in($_POST['user'], $_POST['pass'])) {
                 $current_user = $this->get_current_user();
+            } else {
+                $failed_login = true;
             }
         }
 
@@ -100,16 +103,22 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                $this->echo_login_form($minimum_rank);
+                $this->echo_login_form($minimum_rank, $failed_login);
             }
         }
     }
 
-    function echo_login_form($minimum_rank = 0) { //laat een inlogformulier zien
+    function echo_login_form($minimum_rank = 0, $failed = false) { //laat een inlogformulier zien
         //huidige pagina ophalen
         $oWebsite = $this->website_object;
-        $p = urlencode($oWebsite->get_page_id());
         $logintext = $oWebsite->t("users.please_log_in");
+        if($failed) {
+            echo <<<EOT
+                <div class="error">
+                    <p>{$oWebsite->t("errors.invalid_username_or_password")}</p>
+                </div>
+EOT;
+        }
         if ($minimum_rank != self::$USER_RANK)
             $logintext.=' <strong><em> ' . $oWebsite->t("users.as_administrator") . '</em></strong>';
         echo <<<EOT
@@ -124,11 +133,13 @@ class Authentication {
                             <input type="submit" value="{$oWebsite->t('main.log_in')}" class="button" />
 
 EOT;
-       foreach($_REQUEST as $key=>$value) {
-           // Repost all variables
-           echo '<input type="hidden" name="'.  htmlspecialchars($key).'" value="'.  htmlspecialchars($value).'" />';
-       }
-       echo <<<EOT
+        foreach ($_REQUEST as $key => $value) {
+            // Repost all variables
+            if ($key != "user" && $key != "pass") {
+                echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" />';
+            }
+        }
+        echo <<<EOT
                     </p>
             </form>
 EOT;
@@ -174,7 +185,6 @@ EOT;
                     $return_value.='<a href="' . $oWebsite->get_url_page("password_other", $id) . '">' . $oWebsite->t("users.password") . "</a> |\n";
                     $return_value.='<a href="' . $oWebsite->get_url_page("email_other", $id) . '">' . $oWebsite->t("users.email") . "</a> |\n";
                     $return_value.='<a href="' . $oWebsite->get_url_page("log_in_other", $id) . '">' . $oWebsite->t("main.log_in") . "</a></td>\n";
-                    
                 }
             }
         }

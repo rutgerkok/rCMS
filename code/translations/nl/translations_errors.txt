@@ -28,3 +28,4 @@ contains_no_letters=bevat geen letters.
 your_input_has_not_been_changed=Uw # is niet opgeslagen!
 your_input_has_not_been_created=Uw # is niet aangemaakt!
 must_be_logged_out=U moet uitgelogd zijn om dit te kunnen doen.
+invalid_username_or_password=Ongeldige gebruikersnaam of ongeldig wachtwoord
