@@ -401,8 +401,8 @@ div#contentwide
 div#contentadmin
 {
     background: #e9e9e9 url(images/blocks.gif) bottom right no-repeat;
-    width:95%;
-    padding-right:5%;
+    width: 93%;
+    padding: 0 5% 0 2%;
     clear:left;
     float:left;
     min-height:600px;

@@ -314,12 +314,12 @@ EOT;
         $result = $this->get_articles_data($where_clausule, $limit);
 
         //verwerk resultaten
-        $category_id_for_article_archive_and_creation = (count($categories) == 1) ? $categories[0] : 0;
+        $category_id_for_article_creation = (count($categories) == 1) ? $categories[0] : 0;
         if ($result) {
             $return_value = '';
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
 
             // Display articles
@@ -328,15 +328,13 @@ EOT;
             }
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
-            // Archive
-            $return_value.='<p><a href="' . $oWebsite->get_url_page("archive", $category_id_for_article_archive_and_creation) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>'; //archief
             return $return_value;
         } else {
             $return_value = '<p><em>' . $oWebsite->t("errors.nothing_found") . "</em></p>";
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_archive_and_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
             }
             return $return_value;
         }
@@ -365,9 +363,6 @@ EOT;
         foreach ($result as $article) {
             $return_value.= $this->get_article_text_listentry($article);
         }
-        // Add archive link (only limit archive to one category if we are viewing one category)
-        $category_id_for_archive = (count($categories) == 1) ? $categories[0] : 0;
-        $return_value.='<li><a href="' . $oWebsite->get_url_page("archive", $category_id_for_archive) . '">' . $oWebsite->t('articles.archive') . '</a></li>';
         return $return_value . "</ul>";
     }
 
