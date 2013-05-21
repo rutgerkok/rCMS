@@ -7,6 +7,10 @@ class Articles {
 
     protected $website_object;
     protected $database_object;
+    
+    // Two sorting constants
+    const SORT_NEWEST_TOP = 1;
+    const SORT_OLDEST_TOP = 0;
 
     /**
      * Constructs the article displayer.
@@ -44,7 +48,7 @@ class Articles {
      * @param type $start Start position of the limit.
      * @return \Article Array of Articles.
      */
-    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0) {
+    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0, $order = self::SORT_NEWEST_TOP) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
@@ -66,7 +70,10 @@ class Articles {
             }
         }
 
-        $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt DESC ";
+        $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt ";
+        if($order == self::SORT_NEWEST_TOP) {
+            $sql.= "DESC ";
+        }
         $sql.= "LIMIT $start , $limit";
 
         $result = $oDB->query($sql);
@@ -146,7 +153,7 @@ class Articles {
             // Echo the sidebar
             $return_value.= '<div id="sidebarpagesidebar">';
             if (!empty($article->featured_image))
-                $return_value.= "<p><img src=\"{$article->featured_image}\" alt=\"{$article->title}\" /></p>";
+                $return_value.= '<p><img src="' . htmlspecialchars($article->featured_image) . '" alt="' . htmlspecialchars($article->title) . '" /></p>';
             $return_value.= '<p class="meta">';
             $return_value.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
             if ($article->last_edited)
@@ -232,7 +239,7 @@ EOT;
 
     public function get_article_text_small(Article $article, $show_metainfo, $show_edit_delete_links) {
         $oWebsite = $this->website_object;
-        $return_value = "\n\n<div class=\"artikelintro\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
+        $return_value = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $oWebsite->get_url_page("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $return_value.= "<h3>" . htmlspecialchars($article->title) . "</h3>\n";
         if ($show_metainfo) {
             $return_value.= '<p class="meta">';
@@ -252,18 +259,12 @@ EOT;
         }
 
         if (!empty($article->featured_image)) {
-            $return_value.= "<img src=\"$article->featured_image\" alt=\"{$article->title}\" />";
+            $return_value.= '<img src="' . htmlspecialchars($article->featured_image) . '" alt="' . htmlspecialchars($article->title) . '" />';
         }
 
-        $return_value.= '<p class="intro ';
-        if (!empty($article->featured_image)) {
-            $return_value.= 'introsmall'; //maak introtekst kleiner
-        }
-        $return_value.= '">';
-
+        $return_value.= '<p class="intro">';
         $return_value.= htmlspecialchars($article->intro);
-
-        $return_value.= "<br />";
+        $return_value.= '</p> <p class="article_teaser_links">';
         $return_value.= '<a class="arrow" href="' . $oWebsite->get_url_page("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
             $return_value.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->get_url_page("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
@@ -278,15 +279,19 @@ EOT;
         return $return_value;
     }
 
-    public function get_article_text_listentry(Article $article) {
+    public function get_article_text_listentry(Article $article, $display_images = false) {
         $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
-        $return_value.= 'title="' . $article->intro . '">' . htmlspecialchars($article->title) . "</a></li>\n";
+        $return_value.= 'title="' . $article->intro . '">';
+        if ($display_images && !empty($article->featured_image)) {
+            $return_value.= '<img src="' . htmlspecialchars($article->featured_image) . '" alt="' . htmlspecialchars($article->title) . '" />';
+        }
+        $return_value.= htmlspecialchars($article->title) . "</a></li>\n";
         return $return_value;
     }
 
     // DISPLAY FUNCTIONS FOR MULTIPLE ARTICLES
 
-    public function get_articles_list_category($categories, $show_metainfo = false, $limit = 9) {
+    public function get_articles_list_category($categories, $show_metainfo = false, $limit = 9, $order = self::SORT_NEWEST_TOP) {
         $oWebsite = $this->website_object;
 
         // Should hidden articles be shown?
@@ -311,7 +316,7 @@ EOT;
         }
 
         //haal resultaten op
-        $result = $this->get_articles_data($where_clausule, $limit);
+        $result = $this->get_articles_data($where_clausule, $limit, 0, $order);
 
         //verwerk resultaten
         $category_id_for_article_creation = (count($categories) == 1) ? $categories[0] : 0;
@@ -340,15 +345,16 @@ EOT;
         }
     }
 
-    public function get_articles_small_list($categories, $limit = 9) {
+    public function get_articles_bullet_list($categories, $limit = 9, $images = true, $order = self::SORT_NEWEST_TOP) {
         $oWebsite = $this->website_object;
-
+        
         if (!is_array($categories)) { // Create array if needed
             $category_id = $categories;
             unset($categories);
             $categories[0] = $category_id;
         }
 
+        // Build query
         $where_clausule = "";
         foreach ($categories as $count => $category_id) {
             $category_id = (int) $category_id; // Security
@@ -357,13 +363,21 @@ EOT;
             $where_clausule.="`categorie_id` = $category_id";
         }
 
-        $result = $this->get_articles_data($where_clausule, $limit);
+        // Build article list
+        $result = $this->get_articles_data($where_clausule, $limit, 0, $order);
         $return_value = '<ul class="linklist">';
-        // Add all articles
         foreach ($result as $article) {
-            $return_value.= $this->get_article_text_listentry($article);
+            $return_value.= $this->get_article_text_listentry($article, $images);
         }
-        return $return_value . "</ul>";
+        $return_value .= "</ul>\n";
+        
+        // Add create new article link
+        if($oWebsite->logged_in_staff()) {
+            $return_value .= '<p><a class="arrow" href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $categories[0]));
+            $return_value .= '">' . $oWebsite->t("articles.create") . "</a></p>\n";
+        }
+        
+        return $return_value;
     }
 
     public function get_articles_search($keywordunprotected, $page) {

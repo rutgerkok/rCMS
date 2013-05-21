@@ -26,7 +26,7 @@ if($logged_in)
 	
 	foreach($cat_array as $id=>$name)
 	{
-		if($id!=1&&$id!=2)
+		if($id!=1)
 		{	
 			$text_to_display.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow">';
 			$text_to_display.= 'Delete \''.$name.'\'</a><br />';

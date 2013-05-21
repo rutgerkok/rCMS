@@ -183,6 +183,16 @@ div.error
     background: #fafbfd;
 }
 
+/* Article teasers */
+div.article_teaser img
+{
+    max-width: 45%;
+    float: left;	
+}
+div.article_teaser p.article_teaser_links
+{
+    clear: both;
+}
 /* Linklijsten */
 ul.linklist
 {
@@ -195,6 +205,13 @@ ul.linklist li
     border-bottom: 1px dotted #999999;
     padding:5px;
     font-family: verdana, sans-serif;
+}
+ul.linklist li img
+{
+    max-width: 32px;
+    max-height: 24px;
+    margin: 0 3px -5px 0;
+    padding: 0;
 }
 /* Page sidebars */
 div#sidebarpagesidebar

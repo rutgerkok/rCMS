@@ -6,7 +6,7 @@ echo '<h2>'.$this->t("articles.edit").'</h2>';
 $oDB = $this->get_database();
 $oAuth = new Authentication($this);
 $oCats = new Categories($oDB,$this);
-$oEdit = new Edit($oDB,$oCats,$this);
+$oEdit = new ArticleEdit($oDB,$oCats,$this);
 unset($oDB,$oCats);//niet meer nodig
 
 //INLOGGEN
@@ -28,7 +28,7 @@ if(!$this->errorsdisplayed)
 //EDITOR TONEN
 if($logged_in)
 {
-	$oEdit->echo_editor();
+	$oEdit->echo_editor(new Editor($this));
 	unset($oEdit);
 }
 ?>

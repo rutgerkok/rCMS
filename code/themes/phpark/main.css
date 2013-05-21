@@ -185,12 +185,12 @@ div.error
 }
 
 /*Pagina's met artikellijsten */
-div.artikelintro
-{	/*gebruikt bij de artikelpagina*/
+div.article_teaser
+{
     margin:2%;
     min-height: 5em;
 }
-div.artikelintro:hover
+div.article_teaser:hover
 {
     background: #f7f7f7;
 }
@@ -199,19 +199,15 @@ p.meta
     color: #bbb;
     font-style: italic;
 }
-div.artikelintro img
+div.article_teaser img
 {
     max-width: 38%;
-    float: left;	
+    float: left;
+    margin: 5px;
 }
-div.artikelintro p.intro
+div.article_teaser p.article_teaser_links
 {
-    float:left;
-    width: 95%;
-}
-div.artikelintro p.introsmall
-{
-    width: 55%;
+    clear: both;
 }
 
 /* Linklijsten */
@@ -229,6 +225,13 @@ ul.linklist li
     margin-left: 5px;
     margin-right: 8px;
     font-family: verdana, sans-serif;
+}
+ul.linklist li img
+{
+    max-width: 32px;
+    max-height: 24px;
+    margin: 0 3px -5px 0;
+    padding: 0;
 }
 
 /* Pages with an extra sidebar on the left */

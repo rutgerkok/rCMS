@@ -55,19 +55,3 @@
 			timeField.setAttribute('type', 'time');
 		}
 	}
-	
-//Afbeelding
-	function BrowseServer()
-	{
-		// You can use the "CKFinder" class to render CKFinder in a page:
-		var finder = new CKFinder();
-		finder.basePath = 'ckfinder/';	// The path for the installation of CKFinder (default = "/ckfinder/").
-		finder.selectActionFunction = SetFileField;
-		finder.popup();
-	}
-	
-	// This is a sample function which is called when a file is selected in CKFinder.
-	function SetFileField( fileUrl )
-	{
-		document.getElementById( 'article_featured_image' ).value = fileUrl;
-	}

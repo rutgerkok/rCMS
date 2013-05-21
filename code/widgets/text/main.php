@@ -24,6 +24,7 @@ class WidgetRkokText extends WidgetDefinition {
     public function get_editor(Website $oWebsite, $id, $data) {
         $title = isset($data["title"]) ? $data["title"] : "";
         $text = isset($data["text"]) ? $data["text"] : "";
+        $oEditor = new Editor($oWebsite);
 
         // Title
         $text_to_display = "<p>\n";
@@ -37,7 +38,7 @@ class WidgetRkokText extends WidgetDefinition {
         $text_to_display.= "<p>\n";
         $text_to_display.= '<label for="text_' . $id . '">' . $oWebsite->t("editor.message") . "</label>:";
         $text_to_display.= '<span class="required">*</span><br />' . "\n";
-        $text_to_display.= $oWebsite->get_text_editor("text_" . $id, $text);
+        $text_to_display.= $oEditor->get_text_editor("text_" . $id, $text);
         $text_to_display.= "</p>\n";
         return $text_to_display;
     }

@@ -40,7 +40,7 @@ th,td
 }
 th
 {
-
+    font-weight: bold;
 }
 table.layout
 {
@@ -173,32 +173,21 @@ div.error h3
 }
 
 /* Pagina's met artikellijsten */
-div.artikelintro
-{	/*gebruikt bij de artikelpagina*/
+div.article_teaser
+{
     margin:10px;
     min-height: 8em;
-}
-div.artikelintro h3
-{	/*gebruikt bij de artikelpagina*/
-    font-weight: normal;
-    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    font-size: 150%;
 }
 p.meta
 {
     color: #bbb;
     font-style: italic;
 }
-div.artikelintro img
+div.article_teaser img
 {
     max-height: 150px;
     max-width: 20%;
     float: left;	
-}
-div.artikelintro p.intro
-{
-    float:left;
-    width: 98%;
 }
 
 /* Lists of links */
@@ -212,6 +201,13 @@ ul.linklist li
 {
     padding:5px;
     font-family: verdana, sans-serif;
+}
+ul.linklist li img
+{
+    max-width: 32px;
+    max-height: 24px;
+    margin: 0 3px -5px 0;
+    padding: 0;
 }
 
 /* Pages with an extra sidebar on the left */

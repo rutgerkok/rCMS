@@ -3,7 +3,7 @@
 class Website {
 
     protected $errors = array();
-    protected $debug = true;
+    protected $debug = false;
     protected $errorsdisplayed = false;
     protected $database_object;
     protected $current_page_id;
@@ -410,42 +410,6 @@ class Website {
         } else {
             return $default;
         }
-    }
-
-    /**
-     * Includes CKEditor, or a simple text box if CKEditor is not installed.
-     * @param string $field_name Field name. Should only contain letters, numbers and underscores.
-     * @param string $field_value Field value. Will be escaped with htmlspecialchars.
-     * @param boolean $first_time Whether the script should be included (not needed if this function has already been called on this page).
-     * @return string The correct HTML output.
-     */
-    public function get_text_editor($field_name, $field_value, $first_time = true) {
-        $return_value = "";
-        $field_value = htmlspecialchars($field_value);
-        $editor_color = $this->get_theme_manager()->get_theme()->get_text_editor_menu_color();
-        if ($this->get_sitevar("ckeditor_url")) {
-            // Put CKEditor in
-            if ($first_time) {
-                $return_value .= '<script type="text/javascript" src="'. $this->get_sitevar("ckeditor_url") . 'ckeditor.js"></script>';
-            }
-            $return_value .= <<<EOT
-            <textarea id="$field_name" name="$field_name" rows="30" cols="40" style="width:95%">$field_value</textarea>
-            <script type="text/javascript">
-                CKEDITOR.replace( '$field_name', {
-                    uiColor: '$editor_color',
-                    format_tags : 'p;h3;pre',
-                    contentsCss : ['{$this->get_theme_manager()->get_url_theme()}main.css', '{$this->get_url_scripts()}whitebackground.css']
-                });
-            </script>
-EOT;
-        } else {
-            // Don't put CKEditor in
-            $return_value .= '<textarea name="' . $field_name . '" id="' . $field_name . '" rows="30" cols="40" style="width:95%">' . $field_value . '</textarea>';
-            if ($first_time) {
-                $return_value .= '<input type="hidden" name="article_no_wysiwyg_editor" value="true" />';
-            }
-        }
-        return $return_value;
     }
 
 }

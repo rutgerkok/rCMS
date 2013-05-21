@@ -209,7 +209,7 @@ EOT;
 			$oWebsite->add_error('Category was not found.');
 			return '';
 		}
-		if($id==1||$id==2)//eerste drie categorieen mogen niet verwijderd worden
+		if($id==1) //"No category" category cannot be removed
 		{
 			$oWebsite->add_error('You cannot delete this category, but it is possible to rename it.');
 			return '';

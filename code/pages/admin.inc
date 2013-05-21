@@ -15,8 +15,6 @@ unset($oAuth);
 $cat_rename_list = '';
 $cat_delete_list = '';
 
-$cat_events_name = $oCat->get_category_name(2);
-
 $cat_array = $oCat->get_categories();
 
 if(count($cat_array)>0)
@@ -31,13 +29,13 @@ if(count($cat_array)>0)
 		$cat_rename_list.= $this->t("main.edit").' \''.$name.'\'</a><br />';
 		
 		//verwijderlijst
-		if($id!=1&&$id!=2)
+		if($id!=1)
 		{	
 			$cat_delete_list.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow">';
 			$cat_delete_list.= $this->t("main.delete").' \''.$name.'\'</a><br />';
 		}
 		else
-		{	//eerste drie categorieen mogen niet verwijderd worden, geef grijze link weer
+		{	// "No category" category cannot be removed
 			$cat_delete_list.= '<a href="'.$this->get_url_page("delete_category",$id).'" class="arrow-disabled" title="Cannot delete a standard category!">';
 			$cat_delete_list.= $this->t("main.delete").' \''.$name.'\'</a><br />';
 		}
