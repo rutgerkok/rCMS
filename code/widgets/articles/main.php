@@ -8,8 +8,8 @@ class WidgetRkokArticles extends WidgetDefinition {
     const TYPE_WITH_METADATA = 1;
     const TYPE_LIST = 2;
     const TYPE_LIST_WITH_IMAGES = 3;
-    const SORT_NEWEST_TOP = 0;
-    const SORT_OLDEST_TOP = 1;
+    const SORT_NEWEST_TOP = 1;
+    const SORT_OLDEST_TOP = 0;
 
     public function get_widget(Website $oWebsite, $id, $data) {
         if (!isset($data["title"]) || !isset($data["count"])
