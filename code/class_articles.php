@@ -306,7 +306,7 @@ EOT;
             $categories[0] = $category_id;
         }
 
-        // Build the
+        // Build the query
         $where_clausule = '';
         foreach ($categories as $i => $category_id) {
             $category_id = (int) $category_id; //beveiliging

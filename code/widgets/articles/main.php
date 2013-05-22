@@ -33,7 +33,7 @@ class WidgetRkokArticles extends WidgetDefinition {
             $options+= Articles::OLDEST_TOP;
         }
         // Archive link
-        if (isset($data["archive"]) && $data["archive"] == true) {
+        if (!isset($data["archive"]) || $data["archive"] == true) {
             $options+= Articles::ARCHIVE;
         }
         $oArticles = new Articles($oWebsite, $oWebsite->get_database());
@@ -60,7 +60,7 @@ class WidgetRkokArticles extends WidgetDefinition {
         $categories = isset($data["categories"]) ? $data["categories"] : array();
         $count = isset($data["count"]) ? $data["count"] : 4;
         $display_type = isset($data["display_type"]) ? $data["display_type"] : self::TYPE_WITHOUT_METADATA;
-        $order = isset($data["order"]) ? $data["order"] : Articles::SORT_NEWEST_TOP;
+        $order = isset($data["order"]) ? $data["order"] : self::SORT_NEWEST_TOP;
         $archive = isset($data["archive"]) ? $data["archive"] : true;
 
         // Title

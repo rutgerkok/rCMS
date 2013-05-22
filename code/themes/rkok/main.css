@@ -185,8 +185,10 @@ p.meta
 }
 div.article_teaser img
 {
-    max-height: 150px;
-    max-width: 20%;
+    max-height: 250px;
+    width: 20%;
+    max-width: 140px;
+    min-width: 60px;
     float: left;	
 }
 

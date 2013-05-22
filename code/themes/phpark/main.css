@@ -201,7 +201,7 @@ p.meta
 }
 div.article_teaser img
 {
-    max-width: 38%;
+    max-width: 130px;
     float: left;
     margin: 5px;
 }
