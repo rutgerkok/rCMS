@@ -210,7 +210,15 @@ ul.linklist li img
 {
     max-width: 32px;
     max-height: 24px;
-    margin: 0 3px -5px 0;
+    padding: 0;
+    margin: 0;
+}
+ul.linklist li div.linklist_icon_image
+{
+    display: block;
+    float: left;
+    min-width: 32px;
+    margin: -5px 0 0 0;
     padding: 0;
 }
 /* Page sidebars */

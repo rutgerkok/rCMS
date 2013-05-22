@@ -285,9 +285,9 @@ EOT;
         $return_value = '<li><a href="' . $this->website_object->get_url_page("article", $article->id) . '"';
         $return_value.= 'title="' . $article->intro . '">';
         if ($display_images && !empty($article->featured_image)) {
-            $return_value.= '<img src="' . htmlspecialchars($article->featured_image) . '" alt="' . htmlspecialchars($article->title) . '" />';
+            $return_value.= '<div class="linklist_icon_image"><img src="' . htmlspecialchars($article->featured_image) . '" alt="' . htmlspecialchars($article->title) . '" /></div>';
         }
-        $return_value.= htmlspecialchars($article->title) . "</a></li>\n";
+        $return_value.= "<span>" . htmlspecialchars($article->title) . "</span></a></li>\n";
         return $return_value;
     }
 

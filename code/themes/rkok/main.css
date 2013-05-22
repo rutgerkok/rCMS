@@ -5,7 +5,7 @@ body, html
     font-size: 92%;
     margin: 0;
 }
-p, h1, h2, h3, h4
+p, h1, h2, h3, h4, ul
 {
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
     color: #454545;
@@ -193,8 +193,6 @@ div.article_teaser img
 /* Lists of links */
 ul.linklist
 {
-    margin:0;
-    padding:0;
     list-style-type:none;
 }
 ul.linklist li
@@ -206,7 +204,15 @@ ul.linklist li img
 {
     max-width: 32px;
     max-height: 24px;
-    margin: 0 3px -5px 0;
+    padding: 0;
+    margin: 0;
+}
+ul.linklist li div.linklist_icon_image
+{
+    display: block;
+    float: left;
+    min-width: 32px;
+    margin: -5px 0 0 0;
     padding: 0;
 }
 
