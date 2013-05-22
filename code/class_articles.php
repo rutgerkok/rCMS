@@ -7,10 +7,12 @@ class Articles {
 
     protected $website_object;
     protected $database_object;
-    
-    // Two sorting constants
-    const SORT_NEWEST_TOP = 1;
-    const SORT_OLDEST_TOP = 0;
+
+    // Article constants
+    const OLDEST_TOP = 1;
+    const METAINFO = 2;
+    const IMAGES = 2;
+    const ARCHIVE = 4;
 
     /**
      * Constructs the article displayer.
@@ -48,7 +50,7 @@ class Articles {
      * @param type $start Start position of the limit.
      * @return \Article Array of Articles.
      */
-    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0, $order = self::SORT_NEWEST_TOP) {
+    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0, $oldest_top = false) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
@@ -71,7 +73,7 @@ class Articles {
         }
 
         $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt ";
-        if($order == self::SORT_NEWEST_TOP) {
+        if (!$oldest_top) {
             $sql.= "DESC ";
         }
         $sql.= "LIMIT $start , $limit";
@@ -291,7 +293,7 @@ EOT;
 
     // DISPLAY FUNCTIONS FOR MULTIPLE ARTICLES
 
-    public function get_articles_list_category($categories, $show_metainfo = false, $limit = 9, $order = self::SORT_NEWEST_TOP) {
+    public function get_articles_list_category($categories, $limit = 9, $options = 0) {
         $oWebsite = $this->website_object;
 
         // Should hidden articles be shown?
@@ -316,38 +318,44 @@ EOT;
         }
 
         //haal resultaten op
-        $result = $this->get_articles_data($where_clausule, $limit, 0, $order);
+        $result = $this->get_articles_data($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
 
         //verwerk resultaten
-        $category_id_for_article_creation = (count($categories) == 1) ? $categories[0] : 0;
+        $main_category_id = (count($categories) == 1) ? $categories[0] : 0;
         if ($result) {
             $return_value = '';
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $main_category_id)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
 
             // Display articles
             foreach ($result as $article) {
-                $return_value .= $this->get_article_text_small($article, $show_metainfo, $logged_in_staff);
+                $return_value .= $this->get_article_text_small($article, $options & self::METAINFO, $logged_in_staff);
             }
 
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $main_category_id)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
             }
+
+            // Archive link
+            if($options & self::ARCHIVE) {
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("archive", $main_category_id) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
+            }
+            
             return $return_value;
         } else {
             $return_value = '<p><em>' . $oWebsite->t("errors.nothing_found") . "</em></p>";
             if ($logged_in_staff) {
-                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $category_id_for_article_creation)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
+                $return_value.= '<p><a href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $main_category_id)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>'; //maak nieuw artikel
             }
             return $return_value;
         }
     }
 
-    public function get_articles_bullet_list($categories, $limit = 9, $images = true, $order = self::SORT_NEWEST_TOP) {
+    public function get_articles_bullet_list($categories, $limit = 9, $options = 0) {
         $oWebsite = $this->website_object;
-        
+
         if (!is_array($categories)) { // Create array if needed
             $category_id = $categories;
             unset($categories);
@@ -364,19 +372,25 @@ EOT;
         }
 
         // Build article list
-        $result = $this->get_articles_data($where_clausule, $limit, 0, $order);
+        $result = $this->get_articles_data($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
         $return_value = '<ul class="linklist">';
         foreach ($result as $article) {
-            $return_value.= $this->get_article_text_listentry($article, $images);
+            $return_value.= $this->get_article_text_listentry($article, $options & self::METAINFO);
         }
         $return_value .= "</ul>\n";
-        
+
         // Add create new article link
-        if($oWebsite->logged_in_staff()) {
-            $return_value .= '<p><a class="arrow" href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $categories[0]));
+        $main_category_id = (count($categories) == 1) ? $categories[0] : 0;
+        if ($oWebsite->logged_in_staff()) {
+            $return_value .= '<p><a class="arrow" href="' . $oWebsite->get_url_page("edit_article", 0, array("article_category" => $main_category_id));
             $return_value .= '">' . $oWebsite->t("articles.create") . "</a></p>\n";
         }
-        
+
+        // Archive link
+        if($options & self::ARCHIVE) {
+            $return_value.= '<p><a href="' . $oWebsite->get_url_page("archive", $main_category_id) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
+        }
+
         return $return_value;
     }
 

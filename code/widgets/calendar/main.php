@@ -33,7 +33,7 @@ EOT;
 
     public function parse_data(Website $oWebsite, $id) {
         $data = array();
-        $data["title"] = $oWebsite->get_request_var("title_" . $id, "");
+        $data["title"] = $oWebsite->get_request_string("title_" . $id, "");
         if(strlen($data["title"]) > self::MAX_TITLE_LENGTH) {
             // Limit title length
             $oWebsite->add_error($oWebsite->t("widgets.title") . " " . $oWebsite->t_replaced("errors.too_long_num", self::MAX_TITLE_LENGTH));

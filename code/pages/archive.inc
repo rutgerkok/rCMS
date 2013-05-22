@@ -2,8 +2,8 @@
 <?php
 $text_to_display = "";
 
-$year = (int) $this->get_request_var("year", 0);
-$category = (int) $this->get_request_var("id", 0);
+$year = (int) $this->get_request_string("year", 0);
+$category = (int) $this->get_request_string("id", 0);
 $logged_in = $this->logged_in_staff(false);
 
 $oArticles = new Articles($this);

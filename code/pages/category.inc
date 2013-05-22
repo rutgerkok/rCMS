@@ -14,15 +14,12 @@ if ($cat_id > 0) { //geef artikelen in die categorie weer
         echo "<h2>" . $oCats->get_category_name($cat_id) . "</h2> \n";
         echo '<p style="position:relative;top:-.9em">&nbsp;&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $this->get_url_page("category") . '">' . $this->t("categories.show_all") . '</a></p>' . "\n"; //toon alle categorie�n
         $oArticles = new Articles($this, $this->get_database());
-        $text_to_display.= $oArticles->get_articles_list_category($cat_id, true);
+        $text_to_display.= $oArticles->get_articles_list_category($cat_id, 9, Articles::METAINFO | Articles::ARCHIVE);
         unset($oArticles); //niet meer nodig
 
         if (empty($text_to_display)) {
             // No output? Then there are no categories
             $text_to_display.= "<p><em>{$this->t("errors.nothing_found")}</em></p>";
-        } else {
-            // Add archive link
-            $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page("archive", $cat_id) . '">' . $this->t("articles.archive") . "</a></p>\n";
         }
     }
 }

@@ -8,6 +8,8 @@ class WidgetRkokArticles extends WidgetDefinition {
     const TYPE_WITH_METADATA = 1;
     const TYPE_LIST = 2;
     const TYPE_LIST_WITH_IMAGES = 3;
+    const SORT_NEWEST_TOP = 0;
+    const SORT_OLDEST_TOP = 1;
 
     public function get_widget(Website $oWebsite, $id, $data) {
         if (!isset($data["title"]) || !isset($data["count"])
@@ -19,28 +21,37 @@ class WidgetRkokArticles extends WidgetDefinition {
 
         $return_value = "";
         if (strlen($data["title"]) > 0) {
-            $return_value.= "<h2>" . $data["title"] . "</h2>";
+            $return_value.= "<h2>" . htmlspecialchars($data["title"]) . "</h2>";
         }
 
         $categories = $data["categories"];
         $articles_count = (int) $data["count"];
         $display_type = (int) $data["display_type"];
-        $order = isset($data["order"])? (int) $data["order"] : Articles::SORT_NEWEST_TOP;
+        $options = 0;
+        // Sorting
+        if (isset($data["order"]) && $data["order"] == self::SORT_OLDEST_TOP) {
+            $options+= Articles::OLDEST_TOP;
+        }
+        // Archive link
+        if (isset($data["archive"]) && $data["archive"] == true) {
+            $options+= Articles::ARCHIVE;
+        }
         $oArticles = new Articles($oWebsite, $oWebsite->get_database());
         if ($display_type == self::TYPE_LIST) {
             // As list without images
-            $return_value.= $oArticles->get_articles_bullet_list($categories, $articles_count, false, $order);
+            $return_value.= $oArticles->get_articles_bullet_list($categories, $articles_count, $options);
         } elseif ($display_type == self::TYPE_LIST_WITH_IMAGES) {
             // As list with images
-            $return_value.= $oArticles->get_articles_bullet_list($categories, $articles_count, true, $order);
+            $options += Articles::IMAGES;
+            $return_value.= $oArticles->get_articles_bullet_list($categories, $articles_count, $options);
         } elseif ($display_type == self::TYPE_WITH_METADATA) {
             // As paragraphs with metadata
-            $return_value.= $oArticles->get_articles_list_category($categories, true, $articles_count, $order);
-        } else { // So $display_type should be 0
+            $options += Articles::METAINFO;
+            $return_value.= $oArticles->get_articles_list_category($categories, $articles_count, $options);
+        } else { // So $display_type should be TYPE_WITHOUT_METADATA
             // As paragrapsh without metadata
-            $return_value.= $oArticles->get_articles_list_category($categories, false, $articles_count, $order);
+            $return_value.= $oArticles->get_articles_list_category($categories, $articles_count, $options);
         }
-        unset($categories, $articles_count, $display_type, $oArticles);
         return $return_value;
     }
 
@@ -50,13 +61,14 @@ class WidgetRkokArticles extends WidgetDefinition {
         $count = isset($data["count"]) ? $data["count"] : 4;
         $display_type = isset($data["display_type"]) ? $data["display_type"] : self::TYPE_WITHOUT_METADATA;
         $order = isset($data["order"]) ? $data["order"] : Articles::SORT_NEWEST_TOP;
+        $archive = isset($data["archive"]) ? $data["archive"] : true;
 
         // Title
         $text_to_display = "<p>\n";
         $text_to_display.= '<label for="title_' . $widget_id . '">';
         $text_to_display.= $oWebsite->t("widgets.title") . "</label>:<br />\n";
         $text_to_display.= '<input type="text" name="title_' . $widget_id . '" id="title_' . $widget_id . '"';
-        $text_to_display.= 'value="' . $title . '" />' . "\n";
+        $text_to_display.= 'value="' . htmlspecialchars($title) . '" />' . "\n";
         $text_to_display.= "</p>\n";
 
         // Categories
@@ -96,18 +108,27 @@ class WidgetRkokArticles extends WidgetDefinition {
                 $oWebsite->t("articles.display_type.list_with_images"), self::TYPE_LIST_WITH_IMAGES, $display_type);
         $text_to_display.= "</select>\n";
         $text_to_display.= "</p>\n";
-        
+
         // Order
         $text_to_display.= '<p><label for="order_' . $widget_id . '">' . $oWebsite->t("articles.order") . ':';
         $text_to_display.= '<span class="required">*</span><br />' . "\n";
         $text_to_display.= '<select name="order_' . $widget_id . '" id="dorder_' . $widget_id . '">';
         $text_to_display.= $this->get_select_option(
-                $oWebsite->t("articles.order.newest_top"), Articles::SORT_NEWEST_TOP, $order);
+                $oWebsite->t("articles.order.newest_top"), self::SORT_NEWEST_TOP, $order);
         $text_to_display.= $this->get_select_option(
-                $oWebsite->t("articles.order.oldest_top"), Articles::SORT_OLDEST_TOP, $order);
+                $oWebsite->t("articles.order.oldest_top"), self::SORT_OLDEST_TOP, $order);
         $text_to_display.= "</select>\n";
         $text_to_display.= "</p>\n";
         
+        // Archive
+        $checked = $archive? 'checked="checked"' : "";
+        $text_to_display.= <<<EOT
+            <p>
+                <label for="archive_$widget_id">{$oWebsite->t("articles.archive")}:</label>
+                <input class="checkbox" type="checkbox" name="archive_$widget_id" id="archive_$widget_id" $checked />
+            </p>
+EOT;
+
         return $text_to_display;
     }
 
@@ -125,8 +146,7 @@ class WidgetRkokArticles extends WidgetDefinition {
         $data = array();
 
         // Title
-        $data["title"] = isset($_REQUEST["title_" . $id]) ? $_REQUEST["title_" . $id] : "";
-        $data["title"] = htmlspecialchars(trim($data["title"]));
+        $data["title"] = trim($oWebsite->get_request_string("title_" . $id, ""));
         if (strlen($data["title"]) > 200) {
             $oWebsite->add_error($oWebsite->t("widgets.title") . " " . $oWebsite->t("errors.is_too_long_num", 200));
             $data["valid"] = false;
@@ -180,18 +200,25 @@ class WidgetRkokArticles extends WidgetDefinition {
             $oWebsite->add_error($oWebsite->t("articles.article_count") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }
-        
+
         // Order
         if (isset($_REQUEST["order_" . $id])) {
             $data["order"] = (int) $_REQUEST["order_" . $id];
-            if ($data["order"] != Articles::SORT_NEWEST_TOP &&
-                    $data["order"] != Articles::SORT_OLDEST_TOP) {
+            if ($data["order"] != self::SORT_NEWEST_TOP &&
+                    $data["order"] != self::SORT_OLDEST_TOP) {
                 $oWebsite->add_error($oWebsite->t("articles.order") . " " . $oWebsite->t("errors.not_found"));
                 $data["valid"] = false;
             }
         } else {
             $oWebsite->add_error($oWebsite->t("articles.order") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
+        }
+        
+        // Archive
+        if(isset($_REQUEST["archive_" . $id])) {
+            $data["archive"] = true;
+        } else {
+            $data["archive"] = false;
         }
 
         return $data;
