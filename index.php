@@ -12,7 +12,7 @@ ini_set('arg_separator.output', '&amp;');
 // Classloader
 function __autoload($class) {
     //echo "<br />Loading " . $class;
-    require_once('./code/class_' . strtolower($class) . '.php');
+    require_once('./code/classes/class_' . strtolower($class) . '.php');
 }
 
 // Display site
