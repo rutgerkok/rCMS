@@ -3,64 +3,52 @@
 header("Content-type: application/rss+xml");
 
 // Site settings
-error_reporting(E_ALL);
 session_start();
-ini_set('arg_separator.output','&amp;'); 
-function __autoload($klasse)
-{	//automatisch laden van klassen
-	require_once('code/classes/class_'.strtolower($klasse).'.php');
+ini_set('arg_separator.output', '&amp;');
+
+function __autoload($klasse) {
+    // Load classes automatically
+    require_once('code/classes/class_' . strtolower($klasse) . '.php');
 }
 
 // Objects
 $oWebsite = new Website();
-$oArticles = new Articles($oWebsite,$oWebsite->get_database());
+$oArticles = new Articles($oWebsite);
 
 // Get category
-$category = isset($_REQUEST['category'])? (int) $_REQUEST['category']: -1;
-
-// Show everthing from that category (not=0) or everything but that category (not=1)
-if(isset($_REQUEST['not']))
-{
-	$not = ($_REQUEST['not']==1)? 1 : 0;
-}
-else
-{
-	$not = 1;
-}
+$category_id = $oWebsite->get_request_int("category");
 
 // Get the data
-$result = $oArticles->get_articles_data("", 20);
+$articles = $oArticles->get_articles_data($category_id, 15);
 
 // Parse it
 $text_to_display = '';
-if($result)
-{
-	foreach($result as $row)
-	{
-		list($id,$title,$intro,$featured_image,$created, $last_edited,$article_category,$author,$pinned,$hidden) = $row;
-		$pubdate = date('r',strtotime($created));
-		$text_to_display.="<item>\n";
-		$text_to_display.="  <title>".htmlspecialchars($title)."</title>\n";
-		$text_to_display.="  <link>".$oWebsite->get_url_page('article',$id)."</link>\n";
-		$text_to_display.="  <description>".htmlspecialchars($intro)."</description>\n";
-		$text_to_display.="  <pubDate>".$pubdate."</pubDate>\n";
-		$text_to_display.="  <author>".$author."</author>\n";
-		$text_to_display.="  <image>".$featured_image."</image>\n";
-		$text_to_display.="  <category>".$article_category."</category>\n";
-		$text_to_display.="</item>\n\n";
-	}
+if ($articles) {
+    foreach ($articles as $article) {
+        $pubdate = date('r', strtotime($article->created));
+        $text_to_display.="<item>\n";
+        $text_to_display.="  <title>" . htmlspecialchars($article->title) . "</title>\n";
+        $text_to_display.="  <link>" . $oWebsite->get_url_page('article', $article->id) . "</link>\n";
+        $text_to_display.="  <description>" . htmlspecialchars($article->intro) . "</description>\n";
+        $text_to_display.="  <pubDate>" . $pubdate . "</pubDate>\n";
+        $text_to_display.="  <author>" . htmlspecialchars($article->author) . "</author>\n";
+        $text_to_display.="  <image>" . $article->featured_image . "</image>\n";
+        $text_to_display.="  <category>" . $article->category . "</category>\n";
+        $text_to_display.="</item>\n\n";
+    }
 }
+unset($article, $articles);
 
 // Show it
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
 
 <rss version="2.0">
-	<channel>
-		<title><?php echo $oWebsite->get_sitevar('title') ?></title>
-		<link><?php echo $oWebsite->get_url_main() ?></link>
-		<?php
-			echo $text_to_display;
-		?>
-	</channel>
+    <channel>
+        <title><?php echo $oWebsite->get_sitevar('title') ?></title>
+        <link><?php echo $oWebsite->get_url_main() ?></link>
+<?php
+echo $text_to_display;
+?>
+    </channel>
 </rss>

@@ -393,7 +393,7 @@ class Website {
     }
 
     /**
-     * Gets a variable from the $_REQUEST array, without extra "magic quotes"
+     * Gets a string from the $_REQUEST array, without extra "magic quotes"
      * and with a default option if the $_REQUEST array doesn't contain the
      * variable.
      * @param string $name Key in the $_REQUEST array.
@@ -410,6 +410,22 @@ class Website {
         } else {
             return $default;
         }
+    }
+
+    /**
+     * Gets an int from the $_REQUEST array. Returns the default value if there
+     * was no valid integer provided.
+     * @param string $name Key in the $_REQUEST array.
+     * @param int $default Default option.
+     * @return int The int.
+     */
+    public function get_request_int($name, $default = 0) {
+        if (isset($_REQUEST[$name])) {
+            if (is_numeric($_REQUEST[$name])) {
+                return (int) $_REQUEST[$name];
+            }
+        }
+        return $default;
     }
 
 }

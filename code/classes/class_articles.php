@@ -50,7 +50,7 @@ class Articles {
      * @param type $start Start position of the limit.
      * @return \Article Array of Articles.
      */
-    protected function get_articles_data($where_clausule = "", $limit = 9, $start = 0, $oldest_top = false) {
+    protected function get_articles_data_unsafe($where_clausule = "", $limit = 9, $start = 0, $oldest_top = false) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
@@ -113,7 +113,22 @@ class Articles {
             $where_clausules[] = "`categorie_id` = $category_id";
         }
 
-        return $this->get_articles_data(join(" AND ", $where_clausules), $limit);
+        return $this->get_articles_data_unsafe(join(" AND ", $where_clausules), $limit);
+    }
+    
+    /**
+     * Gets all articles, optionally from a category.
+     * @param int $category_id Id of the category. Set it to 0 to get articles from all categories.
+     * @param int $limit Maximum number of articles to return.
+     * @return \Article List of articles.
+     */
+    public function get_articles_data($category_id = 0, $limit = 9) {
+        $category_id = (int) $category_id;
+        if($category_id != 0) {
+            return $this->get_articles_data_unsafe("`categorie_id` = $category_id", $limit);
+        } else {
+            return $this->get_articles_data_unsafe("", $limit);
+        }
     }
 
     /**
@@ -318,7 +333,7 @@ EOT;
         }
 
         //haal resultaten op
-        $result = $this->get_articles_data($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
+        $result = $this->get_articles_data_unsafe($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
 
         //verwerk resultaten
         $main_category_id = (count($categories) == 1) ? $categories[0] : 0;
@@ -372,7 +387,7 @@ EOT;
         }
 
         // Build article list
-        $result = $this->get_articles_data($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
+        $result = $this->get_articles_data_unsafe($where_clausule, $limit, 0, $options & self::OLDEST_TOP);
         $return_value = '<ul class="linklist">';
         foreach ($result as $article) {
             $return_value.= $this->get_article_text_listentry($article, $options & self::METAINFO);
@@ -416,7 +431,7 @@ EOT;
         unset($articlecount_sql, $articlecount_result, $articlecount_resultrow);
 
         //resultaat ophalen
-        $results = $this->get_articles_data("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start);
+        $results = $this->get_articles_data_unsafe("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articles_per_page, $start);
 
         //artikelen ophalen
         $return_value = '';
