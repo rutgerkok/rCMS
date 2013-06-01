@@ -62,7 +62,7 @@ class Website {
                 break;
         }
 
-        // For some reason, some servers don't have this function.
+        // Patch for PHP 5.2.0, they don't have lcfist
         if (!function_exists("lcfirst")) {
             require_once("function_lcfirst.php");
         }
