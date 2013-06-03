@@ -12,6 +12,8 @@ class WidgetRkokLinks extends WidgetDefinition {
         }
 
         $return_value = "";
+        $logged_in_staff = $oWebsite->logged_in_staff(true);
+        $menu_id = (int) $data["menu_id"];
 
         // Title
         if (strlen($data["title"]) > 0) {
@@ -21,8 +23,14 @@ class WidgetRkokLinks extends WidgetDefinition {
         // Links
         $oMenu = new Menus($oWebsite);
         $return_value.= '<ul class="linklist">';
-        $return_value.= $oMenu->get_as_html($oMenu->get_links_menu((int) $data["menu_id"]), true, $oWebsite->logged_in_staff(true));
+        $return_value.= $oMenu->get_as_html($oMenu->get_links_menu($menu_id), true, $logged_in_staff);
         $return_value.= "</ul>";
+
+        // Link to add link
+        if ($logged_in_staff) {
+            $return_value.= '<p><a class="arrow" href="' . $oWebsite->get_url_page("create_link", $menu_id);
+            $return_value.= '">' . $oWebsite->t("links.create") . '</a></p>';
+        }
 
         return $return_value;
     }
@@ -31,7 +39,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         $title = isset($data["title"]) ? htmlspecialchars($data["title"]) : "";
         $menu_id = isset($data["menu_id"]) ? (int) $data["menu_id"] : 0;
         $return_value = "";
-        $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doens't support constants
+        $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doesn't support constants
         // Build menu options
         $oMenu = new Menus($oWebsite);
         $menus = $oMenu->get_menus();
