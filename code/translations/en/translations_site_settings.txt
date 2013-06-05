@@ -1,0 +1,15 @@
+site_settings=Site settings
+editing_site_settings=Editing the settings of the site
+editing_site_settings.explained=Here you can change some global settings of your site. Most changes are applied immediately, but for some settings you'll need to load another page before they have effect.
+title=Site title
+title.explained=This will be displayed on the top of each page.
+copyright=Copyright
+copyright.explained=This will be displayed on the bottom of each page.
+password=Site password
+password.explained=This password is needed to view the site. Useful for private sites, for example a site for a few friends.
+theme=Site theme
+theme.explained=Name of the theme directory.
+language=Site language
+language.explained=Name of the directory with all translation files.
+user_account_creation=Allow users to sign up for an account
+user_account_creation.explained=When this option is checked, visitors can create an account for themselves. If you don't select this, only admins can create new accounts.

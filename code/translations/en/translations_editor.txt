@@ -6,6 +6,7 @@ is_created=is created.
 is_edited=is edited.
 is_changed=has been changed.
 is_deleted=is deleted.
+are_changed=have been changed.
 password.edit=Change password
 password.edit.explained=Fill out the form below to change your password. It's a good practice to change your password at least every other month. The password must be at least # characters long.
 password.repeat=Repeat password

@@ -13,27 +13,41 @@ if (!$already_installed || ($logged_in_staff && $confirmed)) {
     $oAuth->log_in("admin", "admin");
 
     // Show message
-    echo <<<EOT
-        <h2>Installed</h2>
-        <p>
-            The database is now installed! Your username is 
-            <strong>"admin"</strong> and your password is also
-            <strong>"admin"</strong>. Let's change that!
-        </p>
-        <p>
-            <a class="arrow" href="{$this->get_url_page("change_password")}">
-                Change password
-            </a>
-        </p>
-			
+    if(!$already_installed) {
+        echo <<<EOT
+            <h2>Installed</h2>
+            <p>
+                The database is now installed! Your username is 
+                <strong>"admin"</strong> and your password is also
+                <strong>"admin"</strong>. Let's change that!
+            </p>
+            <p>
+                <a class="arrow" href="{$this->get_url_page("change_password")}">
+                    Change password
+                </a>
+            </p>
+
 EOT;
+    } else {
+        echo <<<EOT
+            <h2>Upgraded</h2>
+            <p>
+                All missing tables (if any) have been added.
+            </p>
+            <p>
+                <a class="arrow" href="{$this->get_url_page("admin")}">
+                    {$this->t("main.admin")}
+                </a>
+            </p>
+EOT;
+    }
 }
 if ($logged_in_staff && !$confirmed && $already_installed) {
     $link_confirm = $this->get_url_page("installing_database", 0, array("confirm" => 1));
     echo <<<EOT
-        <h2>Installing database</h2>
+        <h2>Upgrading database</h2>
         <p>
-            Are you sure to (re-)install the database? <strong><em>The site will be reset!</em></strong>
+            This will add any missing tables.
         </p>
         <p>
             <a class="arrow" href="$link_confirm">Yes</a> |

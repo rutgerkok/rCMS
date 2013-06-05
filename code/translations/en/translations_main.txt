@@ -1,3 +1,4 @@
+locales=en_US|en|english
 read=Read more
 edit=Edit
 delete=Delete
@@ -26,7 +27,8 @@ no=No
 ok=OK
 cancel=Cancel
 fields_required=Fields with a <span class="required">*</span> are required.
-reset=Reset site
+site_settings=Site settings
+upgrade_database=Upgrade database
 code_request=Fill in the code to get access to the site.
 widget=Widget
 widgets=Widgets

@@ -7,7 +7,7 @@ session_start();
 ini_set('arg_separator.output','&amp;'); 
 function __autoload($klasse)
 {	//automatisch laden van klassen
-	require_once('./code/class_'.strtolower($klasse).'.php');
+	require_once('./code/classes/class_'.strtolower($klasse).'.php');
 }
 
 //OBJECTEN

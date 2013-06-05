@@ -18,7 +18,7 @@ class Themes {
         if (file_exists($this->get_uri_theme() . "main.php")) {
             require($this->get_uri_theme() . "main.php");
         } else {
-            die("<code>" . $this->get_uri_theme() . "main.php</code> was not found! Theme is missing.");
+            die("<code>" . $this->get_uri_theme() . "main.php</code> was not found! Theme is missing/incomplete.");
         }
     }
 
@@ -31,7 +31,7 @@ class Themes {
             if (file_exists($this->get_uri_theme() . "options.php")) {
                 require($this->get_uri_theme() . "options.php");
             } else {
-                die("<code>" . $this->get_uri_theme() . "main.php</code> was not found! Theme is missing.");
+                die("<code>" . $this->get_uri_theme() . "options.php</code> was not found! Theme is missing/incomplete.");
             }
         }
         return $this->theme;
@@ -57,7 +57,7 @@ class Themes {
             echo '<li><a href="' . $oWebsite->get_url_page("log_out") . '">' . $this->website_object->t("main.log_out") . '</a></li>';
         } else {
             // Not logged in
-            if ($oWebsite->get_sitevar("userscancreateaccounts")) {
+            if ($oWebsite->get_sitevar("user_account_creation")) {
                 // Show account creation link
                 echo '<li><a href="' . $oWebsite->get_url_page("create_account") . '">' . $this->website_object->t("main.create_account") . '</a></li>';
             }
@@ -76,7 +76,7 @@ class Themes {
 EOT;
         // Nog de laatste link?
         if ($oWebsite->get_page_id() != 'home') {
-            echo ' <a href="#">' . $this->get_page_shorttitle() . '</a>';
+            echo ' <a href="#">' . $this->get_page_title() . '</a>';
         }
     }
 
@@ -114,83 +114,16 @@ EOT;
         echo '</form>';
     }
 
-    //Geeft de widgets weer. Geldige area's: 1, 2, ... , 100 (voor backstage), 101, 102, ...
-    public function echo_widgets($area) { //nu nog hard-coded, maar later moet hier een mooi systeem komen
-        $oWebsite = $this->website_object; //afkorting
-        $oDB = $oWebsite->get_database();
+    public function echo_widgets($area) {
+        $oWebsite = $this->website_object;
 
-        ///////////NIEUWE WIDGETCODE
         $oWidgets = $this->widgets_object;
         $oWidgets->echo_widgets_sidebar($area);
-        ///////////
-        ///////////OUDE WIDGETCODE
-        /*
-          if ($area == 0) {
-          //ARTIKELEN
-          $oArticles = new Articles($oWebsite, $oDB);
-          $oCategories = new Categories($oWebsite, $oDB);
+    }
 
-          foreach ($oWebsite->get_sitevar("sidebarcategories") as $category) {
-          echo "<h2>" . $oCategories->get_category_name($category) . "</h2>";
-          echo $oArticles->get_articles_list_category($category, false, false, 4); //opgegeven categorie, alleen die categorie, geen metadata, max 4 artikelen
-          }
-
-          unset($oWebsite, $oDB, $oArticles, $oCategories); //opruiming
-          }
-          if ($area == 1) {
-          //LINKS
-          echo "<h2>{$oWebsite->t('main.link')}</h2>";
-          $oMenu = new Menu($oWebsite, $oDB);
-          echo $oMenu->get_menu_sidebar();
-
-          //KALENDER
-          //Geeft bij phpark kalender weer
-          if ($oWebsite->get_sitevar('theme') == 'phpark') {
-          $oCal = new Calendar($oWebsite, $oDB);
-          echo '<h3>' . $oWebsite->t("calendar.calendar_for") . ' ' . strftime('%B') . ' ' . date('Y') . '</h3>'; //huidige maand en jaar
-          echo $oCal->get_calendar(291);
-          echo "\n" . '<p> <a class="arrow" href="' . $oWebsite->get_url_page("calendar") . '">' . $oWebsite->t("calendar.calendar_for_twelve_months") . '</a> </p>'; //link voor jaarkalender
-          }
-          unset($oDB, $oCategories, $oMenu, $oArticles, $oCal);
-
-          //TWEETS
-          if ($oWebsite->get_sitevar('twitter') != "") {
-          $twitter = $oWebsite->get_sitevar('twitter');
-          echo <<<TWITTER
-          <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-          <script>
-          new TWTR.Widget({
-          version: 2,
-          type: 'search',
-          search: '{$twitter[2]}',
-          interval: 30000,
-          title: '{$twitter[1]}',
-          subject: '{$twitter[0]}',
-          width: 290,
-          height: 300,
-          theme: {
-          shell: {
-          background: '#9a9a79',
-          color: '#ffffff'
-          },
-          tweets: {
-          background: '#d6d6c3',
-          color: '#444444',
-          links: '#6b966b'
-          }
-          },
-          features: {
-          scrollbar: false,
-          loop: true,
-          live: true,
-          behavior: 'default'
-          }
-          }).render().start();
-          </script>
-          TWITTER;
-          }
-          }
-          /////////// */
+    //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()
+    public function get_site_title() {
+        return $this->website_object->get_site_title();
     }
 
     //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()
@@ -198,19 +131,9 @@ EOT;
         return $this->website_object->get_page_title();
     }
 
-    //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()
-    public function get_page_shorttitle() {
-        return $this->website_object->get_page_shorttitle();
-    }
-
-    //Geeft het type pagina terug, "NORMAL", "NOWIDGETS" of "BACKSTAGE"
+    //Geeft het type pagina terug, "HOME", "NORMAL" of "BACKSTAGE"
     public function get_page_type() {
         return $this->website_object->get_page_type();
-    }
-
-    //Geeft de naam van de site terug
-    public function get_site_title() {
-        return $this->website_object->get_sitevar('title');
     }
 
     //Geeft de map van de scripts terug als uri

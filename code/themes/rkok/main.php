@@ -4,12 +4,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="<?php echo $this->get_url_theme()."main.css" ?>" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="<?php echo $this->get_url_scripts() ?>tooltip.js"> </script>
-		<title><?php echo $this->get_page_title(); ?></title>
+		<title><?php echo $this->get_site_title(); ?></title>
 	</head>
 	<body>
                 <div id="header">
                         <div id="hornav">
-                                <h1> <?php echo $this->get_page_title(); ?> </h1>
+                                <h1> <?php echo $this->get_site_title(); ?> </h1>
                                 <ul>
                                     <?php $this->echo_menu(); ?>
                                     <?php $this->echo_accounts_menu(); ?>

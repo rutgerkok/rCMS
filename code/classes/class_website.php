@@ -1,53 +1,59 @@
 <?php
 
 class Website {
-
+    const MAX_SITE_OPTION_LENGTH = 200;
+    
     protected $errors = array();
     protected $debug = false;
     protected $errorsdisplayed = false;
     protected $database_object;
+    /** @var Themes $themes_object */
+    protected $themes_object;
     protected $current_page_id;
-    protected $current_page_title; // Site title [- page title]
-    protected $current_page_title_short; // Based on page id
-    protected $current_page_type; // NORMAL, NOWIDGETS or BACKSTAGE
-    /** @var Themes $themes */
-    private $themes;
+    protected $site_title;
+    protected $current_page_title; // Based on page id
+    protected $current_page_type; // HOME, NORMAL or BACKSTAGE
+    /** @var Authentication $authentication_object */
+    protected $authentication_object;
+    // The following two fields are only available when using the new page system
+    /** @var Page $current_page */
+    protected $current_page; // Available during/after echo_page
+    protected $authentication_failed_rank = false; // Number of required rank, or false if the user's rank is already high enough
 
     function __construct() {
-
-        // Pagevars and settings
-        $this->site_settings();
-        setlocale(LC_ALL, $this->config['locales']);
-
-        // Database
+        // Site settings and database connection
+        $this->site_settings_file();
         $this->database_object = new Database($this);
+        $this->site_settings_database();
 
+        // Site title
+        $this->site_title = $this->get_sitevar('title'); //begin met alleen de naam van de site...
         // Get page to display
         if (isset($_REQUEST['p']) && !empty($_REQUEST['p']) && $_REQUEST['p'] != 'home') {
+            // Get current page title and id 
             $this->current_page_id = $_REQUEST['p'];
+            $this->current_page_title = ucfirst(str_replace('_', ' ', $_REQUEST['p']));
 
-            //Titel instellen
-            $this->current_page_title = $this->get_sitevar('title'); //begin met alleen de naam van de site...
-            $this->current_page_title_short = ucfirst(str_replace('_', ' ', $_REQUEST['p'])); //korte titel
-            if ($this->get_sitevar('showpage'))
-                $this->current_page_title.= ' - ' . $this->current_page_title_short; //...verleng eventueel met paginanaam
+            // Append page title to site title if needed
+            if ($this->get_sitevar('append_page_title')) {
+                $this->site_title.= ' - ' . $this->current_page_title;
+            }
 
             if (!file_exists($this->get_uri_page($this->current_page_id))) {
                 // Page doesn't exist, redirect
                 $this->current_page_id = 'home';
-                $this->add_error($this->t("main.page") . " '" . $this->current_page_title_short . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
+                $this->add_error($this->t("main.page") . " '" . $this->current_page_title . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
             }
         } else {
             $this->current_page_id = 'home';
             //Titel instellen
-            $this->current_page_title = $this->get_sitevar('hometitle');
-            $this->current_page_title_short = 'Home';
+            $this->current_page_title = $this->t("main.home");
         }
 
-        // Get the layout of the page
+        // Get the layout of the page for the old page system
         switch ($this->current_page_id) {
             case "home":
-                $this->current_page_type = "NORMAL";
+                $this->current_page_type = "HOME";
                 break;
             case "category":
             case "search":
@@ -55,7 +61,7 @@ class Website {
             case "view_article":
             case "archive":
             case "calendar":
-                $this->current_page_type = "NOWIDGETS";
+                $this->current_page_type = "NORMAL";
                 break;
             default:
                 $this->current_page_type = "BACKSTAGE";
@@ -64,7 +70,7 @@ class Website {
 
         // Patch for PHP 5.2.0, they don't have lcfist
         if (!function_exists("lcfirst")) {
-            require_once("function_lcfirst.php");
+            require_once($this->get_uri_scripts() . "function_lcfirst.php");
         }
     }
 
@@ -72,8 +78,8 @@ class Website {
      * Returns the full title that should be displayed at the top of this page.
      * @return string The title.
      */
-    public function get_page_title() {
-        return $this->current_page_title;
+    public function get_site_title() {
+        return $this->site_title;
     }
 
     /**
@@ -88,17 +94,23 @@ class Website {
      * Returns a shorter title of this page that can be used in breadcrumbs.
      * @return string The shorter title.
      */
-    public function get_page_shorttitle() {
-        return $this->current_page_title_short;
+    public function get_page_title() {
+        return $this->current_page_title;
     }
 
     /**
-     * Returns the current page type: NORMAL, NOWIDGETS or BACKSTAGE.
+     * Returns the current page type: HOME, NORMAL or BACKSTAGE.
      * @return string The current page type.
      */
     public function get_page_type() {
         return $this->current_page_type;
     }
+
+    public function register_page(Page $page) {
+        $this->current_page = $page;
+    }
+
+    // GETTING OTHER OBJECTS
 
     /**
      * Returns the database of this site
@@ -108,11 +120,74 @@ class Website {
         return $this->database_object;
     }
 
-    public function get_sitevar($var) {
-        if (isset($this->config[$var])) {
-            return($this->config[$var]);
+    /**
+     * Gets the theme manager. Returns null if the theme hasn't been loaded yet
+     * (before echo_page is called).
+     * @return Themes The theme manager.
+     */
+    public function get_theme_manager() {
+        return $this->themes_object;
+    }
+
+    /**
+     * Gets the authentication object.
+     * @return Authentication The authentication object.
+     */
+    public function get_authentication() {
+        if($this->authentication_object == null) {
+            $this->authentication_object = new Authentication($this);
+        }
+        return $this->authentication_object;
+    }
+
+    // SITEVARS
+
+    /**
+     * Gets a setting from either the options.php or the settings table.
+     * @param string $name Name of the setting.
+     * @return mixed false if not found, otherwise the value.
+     */
+    public function get_sitevar($name) {
+        if (isset($this->config[$name])) {
+            $value = $this->config[$name];
+            if (strtolower($value) == "false") {
+                // Because "false" == true
+                return false;
+            }
+            return $value;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Changes a setting. Saves a setting to the database. Does nothing if the setting is unchanged.
+     * @param string $name The name of the setting.
+     * @param string $value The value of the setting.
+     */
+    public function set_sitevar($name, $value) {
+        if (isset($this->config[$name]) && $this->config[$name] == $value) {
+            // No need to update
+            return;
+        }
+
+        // Apply on current page
+        $this->config[$name] = $value;
+
+        // Save to database
+        $oDB = $this->get_database();
+        if (isset($this->config[$name])) {
+            // Update setting
+            $sql = "UPDATE `settings` SET ";
+            $sql.= "`setting_value` = '{$oDB->escape_data($value)}' ";
+            $sql.= "WHERE `setting_name` = '{$oDB->escape_data($name)}'";
+            $oDB->query($sql);
+        } else {
+            // New setting
+            $sql = "INSERT INTO `settings` (`setting_name`, `setting_value`) ";
+            $sql.= " VALUES ('{$oDB->escape_data($name)}', ";
+            $sql.= "'{$oDB->escape_data($value)}')";
+            $oDB->query($sql);
         }
     }
 
@@ -177,7 +252,15 @@ class Website {
     }
 
     public function get_uri_page($name) {
-        return $this->get_uri_modules() . $name . ".inc";
+        // Has to account for both the old .inc pages and the newer .php pages
+        // Because file_exists lookups are cached, this shouldn't really affect
+        // performance.
+        $uri_old = $this->get_uri_modules() . $name . ".inc";
+        if (file_exists($uri_old)) {
+            return $uri_old;
+        } else {
+            return $this->get_uri_modules() . $name . ".php";
+        }
     }
 
     //Geeft de map van alle thema's terug als url
@@ -200,6 +283,10 @@ class Website {
         return $this->get_uri_scripts() . "widgets/";
     }
 
+    public function get_uri_translations() {
+        return $this->get_uri_scripts() . "translations/";
+    }
+
 //Einde paden
 
     public function add_error($message, $public_message = false) {
@@ -215,11 +302,6 @@ class Website {
 
     public function error_count() {
         return count($this->errors);
-    }
-
-    public function error_clear_all() {
-        unset($this->errors);
-        $this->errors = array();
     }
 
     public function echo_errors() { //geeft alle foutmeldingen weer
@@ -244,7 +326,9 @@ class Website {
             echo '	 </p>';
             echo '</div>';
         }
-        $this->error_clear_all();
+        // Clear displayed errors
+        unset($this->errors);
+        $this->errors = array();
         return true;
     }
 
@@ -266,11 +350,34 @@ class Website {
      * Echoes the whole page.
      */
     public function echo_page() {
-        if ($this->has_access()) { //geef de pagina weer
+        // Check for site password
+        if ($this->has_access()) {
             setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
-            $this->themes = new Themes($this);
-            $this->themes->output();
-        } else { //laat inlogscherm zien
+
+            $uri = $this->get_uri_page($this->current_page_id);
+
+            if (substr($uri, -4) == ".php") {
+                // We're on the new page system
+                // Init stuff
+                require($uri);
+                $this->current_page->init($this);
+                // Page type
+                $this->current_page_type = $this->current_page->get_page_type();
+                // Authentication stuff
+                $rank = (int) $this->current_page->get_minimum_rank();
+                if ($rank >= 0) {
+                    $oAuth = $this->get_authentication();
+                    if (!$oAuth->check($rank, false)) {
+                        $this->authentication_failed_rank = $rank;
+                    }
+                }
+            }
+
+            // Output page
+            $this->themes_object = new Themes($this);
+            $this->themes_object->output();
+        } else {
+            // Echo site code page
             require($this->get_uri_scripts() . 'login_page.php');
         }
     }
@@ -280,38 +387,55 @@ class Website {
      */
     public function echo_page_content() { //geeft de hoofdpagina weer
         if ($this->has_access()) {
-            if (file_exists($this->get_uri_page($this->current_page_id))) { //voeg de module in als die bestaat (al gecheckt in constructor)
+            // Locales
+            setlocale(LC_ALL, explode("|", $this->t("main.locales")));
+            
+            if ($this->current_page != null) {
+                // New page system
+                // Title
+                $title = $this->current_page->get_page_title($this);
+                if (!empty($title)) {
+                    echo "<h2>" . $title . "</h2>\n";
+                }
+
+                // Get page content (based on permissions)
+                $text_to_display = "";
+                if ($this->authentication_failed_rank === false) {
+                    $text_to_display = $this->current_page->get_page_content($this);
+                } else {
+                    $text_to_display = $this->authentication_object->get_login_form();
+                }
+
+                // Echo errors
+                if (!$this->errorsdisplayed) {
+                    $this->echo_errors();
+                }
+
+                // Display page content
+                echo $text_to_display;
+            } else {
+                // Old page system
                 require($this->get_uri_page($this->current_page_id));
             }
         }
     }
 
     public function logged_in() {
-        if (
-                isset($_SESSION['id']) &&
-                isset($_SESSION['user']) &&
-                isset($_SESSION['pass']) &&
-                isset($_SESSION['display_name']) &&
-                isset($_SESSION['email']) &&
-                isset($_SESSION['admin'])) {
-            return true;
-        }
+        return $this->get_authentication()->get_current_user() != null;
     }
 
     public function logged_in_staff($admin = false) {
-        if (
-                isset($_SESSION['id']) &&
-                isset($_SESSION['user']) &&
-                isset($_SESSION['pass']) &&
-                isset($_SESSION['display_name']) &&
-                isset($_SESSION['email']) &&
-                isset($_SESSION['admin']) &&
-                ($_SESSION['admin'] == 0 || $_SESSION['admin'] == 1)) {
-            if ($admin == false || $_SESSION['admin'] == 1) {
-                return true;
-            }
+        $needed_rank = Authentication::$MODERATOR_RANK;
+        if($admin) {
+            $needed_rank = Authentication::$ADMIN_RANK;
         }
-        return false;
+        $oAuth = $this->get_authentication();
+        $user = $oAuth->get_current_user();
+        if($user != null && $oAuth->is_higher_or_equal_rank($user->get_rank(), $needed_rank)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -319,7 +443,12 @@ class Website {
      * @return int The id of the user currently logged in.
      */
     public function get_current_user_id() {
-        return isset($_SESSION['id']) ? (int) $_SESSION['id'] : -1;
+        $user = $this->get_authentication()->get_current_user();
+        if($user == null) {
+            return -1;
+        } else {
+            return $user->get_id();
+        }
     }
 
     /**
@@ -332,22 +461,30 @@ class Website {
         return count($this->get_theme_manager()->get_theme()->get_widget_areas($this)) + 1;
     }
 
-    /**
-     * Gets the theme manager. Returns null if the theme hasn't been loaded yet
-     * (before echo_page is called).
-     * @return Themes The theme manager.
-     */
-    public function get_theme_manager() {
-        return $this->themes;
-    }
+    protected function site_settings_file() {
+        // Apply some standard settings to get the site running (in case those
+        // cannot be loaded from the database)
+        $this->config["language"] = "en";
+        $this->config["theme"] = "rkok";
+        $this->config["title"] = "Welcome!";
 
-    public function site_settings() {
-        //SITES INSTELLEN
+        // Load other settings from config.php (required)
         if (file_exists('config.php')) {
             require('config.php');
         } else {
             echo "<code>config.php</code> was not found! Place it next to your index.php";
             die();
+        }
+    }
+
+    protected function site_settings_database() {
+        // Load settings from the database
+        $oDatabase = $this->get_database();
+        $result = $oDatabase->query("SELECT `setting_name`, `setting_value` FROM `settings`", false);
+        if ($result) {
+            while (list($key, $value) = $oDatabase->fetch($result)) {
+                $this->config[$key] = $value;
+            }
         }
     }
 
@@ -358,7 +495,7 @@ class Website {
         if (isset($this->translations[$keys[0]])) { //al geladen
             return $this->translations[$keys[0]][$keys[1]];
         } else { //moet nog geladen worden
-            $translations_file = $this->get_uri_scripts() . "translations/" . $this->get_sitevar("language") . "/translations_" . $keys[0] . ".txt";
+            $translations_file = $this->get_uri_translations() . $this->get_sitevar("language") . "/translations_" . $keys[0] . ".txt";
             if (file_exists($translations_file)) { //laad
                 $file_contents = file($translations_file);
                 foreach ($file_contents as $line) {
@@ -391,6 +528,8 @@ class Website {
             return str_replace("#", $replace_in_key, $this->t($key));
         }
     }
+
+    // INPUT FROM $_REQUEST
 
     /**
      * Gets a string from the $_REQUEST array, without extra "magic quotes"

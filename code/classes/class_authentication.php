@@ -10,7 +10,7 @@ class Authentication {
     protected $website_object;
     private $current_user;
 
-    function __construct(Website $oWebsite) {
+    public function __construct(Website $oWebsite) {
         $this->website_object = $oWebsite;
     }
 
@@ -18,7 +18,7 @@ class Authentication {
      * Get the current user. Use the User.save function to save changes to the database.
      * @return User
      */
-    function get_current_user() {
+    public function get_current_user() {
         if (isset($this->current_user)) {
             // Object cached
             return $this->current_user;
@@ -45,7 +45,7 @@ class Authentication {
      * Save that user object in the session
      * @param User $user The user to login
      */
-    function set_current_user($user) {
+    public function set_current_user($user) {
         if ($user == null || !($user instanceof User)) {
             // Log out
             unset($_SESSION['id']);
@@ -68,12 +68,12 @@ class Authentication {
     }
 
     /**
-     * Logs the user in
+     * Logs the user in with the given username and password.
      * @param string $username
      * @param string $password
      * @return boolean Whether the login was succesfull
      */
-    function log_in($username, $password) {
+    public function log_in($username, $password) {
         $user = User::get_by_name($this->website_object, $username);
         if ($user != null && $user->get_password_hashed() == md5(sha1($password))) {
             // Matches!
@@ -83,7 +83,14 @@ class Authentication {
         return false;
     }
 
-    function check($minimum_rank, $showform = true) {
+    /**
+     * Checks whether the user has access to the current page. If not, a login
+     * screen is optionally displayed.
+     * @param int $minimum_rank The minimum rank required.
+     * @param boolean $showform Whether a login form should be shown on failure.
+     * @return boolean Whether the login was succesfull.
+     */
+    public function check($minimum_rank, $showform = true) {
         $minimum_rank = (int) $minimum_rank;
         $current_user = $this->get_current_user();
         $failed_login = false;
@@ -103,17 +110,19 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                $this->echo_login_form($minimum_rank, $failed_login);
+                echo $this->get_login_form($minimum_rank, $failed_login);
             }
+            return false;
         }
     }
 
-    function echo_login_form($minimum_rank = 0, $failed = false) { //laat een inlogformulier zien
+    function get_login_form($minimum_rank = 0, $failed = false) { //laat een inlogformulier zien
         //huidige pagina ophalen
         $oWebsite = $this->website_object;
         $logintext = $oWebsite->t("users.please_log_in");
+        $return_value = "";
         if($failed) {
-            echo <<<EOT
+            $return_value.= <<<EOT
                 <div class="error">
                     <p>{$oWebsite->t("errors.invalid_username_or_password")}</p>
                 </div>
@@ -121,7 +130,7 @@ EOT;
         }
         if ($minimum_rank != self::$USER_RANK)
             $logintext.=' <strong><em> ' . $oWebsite->t("users.as_administrator") . '</em></strong>';
-        echo <<<EOT
+        $return_value.= <<<EOT
             <form method="post" action="{$oWebsite->get_url_main()}">
                     <h3>$logintext</h3>
                     <p>
@@ -136,13 +145,15 @@ EOT;
         foreach ($_REQUEST as $key => $value) {
             // Repost all variables
             if ($key != "user" && $key != "pass") {
-                echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" />';
+                $return_value.= '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" />';
             }
         }
-        echo <<<EOT
+        // End form and return it
+        $return_value.= <<<EOT
                     </p>
             </form>
 EOT;
+        return $return_value;
     }
 
     function log_out() {

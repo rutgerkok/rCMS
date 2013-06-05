@@ -2,23 +2,25 @@
 
 class Database {
 
-    protected $database_table_prefix; // slaan we hier op zodat die niet iedere keer geladen moet worden
-    // Variabele met verbinding
-    public $dbc = false;
-    // Variabele met website-object
+    protected $dbc = false;
     protected $website_object;
+    // Replacing table names in queries
+    private static $TABLE_NAMES_TO_REPLACE;
+    private static $REPLACING_TABLE_NAMES;
 
     public function __construct(Website $oWebsite) {
-        //Variabele website_object goed zetten
+        // Save website object in this object
         $this->website_object = $oWebsite;
 
-        //Verbinding maken of laden
+        // Connect
         $this->dbc = @mysqli_connect($oWebsite->get_sitevar('database_location'), $oWebsite->get_sitevar('database_user'), $oWebsite->get_sitevar('database_password'), $oWebsite->get_sitevar('database_name'));
 
-        //Tabelprefix opslaan (scheelt weer een hoop functieaanroepen)
-        $this->database_table_prefix = $oWebsite->get_sitevar('database_table_prefix');
+        // Fill prefix replacement arrays
+        $prefix = $oWebsite->get_sitevar('database_table_prefix');
+        self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`gebruikers`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`', '`settings`');
+        self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}gebruikers`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
 
-        //Eventueel foutmelding
+        // Abort on error
         if (!$this->dbc) {
             exit("Failed to connect to database: " . mysqli_connect_error());
         }
@@ -30,46 +32,60 @@ class Database {
     }
 
     /**
-     * Removes any existing tables, creates new tables
+     * Creates any missing tables.
      */
     public function create_tables() {
-        //oude tabellen verwijderen
-        $this->query("DROP TABLE `categorie`", false);
-        $this->query("DROP TABLE `gebruikers`", false);
-        $this->query("DROP TABLE `links`", false);
-        $this->query("DROP TABLE `artikel`", false);
-        $this->query("DROP TABLE `reacties`", false);
-        $this->query("DROP TABLE `widgets`", false);
-
         // Categories
-        if ($this->query("CREATE TABLE `categorie` (`categorie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_naam` VARCHAR(30) NOT NULL) ENGINE = MyISAM")) {
+        if ($this->query("CREATE TABLE `categorie` (`categorie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_naam` VARCHAR(30) NOT NULL) ENGINE = MyISAM", false)) {
             $this->query("INSERT INTO `categorie` (`categorie_naam`) VALUES ('No category'), ('Events'), ('News');");
         }
 
         // Users
-        if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(20) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam")) {
+        if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(20) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam", false)) {
             $this->query("INSERT INTO `gebruikers` ( `gebruiker_admin`, `gebruiker_login`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email`) VALUES ( '1', 'admin', 'admin', '" . md5(sha1('admin')) . "', '')");
         }
 
         // Links
-        $this->query("CREATE TABLE `links` (`link_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_id` INT UNSIGNED NOT NULL, `link_url` VARCHAR(200) NOT NULL, `link_text` VARCHAR(50) NOT NULL) ENGINE = MyISAM");
-        
+        $this->query("CREATE TABLE IF NOT EXISTS `links` (`link_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_id` INT UNSIGNED NOT NULL, `link_url` VARCHAR(200) NOT NULL, `link_text` VARCHAR(50) NOT NULL) ENGINE = MyISAM");
+
         // Menus
-        if ($this->query("CREATE TABLE `menus` (`menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_name` VARCHAR(50) NOT NULL) ENGINE = MyISAM")) {
-            $this->query("INSERT INTO `menu` (`menu_name`) VALUES ('Standard menu')");
+        if ($this->query("CREATE TABLE `menus` (`menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_name` VARCHAR(50) NOT NULL) ENGINE = MyISAM", false)) {
+            $this->query("INSERT INTO `menus` (`menu_name`) VALUES ('Standard menu')");
         }
 
         // Articles
-        $this->query("CREATE TABLE  `artikel` (`artikel_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NOT NULL, `artikel_titel` VARCHAR(100) NOT NULL, `artikel_afbeelding` VARCHAR(150) NULL, `artikel_gepind` TINYINT(1) NOT NULL, `artikel_verborgen` TINYINT(1) NOT NULL, `artikel_reacties` TINYINT(1) NOT NULL, `artikel_intro` TEXT NOT NULL, `artikel_inhoud` TEXT NULL, `artikel_gemaakt` DATETIME NOT NULL, `artikel_verwijsdatum` DATETIME NULL,`artikel_bewerkt` DATETIME NULL) ENGINE = MyISAM");
-        $this->query("ALTER TABLE `artikel` ADD FULLTEXT `zoeken` (`artikel_titel`,`artikel_intro`,`artikel_inhoud`) ");
+        $result_articles = $this->query("CREATE TABLE  `artikel` (`artikel_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NOT NULL, `artikel_titel` VARCHAR(100) NOT NULL, `artikel_afbeelding` VARCHAR(150) NULL, `artikel_gepind` TINYINT(1) NOT NULL, `artikel_verborgen` TINYINT(1) NOT NULL, `artikel_reacties` TINYINT(1) NOT NULL, `artikel_intro` TEXT NOT NULL, `artikel_inhoud` TEXT NULL, `artikel_gemaakt` DATETIME NOT NULL, `artikel_verwijsdatum` DATETIME NULL,`artikel_bewerkt` DATETIME NULL) ENGINE = MyISAM", false);
+        if ($result_articles) {
+            $this->query("ALTER TABLE `artikel` ADD FULLTEXT `zoeken` (`artikel_titel`,`artikel_intro`,`artikel_inhoud`) ");
+        }
 
         // Comments
-        $this->query("CREATE TABLE `reacties` (`reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM");
-        $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)", false);
+        $result_comments = $this->query("CREATE TABLE `reacties` (`reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM", false);
+        if ($result_comments) {
+            $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)", false);
+        }
 
         // Widgets
-        if($this->query("CREATE TABLE `widgets` ( `widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_priority` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL) ENGINE=MyISAM")) {
+        if ($this->query("CREATE TABLE `widgets` (`widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_priority` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL) ENGINE=MyISAM", false)) {
             $this->query("INSERT INTO `widgets` (`widget_naam`, `widget_data`, `widget_priority`, `sidebar_id`) VALUES ('articles', '{\"title\":\"News\",\"categories\":[3],\"count\":4,\"display_type\":0,\"order\":0}', '0', '1'), ('calendar', '{\"title\":\"Events\"}', '0', '2')");
+        }
+
+        // Settings
+        if ($this->query("CREATE TABLE `settings` (`setting_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `setting_name` varchar(30) NOT NULL, `setting_value` varchar(" . Website::MAX_SITE_OPTION_LENGTH . ") NOT NULL, PRIMARY KEY (`setting_id`) ) ENGINE=MyIsam", false)) {
+            $year = date("Y");
+            $sql = <<<EOT
+                    INSERT INTO `settings` (`setting_name`, `setting_value`) VALUES 
+                    ('theme', 'rkok'),
+                    ('title', 'My website'),
+                    ('copyright', 'Copyright $year - built with rCMS'),
+                    ('password', ''),
+                    ('language', 'en'),
+                    ('user_account_creation', true),
+                    ('append_page_title', 'false'),
+                    ('fancy_urls', 'true'),
+                    ('database_version', '1')
+EOT;
+            $this->query($sql);
         }
     }
 
@@ -93,11 +109,6 @@ class Database {
         return(@mysqli_fetch_array($result, MYSQLI_NUM));
     }
 
-    //Geeft de actieve verbinding terug
-    public function get_connection() {
-        return $this->dbc;
-    }
-
     //Geeft de primaire sleutel terug van de laatst ingevoegde rij
     public function inserted_id() {
         return(@mysqli_insert_id($this->dbc));
@@ -110,10 +121,7 @@ class Database {
      * @return mysqli_result|boolean
      */
     public function query($sql, $errorreport = true) {
-        $prefix = $this->database_table_prefix;
-
-        $sql = str_replace(
-                array('`categorie`', '`gebruikers`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`'), array("`{$prefix}categorie`", "`{$prefix}gebruikers`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`"), $sql);
+        $sql = str_replace(self::$TABLE_NAMES_TO_REPLACE, self::$REPLACING_TABLE_NAMES, $sql);
 
         $result = @mysqli_query($this->dbc, $sql);
 

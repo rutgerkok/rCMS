@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="<?php echo $this->get_url_scripts() ?>tooltip.js"></script>
-        <title><?php echo $this->get_page_title(); ?></title>
+        <title><?php echo $this->get_site_title(); ?></title>
     </head>
     <body>
         <div id="container">
@@ -20,7 +20,7 @@
                         <?php $this->echo_search_form(); ?>
                     </div>
                     <h1>
-                        <?php echo $this->get_page_title(); ?>
+                        <?php echo $this->get_site_title(); ?>
                     </h1>
                 </div>
                 <div id="hornav">
@@ -29,11 +29,11 @@
                     </ul>
                 </div>
                 <div <?php
-                        if ($this->get_page_type() == "NORMAL") {
+                        if ($this->get_page_type() == "HOME") {
                             echo 'id="content"';
                         } elseif ($this->get_page_type() == "BACKSTAGE") {
                             echo 'id="contentadmin"';
-                        } else { // dus $this->get_page_type()=="NOWIDGETS"
+                        } else { // dus $this->get_page_type()=="NORMAL"
                             echo 'id="contentwide"';
                         }
                         ?> >
@@ -45,7 +45,7 @@
 
                 </div><!-- id="content"/"contentwide" -->
 
-                    <?php if ($this->get_page_type() == "NORMAL") { ?>
+                    <?php if ($this->get_page_type() == "HOME") { ?>
                     <div id="sidebar">
     <?php $this->echo_widgets(2); ?>
                         &nbsp;
