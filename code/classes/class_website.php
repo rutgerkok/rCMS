@@ -20,7 +20,7 @@ class Website {
     // The following two fields are only available when using the new page system
     /** @var Page $current_page */
     protected $current_page; // Available during/after echo_page
-    protected $authentication_failed_rank = false; // Number of required rank, or false if the user's rank is already high enough
+    protected $authentication_failed_rank = -1; // Number of required rank which the user didn't have, or -1 if the user's rank is already high enough
 
     /**
      * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
@@ -343,7 +343,7 @@ class Website {
             }
 
             // Set cookie
-            if(strlen($this->get_sitevar('password') != 0)) {
+            if(strlen($this->get_sitevar('password')) != 0) {
                 setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
             }
 
@@ -422,10 +422,10 @@ class Website {
 
                 // Get page content (based on permissions)
                 $text_to_display = "";
-                if ($this->authentication_failed_rank === false) {
-                    $text_to_display = $this->current_page->get_page_content($this);
+                if ($this->authentication_failed_rank >= 0) {
+                    $text_to_display = $this->authentication_object->get_login_form($this->authentication_failed_rank);
                 } else {
-                    $text_to_display = $this->authentication_object->get_login_form();
+                    $text_to_display = $this->current_page->get_page_content($this);
                 }
 
                 // Echo errors

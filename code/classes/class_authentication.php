@@ -9,6 +9,7 @@ class Authentication {
     /* @var $website_object Website */
     protected $website_object;
     private $current_user;
+    private $login_failed = false;
 
     public function __construct(Website $oWebsite) {
         $this->website_object = $oWebsite;
@@ -93,14 +94,13 @@ class Authentication {
     public function check($minimum_rank, $showform = true) {
         $minimum_rank = (int) $minimum_rank;
         $current_user = $this->get_current_user();
-        $failed_login = false;
 
         // Try to login if data was sent
         if (isset($_POST['user']) && isset($_POST['pass'])) {
             if ($this->log_in($_POST['user'], $_POST['pass'])) {
                 $current_user = $this->get_current_user();
             } else {
-                $failed_login = true;
+                $this->login_failed = true;
             }
         }
 
@@ -110,18 +110,18 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                echo $this->get_login_form($minimum_rank, $failed_login);
+                echo $this->get_login_form($minimum_rank);
             }
             return false;
         }
     }
 
-    function get_login_form($minimum_rank = 0, $failed = false) { //laat een inlogformulier zien
+    function get_login_form($minimum_rank = 0) { //laat een inlogformulier zien
         //huidige pagina ophalen
         $oWebsite = $this->website_object;
         $logintext = $oWebsite->t("users.please_log_in");
         $return_value = "";
-        if($failed) {
+        if($this->login_failed) {
             $return_value.= <<<EOT
                 <div class="error">
                     <p>{$oWebsite->t("errors.invalid_username_or_password")}</p>
