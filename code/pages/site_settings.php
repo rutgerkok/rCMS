@@ -32,6 +32,10 @@ class SiteSettingsPage extends Page {
     public function get_page_title(Website $oWebsite) {
         return $oWebsite->t("site_settings.editing_site_settings");
     }
+    
+    public function get_short_page_title(Website $oWebsite) {
+        return $oWebsite->t("main.site_settings");
+    }
 
     public function get_minimum_rank() {
         return Authentication::$ADMIN_RANK;

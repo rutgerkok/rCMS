@@ -1,17 +1,19 @@
 <?php
 
 class Website {
+
     const MAX_SITE_OPTION_LENGTH = 200;
-    
+
     protected $errors = array();
     protected $debug = false;
     protected $errorsdisplayed = false;
     protected $database_object;
+
     /** @var Themes $themes_object */
     protected $themes_object;
     protected $current_page_id;
     protected $site_title;
-    protected $current_page_title; // Based on page id
+    protected $current_page_title; // Title of the page
     protected $current_page_type; // HOME, NORMAL or BACKSTAGE
     /** @var Authentication $authentication_object */
     protected $authentication_object;
@@ -20,53 +22,14 @@ class Website {
     protected $current_page; // Available during/after echo_page
     protected $authentication_failed_rank = false; // Number of required rank, or false if the user's rank is already high enough
 
+    /**
+     * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
+     */
     function __construct() {
         // Site settings and database connection
         $this->site_settings_file();
         $this->database_object = new Database($this);
         $this->site_settings_database();
-
-        // Site title
-        $this->site_title = $this->get_sitevar('title'); //begin met alleen de naam van de site...
-        // Get page to display
-        if (isset($_REQUEST['p']) && !empty($_REQUEST['p']) && $_REQUEST['p'] != 'home') {
-            // Get current page title and id 
-            $this->current_page_id = $_REQUEST['p'];
-            $this->current_page_title = ucfirst(str_replace('_', ' ', $_REQUEST['p']));
-
-            // Append page title to site title if needed
-            if ($this->get_sitevar('append_page_title')) {
-                $this->site_title.= ' - ' . $this->current_page_title;
-            }
-
-            if (!file_exists($this->get_uri_page($this->current_page_id))) {
-                // Page doesn't exist, redirect
-                $this->current_page_id = 'home';
-                $this->add_error($this->t("main.page") . " '" . $this->current_page_title . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
-            }
-        } else {
-            $this->current_page_id = 'home';
-            //Titel instellen
-            $this->current_page_title = $this->t("main.home");
-        }
-
-        // Get the layout of the page for the old page system
-        switch ($this->current_page_id) {
-            case "home":
-                $this->current_page_type = "HOME";
-                break;
-            case "category":
-            case "search":
-            case "article":
-            case "view_article":
-            case "archive":
-            case "calendar":
-                $this->current_page_type = "NORMAL";
-                break;
-            default:
-                $this->current_page_type = "BACKSTAGE";
-                break;
-        }
 
         // Patch for PHP 5.2.0, they don't have lcfist
         if (!function_exists("lcfirst")) {
@@ -88,6 +51,14 @@ class Website {
      */
     public function get_page_id() {
         return $this->current_page_id;
+    }
+    
+    /**
+     * Returns the current page. Only works with the new page system.
+     * @return Page The current page.
+     */
+    public function get_page() {
+        return $this->current_page;
     }
 
     /**
@@ -134,7 +105,7 @@ class Website {
      * @return Authentication The authentication object.
      */
     public function get_authentication() {
-        if($this->authentication_object == null) {
+        if ($this->authentication_object == null) {
             $this->authentication_object = new Authentication($this);
         }
         return $this->authentication_object;
@@ -352,15 +323,42 @@ class Website {
     public function echo_page() {
         // Check for site password
         if ($this->has_access()) {
-            setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
+            // Site title
+            $this->site_title = $this->get_sitevar('title');
 
+            // Get id of page to display
+            $given_page_id = $this->get_request_string("p", "home");
+            if ($given_page_id != 'home') {
+                // Get current page title and id 
+                $this->current_page_id = $given_page_id;
+
+                if (!file_exists($this->get_uri_page($this->current_page_id))) {
+                    // Page doesn't exist, redirect
+                    $this->current_page_id = 'home';
+                    $this->add_error($this->t("main.page") . " '" . $this->current_page_title . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
+                }
+            } else {
+                // No page id given
+                $this->current_page_id = 'home';
+            }
+
+            // Set cookie
+            if(strlen($this->get_sitevar('password') != 0)) {
+                setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
+            }
+
+            // Perform page logic (supporting both the old .inc and the new .php pages)
             $uri = $this->get_uri_page($this->current_page_id);
-
             if (substr($uri, -4) == ".php") {
                 // We're on the new page system
                 // Init stuff
                 require($uri);
                 $this->current_page->init($this);
+                // Page title
+                $this->current_page_title = $this->current_page->get_page_title($this);
+                if ($this->get_sitevar('append_page_title')) {
+                    $this->site_title.= ' - ' . $this->current_page->get_short_page_title($this);
+                }
                 // Page type
                 $this->current_page_type = $this->current_page->get_page_type();
                 // Authentication stuff
@@ -370,6 +368,30 @@ class Website {
                     if (!$oAuth->check($rank, false)) {
                         $this->authentication_failed_rank = $rank;
                     }
+                }
+            } else {
+                // Old page system
+                // Page title
+                $this->current_page_title = ucfirst(str_replace('_', ' ', $this->current_page_id));
+                if ($this->get_sitevar('append_page_title')) {
+                    $this->site_title.= ' - ' . $this->current_page_title;
+                }
+                // Page type
+                switch ($this->current_page_id) {
+                    case "home":
+                        $this->current_page_type = "HOME";
+                        break;
+                    case "category":
+                    case "search":
+                    case "article":
+                    case "view_article":
+                    case "archive":
+                    case "calendar":
+                        $this->current_page_type = "NORMAL";
+                        break;
+                    default:
+                        $this->current_page_type = "BACKSTAGE";
+                        break;
                 }
             }
 
@@ -389,7 +411,7 @@ class Website {
         if ($this->has_access()) {
             // Locales
             setlocale(LC_ALL, explode("|", $this->t("main.locales")));
-            
+
             if ($this->current_page != null) {
                 // New page system
                 // Title
@@ -426,12 +448,12 @@ class Website {
 
     public function logged_in_staff($admin = false) {
         $needed_rank = Authentication::$MODERATOR_RANK;
-        if($admin) {
+        if ($admin) {
             $needed_rank = Authentication::$ADMIN_RANK;
         }
         $oAuth = $this->get_authentication();
         $user = $oAuth->get_current_user();
-        if($user != null && $oAuth->is_higher_or_equal_rank($user->get_rank(), $needed_rank)) {
+        if ($user != null && $oAuth->is_higher_or_equal_rank($user->get_rank(), $needed_rank)) {
             return true;
         } else {
             return false;
@@ -444,7 +466,7 @@ class Website {
      */
     public function get_current_user_id() {
         $user = $this->get_authentication()->get_current_user();
-        if($user == null) {
+        if ($user == null) {
             return -1;
         } else {
             return $user->get_id();

@@ -7,7 +7,7 @@ abstract class Page {
      */
     public function init(Website $oWebsite) {
     }
-    
+
     /**
      * Gets the page type. HOME, NORMAL or BACKSTAGE
      * $return string The page type.
@@ -15,7 +15,7 @@ abstract class Page {
     public function get_page_type() {
         return "NORMAL";
     }
-    
+
     /**
      * Gets the minimum rank required to view this page, like Authentication::$USER_RANK.
      * @return int The minimum rank required to view this page.
@@ -23,13 +23,23 @@ abstract class Page {
     public function get_minimum_rank() {
         return -1;
     }
-    
+
     /**
-     * Gets the title of this page.
+     * Gets the title of this page. Empty titles are allowed.
      * @return string The title of this page.
      */
     public abstract function get_page_title(Website $oWebsite);
-    
+
+    /**
+     * Gets a shorter title for this page, for example for in the breadcrumbs.
+     * Empty titles are highly discouraged.
+     * @param Website $oWebsite The website object.
+     * @return string The short title of this page.
+     */
+    public function get_short_page_title(Website $oWebsite) {
+        return $this->get_page_title($oWebsite);
+    }
+
     /**
      * Gets the HTML content of this page.
      * @return string The HTML content of this page.

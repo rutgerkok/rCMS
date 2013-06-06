@@ -76,7 +76,12 @@ class Themes {
 EOT;
         // Nog de laatste link?
         if ($oWebsite->get_page_id() != 'home') {
-            echo ' <a href="#">' . $this->get_page_title() . '</a>';
+            if($oWebsite->get_page() != null) {
+                echo ' <a href="#">' . $oWebsite->get_page()->get_short_page_title($oWebsite) . '</a>';
+            } else {
+                echo ' <a href="#">' . $oWebsite->get_page_title() . '</a>';
+            }
+            
         }
     }
 
@@ -124,11 +129,6 @@ EOT;
     //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()
     public function get_site_title() {
         return $this->website_object->get_site_title();
-    }
-
-    //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()
-    public function get_page_title() {
-        return $this->website_object->get_page_title();
     }
 
     //Geeft het type pagina terug, "HOME", "NORMAL" of "BACKSTAGE"
