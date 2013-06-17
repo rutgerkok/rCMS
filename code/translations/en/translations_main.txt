@@ -5,6 +5,7 @@ delete=Delete
 manage=Manage
 admin=Admin home
 home=Home
+my_account=My account
 account_management=Account Management
 create_account=Create account
 log_in=Log in

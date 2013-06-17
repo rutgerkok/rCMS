@@ -188,13 +188,13 @@ EOT;
                 if ($id == $this->current_user->get_id()) {
                     $return_value.="<td style=\"font-size:80%\">";
                     $return_value.='<a href="' . $oWebsite->get_url_page("change_password") . '">' . $oWebsite->t("users.password") . "</a> |\n"; //wachtwoord
-                    $return_value.='<a href="' . $oWebsite->get_url_page("change_email") . '">' . $oWebsite->t("users.email") . "</a></td>\n"; //email
+                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_email") . '">' . $oWebsite->t("users.email") . "</a></td>\n"; //email
                 } elseif ($rank == self::$ADMIN_RANK) {
                     $return_value.="<td style=\"font-size:80%\"><em>" . $oWebsite->t('users.rank.admin') . "!</em></td>\n"; //beheerder!
                 } else {
                     $return_value.="<td style=\"font-size:80%\">";
                     $return_value.='<a href="' . $oWebsite->get_url_page("password_other", $id) . '">' . $oWebsite->t("users.password") . "</a> |\n";
-                    $return_value.='<a href="' . $oWebsite->get_url_page("email_other", $id) . '">' . $oWebsite->t("users.email") . "</a> |\n";
+                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_email", $id) . '">' . $oWebsite->t("users.email") . "</a> |\n";
                     $return_value.='<a href="' . $oWebsite->get_url_page("log_in_other", $id) . '">' . $oWebsite->t("main.log_in") . "</a></td>\n";
                 }
             }

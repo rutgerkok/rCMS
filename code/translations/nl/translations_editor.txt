@@ -7,6 +7,7 @@ is_edited=is bijgewerkt.
 is_changed=is gewijzigd.
 is_deleted=is verwijderd.
 are_changed=zijn gewijzigd.
+account.edit_other=U bent de account van # aan het wijzigen.
 password.edit=Wijzig wachtwoord
 password.edit.explained=Vul onderstaand formulier in om uw wachtwoord te wijzigen. Het is een goede gewoonte om uw wachtwoord elke paar maanden te wijzigen. Het wachtwoord moet minstens # tekens lang zijn.
 password.repeat=Herhaal wachtwoord

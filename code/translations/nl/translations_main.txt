@@ -5,6 +5,7 @@ delete=Verwijder
 manage=Beheer
 admin=Beheer site
 home=Home
+my_account=Mijn account
 account_management=Accountbeheer
 create_account=Maak account
 log_in=Inloggen

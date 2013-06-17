@@ -56,13 +56,24 @@ class AccountPage extends Page {
             return "";
         }
 
-
+        // Links to edit profile
+        $sidebar_edit_links = "";
+        if($this->can_edit_user) {
+            $sidebar_edit_links = <<<EOT
+                <p>
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_email", $this->user->get_id())}">
+                        {$oWebsite->t("editor.email.edit")}
+                    </a>
+                </p>
+EOT;
+        }
 
         // Display
         $text_to_display = <<<EOT
             <div id="sidebarpagesidebar">
                 <h3 class="notable">{$this->user->get_display_name()}</h3>
                 <p><img src="{$this->get_gravatar_url($this->user)}" style="max-width: 95%" /></p>
+                $sidebar_edit_links
             </div>
             <div id="sidebarpagecontent">
                 {$this->get_articles_html($oWebsite)}
