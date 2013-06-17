@@ -21,7 +21,7 @@ class LoginPage extends Page {
             <p>
                 <a href="{$oWebsite->get_url_main()}" class="arrow">{$oWebsite->t("main.home")}</a>
                 <br />
-                <a href="{$oWebsite->get_url_page("account_management")}" class="arrow">{$oWebsite->t("main.account")}</a>
+                <a href="{$oWebsite->get_url_page("account_management")}" class="arrow">{$oWebsite->t("main.account_management")}</a>
             </p>
 EOT;
     }

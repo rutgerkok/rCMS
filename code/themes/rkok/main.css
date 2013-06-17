@@ -176,6 +176,7 @@ div.error h3
 div.article_teaser
 {
     margin:10px;
+    margin-left: 0;
     min-height: 8em;
 }
 p.meta

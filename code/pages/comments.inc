@@ -9,7 +9,7 @@ $logged_in = $oAuth->check(Authentication::$USER_RANK, true);
 
 if ($logged_in) {
     // Load the latest comments
-    $oComments = new Comments($this, $oAuth);
+    $oComments = new Comments($this);
     $latest_comments = $oComments->get_comments_latest();
     $text_to_display.= "<p>" . $this->t("comments.view_latest_on_site") . "</p>";
     $displayed_a_comment = false;
@@ -32,7 +32,7 @@ if ($logged_in) {
     }
 
     // Links
-    $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page('account') . '">' . $this->t("main.account") . "</a>\n";
+    $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_page('account') . '">' . $this->t("main.account_management") . "</a>\n";
     if ($this->logged_in_staff(true)) {
         $text_to_display.= '<br /><a class="arrow" href="' . $this->get_url_page('admin') . '">' . $this->t("main.admin") . '</a>';
     }

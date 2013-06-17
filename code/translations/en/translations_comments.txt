@@ -4,6 +4,7 @@ comments=Comments
 allowed=Comments are allowed.
 allow_explained=Decide whether or not to allow comments on this article.
 no_comments_found=No comments were found.
+no_comments_found_user=This user hasn't made any comments yet.
 email_explained=An e-mail address is not required. The e-mail address won't be displayed.
 view_latest_on_site=On this page the latest comments on the site are displayed.
 view_context=View context

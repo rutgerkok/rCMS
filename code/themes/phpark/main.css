@@ -187,7 +187,8 @@ div.error
 /*Pagina's met artikellijsten */
 div.article_teaser
 {
-    margin:2%;
+    margin: 2%;
+    margin-left: 0;
     min-height: 5em;
 }
 div.article_teaser:hover

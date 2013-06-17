@@ -9,10 +9,18 @@ class Comments {
     /* @var $authentication_object Authentication */
     protected $authentication_object;
 
-    function __construct(Website $oWebsite, Authentication $oAuth) {
+    /**
+     * Constructs a new comment object.
+     * @param Website $oWebsite The website.
+     * @param Authentication $oAuth Unneeded, provided for backwards compability.
+     */
+    function __construct(Website $oWebsite, Authentication $oAuth = null) {
         $this->database_object = $oWebsite->get_database();
         $this->website_object = $oWebsite;
         $this->authentication_object = $oAuth;
+        if($this->authentication_object == null) {
+            $this->authentication_object = $oWebsite->get_authentication();
+        }
     }
 
     /**
@@ -262,12 +270,15 @@ EOT;
      * @return string The HTML output.
      */
     function get_comment_html($comment, $show_actions) { //geeft reactie kant-en-klaar terug
+        $oWebsite = $this->website_object;
+        
         list($comment_id, $author_name, $author_email, $comment_date_raw, $comment_body, $account_id, $account_name, $account_email, $article_id) = $comment;
         // Time format
         $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date_raw)));
         // Name format
         if (empty($author_name)) {
-            $author_name = $account_name; // Comment name is not set for logged in users
+            // Name of author is not set when user id is set
+            $author_name = '<a href="' . $oWebsite->get_url_page("account", $account_id) . '">' . $account_name . '</a>';
             $author_email = $account_email;
         }
         // Header
@@ -320,21 +331,31 @@ EOT;
     }
 
     /**
-     * Get all comments for an article. Safe method.
+     * Gets all comments for an article. Safe method.
      * @param int $article_id The article of the comments.
      * @return array[][] The comments.
      */
     function get_comments_article($article_id) {
         $article_id = (int) $article_id;
-        return $this->get_comments_query("`artikel_id` = $article_id ", 0, false);
+        return $this->get_comments_query("`artikel_id` = $article_id", 0, false);
     }
     
     /**
-     * Get the latest comments on the site. Safe method.
+     * Gets the latest comments on the site. Safe method.
      * @return array[][] The comments.
      */
     function get_comments_latest() {
         return $this->get_comments_query("", 20, true);
+    }
+    
+    /**
+     * Gets the latest 10 comments of the given user.
+     * @param int $user_id The id of the user.
+     * @return array The comments.
+     */
+    public function get_comments_user($user_id) {
+        $user_id = (int) $user_id;
+        return $this->get_comments_query("`gebruiker_id` = $user_id", 10, true);
     }
     
     // Unsafe method - doesn't sanitize input
@@ -345,7 +366,7 @@ EOT;
         $sql.= "`reactie_inhoud`, `gebruiker_id`, `gebruiker_naam`, `gebruiker_email`, `artikel_id` FROM `reacties`";
         $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` )";
         if(strlen($where_clausule) > 0) {
-            $sql.= " WHERE $where_clausule";
+            $sql.= " WHERE $where_clausule ";
         }
         $sql.= "ORDER BY `reactie_gemaakt`";
         if($new_comments_first) {
