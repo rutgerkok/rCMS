@@ -47,10 +47,17 @@ class AccountPage extends Page {
     }
 
     public function get_page_title(Website $oWebsite) {
-        if ($this->user == null) {
+        // Get selected user
+        $user = $oWebsite->get_authentication()->get_current_user();
+        $given_user_id = $oWebsite->get_request_int("id", 0);
+        if($given_user_id > 0) {
+            $user = User::get_by_id($oWebsite, $given_user_id);
+        }
+        // If found, use name in page title
+        if ($user == null) {
             return $oWebsite->t("users.profile_page");
         } else {
-            return $oWebsite->t_replaced("users.profile_page_of", $this->user->get_display_name());
+            return $oWebsite->t_replaced("users.profile_page_of", $user->get_display_name());
         }
     }
 

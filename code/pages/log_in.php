@@ -14,14 +14,14 @@ class LoginPage extends Page {
         return Authentication::$USER_RANK;
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function get_page_content(Website $oWebsite) {       
         return <<<EOT
             <h3>{$oWebsite->t('users.logged_in')}</h3>
             <p>{$oWebsite->t('users.succesfully_logged_in')}</p>
             <p>
                 <a href="{$oWebsite->get_url_main()}" class="arrow">{$oWebsite->t("main.home")}</a>
                 <br />
-                <a href="{$oWebsite->get_url_page("account_management")}" class="arrow">{$oWebsite->t("main.account_management")}</a>
+                <a href="{$oWebsite->get_url_page("account")}" class="arrow">{$oWebsite->t("main.my_account")}</a>
             </p>
 EOT;
     }
