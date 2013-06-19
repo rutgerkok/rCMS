@@ -53,7 +53,7 @@ class Themes {
             echo '<li><a href="' . $oWebsite->get_url_page("admin") . '">' . $oWebsite->t("main.admin") . '</a></li>';
         }
         if ($oWebsite->logged_in()) { //ingelogd
-            echo '<li><a href="' . $oWebsite->get_url_page("account_management") . '">' . $this->website_object->t("main.account_management") . '</a></li>';
+            echo '<li><a href="' . $oWebsite->get_url_page("account") . '">' . $this->website_object->t("main.my_account") . '</a></li>';
             echo '<li><a href="' . $oWebsite->get_url_page("log_out") . '">' . $this->website_object->t("main.log_out") . '</a></li>';
         } else {
             // Not logged in

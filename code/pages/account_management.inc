@@ -6,9 +6,7 @@ echo '<h2>'.$this->t("users.account_management").'</h2>';//accountbeheer
 
 //INLOGGEN
 $oAuth = new Authentication($this);
-$logged_in = $oAuth->check(Authentication::$USER_RANK, true);//wel formulier, geen admin
-$is_admin = $oAuth->check(Authentication::$ADMIN_RANK, false);//geen formulier, wel admin
-
+$logged_in = $oAuth->check(Authentication::$ADMIN_RANK, true);//wel formulier, geen admin
 
 
 //ACCOUNT WIJZIGEN
@@ -42,12 +40,10 @@ if($logged_in)
                 <a class="arrow" href="{$this->get_url_page('edit_display_name')}">{$this->t("main.edit")} {$display_name_text}</a><br />    
 	</p>
 EOT;
-}
-if($is_admin)
-{
-	$text_to_display.= "<h3>{$this->t("users.edit.other")}</h3>";
-	$text_to_display.= $oAuth->get_users_table();
-	$text_to_display.= '<p><br /><a class="arrow" href="'.$this->get_url_page('admin').'">'.$this->t("main.admin").'</a></p>';
+    // Users table
+    $text_to_display.= "<h3>{$this->t("users.edit.other")}</h3>";
+    $text_to_display.= $oAuth->get_users_table();
+    $text_to_display.= '<p><br /><a class="arrow" href="'.$this->get_url_page('admin').'">'.$this->t("main.admin").'</a></p>';
 }
 unset($oAuth);
 

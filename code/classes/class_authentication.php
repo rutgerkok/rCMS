@@ -189,8 +189,6 @@ EOT;
                     $return_value.="<td style=\"font-size:80%\">";
                     $return_value.='<a href="' . $oWebsite->get_url_page("edit_password") . '">' . $oWebsite->t("users.password") . "</a> |\n"; //wachtwoord
                     $return_value.='<a href="' . $oWebsite->get_url_page("edit_email") . '">' . $oWebsite->t("users.email") . "</a></td>\n"; //email
-                } elseif ($rank == self::$ADMIN_RANK) {
-                    $return_value.="<td style=\"font-size:80%\"><em>" . $oWebsite->t('users.rank.admin') . "!</em></td>\n"; //beheerder!
                 } else {
                     $return_value.="<td style=\"font-size:80%\">";
                     $return_value.='<a href="' . $oWebsite->get_url_page("edit_password", $id) . '">' . $oWebsite->t("users.password") . "</a> |\n";
