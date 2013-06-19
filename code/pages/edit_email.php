@@ -27,7 +27,7 @@ class EditEmailPage extends Page {
         return $oWebsite->t("editor.email.edit");
     }
 
-    public function get_minimum_rank() {
+    public function get_minimum_rank(Website $oWebsite) {
         return Authentication::$USER_RANK;
     }
 

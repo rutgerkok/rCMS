@@ -10,7 +10,7 @@ class LoginPage extends Page {
         return $oWebsite->t("main.log_in");
     }
 
-    public function get_minimum_rank() {
+    public function get_minimum_rank(Website $oWebsite) {
         return Authentication::$USER_RANK;
     }
 

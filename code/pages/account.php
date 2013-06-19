@@ -11,7 +11,7 @@ class AccountPage extends Page {
     protected $user;
     protected $can_edit_user;
 
-    public function init(Website $oWebsite) {
+    public function determine_user_to_view(Website $oWebsite) {
         $user_id = $oWebsite->get_request_int("id", 0);
         if ($user_id == 0) {
             // Use current user
@@ -22,18 +22,27 @@ class AccountPage extends Page {
         }
 
         // Test whether user profile is editable by the current user
-        $current_user = $oWebsite->get_authentication()->get_current_user();
-        if ($current_user != null && $this->user != null) {
-            if ($current_user->get_id() == $this->user->get_id()) {
+        $viewing_user = $oWebsite->get_authentication()->get_current_user();
+        if ($viewing_user != null && $this->user != null) {
+            if ($viewing_user->get_id() == $this->user->get_id()) {
                 // Every user can edit themselves
                 $this->can_edit_user = true;
-            } else if ($oWebsite->logged_in_staff()) {
+            } else if ($oWebsite->logged_in_staff(true)) {
                 // Staff can edit everyone
                 $this->can_edit_user = true;
             } else {
                 // Too bad
                 $this->can_edit_user = false;
             }
+        }
+    }
+
+    public function get_minimum_rank(Website $oWebsite) {
+        if ($oWebsite->get_request_int("id", 0) == 0) {
+            // Need to be logged in to view your own account
+            return Authentication::$USER_RANK;
+        } else {
+            return parent::get_minimum_rank($oWebsite);
         }
     }
 
@@ -50,22 +59,12 @@ class AccountPage extends Page {
     }
 
     public function get_page_content(Website $oWebsite) {
+        $this->determine_user_to_view($oWebsite);
+
         if ($this->user == null) {
             // Error - user not found
             $oWebsite->add_error($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
             return "";
-        }
-
-        // Links to edit profile
-        $sidebar_edit_links = "";
-        if($this->can_edit_user) {
-            $sidebar_edit_links = <<<EOT
-                <p>
-                    <a class="arrow" href="{$oWebsite->get_url_page("edit_email", $this->user->get_id())}">
-                        {$oWebsite->t("editor.email.edit")}
-                    </a>
-                </p>
-EOT;
         }
 
         // Display
@@ -73,7 +72,7 @@ EOT;
             <div id="sidebarpagesidebar">
                 <h3 class="notable">{$this->user->get_display_name()}</h3>
                 <p><img src="{$this->get_gravatar_url($this->user)}" style="max-width: 95%" /></p>
-                $sidebar_edit_links
+                {$this->get_edit_links_html($oWebsite)}
             </div>
             <div id="sidebarpagecontent">
                 {$this->get_articles_html($oWebsite)}
@@ -110,6 +109,37 @@ EOT;
         } else {
             return "";
         }
+    }
+
+    /**
+     * Returns links to edit the profile, based on the permissions of the user
+     * that is viewing this page. 
+     */
+    public function get_edit_links_html(Website $oWebsite) {
+        $viewing_user = $oWebsite->get_authentication()->get_current_user();
+        $sidebar_edit_links = "";
+
+        // Gravatar link
+        if ($viewing_user != null && $this->user->get_id() == $viewing_user->get_id()) {
+            $sidebar_edit_links.= <<<EOT
+                <p>
+                     {$oWebsite->t_replaced("users.gravatar.explained", '<a href="http://gravatar.com/">gravatar.com</a>')}
+                </p>
+EOT;
+        }
+
+        // Link to edit password/e-mail/display name
+        if ($this->can_edit_user) {
+            $sidebar_edit_links.= <<<EOT
+                <p>
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_email", $this->user->get_id())}">
+                        {$oWebsite->t("editor.email.edit")}
+                    </a>
+                </p>
+EOT;
+        }
+
+        return $sidebar_edit_links;
     }
 
     /** Returns the HTML of the comments of the user, including the header */

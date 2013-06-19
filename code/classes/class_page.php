@@ -20,7 +20,7 @@ abstract class Page {
      * Gets the minimum rank required to view this page, like Authentication::$USER_RANK.
      * @return int The minimum rank required to view this page.
      */
-    public function get_minimum_rank() {
+    public function get_minimum_rank(Website $oWebsite) {
         return -1;
     }
 

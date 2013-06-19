@@ -37,7 +37,7 @@ class SiteSettingsPage extends Page {
         return $oWebsite->t("main.site_settings");
     }
 
-    public function get_minimum_rank() {
+    public function get_minimum_rank(Website $oWebsite) {
         return Authentication::$ADMIN_RANK;
     }
 

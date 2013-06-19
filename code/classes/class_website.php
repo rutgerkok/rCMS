@@ -362,7 +362,7 @@ class Website {
                 // Page type
                 $this->current_page_type = $this->current_page->get_page_type();
                 // Authentication stuff
-                $rank = (int) $this->current_page->get_minimum_rank();
+                $rank = (int) $this->current_page->get_minimum_rank($this);
                 if ($rank >= 0) {
                     $oAuth = $this->get_authentication();
                     if (!$oAuth->check($rank, false)) {
