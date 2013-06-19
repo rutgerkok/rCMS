@@ -37,7 +37,7 @@ if($logged_in)
 	
 	<h3>{$this->t("users.edit")}</h3>
 	<p>
-		<a class="arrow" href="{$this->get_url_page('change_password')}">{$this->t("main.edit")} {$password_text}</a><br />
+		<a class="arrow" href="{$this->get_url_page('edit_password')}">{$this->t("main.edit")} {$password_text}</a><br />
 		<a class="arrow" href="{$this->get_url_page('edit_email')}">{$this->t("main.edit")} {$email_text}</a><br />
                 <a class="arrow" href="{$this->get_url_page('change_display_name')}">{$this->t("main.edit")} {$display_name_text}</a><br />    
 	</p>

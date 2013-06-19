@@ -134,6 +134,9 @@ EOT;
                 <p>
                     <a class="arrow" href="{$oWebsite->get_url_page("edit_email", $this->user->get_id())}">
                         {$oWebsite->t("editor.email.edit")}
+                    </a><br />
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_password", $this->user->get_id())}">
+                        {$oWebsite->t("editor.password.edit")}
                     </a>
                 </p>
 EOT;

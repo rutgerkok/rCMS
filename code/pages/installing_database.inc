@@ -22,7 +22,7 @@ if (!$already_installed || ($logged_in_staff && $confirmed)) {
                 <strong>"admin"</strong>. Let's change that!
             </p>
             <p>
-                <a class="arrow" href="{$this->get_url_page("change_password")}">
+                <a class="arrow" href="{$this->get_url_page("edit_password")}">
                     Change password
                 </a>
             </p>
