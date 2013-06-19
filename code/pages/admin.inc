@@ -64,7 +64,7 @@ if ($logged_in) {
         <a href="<?php echo $this->get_url_page("create_account") ?>" class="arrow"><?php echo $this->t("users.create") ?></a><br /> <!-- voeg account toe -->
         <a class="arrow" href="<?php echo $this->get_url_page("edit_password") ?>"><?php echo $this->t("editor.password.edit") ?></a><br /><!-- verander wachtwoord -->
         <a class="arrow" href="<?php echo $this->get_url_page("edit_email") ?>"><?php echo $this->t("editor.email.edit") ?></a><br /><!-- verander email -->
-        <a class="arrow" href="<?php echo $this->get_url_page("change_display_name") ?>"><?php echo $this->t("editor.display_name.edit") ?></a><br /><!-- verander weergavenaam -->
+        <a class="arrow" href="<?php echo $this->get_url_page("edit_display_name") ?>"><?php echo $this->t("editor.display_name.edit") ?></a><br /><!-- verander weergavenaam -->
         <a class="arrow" href="<?php echo $this->get_url_page("account_management") ?>"><?php echo $this->t("users.account_management") ?></a><br /> <!-- accountbeheer -->
     </p>
 

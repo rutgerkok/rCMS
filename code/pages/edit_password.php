@@ -16,7 +16,7 @@ class EditPasswordPage extends Page {
             if ($oWebsite->logged_in_staff(true)) {
                 // Editing someone else
                 $this->user = User::get_by_id($oWebsite, $user_id);
-                if($this->user == null) {
+                if ($this->user == null) {
                     // User not found
                     $oWebsite->add_error($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
                 }
@@ -47,7 +47,7 @@ class EditPasswordPage extends Page {
         if ($this->user == null) {
             return "";
         }
-        
+
         $show_form = true;
         $text_to_display = "";
         if (isset($_REQUEST["password"])) {
@@ -82,11 +82,12 @@ class EditPasswordPage extends Page {
 
             // Form itself
             $text_to_display.=<<<EOT
+                <p>{$oWebsite->t("main.fields_required")}</p>
                 <form action="{$oWebsite->get_url_main()}" method="post">
                     <p>
-                        <label for="password">{$oWebsite->t('users.password')}:</label><br />
+                        <label for="password">{$oWebsite->t('users.password')}:</label><span class="required">*</span><br />
                         <input type="password" id="password" name="password" value=""/><br />
-                        <label for="password2">{$oWebsite->t('editor.password.repeat')}:</label><br />
+                        <label for="password2">{$oWebsite->t('editor.password.repeat')}:</label><span class="required">*</span><br />
                         <input type="password" id="password2" name="password2" value=""/><br />
                     </p>
                     <p>
@@ -98,7 +99,15 @@ EOT;
         }
 
         // Links
-        if($this->editing_someone_else) {
+        $text_to_display.= $this->get_account_links_html($oWebsite);
+
+        return $text_to_display;
+    }
+
+    /** Gets the links for the bottom of the page */
+    public function get_account_links_html(Website $oWebsite) {
+        $text_to_display = "";
+        if ($this->editing_someone_else) {
             // Editing someone else, don't show "My account" link
             $text_to_display .= <<<EOT
             <p>
@@ -111,12 +120,11 @@ EOT;
 EOT;
         } else {
             $text_to_display .= '<p><a class="arrow" href="' . $oWebsite->get_url_page("account") . '">' . $oWebsite->t("main.my_account") . "</a>\n";
-            if($oWebsite->logged_in_staff(true)) {
+            if ($oWebsite->logged_in_staff(true)) {
                 $text_to_display .= '<br /><a class="arrow" href="' . $oWebsite->get_url_page("account_management") . '">' . $oWebsite->t("main.account_management") . "</a>\n";
             }
             $text_to_display.= "</p>";
         }
-
         return $text_to_display;
     }
 

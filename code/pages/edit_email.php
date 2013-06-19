@@ -5,10 +5,6 @@ require_once($this->get_uri_page("edit_password"));
 
 class EditEmailPage extends EditPasswordPage {
 
-    /** @var User $user_to_edit */
-    protected $user;
-    protected $editing_someone_else = false;
-
     public function get_page_title(Website $oWebsite) {
         return $oWebsite->t("editor.email.edit");
     }
@@ -67,24 +63,7 @@ EOT;
         }
 
         // Links
-        if ($this->editing_someone_else) {
-            // Editing someone else, don't show "My account" link
-            $text_to_display .= <<<EOT
-            <p>
-                <a class="arrow" href="{$oWebsite->get_url_page("account", $this->user->get_id())}">
-                    {$oWebsite->t_replaced("users.profile_page_of", $this->user->get_display_name())}
-                </a><br />
-                <a class="arrow" href="{$oWebsite->get_url_page("account_management")}">
-                    {$oWebsite->t("main.account_management")}
-                </a>
-EOT;
-        } else {
-            $text_to_display .= '<p><a class="arrow" href="' . $oWebsite->get_url_page("account") . '">' . $oWebsite->t("main.my_account") . "</a>\n";
-            if ($oWebsite->logged_in_staff(true)) {
-                $text_to_display .= '<br /><a class="arrow" href="' . $oWebsite->get_url_page("account_management") . '">' . $oWebsite->t("main.account_management") . "</a>\n";
-            }
-            $text_to_display.= "</p>";
-        }
+        $text_to_display.= $this->get_account_links_html($oWebsite);
 
         return $text_to_display;
     }
