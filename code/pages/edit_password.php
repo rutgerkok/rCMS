@@ -92,6 +92,7 @@ class EditPasswordPage extends Page {
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_password" />
+                        <input type="hidden" name="id" value="{$this->user->get_id()}" />
                         <input type="submit" value="{$oWebsite->t('editor.password.edit')} " class="button" />
                     </p>
                 </form>

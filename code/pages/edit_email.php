@@ -55,6 +55,7 @@ class EditEmailPage extends EditPasswordPage {
                         <label for="email">{$oWebsite->t('users.email')}:</label><br /><input type="text" id="email" name="email" value="$email"/><br />
                     </p>
                     <p>
+                        <input type="hidden" name="id" value="{$this->user->get_id()}" />
                         <input type="hidden" name="p" value="edit_email" />
                         <input type="submit" value="{$oWebsite->t('editor.email.edit')} " class="button" />
                     </p>

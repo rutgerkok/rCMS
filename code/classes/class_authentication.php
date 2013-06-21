@@ -212,6 +212,15 @@ EOT;
     public function get_standard_rank_id() {
         return self::$USER_RANK;
     }
+    
+    /** Returns true if the given number is a valid rank id */
+    public function is_valid_rank($id) {
+        if($id == self::$USER_RANK || $id == self::$ADMIN_RANK || $id == self::$MODERATOR_RANK) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function get_rank_name($id) {
         $oWebsite = $this->website_object;

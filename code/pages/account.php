@@ -124,10 +124,12 @@ EOT;
      */
     public function get_edit_links_html(Website $oWebsite) {
         $viewing_user = $oWebsite->get_authentication()->get_current_user();
+        $is_viewing_themselves = ($viewing_user != null && $this->user->get_id() == $viewing_user->get_id());
         $sidebar_edit_links = "";
 
         // Gravatar link
-        if ($viewing_user != null && $this->user->get_id() == $viewing_user->get_id()) {
+        if ($is_viewing_themselves) {
+            // No way that other admins can edit someone's avatar, so only display help text for owner
             $sidebar_edit_links.= <<<EOT
                 <p>
                      {$oWebsite->t_replaced("users.gravatar.explained", '<a href="http://gravatar.com/">gravatar.com</a>')}
@@ -147,10 +149,19 @@ EOT;
                     </a><br />
                     <a class="arrow" href="{$oWebsite->get_url_page("edit_display_name", $this->user->get_id())}">
                         {$oWebsite->t("editor.display_name.edit")}
-                    </a>
-                </p>
+                    </a><br />
 EOT;
+            if (!$is_viewing_themselves) {
+                // link for rank editing
+                $sidebar_edit_links.= <<<EOT
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_rank", $this->user->get_id())}">
+                        {$oWebsite->t("editor.rank.edit")}
+                    </a><br />
+EOT;
+            }
         }
+        
+        $sidebar_edit_links.= "</p>";
 
         return $sidebar_edit_links;
     }

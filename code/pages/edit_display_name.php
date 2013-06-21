@@ -57,6 +57,7 @@ class EditDisplayNamePage extends EditPasswordPage {
                             <input type="text" id="display_name" name="display_name" value="$display_name"/><br />
                     </p>
                     <p>
+                        <input type="hidden" name="id" value="{$this->user->get_id()}" />
                         <input type="hidden" name="p" value="edit_display_name" />
                         <input type="submit" value="{$oWebsite->t('editor.display_name.edit')} " class="button" />
                     </p>
