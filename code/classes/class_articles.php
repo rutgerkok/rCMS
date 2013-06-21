@@ -50,7 +50,7 @@ class Articles {
      * @param type $start Start position of the limit.
      * @return \Article Array of Articles.
      */
-    protected function get_articles_data_unsafe($where_clausule = "", $limit = 9, $start = 0, $oldest_top = false) {
+    protected function get_articles_data_unsafe($where_clausule = "", $limit = 9, $start = 0, $oldest_top = false, $pinned_top = true) {
         $oDB = $this->database_object; //afkorting
         $oWebsite = $this->website_object; //afkorting
         $logged_in_staff = $oWebsite->logged_in_staff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
@@ -62,7 +62,7 @@ class Articles {
         $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
         $sql.= "LEFT JOIN `gebruikers` USING (`gebruiker_id`) ";
         if (!$logged_in_staff) {
-            $sql.= "WHERE artikel_verborgen = 0 ";
+            $sql.= "WHERE `artikel_verborgen` = 0 ";
             if (!empty($where_clausule)) {
                 $sql.= "AND $where_clausule ";
             }
@@ -72,10 +72,17 @@ class Articles {
             }
         }
 
-        $sql.= "ORDER BY artikel_gepind DESC, artikel_gemaakt ";
+        // Sorting conditions
+        $sql.= "ORDER BY ";
+        if($pinned_top) {
+            $sql.= "`artikel_gepind` DESC, ";
+        }
+        $sql.= "`artikel_gemaakt` ";
         if (!$oldest_top) {
             $sql.= "DESC ";
         }
+        
+        // Limit
         $sql.= "LIMIT $start , $limit";
 
         $result = $oDB->query($sql);
@@ -123,7 +130,7 @@ class Articles {
      */
     public function get_articles_data_user($user_id) {
         $user_id = (int) $user_id;
-        return $this->get_articles_data_unsafe("`gebruiker_id` = $user_id", 5);
+        return $this->get_articles_data_unsafe("`gebruiker_id` = $user_id", 5, 0, false, false);
     }
     
     /**
