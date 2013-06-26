@@ -62,6 +62,11 @@ class AccountManagementPage extends Page {
     public function get_menu_bar(Website $oWebsite, $page, $users) {
         $pages = ceil($users / self::USERS_PER_PAGE);
 
+        // No need for a menu when there is only one page
+        if ($pages <= 1) {
+            return "";
+        }
+
         $return_value = '<p class="lijn">';
         // Link to previous page
         if ($page > 0) {
