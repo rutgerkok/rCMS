@@ -29,3 +29,5 @@ create=Create a new account
 create.title=Create an account
 create.explained=You can create a new account here. The username can only contains letters, numbers and the underscroe ("<code>_</code>"). E-mail address is optional.
 gravatar.explained=This image is based on your e-mail address. You can change it at #.
+there_is_one_registered_user=There is one registered user on your site
+there_are_num_registered_users=There are # registered users on your site

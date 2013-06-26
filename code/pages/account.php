@@ -152,10 +152,13 @@ EOT;
                     </a><br />
 EOT;
             if (!$is_viewing_themselves) {
-                // link for rank editing
+                // Link for rank editing and logging in
                 $sidebar_edit_links.= <<<EOT
                     <a class="arrow" href="{$oWebsite->get_url_page("edit_rank", $this->user->get_id())}">
                         {$oWebsite->t("editor.rank.edit")}
+                    </a><br />
+                    <a class="arrow" href="{$oWebsite->get_url_page("log_in_other", $this->user->get_id())}">
+                        {$oWebsite->t("main.log_in")}
                     </a><br />
 EOT;
             }

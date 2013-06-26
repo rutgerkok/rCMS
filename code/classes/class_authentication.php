@@ -160,45 +160,43 @@ EOT;
         $this->set_current_user(null);
     }
 
-    function get_users_table() { //geeft de gebruikers als tabel
+    /** Gets the number of registered users. Returns 0 on failure. */
+    public function get_registered_users_count() {
+        $oDB = $this->website_object->get_database();
+        $sql = "SELECT COUNT(*) FROM `gebruikers`";
+        $result = $oDB->query($sql);
+        if($result) {
+            $first_row = $oDB->fetch($result);
+            return $first_row[0];
+        }
+        return 0;
+    }
+    
+    /**
+     * Gets all registered users.
+     * @param int $start The index to start searching.
+     * @param int $limit The maximum number of users to find.
+     * @return \User List of users.
+     */
+    public function get_registered_users($start, $limit) {
+        // Variables and casting
+        $users = array();
         $oWebsite = $this->website_object;
         $oDB = $oWebsite->get_database();
-
-        $sql = "SELECT gebruiker_id,gebruiker_admin,gebruiker_login,gebruiker_naam,gebruiker_email FROM `gebruikers` ";
+        $start = max(0, (int) $start);
+        $limit = max(1, (int) $limit);
+        
+        // Execute query
+        $sql = "SELECT `gebruiker_id`, `gebruiker_login`, `gebruiker_naam`, ";
+        $sql.= "`gebruiker_wachtwoord`, `gebruiker_email`, `gebruiker_admin` ";
+        $sql.= "FROM `gebruikers` LIMIT $start, $limit";
         $result = $oDB->query($sql);
-
-        $return_value = "<table style=\"width:98%\">\n";
-        $return_value.="<tr><th>" . $oWebsite->t("users.username") . "</th><th>" . $oWebsite->t("users.display_name") . "</th><th>" . $oWebsite->t("users.email") . "</th><th>" . $oWebsite->t("users.rank") . "</th><th>" . $oWebsite->t("main.edit") . "</th></tr>\n"; //login-naam-email-admin-bewerk
-        $return_value.='<tr><td colspan="5"><a class="arrow" href="' . $oWebsite->get_url_page("create_account") . '">' . $oWebsite->t("users.create") . "...</a></td></tr>\n"; //maak nieuwe account
-        if ($oDB->rows($result) > 0) {
-            while (list($id, $rank, $login, $name, $email) = $oDB->fetch($result)) {
-
-                //email als link weergeven
-                $emaillink = "<a href=\"mailto:$email\">$email</a>";
-                if (empty($email)) {
-                    //niet ingesteld
-                    $emaillink = '<em>' . $oWebsite->t("main.not_set") . '</em>';
-                }
-
-                $return_value.="<tr>";
-                $return_value.="<td title=\"$login\">$login</td>";
-                $return_value.="<td title=\"$name\">$name</td>";
-                $return_value.="<td title=\"$email\">$emaillink</td>";
-                $return_value.="<td>" . $this->get_rank_name($rank) . "</td>";
-                if ($id == $this->current_user->get_id()) {
-                    $return_value.="<td style=\"font-size:80%\">";
-                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_password") . '">' . $oWebsite->t("users.password") . "</a> |\n"; //wachtwoord
-                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_email") . '">' . $oWebsite->t("users.email") . "</a></td>\n"; //email
-                } else {
-                    $return_value.="<td style=\"font-size:80%\">";
-                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_password", $id) . '">' . $oWebsite->t("users.password") . "</a> |\n";
-                    $return_value.='<a href="' . $oWebsite->get_url_page("edit_email", $id) . '">' . $oWebsite->t("users.email") . "</a> |\n";
-                    $return_value.='<a href="' . $oWebsite->get_url_page("log_in_other", $id) . '">' . $oWebsite->t("main.log_in") . "</a></td>\n";
-                }
-            }
+        
+        // Parse and return results
+        while(list($id, $username, $display_name, $password_hashed, $email, $rank) = $oDB->fetch($result)) {
+            $users[] = new User($oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank);
         }
-        $return_value.="</table>";
-        return $return_value;
+        return $users;
     }
 
     /**
