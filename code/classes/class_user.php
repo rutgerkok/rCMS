@@ -124,22 +124,35 @@ class User {
     }
 
     /**
-     * Returns whether the given password matches the stored (hashed) password.
-     * @param string $password_unhashed
+     * Call this when logging in an user. If password is correct, the last
+     * login date is updated. If the password storage method was outdated, the
+     * password is rehashed.
+     * 
+     * @param string $password_unhashed The password entered by the user.
      */
-    public function verify_password($password_unhashed) {
+    public function verify_password_for_login($password_unhashed) {
         $password_hashed = $this->get_password_hashed();
+        $logged_in = false;
         if (strlen($password_hashed) == 32 && $password_hashed[0] != '$') {
             // Still md5(sha1($pass)), update
             if (md5(sha1($password_unhashed)) == $password_hashed) {
+                // Gets saved later on, when updating the last login
                 $this->set_password($password_unhashed);
-                $this->save();
-                return true;
-            } else {
-                return false;
+                $logged_in = true;
             }
         }
-        return crypt($password_unhashed, $password_hashed) === $password_hashed;
+
+        // Try to use modern password verification
+        if (!$logged_in) {
+            $logged_in = (crypt($password_unhashed, $password_hashed) === $password_hashed);
+        }
+
+        // Update last login date (and possibly password has, see above) if successfull
+        if ($logged_in) {
+            $this->set_last_login(0);
+            $this->save();
+        }
+        return $logged_in;
     }
 
     /**

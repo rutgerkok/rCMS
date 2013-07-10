@@ -67,7 +67,7 @@ class Authentication {
      */
     public function log_in($username, $password) {
         $user = User::get_by_name($this->website_object, $username);
-        if ($user != null && $user->verify_password($password)) {
+        if ($user != null && $user->verify_password_for_login($password)) {
             // Matches!
             $this->set_current_user($user);
             return true;
