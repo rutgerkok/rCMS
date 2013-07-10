@@ -135,7 +135,7 @@ class Widgets {
 
             // Check if load was succesfull. Display widget or display error.
             if (isset(Widgets::$loaded_widgets[$directory_name])) {
-                echo Widgets::$loaded_widgets[$directory_name]->get_widget($this->website_object, $id, json_decode($data, true));
+                echo Widgets::$loaded_widgets[$directory_name]->get_widget($this->website_object, $id, JSONHelper::string_to_array($data));
                 if ($logged_in_admin) {
                     // Links for editing and deleting
                     echo "<p>\n";

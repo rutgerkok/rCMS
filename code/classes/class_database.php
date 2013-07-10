@@ -2,8 +2,11 @@
 
 class Database {
 
+    const CURRENT_DATABASE_VERSION = 2;
+
     protected $dbc = false;
     protected $website_object;
+    protected $prefix = "";
     // Replacing table names in queries
     private static $TABLE_NAMES_TO_REPLACE;
     private static $REPLACING_TABLE_NAMES;
@@ -17,13 +20,22 @@ class Database {
 
         // Fill prefix replacement arrays
         $prefix = $oWebsite->get_sitevar('database_table_prefix');
-        self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`gebruikers`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`', '`settings`');
-        self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}gebruikers`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
+        $this->prefix = $prefix;
+        self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`users`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`', '`settings`');
+        self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
 
         // Abort on error
         if (!$this->dbc) {
             exit("Failed to connect to database: " . mysqli_connect_error());
         }
+    }
+
+    /**
+     * Returns whether the database is installed and up to date.
+     * @return boolean True if the database is installed and up to date, false otherwise.
+     */
+    public function is_up_to_date() {
+        return $this->website_object->get_sitevar("database_version") == self::CURRENT_DATABASE_VERSION;
     }
 
     //Geeft aan hoeveel rows er bij de laatste query aangepast zijn
@@ -34,17 +46,22 @@ class Database {
     /**
      * Creates any missing tables.
      */
-    public function create_tables() {
+    private function create_tables() {
         // Categories
         if ($this->query("CREATE TABLE `categorie` (`categorie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_naam` VARCHAR(30) NOT NULL) ENGINE = MyISAM", false)) {
             $this->query("INSERT INTO `categorie` (`categorie_naam`) VALUES ('No category'), ('Events'), ('News');");
         }
 
-        // Users
-        if ($this->query("CREATE TABLE `gebruikers` ( `gebruiker_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `gebruiker_admin` tinyint(4) NOT NULL, `gebruiker_login` varchar(30) NOT NULL, `gebruiker_naam` varchar(20) NULL, `gebruiker_wachtwoord` char(32) NOT NULL, `gebruiker_email` varchar(100) NOT NULL, PRIMARY KEY (`gebruiker_id`) ) ENGINE=MyIsam", false)) {
-            $this->query("INSERT INTO `gebruikers` ( `gebruiker_admin`, `gebruiker_login`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email`) VALUES ( '1', 'admin', 'admin', '" . md5(sha1('admin')) . "', '')");
+        if ($this->query("CREATE TABLE IF NOT EXISTS `users` (`user_id` int(10) unsigned NOT NULL AUTO_INCREMENT, " .
+                        "`user_login` varchar(30) NOT NULL, `user_password` varchar(255) NOT NULL, " .
+                        "`user_display_name` varchar(30) NOT NULL, `user_email` varchar(100) NOT NULL, " .
+                        "`user_joined` datetime NOT NULL, `user_last_login` datetime NOT NULL, " .
+                        "`user_rank` tinyint(3) unsigned NOT NULL, `user_status` tinyint(4) NOT NULL, " .
+                        "`user_status_text` varchar(255) NOT NULL, `user_extra_data` TEXT NULL, " .
+                        "PRIMARY KEY (`user_id`), UNIQUE KEY `user_login` (`user_login`)) ENGINE=InnoDB")) {
+            $admin = new User($this->website_object, 0, "admin", "Admin", User::hash_password("admin"), "", Authentication::$ADMIN_RANK, 0, 0, Authentication::NORMAL_STATUS, "");
+            $admin->save();
         }
-
         // Links
         $this->query("CREATE TABLE IF NOT EXISTS `links` (`link_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_id` INT UNSIGNED NOT NULL, `link_url` VARCHAR(200) NOT NULL, `link_text` VARCHAR(50) NOT NULL) ENGINE = MyISAM");
 
@@ -73,6 +90,7 @@ class Database {
         // Settings
         if ($this->query("CREATE TABLE `settings` (`setting_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `setting_name` varchar(30) NOT NULL, `setting_value` varchar(" . Website::MAX_SITE_OPTION_LENGTH . ") NOT NULL, PRIMARY KEY (`setting_id`) ) ENGINE=MyIsam", false)) {
             $year = date("Y");
+            $database_version = self::CURRENT_DATABASE_VERSION;
             $sql = <<<EOT
                     INSERT INTO `settings` (`setting_name`, `setting_value`) VALUES 
                     ('theme', 'rkok'),
@@ -83,10 +101,53 @@ class Database {
                     ('user_account_creation', true),
                     ('append_page_title', 'false'),
                     ('fancy_urls', 'true'),
-                    ('database_version', '1')
+                    ('database_version', '$database_version')
 EOT;
             $this->query($sql);
         }
+    }
+
+    /**
+     * Updates/installs the database. Returns 0 if nothing changed, returns 1
+     * if the database structure was updated, returns 2 if the database was
+     * installed.
+     * @return int
+     */
+    public function update_tables() {
+        $version = $this->website_object->get_sitevar("database_version");
+        if ($version == self::CURRENT_DATABASE_VERSION) {
+            // Nothing to update
+            return 0;
+        }
+        if ($version == 0) {
+            // Not installed yet
+            $this->create_tables();
+            return 2;
+        }
+        if ($version == 1) {
+            // Update from version 1
+            // Update users table (prefix needs to be included, since that isn't
+            // automatically added by $this->query() )
+            $update_sql = <<<SQL
+                ALTER TABLE `{$this->prefix}gebruikers` CHANGE `gebruiker_id` `user_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+                CHANGE `gebruiker_admin` `user_rank` TINYINT( 4 ) NOT NULL ,
+                CHANGE `gebruiker_login` `user_login` VARCHAR( 30 ) NOT NULL ,
+                CHANGE `gebruiker_naam` `user_display_name` VARCHAR( 30 ) NULL DEFAULT NULL ,
+                CHANGE `gebruiker_wachtwoord` `user_password` VARCHAR( 255 ) NOT NULL ,
+                CHANGE `gebruiker_email` `user_email` VARCHAR( 100 ) NOT NULL,
+                ADD `user_joined` DATETIME NOT NULL,
+                ADD `user_last_login` DATETIME NOT NULL,
+                ADD `user_status` TINYINT NOT NULL,
+                ADD `user_status_text` VARCHAR( 255 ) NOT NULL,
+                ADD `user_extra_data` TEXT NOT NULL
+SQL;
+            if ($this->query($update_sql)) {
+                $rename_sql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
+                $this->query($rename_sql);
+            }
+        }
+        $this->website_object->set_sitevar("database_version", self::CURRENT_DATABASE_VERSION);
+        return 1;
     }
 
     /**
@@ -128,8 +189,12 @@ EOT;
         if (!$result && $errorreport) {
             //toon foutmelding
             $website_object = $this->website_object;
-            $website_object->add_error('Query failed: <br /><strong>Query:</strong><br />' . $sql . '<br /><strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error(), 'A database error occured.');
-            //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding
+            if ($this->is_up_to_date()) {
+                $website_object->add_error('Query failed: <br /><strong>Query:</strong><br />' . $sql . '<br /><strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error(), 'A database error occured.');
+                //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding
+            } else {
+                $website_object->add_error('Database is outdated! Please upgrade using the link in the menu bar.');
+            }
         }
         return $result;
     }

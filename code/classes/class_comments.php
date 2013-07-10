@@ -18,7 +18,7 @@ class Comments {
         $this->database_object = $oWebsite->get_database();
         $this->website_object = $oWebsite;
         $this->authentication_object = $oAuth;
-        if($this->authentication_object == null) {
+        if ($this->authentication_object == null) {
             $this->authentication_object = $oWebsite->get_authentication();
         }
     }
@@ -73,7 +73,7 @@ class Comments {
         }
         return array((int) $comment_id, $author_name, $author_email, null, $comment_body, $account_id, "", "", $article_id);
     }
-    
+
     /**
      * Sets the body of the comment. Displays errors if there are errors.
      * (Use Website->error_count())
@@ -90,7 +90,7 @@ class Comments {
     function check_comment_body($comment_body) {
         $oWebsite = $this->website_object;
         $valid = true;
-        
+
         if (!isset($comment_body) || strlen(trim($comment_body)) === 0) {
             $oWebsite->add_error($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_entered"));
             $valid = false;
@@ -271,7 +271,7 @@ EOT;
      */
     function get_comment_html($comment, $show_actions) { //geeft reactie kant-en-klaar terug
         $oWebsite = $this->website_object;
-        
+
         list($comment_id, $author_name, $author_email, $comment_date_raw, $comment_body, $account_id, $account_name, $account_email, $article_id) = $comment;
         // Time format
         $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", strtotime($comment_date_raw)));
@@ -317,8 +317,8 @@ EOT;
         $oWebsite = $this->website_object;
 
         $sql = "SELECT `reactie_id`, `reactie_naam`, `reactie_email`, `reactie_gemaakt`,";
-        $sql.= "`reactie_inhoud`, `gebruiker_id`, `gebruiker_naam`, `gebruiker_email`, `artikel_id` FROM `reacties`";
-        $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` )";
+        $sql.= "`reactie_inhoud`, `user_id`, `user_display_name`, `user_email`, `artikel_id` FROM `reacties`";
+        $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id`";
         $sql.= "WHERE `reactie_id` = $comment_id";
 
         $result = $oDB->query($sql);
@@ -339,7 +339,7 @@ EOT;
         $article_id = (int) $article_id;
         return $this->get_comments_query("`artikel_id` = $article_id", 0, false);
     }
-    
+
     /**
      * Gets the latest comments on the site. Safe method.
      * @return array[][] The comments.
@@ -347,7 +347,7 @@ EOT;
     function get_comments_latest() {
         return $this->get_comments_query("", 20, true);
     }
-    
+
     /**
      * Gets the latest 10 comments of the given user.
      * @param int $user_id The id of the user.
@@ -357,22 +357,22 @@ EOT;
         $user_id = (int) $user_id;
         return $this->get_comments_query("`gebruiker_id` = $user_id", 10, true);
     }
-    
+
     // Unsafe method - doesn't sanitize input
     private function get_comments_query($where_clausule, $limit, $new_comments_first) {
         $oDB = $this->database_object;
 
         $sql = "SELECT `reactie_id`, `reactie_naam`, `reactie_email`, `reactie_gemaakt`,";
-        $sql.= "`reactie_inhoud`, `gebruiker_id`, `gebruiker_naam`, `gebruiker_email`, `artikel_id` FROM `reacties`";
-        $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` )";
-        if(strlen($where_clausule) > 0) {
+        $sql.= "`reactie_inhoud`, `user_id`, `user_display_name`, `user_email`, `artikel_id` FROM `reacties`";
+        $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id`";
+        if (strlen($where_clausule) > 0) {
             $sql.= " WHERE $where_clausule ";
         }
         $sql.= "ORDER BY `reactie_gemaakt`";
-        if($new_comments_first) {
+        if ($new_comments_first) {
             $sql.= " DESC";
         }
-        if($limit > 0) {
+        if ($limit > 0) {
             $sql.= " LIMIT " . $limit;
         }
 
@@ -398,12 +398,10 @@ EOT;
     function get_article_id($comment) {
         return (int) $comment[8];
     }
-    
+
     function get_comment_id($comment) {
         return (int) $comment[0];
     }
-
-    
 
 }
 

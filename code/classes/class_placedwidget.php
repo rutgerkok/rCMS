@@ -51,7 +51,7 @@ class PlacedWidget {
      * @return mixed The array.
      */
     public function get_data() {
-        return json_decode($this->data_string, true);
+        return JSONHelper::string_to_array($this->data_string);
     }
 
     /**
@@ -64,7 +64,7 @@ class PlacedWidget {
             $this->data_string = "{}";
         } else {
             if (!isset($data["valid"]) || $data["valid"]) {
-                $this->data_string = $this->json_encode($data);
+                $this->data_string = JSONHelper::array_to_string($data);
             }
         }
     }
@@ -160,27 +160,6 @@ class PlacedWidget {
         }
     }
 
-    /**
-     * Same as json_encode($arr, JSON_UNESCAPED_UNICODE), but compatible with
-     * PHP 5.2. See http://nl3.php.net/manual/en/function.json-encode.php#105789
-     * @param mixed $arr Value to encode.
-     * @return string Encoded value.
-     */
-    private function json_encode($arr) {
-        //convmap since 0x80 char codes so it takes all multibyte codes (above ASCII 127). So such characters are being "hidden" from normal json_encoding
-        array_walk_recursive($arr, "class_placedwidget_encode_item");
-        return mb_decode_numericentity(json_encode($arr), array(0x80, 0xffff, 0, 0xffff), 'UTF-8');
-    }
-
-}
-
-/*
- * I want to use inline functions! But those aren't available in PHP 5.2...
- * Should be inlined in PlacedWidget->json_encode.
- */
-function class_placedwidget_encode_item(&$item, $key) {
-    if (is_string($item))
-        $item = mb_encode_numericentity($item, array(0x80, 0xffff, 0, 0xffff), 'UTF-8');
 }
 
 ?>

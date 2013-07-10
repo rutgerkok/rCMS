@@ -8,34 +8,45 @@ class User {
     protected $password_hashed;
     protected $id;
     protected $email;
-    // -1 for unknown
     protected $rank;
+    protected $joined;
+    protected $last_login;
+    protected $status;
+    protected $status_text;
+    protected $extra_data;
 
     /**
      * Creates a new User object
      * @param Website $oWebsite The Website object
      * @param int $id The id of the user. Use 0 for new users.
-     * @param string $username Will be fetched from the database if omitted.
-     * @param string $display_name Will be fetched from the database if omitted.
-     * @param string $password_hashed Will be fetched from the database if omitted.
-     * @param string $email Will be fetched from the database if omitted.
-     * @param boolean $admin Will be fetched from the database if omitted.
+     * @param string $username The name the user logs in with.
+     * @param string $display_name The name that is displayed.
+     * @param string $password_hashed Hashed password.
+     * @param string $email The email, or empty if no email.
+     * @param int $joined When the user joined the site. Use 0 for the current time.
+     * @param int $last_login Date of the lastest visit to the site. Use 0 for the current time.
+     * @param int $status Whether the user is banned, deleted, etc.
+     * @param string $status_text The status text of the user. Can be set by the user.
+     * @param string $extra_data Stringified extra data in JSON format.
+     * @param int $rank The rank of the account.
      * @throws InvalidArgumentException If the id is 0, but one of the other arguments is omitted.
      */
-    public function __construct(Website $oWebsite, $id, $username = "", $display_name = "", $password_hashed = "", $email = "NOT_FETCHED", $status = -1) {
-        if ($id == 0) {
-            // New user, check for arguments
-            if (empty($username) || empty($display_name) || $email == "NOT_FETCHED" || ($status < 0)) {
-                throw new InvalidArgumentException("For new accounts, you need to supply all arguments!");
-            }
-        }
+    public function __construct(Website $oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data = null) {
         $this->website_object = $oWebsite;
-        $this->id = $id;
+        $this->id = (int) $id;
         $this->set_username($username);
         $this->set_display_name($display_name);
         $this->set_password_hashed($password_hashed);
         $this->set_email($email);
-        $this->set_rank($status);
+        $this->set_rank($rank);
+        $this->joined = (int) $joined;
+        if ($this->joined == 0) {
+            $this->joined = time();
+        }
+        $this->set_last_login($last_login);
+        $this->set_status($status);
+        $this->set_status_text($status_text);
+        $this->set_extra_data($extra_data);
     }
 
     /**
@@ -46,22 +57,26 @@ class User {
      */
     public static function get_by_name(Website $oWebsite, $username) {
         $oDB = $oWebsite->get_database();
-        // Escape the username
+
         $username = strtolower($username);
-        $escaped_username = $oDB->escape_data($username);
-        // Query
-        $sql = 'SELECT `gebruiker_id`, `gebruiker_admin`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email` FROM `gebruikers` WHERE `gebruiker_login` = \'' . $escaped_username . '\' ';
+        $escaped_username = $oDB->escape_data(strtolower($username));
+
+        $sql = 'SELECT `user_id`, `user_display_name`, `user_password`, ';
+        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
+        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
+        $sql.= 'FROM `users` WHERE `user_login` = "' . $escaped_username . '" ';
         $result = $oDB->query($sql);
 
-        // Parse the result
+        // Create user object and return
         if ($oDB->rows($result) === 1) {
-            list($id, $rank, $display_name, $password_hashed, $email) = $oDB->fetch($result);
-            return new User($oWebsite, (int) $id, $username, $display_name, $password_hashed, $email, $rank);
+            list($id, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data) = $oDB->fetch($result);
+            return new User($oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data);
         } else {
+            echo "No match for $sql";
             return null;
         }
     }
-    
+
     /**
      * Safe way of getting the user object when you know the id. Returns null if
      * the user doesn't exist.
@@ -71,16 +86,18 @@ class User {
      */
     public static function get_by_id(Website $oWebsite, $user_id) {
         $oDB = $oWebsite->get_database();
-        // Escape the user id
         $user_id = (int) $user_id;
-        // Query
-        $sql = 'SELECT `gebruiker_login`, `gebruiker_admin`, `gebruiker_naam`, `gebruiker_wachtwoord`, `gebruiker_email` FROM `gebruikers` WHERE `gebruiker_id` = \'' . $user_id . '\' ';
+
+        $sql = 'SELECT `user_login`, `user_display_name`, `user_password`, ';
+        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
+        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
+        $sql.= 'FROM `users` WHERE `user_id` = "' . $user_id . '" ';
         $result = $oDB->query($sql);
 
-        // Parse the result
+        // Create user object and return
         if ($oDB->rows($result) === 1) {
-            list($username, $rank, $display_name, $password_hashed, $email) = $oDB->fetch($result);
-            return new User($oWebsite, $user_id, $username, $display_name, $password_hashed, $email, $rank);
+            list($username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data) = $oDB->fetch($result);
+            return new User($oWebsite, $user_id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data);
         } else {
             return null;
         }
@@ -91,23 +108,11 @@ class User {
      * @return string
      */
     public function get_username() {
-        if (!empty($this->username)) {
-            // No need to do a database call
-            return $this->username;
-        }
-        
-        // Get from database
-        return $this->database_call('gebruiker_login');
+        return $this->username;
     }
 
     public function get_display_name() {
-        if (!empty($this->display_name)) {
-            // No need to do a database call
-            return $this->display_name;
-        }
-        
-        // Get from database
-        return $this->database_call('gebruiker_naam');
+        return $this->display_name;
     }
 
     /**
@@ -115,49 +120,116 @@ class User {
      * @return password|string
      */
     public function get_password_hashed() {
-        if (!empty($this->password_hashed)) {
-            // No need to do a database call
-            return $this->password_hashed;
-        }
+        return $this->password_hashed;
+    }
 
-        // Fetch from database
-        return $this->database_call('gebruiker_wachtwoord');
+    /**
+     * Returns whether the given password matches the stored (hashed) password.
+     * @param string $password_unhashed
+     */
+    public function verify_password($password_unhashed) {
+        $password_hashed = $this->get_password_hashed();
+        if (strlen($password_hashed) == 32 && $password_hashed[0] != '$') {
+            // Still md5(sha1($pass)), update
+            if (md5(sha1($password_unhashed)) == $password_hashed) {
+                $this->set_password($password_unhashed);
+                $this->save();
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return crypt($password_unhashed, $password_hashed) === $password_hashed;
+    }
+
+    /**
+     * Hashes the password using blowfish, or something weaker if blowfish is
+     * not available. Using <code>crypt($pass,$hash)==$hash)</code> (or the
+     * method verify_password) you can check if the given password matches the
+     * hash.
+     * @param string $password The password to hash.
+     * @return string The hashed password.
+     */
+    public static function hash_password($password) {
+        if (CRYPT_BLOWFISH) {
+            // Blowfish, we're safe
+            $salt = '$2y$11$' . substr(md5(uniqid(rand(), true)), 0, 22);
+            return crypt($password, $salt);
+        } elseif (CRYPT_MD5) {
+            // Salted md5, let's hope for the best
+            $salt = '$1$' . substr(md5(uniqid(rand(), true)), 0, 8) . '$';
+            return crypt($password, $salt);
+        } else {
+            // There's no hope for this server anymore
+            return crypt($password);
+        }
     }
 
     public function is_admin() {
-        if($this->rank < 0) {
-            // Do a database call
-            $this->rank = (int) $this->database_call('gebruiker_admin');
-        }
-        
         return ($this->rank == 1);
     }
-    
+
     public function get_rank() {
-        if($this->rank >= 0) {
-            return $this->rank;
-        }
-            
-        // Fetch from database
-        return (int) $this->database_call('gebruiker_admin');
+        return $this->rank;
     }
 
     public function get_email() {
-        if(!empty($this->email)) {
-            return $this->email;
-        }
-
-        // Do a database call
-        return $this->database_call('gebruiker_email');
+        return $this->email;
     }
 
     public function get_id() {
         return $this->id;
     }
 
+    public function get_joined() {
+        return $this->joined;
+    }
+
+    public function get_last_login() {
+        return $this->last_login;
+    }
+
+    /**
+     * Gets the status of the user (normal/banned/deleted etc.)
+     * @return int The status.
+     */
+    public function get_status() {
+        return $this->status;
+    }
+
+    /**
+     * Gets the status text by the user, usually set by the user themselves.
+     * May contain HTML tags, so use htmlspecialchars($text) when displaying.
+     * @return string The status text.
+     */
+    public function get_status_text() {
+        return $this->status_text;
+    }
+
+    /**
+     * Returns the extra data of this user in an associative array.
+     * @return array The extra data as an array.
+     */
+    public function get_extra_data() {
+        if (!empty($this->extra_data)) {
+            return JSONHelper::string_to_array($this->extra_data);
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * Returns the extra data of the user as a string. The string may be empty,
+     * but it won't be null.
+     * @return string The extra data of the user.
+     */
+    public function get_extra_data_string() {
+        return $this->extra_data;
+    }
+
     /**
      * Set the username of the user.
-     * @param string $username
+     * @param string $username The new username.
      */
     public function set_username($username) {
         $this->username = strtolower(trim($username));
@@ -176,7 +248,7 @@ class User {
      * @param string $password
      */
     public function set_password($password) {
-        $this->password_hashed = md5(sha1($password));
+        $this->password_hashed = self::hash_password($password);
     }
 
     /**
@@ -203,25 +275,51 @@ class User {
         $this->rank = (int) $rank;
     }
 
-    // Fieldname needs to be sanitized :)
-    private function database_call($fieldname) {
-        // Get database object
-        $oDB = $this->website_object->get_database();
+    /**
+     * Sets the date of the last login of the user. When set to 0, the current
+     * date will be used.
+     * @param int $last_login The date.
+     */
+    public function set_last_login($last_login) {
+        $last_login = (int) $last_login;
+        if ($last_login == 0) {
+            $last_login = time();
+        }
+        $this->last_login = $last_login;
+    }
 
-        // Make and execute query
-        $sql = 'SELECT `' . $fieldname . '` FROM `gebruikers` WHERE `gebruiker_id` = \'' . $this->id . '\' ';
-        $result = $oDB->query($sql);
+    /**
+     * Sets the status of the user (banned, deleted, etc.)
+     * @param int $status The status.
+     */
+    public function set_status($status) {
+        $this->status = (int) $status;
+    }
 
-        // Parse the result
-        if ($oDB->rows($result) == 1) {
-            $first_row = $oDB->fetch($result);
-            return $first_row[0];
+    /**
+     * Sets the status text of the user. (Non-banned) users can set this
+     * themselves, for banned users this is usually the ban reason.
+     * @param string $status_text The status text.
+     */
+    public function set_status_text($status_text) {
+        $this->status_text = trim($status_text);
+    }
+
+    /**
+     * Sets the extra data of the user.
+     * @param mixed $extra_data The extra data, either empty, as an array of as
+     * a json string.
+     */
+    public function set_extra_data($extra_data) {
+        if (!$extra_data) {
+            $this->extra_data = "";
+        } else if (is_array($extra_data)) {
+            $this->extra_data = JSONHelper::array_to_string($extra_data);
         } else {
-            $this->website_object->add_error('User not found in User->database_call(' . $fieldname . ') function.', 'Failed to look up the username');
-            return '';
+            $this->extra_data = $extra_data;
         }
     }
-    
+
     /**
      * Saves everything to the database
      */
@@ -230,22 +328,33 @@ class User {
 
         if ($this->id === 0) {
             // New user
-            $sql = "INSERT INTO `gebruikers` ( ";
-            $sql.= "`gebruiker_admin`, ";
-            $sql.= "`gebruiker_login`, ";
-            $sql.= "`gebruiker_naam`, ";
-            $sql.= "`gebruiker_wachtwoord`, ";
-            $sql.= "`gebruiker_email` ";
+            $sql = "INSERT INTO `users` ( ";
+            $sql.= "`user_rank`, ";
+            $sql.= "`user_login`, ";
+            $sql.= "`user_display_name`, ";
+            $sql.= "`user_password`, ";
+            $sql.= "`user_email`, ";
+            $sql.= "`user_joined`, ";
+            $sql.= "`user_last_login`, ";
+            $sql.= "`user_status`, ";
+            $sql.= "`user_status_text`, ";
+            $sql.= "`user_extra_data`";
             $sql.= ")";
             $sql.= "VALUES (";
-            $sql.= $this->rank . ",";
+            $sql.= "'" . $this->rank . "',";
             $sql.= "'" . $oDB->escape_data($this->username) . "',";
             $sql.= "'" . $oDB->escape_data($this->display_name) . "',";
-            $sql.= "'" . $this->password_hashed . "',";
-            $sql.= "'" . $oDB->escape_data($this->email) . "'";
-            $sql.= ");";
+            $sql.= "'" . $oDB->escape_data($this->password_hashed) . "',";
+            $sql.= "'" . $oDB->escape_data($this->email) . "',";
+            $sql.= "NOW(),";
+            $sql.= "NOW(),";
+            $sql.= "'" . $this->status . "',";
+            $sql.= "'" . $oDB->escape_data($this->status_text) . "',";
+            $sql.= "'" . $oDB->escape_data($this->extra_data) . "'";
+            $sql.= ")";
+            echo "Inserting new user " . $sql;
             // Call query and update ID
-            if($oDB->query($sql)) {
+            if ($oDB->query($sql)) {
                 $this->id = $oDB->inserted_id();
                 return true;
             } else {
@@ -253,47 +362,23 @@ class User {
             }
         } else {
             // Update existing user
-            $changed = false;
+            $sql = "UPDATE `users` ";
+            $sql.= 'SET `user_rank` = "' . $this->rank . '", ';
+            $sql.= '`user_login` = "' . $oDB->escape_data($this->username) . '", ';
+            $sql.= '`user_display_name` = "' . $oDB->escape_data($this->display_name) . '", ';
+            $sql.= '`user_email` = "' . $oDB->escape_data($this->email) . '", ';
+            $sql.= '`user_password` = "' . $oDB->escape_data($this->password_hashed) . '", ';
+            $sql.= '`user_last_login` = "' . date("Y-m-d H:i:s", $this->last_login) . '", ';
+            $sql.= '`user_status` = "' . $this->status . '", ';
+            $sql.= '`user_status_text` = "' . $oDB->escape_data($this->status_text) . '", ';
+            $sql.= '`user_extra_data` = "' . $oDB->escape_data($this->extra_data) . '" ';
+            $sql.= 'WHERE `user_id` = "' . $this->id . '"';
 
-            $sql = "UPDATE `gebruikers` ";
-
-            if ($this->rank >= 0) {
-                $sql.= 'SET `gebruiker_admin` = "' . $this->rank . "\" ";
-                $changed = true;
-            }
-
-            if (!empty($this->username)) {
-                $sql.= ", `gebruiker_login` = \"" . $oDB->escape_data($this->username) . "\" ";
-                $changed = true;
-            }
-
-            if (!empty($this->display_name)) {
-                $sql.= ", `gebruiker_naam` = \"" . $oDB->escape_data($this->display_name) . "\" ";
-                $changed = true;
-            }
-
-            if ($this->email != "NOT_FETCHED") {
-                $sql.= ", `gebruiker_email` = \"" . $oDB->escape_data($this->email) . "\" ";
-                $changed = true;
-            }
-
-            if (!empty($this->password_hashed)) {
-                $sql.= ", `gebruiker_wachtwoord` = \"" . $this->password_hashed . "\" ";
-                $changed = true;
-            }
-
-            $sql.= "WHERE `gebruiker_id` = \"$this->id\";";
-
-            if ($changed) {
-                // Only execute the query if it has actually changed
-                if ($oDB->query($sql)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                // Nothing could be saved, but there was also nothing that went wrong
+            // Execute the query
+            if ($oDB->query($sql)) {
                 return true;
+            } else {
+                return false;
             }
         }
     }

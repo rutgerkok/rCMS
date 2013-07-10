@@ -6,7 +6,12 @@ class Authentication {
     public static $MODERATOR_RANK = 0;
     public static $USER_RANK = 2;
 
+    const NORMAL_STATUS = 0;
+    const BANNED_STATUS = 1;
+    const DELETED_STATUS = 2;
+
     /* @var $website_object Website */
+
     protected $website_object;
     private $current_user;
     private $login_failed = false;
@@ -24,16 +29,12 @@ class Authentication {
             // Object cached
             return $this->current_user;
         } else {
-            if (isset($_SESSION['id']) && isset($_SESSION['user']) && isset($_SESSION['display_name']) && isset($_SESSION['pass']) && isset($_SESSION['email']) && isset($_SESSION['admin'])) {
-                $this->current_user = new User(
-                                $this->website_object,
-                                $_SESSION['id'],
-                                $_SESSION['user'],
-                                $_SESSION['display_name'],
-                                $_SESSION['pass'],
-                                $_SESSION['email'],
-                                $_SESSION['admin']
-                );
+            if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
+                $this->current_user = User::get_by_id($this->website_object, (int) $_SESSION['user_id']);
+                if ($this->current_user == null) {
+                    // Invalid user id in session, probably because the user was just deleted
+                    unset($_SESSION['user_id']);
+                }
                 return $this->current_user;
             } else {
                 // Not logged in
@@ -49,34 +50,24 @@ class Authentication {
     public function set_current_user($user) {
         if ($user == null || !($user instanceof User)) {
             // Log out
-            unset($_SESSION['id']);
-            unset($_SESSION['user']);
-            unset($_SESSION['display_name']);
-            unset($_SESSION['pass']);
-            unset($_SESSION['email']);
-            unset($_SESSION['admin']);
+            unset($_SESSION['user_id']);
             unset($this->current_user);
         } else {
             // Log in
-            $_SESSION['id'] = $user->get_id();
-            $_SESSION['user'] = $user->get_username();
-            $_SESSION['display_name'] = $user->get_display_name();
-            $_SESSION['pass'] = $user->get_password_hashed();
-            $_SESSION['email'] = $user->get_email();
-            $_SESSION['admin'] = $user->get_rank();
+            $_SESSION['user_id'] = $user->get_id();
             $this->current_user = $user;
         }
     }
 
     /**
      * Logs the user in with the given username and password.
-     * @param string $username
-     * @param string $password
+     * @param string $username The username.
+     * @param string $password The unhashed password.
      * @return boolean Whether the login was succesfull
      */
     public function log_in($username, $password) {
         $user = User::get_by_name($this->website_object, $username);
-        if ($user != null && $user->get_password_hashed() == md5(sha1($password))) {
+        if ($user != null && $user->verify_password($password)) {
             // Matches!
             $this->set_current_user($user);
             return true;
@@ -121,7 +112,7 @@ class Authentication {
         $oWebsite = $this->website_object;
         $logintext = $oWebsite->t("users.please_log_in");
         $return_value = "";
-        if($this->login_failed) {
+        if ($this->login_failed) {
             $return_value.= <<<EOT
                 <div class="error">
                     <p>{$oWebsite->t("errors.invalid_username_or_password")}</p>
@@ -163,15 +154,15 @@ EOT;
     /** Gets the number of registered users. Returns 0 on failure. */
     public function get_registered_users_count() {
         $oDB = $this->website_object->get_database();
-        $sql = "SELECT COUNT(*) FROM `gebruikers`";
+        $sql = "SELECT COUNT(*) FROM `users`";
         $result = $oDB->query($sql);
-        if($result) {
+        if ($result) {
             $first_row = $oDB->fetch($result);
             return $first_row[0];
         }
         return 0;
     }
-    
+
     /**
      * Gets all registered users.
      * @param int $start The index to start searching.
@@ -185,16 +176,24 @@ EOT;
         $oDB = $oWebsite->get_database();
         $start = max(0, (int) $start);
         $limit = max(1, (int) $limit);
-        
+
         // Execute query
-        $sql = "SELECT `gebruiker_id`, `gebruiker_login`, `gebruiker_naam`, ";
-        $sql.= "`gebruiker_wachtwoord`, `gebruiker_email`, `gebruiker_admin` ";
-        $sql.= "FROM `gebruikers` LIMIT $start, $limit";
+        $sql = "SELECT `user_id`, `user_login`, `user_display_name`, ";
+        $sql.= "`user_password`, `user_email`, `user_rank`, `user_joined`, ";
+        $sql.= "`user_last_login`, `user_status`, `user_status_text`, ";
+        $sql.= "`user_extra_data` FROM `users` LIMIT $start, $limit";
         $result = $oDB->query($sql);
-        
+
         // Parse and return results
-        while(list($id, $username, $display_name, $password_hashed, $email, $rank) = $oDB->fetch($result)) {
-            $users[] = new User($oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank);
+        while (list(
+        $id, $username, $display_name, $password_hashed, $email,
+        $rank, $joined, $last_login, $status, $status_text, $extra_data
+        ) = $oDB->fetch($result)) {
+            $users[] = new User(
+                            $oWebsite, $id, $username, $display_name,
+                            $password_hashed, $email, $rank, $joined, $last_login,
+                            $status, $status_text, $extra_data
+            );
         }
         return $users;
     }
@@ -210,10 +209,10 @@ EOT;
     public function get_standard_rank_id() {
         return self::$USER_RANK;
     }
-    
+
     /** Returns true if the given number is a valid rank id */
     public function is_valid_rank($id) {
-        if($id == self::$USER_RANK || $id == self::$ADMIN_RANK || $id == self::$MODERATOR_RANK) {
+        if ($id == self::$USER_RANK || $id == self::$ADMIN_RANK || $id == self::$MODERATOR_RANK) {
             return true;
         } else {
             return false;

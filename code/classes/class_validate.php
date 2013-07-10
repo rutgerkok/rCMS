@@ -78,7 +78,7 @@ class Validate {
 
     public static function username($username, Website $oWebsite) {
         $valid = true;
-        
+
         $username = strtolower(trim($username));
 
         if (strlen($username) < 4) {
@@ -102,7 +102,7 @@ class Validate {
         if ($valid) {
             $oDB = $oWebsite->get_database();
             $username = $oDB->escape_data(htmlspecialchars(strtolower($username)));
-            if ($oDB->rows($oDB->query('SELECT gebruiker_id FROM `gebruikers` WHERE gebruiker_login = \'' . $username . '\' LIMIT 0 , 1')) > 0) {
+            if ($oDB->rows($oDB->query('SELECT `user_id` FROM `users` WHERE `user_login` = \'' . $username . '\' LIMIT 0 , 1')) > 0) {
                 Validate::set_error("already_exists");
                 $valid = false;
             }

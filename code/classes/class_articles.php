@@ -9,6 +9,7 @@ class Articles {
     protected $database_object;
 
     // Article constants
+
     const OLDEST_TOP = 1;
     const METAINFO = 2;
     const IMAGES = 2;
@@ -57,10 +58,10 @@ class Articles {
         $limit = (int) $limit; //stuk veiliger
         $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
         $sql.= "`artikel_intro`, `artikel_afbeelding`, `categorie_naam`, ";
-        $sql.= "`gebruiker_id`, `gebruiker_naam`, `artikel_gepind`, ";
+        $sql.= "`user_id`, `user_display_name`, `artikel_gepind`, ";
         $sql.= "`artikel_verborgen`, `artikel_id` FROM `artikel` ";
         $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
-        $sql.= "LEFT JOIN `gebruikers` USING (`gebruiker_id`) ";
+        $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
         if (!$logged_in_staff) {
             $sql.= "WHERE `artikel_verborgen` = 0 ";
             if (!empty($where_clausule)) {
@@ -74,14 +75,14 @@ class Articles {
 
         // Sorting conditions
         $sql.= "ORDER BY ";
-        if($pinned_top) {
+        if ($pinned_top) {
             $sql.= "`artikel_gepind` DESC, ";
         }
         $sql.= "`artikel_gemaakt` ";
         if (!$oldest_top) {
             $sql.= "DESC ";
         }
-        
+
         // Limit
         $sql.= "LIMIT $start , $limit";
 
@@ -122,7 +123,7 @@ class Articles {
 
         return $this->get_articles_data_unsafe(join(" AND ", $where_clausules), $limit);
     }
-    
+
     /**
      * Gets the latest articles for the given user.
      * @param int $user_id The id of the user.
@@ -132,7 +133,7 @@ class Articles {
         $user_id = (int) $user_id;
         return $this->get_articles_data_unsafe("`gebruiker_id` = $user_id", 5, 0, false, false);
     }
-    
+
     /**
      * Gets all articles, optionally from a category.
      * @param int $category_id Id of the category. Set it to 0 to get articles from all categories.
@@ -141,7 +142,7 @@ class Articles {
      */
     public function get_articles_data($category_id = 0, $limit = 9) {
         $category_id = (int) $category_id;
-        if($category_id != 0) {
+        if ($category_id != 0) {
             return $this->get_articles_data_unsafe("`categorie_id` = $category_id", $limit);
         } else {
             return $this->get_articles_data_unsafe("", $limit);
@@ -194,7 +195,7 @@ class Articles {
                 $return_value.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->last_edited;
             $return_value.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
             $return_value.= " <br /> " . $oWebsite->t('articles.author') . ': ';
-            $return_value.= '<a href="' . $oWebsite->get_url_page("account", $article->author_id) . '">'. $article->author . '</a>';
+            $return_value.= '<a href="' . $oWebsite->get_url_page("account", $article->author_id) . '">' . $article->author . '</a>';
             if ($article->pinned)
                 $return_value.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
             if ($article->hidden)
@@ -375,10 +376,10 @@ EOT;
             }
 
             // Archive link
-            if($options & self::ARCHIVE) {
+            if ($options & self::ARCHIVE) {
                 $return_value.= '<p><a href="' . $oWebsite->get_url_page("archive", $main_category_id) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
             }
-            
+
             return $return_value;
         } else {
             $return_value = '<p><em>' . $oWebsite->t("errors.nothing_found") . "</em></p>";
@@ -423,7 +424,7 @@ EOT;
         }
 
         // Archive link
-        if($options & self::ARCHIVE) {
+        if ($options & self::ARCHIVE) {
             $return_value.= '<p><a href="' . $oWebsite->get_url_page("archive", $main_category_id) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
         }
 
@@ -520,10 +521,10 @@ class Article {
             $oDatabase = $data;
             $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
             $sql.= "`artikel_intro`, `artikel_afbeelding`, ";
-            $sql.= "`categorie_naam`, `gebruiker_id`, `gebruiker_naam`, `artikel_gepind`, ";
+            $sql.= "`categorie_naam`, `user_id`, `user_display_name`, `artikel_gepind`, ";
             $sql.= "`artikel_verborgen`, `artikel_inhoud`, `artikel_reacties` FROM `artikel` ";
             $sql.= "LEFT JOIN `categorie` USING ( `categorie_id` ) ";
-            $sql.= "LEFT JOIN `gebruikers` USING ( `gebruiker_id` ) ";
+            $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
             $sql.= "WHERE artikel_id = {$this->id} ";
             $result = $oDatabase->query($sql);
             if ($result && $oDatabase->rows($result) >= 1) {

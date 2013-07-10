@@ -58,7 +58,11 @@ if (!$display_page) {
                 // Create user
                 $display_form = false;
 
-                $user = new User($this, 0, $creating_username, $creating_display_name, '', $creating_email, $oAuth->get_standard_rank_id());
+                $user = new User(
+                            $this, 0, $creating_username, $creating_display_name, 
+                            '', $creating_email, $oAuth->get_standard_rank_id(),
+                            0, 0, Authentication::NORMAL_STATUS, ""
+                        );
                 $user->set_password($creating_password1);
                 if($user->save()) {
                     $text_to_display .= "<p>" . $this->t("users.account") . " " . $this->t("editor.is_created") . "</p>";

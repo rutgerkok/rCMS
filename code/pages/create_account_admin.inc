@@ -47,7 +47,7 @@ if ($logged_in) {
         if ($valid) { //maak gebruiker aan
             $display_form = false;
 
-            $user = new User($this, 0, $user, $name, '', $email, $rank);
+            $user = new User($this, 0, $user, $name, '', $email, $rank, 0, 0, Authentication::NORMAL_STATUS, "");
             $user->set_password($pass);
             $user->save();
 

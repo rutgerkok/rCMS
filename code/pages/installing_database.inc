@@ -1,19 +1,19 @@
 <?php
 
 $oDB = $this->get_database();
-$already_installed = $oDB->rows($oDB->query('SELECT gebruiker_wachtwoord FROM `gebruikers` LIMIT 0,1', false)) > 0;
+$installed_and_up_to_date = $oDB->is_up_to_date();
 $logged_in_staff = $this->logged_in_staff(true);
 $confirmed = isset($_REQUEST['confirm']);
-if (!$already_installed || ($logged_in_staff && $confirmed)) {
-    // Create tables
-    $oDB->create_tables();
+if (!$installed_and_up_to_date) {
+    // Create/update tables
+    $result = $oDB->update_tables();
 
     // Login as admin
     $oAuth = new Authentication($this);
     $oAuth->log_in("admin", "admin");
 
-    // Show message
-    if(!$already_installed) {
+    if($result == 2) {
+        // Tables were installed
         echo <<<EOT
             <h2>Installed</h2>
             <p>
@@ -26,13 +26,13 @@ if (!$already_installed || ($logged_in_staff && $confirmed)) {
                     Change password
                 </a>
             </p>
-
 EOT;
     } else {
+        // Tables were updated
         echo <<<EOT
             <h2>Upgraded</h2>
             <p>
-                All missing tables (if any) have been added.
+                All missing tables have been added, existing tables have been updated.
             </p>
             <p>
                 <a class="arrow" href="{$this->get_url_page("admin")}">
@@ -41,17 +41,14 @@ EOT;
             </p>
 EOT;
     }
-}
-if ($logged_in_staff && !$confirmed && $already_installed) {
-    $link_confirm = $this->get_url_page("installing_database", 0, array("confirm" => 1));
+} elseif($logged_in_staff) {
     echo <<<EOT
-        <h2>Upgrading database</h2>
+        <h2>Nothing to do</h2>
+        <p>Tables are already installed and up to date.</p>
         <p>
-            This will add any missing tables.
-        </p>
-        <p>
-            <a class="arrow" href="$link_confirm">Yes</a> |
-            <a class="arrow" href="{$this->get_url_main()}">No</a>
+            <a class="arrow" href="{$this->get_url_page("admin")}">
+                {$this->t("main.admin")}
+            </a>
         </p>
 EOT;
 }

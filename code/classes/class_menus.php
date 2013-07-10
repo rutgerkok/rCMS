@@ -5,7 +5,7 @@ class Menus {
     const MAX_URL_LENGTH = 200;
     const MAX_LINK_TEXT_LENGTH = 50;
     const MAX_MENU_NAME_LENGTH = 50;
-    
+
     protected $website_object;
 
     function __construct(Website $oWebsite) {
@@ -80,7 +80,7 @@ class Menus {
         // Add link to homepage
         $links[0] = array("url" => $oWebsite->get_url_main(), "text" => $oWebsite->t("main.home"));
 
-        if ($categories && count($categories) > 0) {
+        if ($oWebsite->get_database()->is_up_to_date()) {
             foreach ($categories as $id => $cat_name) {
                 if ($id == 1) {
                     continue; // Don't display "No categories"
@@ -117,7 +117,7 @@ class Menus {
                 $return_value.= ' target="_blank"';
             }
             $return_value.= ">" . htmlspecialchars($value["text"]) . "</a>";
-            if($edit_links) {
+            if ($edit_links) {
                 $return_value.=' <a class="arrow" href="' . $oWebsite->get_url_page("edit_link", $id) . '">' . $oWebsite->t("main.edit") . "</a>";
                 $return_value.=' <a class="arrow" href="' . $oWebsite->get_url_page("delete_link", $id) . '">' . $oWebsite->t("main.delete") . "</a>";
             }
@@ -206,7 +206,7 @@ class Menus {
         }
         return $menus;
     }
-    
+
     /**
      * Gets the name of the menu with the given id. Name is parsed by htmlspecialchars().
      * @param int $menu_id The id of the menu.
@@ -217,14 +217,14 @@ class Menus {
         $oDB = $this->website_object->get_database();
         $sql = "SELECT `menu_name` FROM `menus` WHERE `menu_id` = $menu_id";
         $result = $oDB->query($sql);
-        if($oDB->rows($result) == 1) {
+        if ($oDB->rows($result) == 1) {
             $first_row = $oDB->fetch($result);
             return htmlspecialchars($first_row[0]);
         } else {
             return null;
         }
     }
-    
+
     /**
      * Adds a new menu with the given id.
      * @param string $name The name of the menu.
@@ -233,14 +233,14 @@ class Menus {
     public function add_menu($name) {
         $oDB = $this->website_object->get_database();
         $name = $oDB->escape_data($name);
-        $sql = 'INSERT INTO `menus` (`menu_name`) VALUES ("'.$name.'")';
-        if($oDB->query($sql)) {
+        $sql = 'INSERT INTO `menus` (`menu_name`) VALUES ("' . $name . '")';
+        if ($oDB->query($sql)) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
      * Renames a menu to something else.
      * @param int $menu_id Current menu id.
@@ -251,14 +251,14 @@ class Menus {
         $oDB = $this->website_object->get_database();
         $menu_id = (int) $menu_id;
         $new_name = $oDB->escape_data($new_name);
-        $sql = 'UPDATE `menus` SET `menu_name` = "' .$new_name.'" WHERE `menu_id` = ' . $menu_id;
-        if($oDB->query($sql)) {
+        $sql = 'UPDATE `menus` SET `menu_name` = "' . $new_name . '" WHERE `menu_id` = ' . $menu_id;
+        if ($oDB->query($sql)) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
      * Delets the menu with the given id. All links in the menu are also deleted.
      * @param int $menu_id The id of the menu.
@@ -267,11 +267,11 @@ class Menus {
     public function delete_menu($menu_id) {
         $oDB = $this->website_object->get_database();
         $menu_id = (int) $menu_id;
-        
+
         $sql = "DELETE FROM `menus` WHERE `menu_id` = $menu_id";
-        if($oDB->query($sql)) {
+        if ($oDB->query($sql)) {
             $sql = "DELETE FROM `links` WHERE `menu_id` = $menu_id";
-            if($oDB->query($sql)) {
+            if ($oDB->query($sql)) {
                 return true;
             } else {
                 return false;
@@ -280,6 +280,7 @@ class Menus {
             return false;
         }
     }
+
 }
 
 ?>
