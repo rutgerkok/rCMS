@@ -72,7 +72,6 @@ class User {
             list($id, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data) = $oDB->fetch($result);
             return new User($oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data);
         } else {
-            echo "No match for $sql";
             return null;
         }
     }
@@ -164,18 +163,7 @@ class User {
      * @return string The hashed password.
      */
     public static function hash_password($password) {
-        if (CRYPT_BLOWFISH) {
-            // Blowfish, we're safe
-            $salt = '$2y$11$' . substr(md5(uniqid(rand(), true)), 0, 22);
-            return crypt($password, $salt);
-        } elseif (CRYPT_MD5) {
-            // Salted md5, let's hope for the best
-            $salt = '$1$' . substr(md5(uniqid(rand(), true)), 0, 8) . '$';
-            return crypt($password, $salt);
-        } else {
-            // There's no hope for this server anymore
-            return crypt($password);
-        }
+        return StringHelper::hash($password);
     }
 
     public function is_admin() {

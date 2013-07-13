@@ -9,12 +9,14 @@ class Authentication {
     const NORMAL_STATUS = 0;
     const BANNED_STATUS = 1;
     const DELETED_STATUS = 2;
+    const AUTHENTIATION_COOKIE = "remember_me";
 
     /* @var $website_object Website */
 
     protected $website_object;
     private $current_user;
     private $login_failed = false;
+    private $tried_to_login = false; // If no valid cookie/session was found, this gets set to true, so that it doesn't try to search again.
 
     public function __construct(Website $oWebsite) {
         $this->website_object = $oWebsite;
@@ -25,20 +27,27 @@ class Authentication {
      * @return User
      */
     public function get_current_user() {
-        if (isset($this->current_user)) {
-            // Object cached
+        if ($this->tried_to_login || isset($this->current_user)) {
+            // Object cached, or login was invalid
             return $this->current_user;
         } else {
+            // Check session and cookie
             if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
                 $this->current_user = User::get_by_id($this->website_object, (int) $_SESSION['user_id']);
                 if ($this->current_user == null) {
-                    // Invalid user id in session, probably because the user was just deleted
+                    // Invalid user id in session, probably because the user account was just deleted
                     unset($_SESSION['user_id']);
+                    $this->tried_to_login = true;
                 }
                 return $this->current_user;
             } else {
-                // Not logged in
-                return null;
+                // Try to log in with cookie
+                $this->current_user = $this->get_user_from_cookie();
+                if ($this->current_user == null) {
+                    // Invalid or missing cookie
+                    $this->tried_to_login = true;
+                }
+                return $this->current_user;
             }
         }
     }
@@ -52,6 +61,7 @@ class Authentication {
             // Log out
             unset($_SESSION['user_id']);
             unset($this->current_user);
+            $this->delete_login_cookie();
         } else {
             // Log in
             $_SESSION['user_id'] = $user->get_id();
@@ -70,6 +80,7 @@ class Authentication {
         if ($user != null && $user->verify_password_for_login($password)) {
             // Matches!
             $this->set_current_user($user);
+            $this->set_login_cookie();
             return true;
         }
         return false;
@@ -246,6 +257,66 @@ EOT;
             // Only other admins have the same rank
             return $rank_id == self::$ADMIN_RANK;
         }
+    }
+
+    /**
+     * Gets the account that is stored in the "remember me"-cookie. Returns null
+     * if the cookie is invalid.
+     * @return null|User The user, or null if the cookie is invalid.
+     */
+    public function get_user_from_cookie() {
+        if (!isset($_COOKIE[self::AUTHENTIATION_COOKIE])) {
+            return null;
+        };
+
+        // Get and split the cookie
+        $auth_cookie = $_COOKIE[self::AUTHENTIATION_COOKIE];
+        $cookie_split = explode('|', $auth_cookie);
+        if (count($cookie_split) != 3) {
+            // Invalid cookie, not consisting of three parts
+            return null;
+        }
+
+        $user = User::get_by_id($this->website_object, (int) $cookie_split[0]);
+        if ($user == null) {
+            // Invalid user id
+            return null;
+        }
+
+        $stored_hash = $cookie_split[1];
+        $expires = $cookie_split[2];
+        $verification_string = $expires . "|" . $user->get_password_hashed();
+
+        if (StringHelper::verify_hash($verification_string, $stored_hash)) {
+            return $user;
+        } else {
+            // Invalid hash
+            return null;
+        }
+    }
+
+    /**
+     * Sets/refreshes the "remember me" for the currently connected user.
+     * Requires that the headers have not been sent yet.
+     * @throws BadMethodCallException If no user logged in.
+     */
+    public function set_login_cookie() {
+        $user = $this->get_current_user();
+        if ($user == null) {
+            throw new BadMethodCallException("Tried to create 'Remember me' cookie while not logged in");
+        }
+        $expires = time() + 60 * 60 * 24 * 30; // Expires in 30 days
+        $hash = StringHelper::hash($expires . "|" . $user->get_password_hashed());
+        $cookie_value = $user->get_id() . "|" . $hash . "|" . $expires;
+        setcookie(self::AUTHENTIATION_COOKIE, $cookie_value, $expires, '/');
+    }
+
+    /**
+     * Deletes the "remember me" cookie. Requires that the headers have not
+     * been sent yet.
+     */
+    public function delete_login_cookie() {
+        setcookie(self::AUTHENTIATION_COOKIE, "", time() - 1, '/');
     }
 
 }
