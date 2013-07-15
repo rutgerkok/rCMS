@@ -3,6 +3,7 @@ name=Naam
 account=Account
 display_name=Weergavenaam
 password=Wachtwoord
+old_password=Oude wachtwoord
 email=E-mail
 please_log_in=Log alstublieft in
 as_administrator=als sitebeheerder

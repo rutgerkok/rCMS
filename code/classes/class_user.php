@@ -123,6 +123,20 @@ class User {
     }
 
     /**
+     * Verifies that the given unhashed password matches the stored hashed password.
+     * @param string $password_unhashed The unhashed password.
+     * @return boolean True if the given password is correct, false otherwise.
+     */
+    public function verify_password($password_unhashed) {
+        $password_hashed = $this->get_password_hashed();
+        if (strlen($password_hashed) == 32 && $password_hashed[0] != '$') {
+            return (md5(sha1($password_unhashed)) == $password_hashed);
+        } else {
+            return (crypt($password_unhashed, $password_hashed) === $password_hashed);
+        }
+    }
+
+    /**
      * Call this when logging in an user. If password is correct, the last
      * login date is updated. If the password storage method was outdated, the
      * password is rehashed.
@@ -353,7 +367,6 @@ class User {
             $sql.= "'" . $oDB->escape_data($this->status_text) . "',";
             $sql.= "'" . $oDB->escape_data($this->extra_data) . "'";
             $sql.= ")";
-            echo "Inserting new user " . $sql;
             // Call query and update ID
             if ($oDB->query($sql)) {
                 $this->id = $oDB->inserted_id();

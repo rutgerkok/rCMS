@@ -52,23 +52,35 @@ class EditPasswordPage extends Page {
         $text_to_display = "";
         if (isset($_REQUEST["password"])) {
             // Sent
-            $password = $oWebsite->get_request_string("password");
-            $password2 = $oWebsite->get_request_string("password2");
-            if (Validate::password($password, $password2)) {
-                // Valid password
-                $this->user->set_password($password);
-                if ($this->user->save()) {
-                    // Saved
-                    $text_to_display.='<p>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                    // Don't show form
-                    $show_form = false;
+            $old_password = $oWebsite->get_request_string("old_password");
+            if ($this->editing_someone_else || $this->user->verify_password($old_password)) {
+                // Old password entered correctly
+                $password = $oWebsite->get_request_string("password");
+                $password2 = $oWebsite->get_request_string("password2");
+                if (Validate::password($password, $password2)) {
+                    // Valid password
+                    $this->user->set_password($password);
+                    if ($this->user->save()) {
+                        // Saved
+                        $text_to_display.='<p>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                        // Update login cookie (only when changing your own password)
+                        if (!$this->editing_someone_else) {
+                            $oWebsite->get_authentication()->set_login_cookie();
+                        }
+                        // Don't show form
+                        $show_form = false;
+                    } else {
+                        // Database error
+                        $text_to_display.='<p><em>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
+                    }
                 } else {
-                    // Database error
-                    $text_to_display.='<p><em>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
+                    // Invalid new password
+                    $oWebsite->add_error($oWebsite->t("users.password") . ' ' . Validate::get_last_error($oWebsite));
+                    $text_to_display.='<p><em>' . $oWebsite->t_replaced_key("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
                 }
             } else {
-                // Invalid password
-                $oWebsite->add_error($oWebsite->t("users.password") . ' ' . Validate::get_last_error($oWebsite));
+                // Invalid old password
+                $oWebsite->add_error($oWebsite->t("users.old_password") . ' ' . $oWebsite->t("errors.not_correct"));
                 $text_to_display.='<p><em>' . $oWebsite->t_replaced_key("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
             }
         }
@@ -81,10 +93,19 @@ class EditPasswordPage extends Page {
             }
 
             // Form itself
+            $old_password_text = "";
+            if (!$this->editing_someone_else) {
+                // Add field to verify old password when editing yourself
+                $old_password_text = <<<EOT
+                    <label for="old_password">{$oWebsite->t('users.old_password')}:</label><span class="required">*</span><br />
+                    <input type="password" id="old_password" name="old_password" value=""/><br />
+EOT;
+            }
             $text_to_display.=<<<EOT
                 <p>{$oWebsite->t("main.fields_required")}</p>
                 <form action="{$oWebsite->get_url_main()}" method="post">
                     <p>
+                        $old_password_text
                         <label for="password">{$oWebsite->t('users.password')}:</label><span class="required">*</span><br />
                         <input type="password" id="password" name="password" value=""/><br />
                         <label for="password2">{$oWebsite->t('editor.password.repeat')}:</label><span class="required">*</span><br />

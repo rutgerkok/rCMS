@@ -3,6 +3,7 @@ name=Name
 account=Account
 display_name=Display name
 password=Password
+old_password=Old password
 email=E-mail
 please_log_in=Please log in
 as_administrator=as a site administrator
