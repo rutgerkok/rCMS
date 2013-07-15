@@ -68,7 +68,9 @@ class Authentication {
         if ($user != null && $user->verify_password_for_login($password)) {
             // Matches!
             $this->set_current_user($user);
-            $this->set_login_cookie();
+            if(!headers_sent()) {
+                $this->set_login_cookie();
+            }
             return true;
         }
         return false;
