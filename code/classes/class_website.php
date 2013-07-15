@@ -25,11 +25,14 @@ class Website {
     /**
      * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
      */
+
     function __construct() {
         // Site settings and database connection
         $this->site_settings_file();
         $this->database_object = new Database($this);
         $this->site_settings_database();
+
+        $this->authentication_object = new Authentication($this);
 
         // Patch for PHP 5.2.0, they don't have lcfist
         if (!function_exists("lcfirst")) {
@@ -52,7 +55,7 @@ class Website {
     public function get_page_id() {
         return $this->current_page_id;
     }
-    
+
     /**
      * Returns the current page. Only works with the new page system.
      * @return Page The current page.
@@ -105,9 +108,6 @@ class Website {
      * @return Authentication The authentication object.
      */
     public function get_authentication() {
-        if ($this->authentication_object == null) {
-            $this->authentication_object = new Authentication($this);
-        }
         return $this->authentication_object;
     }
 
@@ -343,7 +343,7 @@ class Website {
             }
 
             // Set cookie
-            if(strlen($this->get_sitevar('password')) != 0) {
+            if (strlen($this->get_sitevar('password')) != 0) {
                 setcookie("key", $this->get_sitevar('password'), time() + 3600 * 24 * 365, "/");
             }
 

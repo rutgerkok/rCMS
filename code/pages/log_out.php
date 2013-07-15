@@ -3,7 +3,7 @@
 class LoginPage extends Page {
 
     public function init(Website $oWebsite) {
-        $oWebsite->get_authentication()->set_current_user(null);
+        $oWebsite->get_authentication()->log_out();
     }
 
     public function get_page_title(Website $oWebsite) {

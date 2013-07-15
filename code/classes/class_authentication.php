@@ -16,10 +16,27 @@ class Authentication {
     protected $website_object;
     private $current_user;
     private $login_failed = false;
-    private $tried_to_login = false; // If no valid cookie/session was found, this gets set to true, so that it doesn't try to search again.
 
     public function __construct(Website $oWebsite) {
         $this->website_object = $oWebsite;
+
+        // Check session and cookie
+        if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
+            // Try to log in with session
+            $this->current_user = User::get_by_id($this->website_object, (int) $_SESSION['user_id']);
+            if ($this->current_user == null) {
+                // Invalid user id in session, probably because the user account was just deleted
+                unset($_SESSION['user_id']);
+            }
+        } else {
+            // Try to log in with cookie
+            $user = $this->get_user_from_cookie();
+            if ($user != null) {
+                // Log in en refresh cookie
+                $this->set_current_user($user);
+                $this->set_login_cookie();
+            }
+        }
     }
 
     /**
@@ -27,46 +44,17 @@ class Authentication {
      * @return User
      */
     public function get_current_user() {
-        if ($this->tried_to_login || isset($this->current_user)) {
-            // Object cached, or login was invalid
-            return $this->current_user;
-        } else {
-            // Check session and cookie
-            if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
-                $this->current_user = User::get_by_id($this->website_object, (int) $_SESSION['user_id']);
-                if ($this->current_user == null) {
-                    // Invalid user id in session, probably because the user account was just deleted
-                    unset($_SESSION['user_id']);
-                    $this->tried_to_login = true;
-                }
-                return $this->current_user;
-            } else {
-                // Try to log in with cookie
-                $this->current_user = $this->get_user_from_cookie();
-                if ($this->current_user == null) {
-                    // Invalid or missing cookie
-                    $this->tried_to_login = true;
-                }
-                return $this->current_user;
-            }
-        }
+        return $this->current_user;
     }
 
     /**
-     * Save that user object in the session
+     * Save that user object in the session. Doesn't modify the login cookie.
+     * Null values are not permitted. Use log_out to log the current user out.
      * @param User $user The user to login
      */
-    public function set_current_user($user) {
-        if ($user == null || !($user instanceof User)) {
-            // Log out
-            unset($_SESSION['user_id']);
-            unset($this->current_user);
-            $this->delete_login_cookie();
-        } else {
-            // Log in
-            $_SESSION['user_id'] = $user->get_id();
-            $this->current_user = $user;
-        }
+    public function set_current_user(User $user) {
+        $_SESSION['user_id'] = $user->get_id();
+        $this->current_user = $user;
     }
 
     /**
@@ -159,7 +147,9 @@ EOT;
     }
 
     function log_out() {
-        $this->set_current_user(null);
+        unset($_SESSION['user_id']);
+        unset($this->current_user);
+        $this->delete_login_cookie();
     }
 
     /** Gets the number of registered users. Returns 0 on failure. */
