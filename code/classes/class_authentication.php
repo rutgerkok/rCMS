@@ -150,7 +150,7 @@ EOT;
 
     function log_out() {
         unset($_SESSION['user_id']);
-        unset($this->current_user);
+        $this->current_user = null;
         $this->delete_login_cookie();
     }
 
