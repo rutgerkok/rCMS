@@ -333,9 +333,9 @@ class Website {
                 $this->current_page_id = $given_page_id;
 
                 if (!file_exists($this->get_uri_page($this->current_page_id))) {
-                    // Page doesn't exist, redirect
+                    // Page doesn't exist, show error and redirect
+                    $this->add_error($this->t("main.page") . " '" . $this->current_page_id . "' " . $this->t('errors.not_found'));
                     $this->current_page_id = 'home';
-                    $this->add_error($this->t("main.page") . " '" . $this->current_page_title . "' " . $this->t('errors.not_found')); //en laat een foutmelding zien
                 }
             } else {
                 // No page id given

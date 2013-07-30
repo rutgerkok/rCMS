@@ -54,6 +54,11 @@ class Authentication {
      */
     public function set_current_user(User $user) {
         $_SESSION['user_id'] = $user->get_id();
+        if($this->is_higher_or_equal_rank($user->get_rank(), self::$MODERATOR_RANK)) {
+            $_SESSION['moderator'] = true;
+        } else {
+            $_SESSION['moderator'] = false;
+        }
         $this->current_user = $user;
     }
 
@@ -150,6 +155,7 @@ EOT;
 
     function log_out() {
         unset($_SESSION['user_id']);
+        unset($_SESSION['moderator']);
         $this->current_user = null;
         $this->delete_login_cookie();
     }

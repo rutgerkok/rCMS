@@ -318,7 +318,7 @@ EOT;
         $comments = isset($_REQUEST['article_comments']) ? 1 : 0;
         $submit = $_REQUEST['article_submit'];
 
-        $authorid = (int) $_SESSION['id'];
+        $authorid = $oWebsite->get_current_user_id();
 
         //Kijk of artikel nieuw is, namelijk door te kijken of $this->contents al gegevens bevat.
         if ($this->id == 0) { //nieuw artikel
