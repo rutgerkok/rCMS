@@ -50,6 +50,21 @@ class User {
     }
 
     /**
+     * Returns whether this user can log in. Returns false if the account has
+     * been banned or deleted.
+     * @return boolean Whether the user can log in.
+     */
+    public function can_log_in() {
+        if ($this->status == Authentication::DELETED_STATUS) {
+            return false;
+        }
+        if ($this->status == Authentication::BANNED_STATUS) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Get the user by name. Returns null if the user isn't found.
      * @param Website $oWebsite The Website object.
      * @param string $username The username. Case insensitive.
@@ -141,9 +156,10 @@ class User {
      * login date is updated. If the password storage method was outdated, the
      * password is rehashed.
      * 
+     * @param Website $oWebsite The website object.
      * @param string $password_unhashed The password entered by the user.
      */
-    public function verify_password_for_login($password_unhashed) {
+    public function login_check(Website $oWebsite, $password_unhashed) {
         $password_hashed = $this->get_password_hashed();
         $logged_in = false;
         if (strlen($password_hashed) == 32 && $password_hashed[0] != '$') {
@@ -160,8 +176,20 @@ class User {
             $logged_in = (crypt($password_unhashed, $password_hashed) === $password_hashed);
         }
 
-        // Update last login date (and possibly password has, see above) if successfull
         if ($logged_in) {
+            // Check whether the account is deleted
+            if ($this->status == Authentication::DELETED_STATUS) {
+                // Act like the account doesn't exist
+                return false;
+            }
+
+            // Check whether the account is banned
+            if ($this->status == Authentication::BANNED_STATUS) {
+                $oWebsite->add_error($oWebsite->t_replaced("users.banned.your_account", $this->status_text));
+                return false;
+            }
+
+            // Update last login date (and possibly password hash see above) if successfull
             $this->set_last_login(0);
             $this->save();
         }

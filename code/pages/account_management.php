@@ -111,9 +111,15 @@ class AccountManagementPage extends Page {
                 $username = $user->get_username(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlspecialchars($user->get_display_name());
                 $rank_name = $oAuth->get_rank_name($user->get_rank());
+                if($user->get_status() == Authentication::BANNED_STATUS) {
+                    $rank_name = $oWebsite->t("users.banned");
+                }
+                if($user->get_status() == Authentication::DELETED_STATUS) {
+                    $rank_name = $oWebsite->t("users.deleted");
+                }
                 $username_link = '<a href="' . $oWebsite->get_url_page("account", $user->get_id()) . '">' . $username . '</a>';
                 $login_link = '<a class="arrow" href="' . $oWebsite->get_url_page("log_in_other", $user->get_id()) . '">' . $oWebsite->t("main.log_in") . '</a>';
-                if ($user->get_id() == $current_user_id) {
+                if ($user->get_id() == $current_user_id || !$user->can_log_in()) {
                     // No need to log in as that account
                     $login_link = "";
                 }

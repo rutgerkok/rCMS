@@ -351,9 +351,7 @@ class Website {
             $uri = $this->get_uri_page($this->current_page_id);
             if (substr($uri, -4) == ".php") {
                 // We're on the new page system
-                // Init stuff
                 require($uri);
-                $this->current_page->init($this);
                 // Page title
                 $this->current_page_title = $this->current_page->get_page_title($this);
                 if ($this->get_sitevar('append_page_title')) {
@@ -369,6 +367,8 @@ class Website {
                         $this->authentication_failed_rank = $rank;
                     }
                 }
+                // Call init methord
+                $this->current_page->init($this);
             } else {
                 // Old page system
                 // Page title

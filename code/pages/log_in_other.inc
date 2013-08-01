@@ -15,11 +15,15 @@ if($logged_in) {
             $user = null;
         }
     }
+    $logged_in = false;
     if($user != null) {
-        $oAuth->set_current_user($user);
-        $text_to_display = "<p>" . $this->t_replaced('users.succesfully_logged_in.other', $user->get_username()) . "</p>\n";
-        $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_main() . '">' . $this->t("main.ok") . "</a></p>\n";
-    } else {
+        if($oAuth->set_current_user($user)) {
+            $text_to_display = "<p>" . $this->t_replaced('users.succesfully_logged_in.other', $user->get_username()) . "</p>\n";
+            $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_main() . '">' . $this->t("main.ok") . "</a></p>\n";
+            $logged_in = true;
+        }
+    }
+    if(!$logged_in) {
         $text_to_display = "<p>" . $this->t('users.account') . " " . $this->t('errors.not_found') . "</p>\n";
         $text_to_display.= '<p><a class="arrow" href="' . $this->get_url_main() . '">' . $this->t("main.ok") . "</a></p>\n";
     }

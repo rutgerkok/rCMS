@@ -11,7 +11,7 @@ class AccountPage extends Page {
     protected $user;
     protected $can_edit_user;
 
-    public function determine_user_to_view(Website $oWebsite) {
+    public function init(Website $oWebsite) {
         $user_id = $oWebsite->get_request_int("id", 0);
         if ($user_id == 0) {
             // Use current user
@@ -21,18 +21,31 @@ class AccountPage extends Page {
             $this->user = User::get_by_id($oWebsite, $user_id);
         }
 
-        // Test whether user profile is editable by the current user
-        $viewing_user = $oWebsite->get_authentication()->get_current_user();
-        if ($viewing_user != null && $this->user != null) {
-            if ($viewing_user->get_id() == $this->user->get_id()) {
-                // Every user can edit themselves
-                $this->can_edit_user = true;
-            } else if ($oWebsite->logged_in_staff(true)) {
-                // Staff can edit everyone
-                $this->can_edit_user = true;
-            } else {
-                // Too bad
-                $this->can_edit_user = false;
+
+        if ($this->user != null) {
+            // Don't display banned/deleted users
+            if (!$this->user->can_log_in()) {
+                if (!$oWebsite->logged_in_staff()) {
+                    // Staff can view everyone
+                    $this->user = null;
+                }
+            }
+        }
+
+        if ($this->user != null) {
+            // Test whether user profile is editable by the current user
+            $viewing_user = $oWebsite->get_authentication()->get_current_user();
+            if ($viewing_user != null) {
+                if ($viewing_user->get_id() == $this->user->get_id()) {
+                    // Every user can edit themselves
+                    $this->can_edit_user = true;
+                } else if ($oWebsite->logged_in_staff(true)) {
+                    // Staff can edit everyone
+                    $this->can_edit_user = true;
+                } else {
+                    // Too bad
+                    $this->can_edit_user = false;
+                }
             }
         }
     }
@@ -50,7 +63,7 @@ class AccountPage extends Page {
         // Get selected user
         $user = $oWebsite->get_authentication()->get_current_user();
         $given_user_id = $oWebsite->get_request_int("id", 0);
-        if($given_user_id > 0) {
+        if ($given_user_id > 0) {
             $user = User::get_by_id($oWebsite, $given_user_id);
         }
         // If found, use name in page title
@@ -66,8 +79,6 @@ class AccountPage extends Page {
     }
 
     public function get_page_content(Website $oWebsite) {
-        $this->determine_user_to_view($oWebsite);
-
         if ($this->user == null) {
             // Error - user not found
             $oWebsite->add_error($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
@@ -82,6 +93,7 @@ class AccountPage extends Page {
                 {$this->get_edit_links_html($oWebsite)}
             </div>
             <div id="sidebarpagecontent">
+                {$this->get_status_html($oWebsite)}
                 {$this->get_articles_html($oWebsite)}
                 {$this->get_comments_html($oWebsite)}
             </div>
@@ -90,7 +102,7 @@ EOT;
         return $text_to_display;
     }
 
-    /** Returns the of the gravatar of the user */
+    /** Returns the url of the gravatar of the user */
     public function get_gravatar_url() {
         if (strlen($this->user->get_email()) > 0) {
             $gravatar_url = self::GRAVATAR_URL_BASE . md5(strtolower($this->user->get_email()));
@@ -116,6 +128,35 @@ EOT;
         } else {
             return "";
         }
+    }
+
+    /** Returns the HTML of the status of the user, including the header */
+    public function get_status_html(Website $oWebsite) {
+        $status_text = $this->user->get_status_text();
+        if ($status_text) {
+            $status_text = nl2br(htmlspecialchars($status_text));
+        }
+
+        // Check if account is banned
+        if ($this->user->get_status() == Authentication::BANNED_STATUS) {
+            // Banned
+            return <<<EOT
+                <div class="error">
+                    {$oWebsite->t_replaced("users.banned.this_account", $status_text)}
+                </div>
+EOT;
+        }
+
+        // Check if account is deleted
+        if ($this->user->get_status() == Authentication::DELETED_STATUS) {
+            return '<div class="error">' . $oWebsite->t("users.deleted.this_account") . "</div>\n";
+        }
+
+        // Otherwise, just display the status
+        if ($status_text) {
+            return '<p>' . $status_text . "</p>\n";
+        }
+        return '';
     }
 
     /**
@@ -163,7 +204,7 @@ EOT;
 EOT;
             }
         }
-        
+
         $sidebar_edit_links.= "</p>";
 
         return $sidebar_edit_links;
