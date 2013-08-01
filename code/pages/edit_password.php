@@ -7,13 +7,13 @@ class EditPasswordPage extends Page {
     protected $editing_someone_else = false;
 
     /** Fills the class variables, adds errors if needed. */
-    public function determine_user_to_edit(Website $oWebsite) {
+    public function init(Website $oWebsite) {
         $this->user = $oWebsite->get_authentication()->get_current_user();
         $user_id = $oWebsite->get_request_int("id", 0);
         // Id given to edit someone else, check for permissions
         if ($user_id > 0 && $user_id != $this->user->get_id()) {
             $this->editing_someone_else = true;
-            if ($oWebsite->logged_in_staff(true)) {
+            if ($this->can_user_edit_someone_else($oWebsite)) {
                 // Editing someone else
                 $this->user = User::get_by_id($oWebsite, $user_id);
                 if ($this->user == null) {
@@ -27,6 +27,17 @@ class EditPasswordPage extends Page {
                 $oWebsite->add_error($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_editable"));
             }
         }
+    }
+    
+    /**
+     * Returns whether the user viewing this page can edit the account of
+     * someone else. By default, only admins can edit someone else, but this
+     * can be overriden.
+     * @param Website $oWebsite The website object.
+     * @return boolean Whether the user can edit someone else.
+     */
+    public function can_user_edit_someone_else(Website $oWebsite) {
+        return $oWebsite->logged_in_staff(true);
     }
 
     public function get_page_title(Website $oWebsite) {
@@ -42,8 +53,7 @@ class EditPasswordPage extends Page {
     }
 
     public function get_page_content(Website $oWebsite) {
-        // Get and check selected user
-        $this->determine_user_to_edit($oWebsite);
+        // Check selected user
         if ($this->user == null) {
             return "";
         }

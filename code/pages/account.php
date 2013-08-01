@@ -31,23 +31,6 @@ class AccountPage extends Page {
                 }
             }
         }
-
-        if ($this->user != null) {
-            // Test whether user profile is editable by the current user
-            $viewing_user = $oWebsite->get_authentication()->get_current_user();
-            if ($viewing_user != null) {
-                if ($viewing_user->get_id() == $this->user->get_id()) {
-                    // Every user can edit themselves
-                    $this->can_edit_user = true;
-                } else if ($oWebsite->logged_in_staff(true)) {
-                    // Staff can edit everyone
-                    $this->can_edit_user = true;
-                } else {
-                    // Too bad
-                    $this->can_edit_user = false;
-                }
-            }
-        }
     }
 
     public function get_minimum_rank(Website $oWebsite) {
@@ -134,28 +117,38 @@ EOT;
     public function get_status_html(Website $oWebsite) {
         $status_text = $this->user->get_status_text();
         if ($status_text) {
-            $status_text = nl2br(htmlspecialchars($status_text));
+            $status_text = '<em>' . nl2br(htmlspecialchars($status_text)) . '</em>';
         }
 
+        // It's safe to display the edit links, as only moderators and up can
+        // view account pages of banned/deleted users.
         // Check if account is banned
         if ($this->user->get_status() == Authentication::BANNED_STATUS) {
             // Banned
             return <<<EOT
                 <div class="error">
-                    {$oWebsite->t_replaced("users.banned.this_account", $status_text)}
+                    {$oWebsite->t_replaced("users.status.banned.this_account", $status_text)}.
+                    {$oWebsite->t("users.user_page_hidden")}
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_account_status", $this->user->get_id())}">
+                        {$oWebsite->t("main.edit")}
+                    </a>
                 </div>
 EOT;
         }
 
         // Check if account is deleted
         if ($this->user->get_status() == Authentication::DELETED_STATUS) {
-            return '<div class="error">' . $oWebsite->t("users.deleted.this_account") . "</div>\n";
+            return <<<EOT
+                <div class="error">
+                    {$oWebsite->t_replaced("users.status.deleted.this_account", $status_text)}.
+                    {$oWebsite->t("users.user_page_hidden")}
+                    <a class="arrow" href="{$oWebsite->get_url_page("edit_account_status", $this->user->get_id())}">
+                        {$oWebsite->t("main.edit")}
+                    </a>
+                </div>
+EOT;
         }
 
-        // Otherwise, just display the status
-        if ($status_text) {
-            return '<p>' . $status_text . "</p>\n";
-        }
         return '';
     }
 
@@ -165,49 +158,80 @@ EOT;
      */
     public function get_edit_links_html(Website $oWebsite) {
         $viewing_user = $oWebsite->get_authentication()->get_current_user();
-        $is_viewing_themselves = ($viewing_user != null && $this->user->get_id() == $viewing_user->get_id());
-        $sidebar_edit_links = "";
+        $return_value = "";
 
-        // Gravatar link
+        // Get privileges
+        $is_viewing_themselves = false;
+        $is_viewing_as_moderator = false;
+        $is_viewing_as_admin = false;
+        if ($viewing_user != null) {
+            $is_viewing_themselves = ($this->user->get_id() == $viewing_user->get_id());
+            if ($oWebsite->logged_in_staff(false)) {
+                $is_viewing_as_moderator = true;
+            }
+            if ($oWebsite->logged_in_staff(true)) {
+                $is_viewing_as_admin = true;
+            }
+        }
+
+        // Gravatar link + help
         if ($is_viewing_themselves) {
             // No way that other admins can edit someone's avatar, so only display help text for owner
-            $sidebar_edit_links.= <<<EOT
+            $return_value.= <<<EOT
                 <p>
                      {$oWebsite->t_replaced("users.gravatar.explained", '<a href="http://gravatar.com/">gravatar.com</a>')}
                 </p>
 EOT;
         }
 
-        // Link to edit password/e-mail/display name
-        if ($this->can_edit_user) {
-            $sidebar_edit_links.= <<<EOT
-                <p>
-                    <a class="arrow" href="{$oWebsite->get_url_page("edit_email", $this->user->get_id())}">
-                        {$oWebsite->t("editor.email.edit")}
-                    </a><br />
-                    <a class="arrow" href="{$oWebsite->get_url_page("edit_password", $this->user->get_id())}">
-                        {$oWebsite->t("editor.password.edit")}
-                    </a><br />
-                    <a class="arrow" href="{$oWebsite->get_url_page("edit_display_name", $this->user->get_id())}">
-                        {$oWebsite->t("editor.display_name.edit")}
-                    </a><br />
-EOT;
-            if (!$is_viewing_themselves) {
-                // Link for rank editing and logging in
-                $sidebar_edit_links.= <<<EOT
-                    <a class="arrow" href="{$oWebsite->get_url_page("edit_rank", $this->user->get_id())}">
-                        {$oWebsite->t("editor.rank.edit")}
-                    </a><br />
-                    <a class="arrow" href="{$oWebsite->get_url_page("log_in_other", $this->user->get_id())}">
-                        {$oWebsite->t("main.log_in")}
-                    </a><br />
-EOT;
+        // Add all account edit links
+        $edit_links = array();
+
+        if (!$is_viewing_themselves && $is_viewing_as_moderator) {
+            // Accessed by a moderator that isn't viewing his/her own account
+            // Add (un)ban link
+            $edit_links[] = $this->get_edit_link($oWebsite, "edit_account_status", "editor.status.edit");
+        }
+
+        if ($is_viewing_themselves || $is_viewing_as_admin) {
+            // Accessed by the user themselves or an admin
+            // Display links to edit profile
+            $edit_links[] = $this->get_edit_link($oWebsite, "edit_email", "editor.email.edit");
+            $edit_links[] = $this->get_edit_link($oWebsite, "edit_password", "editor.password.edit");
+            $edit_links[] = $this->get_edit_link($oWebsite, "edit_display_name", "editor.display_name.edit");
+        }
+        if (!$is_viewing_themselves && $is_viewing_as_admin) {
+            // Accessed by an admin that isn't viewing his/her own account
+            // Add rank edit link and login link
+            $edit_links[] = $this->get_edit_link($oWebsite, "edit_rank", "editor.rank.edit");
+
+            // Only display login link if account is not deleted/banned
+            if ($this->user->can_log_in()) {
+                $edit_links[] = $this->get_edit_link($oWebsite, "log_in_other", "main.log_in");
             }
         }
 
-        $sidebar_edit_links.= "</p>";
+        if (count($edit_links) > 0) {
+            $return_value.= "<p>\n" . implode($edit_links) . "</p>\n";
+        }
 
-        return $sidebar_edit_links;
+        return $return_value;
+    }
+
+    /**
+     * Gets a link with the specified url and text. User id and link class will
+     * be added.
+     * @param Website $oWebsite The website object.
+     * @param string $page_id The id of the page.
+     * @param string $translation_id The translation id of the text to display.
+     * @return string The link.
+     */
+    public function get_edit_link(Website $oWebsite, $page_id, $translation_id) {
+        return <<<EOT
+            <a class="arrow" href="{$oWebsite->get_url_page($page_id, $this->user->get_id())}">
+                {$oWebsite->t($translation_id)}
+            </a><br />
+EOT;
     }
 
     /** Returns the HTML of the comments of the user, including the header */

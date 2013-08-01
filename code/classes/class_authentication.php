@@ -24,7 +24,7 @@ class Authentication {
         if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
             // Try to log in with session
             $user = User::get_by_id($this->website_object, (int) $_SESSION['user_id']);
-            if ($user != null && $this->set_current_user($user)) {
+            if ($user == null || !$this->set_current_user($user)) {
                 // Invalid user id in session, probably because the user account was just deleted
                 unset($_SESSION['user_id']);
             }
@@ -248,6 +248,24 @@ EOT;
             case 1: return $oWebsite->t("users.rank.admin");
             case 2: return $oWebsite->t("users.rank.user");
             default: return $oWebsite->t("users.rank.unknown");
+        }
+    }
+    
+    public function is_valid_status($id) {
+        if ($id == self::NORMAL_STATUS || $id == self::DELETED_STATUS || $id == self::BANNED_STATUS) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function get_status_name($id) {
+        $oWebsite = $this->website_object;
+        switch ($id) {
+            case self::BANNED_STATUS: return $oWebsite->t("users.status.banned");
+            case self::DELETED_STATUS: return $oWebsite->t("users.status.deleted");
+            case self::NORMAL_STATUS: return $oWebsite->t("users.status.allowed");
+            default: return $oWebsite->t("users.status.unknown");
         }
     }
 

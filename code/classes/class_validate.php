@@ -128,6 +128,22 @@ class Validate {
         return true;
     }
 
+    public static function string_length($string, $min, $max) {
+        if (strlen($string) < $min) {
+            if ($min == 1) {
+                Validate::set_error("not_entered");
+            } else {
+                Validate::set_error("is_too_short_num", $min);
+            }
+            return false;
+        }
+        if (strlen($string) > $max) {
+            Validate::set_error("is_too_long_num", $max);
+            return false;
+        }
+        return true;
+    }
+
     public static function url($link_url) {
         if (strlen($link_url) <= 7) {
             self::set_error("not_entered");

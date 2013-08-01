@@ -23,3 +23,5 @@ widget.delete=Verwijder een widget van de zijbalk
 widget.delete.confirm=Weet u zeker dat u deze widget wil verwijderen van de zijbalk?
 rank.edit=Wijzig accounttype
 rank.edit.explained=Met dit formulier kunt u het accounttype van iemand wijzigen.
+status.edit=(De)blokkeer account
+status.edit.explained=U kunt hier een account blokkeren, of een blokkering opheffen. Verwijder spambots, maar verban de accounts bediend door zich misdragende mensen.

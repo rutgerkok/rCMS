@@ -185,7 +185,7 @@ class User {
 
             // Check whether the account is banned
             if ($this->status == Authentication::BANNED_STATUS) {
-                $oWebsite->add_error($oWebsite->t_replaced("users.banned.your_account", $this->status_text));
+                $oWebsite->add_error($oWebsite->t_replaced("users.status.banned.your_account", $this->status_text));
                 return false;
             }
 

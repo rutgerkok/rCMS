@@ -23,3 +23,5 @@ widget.delete=Remove a widget from the sidebar
 widget.delete.confirm=Are you sure you want to remove this widget from the sidebar?
 rank.edit=Edit the rank
 rank.edit.explained=You can promote or demote an user using this form.
+status.edit=Block/unblock account
+status.edit.explained=You can block or allow an user using this form. Spambot accounts should be deleted, misbehaving users should be banned.

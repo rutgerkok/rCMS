@@ -1,6 +1,6 @@
 <?php
 
-// The email extends the password page, since they are highly similar
+// The rank page extends the password page, since they are highly similar
 require_once($this->get_uri_page("edit_password"));
 
 class EditRankPage extends EditPasswordPage {
@@ -14,8 +14,7 @@ class EditRankPage extends EditPasswordPage {
     }
 
     public function get_page_content(Website $oWebsite) {
-        // Get and check selected user
-        $this->determine_user_to_edit($oWebsite);
+        // Check selected user
         if ($this->user == null) {
             return "";
         }
@@ -91,7 +90,7 @@ EOT;
         $selection_box = '<select name="rank" id="rank">';
         foreach ($ranks as $id) {
             $label = $oAuth->get_rank_name($id);
-            $selection_box.= '<option id="' . $id . '"';
+            $selection_box.= '<option value="' . $id . '"';
             if ($selected == $id) {
                 $selection_box.= ' selected="selected"';
             }
