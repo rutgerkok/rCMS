@@ -1,5 +1,5 @@
 name=Links
-description=Adds a list of links to the sidebar. Doesn't work yet.
+description=Adds a list of links to the sidebar.
 version=1.1
 website=http://www.rutgerkok.nl/
 author=Rutger Kok
