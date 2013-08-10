@@ -29,7 +29,6 @@ ok=OK
 cancel=Annuleren
 fields_required=Velden met een <span class="required">*</span> zijn verplicht.
 site_settings=Siteinstellingen
-upgrade_database=Werk database bij
 code_request=Vul de code in om toegang te krijgen tot deze site.
 widget=Widget
 widgets=Widgets

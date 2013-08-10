@@ -50,7 +50,6 @@ if ($logged_in) {
 
     <p>
         <a href="<?php echo $this->get_url_page("site_settings") ?>" class="arrow"><?php echo $this->t("main.site_settings") ?></a><br />
-        <a href="<?php echo $this->get_url_page("installing_database") ?>" class="arrow"><?php echo $this->t("main.upgrade_database") ?></a>
     </p>
 
     <h3><?php echo $this->t("main.articles") ?></h3>
