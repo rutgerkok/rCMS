@@ -11,7 +11,7 @@ class JSONHelper {
     public static function array_to_string($data) {
         //convmap since 0x80 char codes so it takes all multibyte codes (above ASCII 127). So such characters are being "hidden" from normal json_encoding
         array_walk_recursive($data, "jsonhelper_encode_item");
-        return mb_decode_numericentity(json_encode($arr), array(0x80, 0xffff, 0, 0xffff), 'UTF-8');
+        return mb_decode_numericentity(json_encode($data), array(0x80, 0xffff, 0, 0xffff), 'UTF-8');
     }
 
     /**
@@ -26,6 +26,8 @@ class JSONHelper {
 
 /*
  * I want to use inline functions, but those aren't available in PHP 5.2.
+ * Normally functions aren't permitted in rCMS, but an exception had to be made
+ * here.
  */
 
 function jsonhelper_encode_item(&$item, $key) {
