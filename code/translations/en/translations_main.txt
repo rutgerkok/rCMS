@@ -32,3 +32,5 @@ site_settings=Site settings
 code_request=Fill in the code to get access to the site.
 widget=Widget
 widgets=Widgets
+welcome_user=Welcome, #!
+welcome_guest=Welcome, guest!

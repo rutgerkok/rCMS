@@ -45,14 +45,18 @@ class Themes {
         $this->theme = $theme;
     }
 
+    /**
+     * Echoes three &lt;li&gt; links representing the accounts menu.
+     */
     public function echo_accounts_menu() {
         $oWebsite = $this->website_object;
 
-        //Geef de inloglinks weer
-        if ($oWebsite->logged_in_staff(true)) { //admin
+        if ($oWebsite->logged_in_staff(true)) {
+            // Logged in as admin
             echo '<li><a href="' . $oWebsite->get_url_page("admin") . '">' . $oWebsite->t("main.admin") . '</a></li>';
         }
-        if ($oWebsite->logged_in()) { //ingelogd
+        if ($oWebsite->logged_in()) {
+            // Logged in
             echo '<li><a href="' . $oWebsite->get_url_page("account") . '">' . $this->website_object->t("main.my_account") . '</a></li>';
             echo '<li><a href="' . $oWebsite->get_url_page("log_out") . '">' . $this->website_object->t("main.log_out") . '</a></li>';
         } else {
@@ -63,6 +67,31 @@ class Themes {
             }
             echo '<li><a href="' . $oWebsite->get_url_page("log_in") . '">' . $this->website_object->t("main.log_in") . '</a></li>';
         }
+    }
+    
+    public function echo_account_box($gravatar_size = 140) {
+        $oWebsite = $this->website_object;
+        $user = $oWebsite->get_authentication()->get_current_user();
+        
+        // Get avatar url
+        if($user == null) {
+            // Logged out
+            $avatar_url = User::get_standard_avatar_url($gravatar_size);
+            $welcome_text = $oWebsite->t("main.welcome_guest");
+        } else {
+            // Logged in
+            $avatar_url = $user->get_avatar_url($gravatar_size);
+            $welcome_text = $oWebsite->t_replaced("main.welcome_user", $user->get_display_name());
+            $welcome_text.= ' <span class="username">(@' . $user->get_username() . ')</span>';
+        }
+        
+        // Display account box
+        echo '<img id="account_box_gravatar" src="' . $avatar_url . '" />';
+        echo '<div id="account_box_text">';
+        echo '<p>' . $welcome_text . "</p>\n";
+        echo '<ul>';
+        echo $this->echo_accounts_menu();
+        echo '</ul></div>';
     }
 
     public function echo_breadcrumbs() {
@@ -124,6 +153,14 @@ EOT;
 
         $oWidgets = $this->widgets_object;
         $oWidgets->echo_widgets_sidebar($area);
+    }
+    
+    /**
+     * Returns whether the user viewing the page is logged in.
+     * @return boolean True if logged in, false otherwise.
+     */
+    public function logged_in() {
+        return $this->website_object->logged_in();
     }
 
     //Geeft de titel terug die boven aan de pagina, in de header, moet worden weergegeven. De paginatitel zit ingesloten in echo_page()

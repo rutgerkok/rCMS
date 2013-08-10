@@ -6,19 +6,27 @@
         <script type="text/javascript" src="<?php echo $this->get_url_scripts() ?>tooltip.js"> </script>
         <title><?php echo $this->get_site_title(); ?></title>
     </head>
-    <body>
+    <body <?php if($this->logged_in()) { 
+        echo 'class="logged_in"';
+    }
+?>>
         <div id="container">
             <div id="header">
-                <div id="hornav">
-                    <h1> <?php echo $this->get_site_title(); ?> </h1>
-                    <ul>
-                        <?php $this->echo_menu(); ?>
-                        <?php $this->echo_accounts_menu(); ?>
-                    </ul>
+                <h1> <?php echo $this->get_site_title(); ?> </h1>
+                <ul id="main_menu">
+                    <?php $this->echo_menu(); ?>
+                    <?php if(!$this->logged_in()) $this->echo_accounts_menu(); ?>
+                </ul>
+                <div id="header_box">
+                    <?php if($this->logged_in()) { ?>
+                        <div id="account_box">
+                            <?php $this->echo_account_box(); ?>
+                        </div>
+                    <?php } ?>
                     <div id="search">
                         <?php $this->echo_search_form(); ?>
                     </div>
-               </div>
+                </div>
             </div>
             <div <?php
                     if($this->get_page_type()=="BACKSTAGE")

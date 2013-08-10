@@ -2,6 +2,8 @@
 
 class User {
 
+    const GRAVATAR_URL_BASE = "http://www.gravatar.com/avatar/";
+
     protected $website_object;
     protected $username;
     protected $display_name;
@@ -127,6 +129,40 @@ class User {
 
     public function get_display_name() {
         return $this->display_name;
+    }
+    
+    // Gravatar
+    // Gets the gravatar url based on the hash and size.
+    private static function get_user_avatar_url($hash, $gravatar_size) {
+        if ((int) $gravatar_size < 5) {
+            throw new BadMethodCallException("Gravatar size $gravatar_size is too small");
+        }
+        $gravatar_url = self::GRAVATAR_URL_BASE . $hash;
+        $gravatar_url.= "?size=$gravatar_size&d=mm";
+        return $gravatar_url;
+    }
+
+    /**
+     * Returns the url of the gravatar of the user.
+     * @param int $gravatar_size Size (width and height) of the gravatar in pixels.
+     * @return string The url.
+     */
+    public function get_avatar_url($gravatar_size = 400) {
+        if (isset($this->email) && strlen($this->email) > 0) {
+            return self::get_user_avatar_url(md5(strtolower($this->email)), $gravatar_size);
+        } else {
+            // No email given
+            return self::get_standard_avatar_url($gravatar_size);
+        }
+    }
+    
+    /**
+     * Returns the url of the default gravatar.
+     * @param int $gravatar_size Size (width and height) of the gravatar in pixels.
+     * @return string The url.
+     */
+    public static function get_standard_avatar_url($gravatar_size = 400) {
+        return self::get_user_avatar_url("00000000000000000000000000000000", $gravatar_size);
     }
 
     /**

@@ -5,8 +5,6 @@
  */
 class AccountPage extends Page {
 
-    const GRAVATAR_URL_BASE = "http://www.gravatar.com/avatar/";
-
     /** @var User $user */
     protected $user;
     protected $can_edit_user;
@@ -72,7 +70,7 @@ class AccountPage extends Page {
         $text_to_display = <<<EOT
             <div id="sidebarpagesidebar">
                 <h3 class="notable">{$this->user->get_display_name()}</h3>
-                <p><img src="{$this->get_gravatar_url($this->user)}" style="max-width: 95%" /></p>
+                <p><img src="{$this->user->get_avatar_url()}" style="max-width: 95%" /></p>
                 {$this->get_edit_links_html($oWebsite)}
             </div>
             <div id="sidebarpagecontent">
@@ -83,18 +81,6 @@ class AccountPage extends Page {
             
 EOT;
         return $text_to_display;
-    }
-
-    /** Returns the url of the gravatar of the user */
-    public function get_gravatar_url() {
-        if (strlen($this->user->get_email()) > 0) {
-            $gravatar_url = self::GRAVATAR_URL_BASE . md5(strtolower($this->user->get_email()));
-        } else {
-            // No email given
-            $gravatar_url = self::GRAVATAR_URL_BASE . "00000000000000000000000000000000";
-        }
-        $gravatar_url.= "?size=400&d=mm";
-        return $gravatar_url;
     }
 
     /** Returns the HTML of the articles of the user, including the header */

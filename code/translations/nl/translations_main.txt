@@ -32,3 +32,5 @@ site_settings=Siteinstellingen
 code_request=Vul de code in om toegang te krijgen tot deze site.
 widget=Widget
 widgets=Widgets
+welcome_user=Hallo, #!
+welcome_guest=Hallo, bezoeker!
