@@ -69,29 +69,41 @@ class Themes {
         }
     }
     
+    public function echo_account_label() {
+        $oWebsite = $this->website_object;
+        $user = $oWebsite->get_authentication()->get_current_user();
+        
+        // Get welcome text
+        if($user == null) {
+            // Logged out
+            $welcome_text = $oWebsite->t("main.welcome_guest") . " ";
+            $welcome_text.= '<a class="arrow" href="' . $oWebsite->get_url_page("log_in") . '">';
+            $welcome_text.= $oWebsite->t("main.log_in") . "</a>\n";
+        } else {
+            // Logged in
+            $welcome_text = $oWebsite->t_replaced("main.welcome_user", $user->get_display_name());
+            $welcome_text.= ' <span class="username">(@' . $user->get_username() . ')</span>';
+        }
+        echo "<p>" . $welcome_text . "</p>";          
+    }
+    
     public function echo_account_box($gravatar_size = 140) {
         $oWebsite = $this->website_object;
         $user = $oWebsite->get_authentication()->get_current_user();
         
-        // Get avatar url
         if($user == null) {
-            // Logged out
-            $avatar_url = User::get_standard_avatar_url($gravatar_size);
-            $welcome_text = $oWebsite->t("main.welcome_guest");
-        } else {
-            // Logged in
-            $avatar_url = $user->get_avatar_url($gravatar_size);
-            $welcome_text = $oWebsite->t_replaced("main.welcome_user", $user->get_display_name());
-            $welcome_text.= ' <span class="username">(@' . $user->get_username() . ')</span>';
+            // Nothing to display
+            return;
         }
+        
+        // Get avatar url
+        $avatar_url = $user->get_avatar_url($gravatar_size);
         
         // Display account box
         echo '<img id="account_box_gravatar" src="' . $avatar_url . '" />';
-        echo '<div id="account_box_text">';
-        echo '<p>' . $welcome_text . "</p>\n";
         echo '<ul>';
         echo $this->echo_accounts_menu();
-        echo '</ul></div>';
+        echo '</ul>';
     }
 
     public function echo_breadcrumbs() {

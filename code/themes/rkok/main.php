@@ -15,16 +15,15 @@
                 <h1> <?php echo $this->get_site_title(); ?> </h1>
                 <ul id="main_menu">
                     <?php $this->echo_menu(); ?>
-                    <?php if(!$this->logged_in()) $this->echo_accounts_menu(); ?>
                 </ul>
-                <div id="header_box">
-                    <?php if($this->logged_in()) { ?>
-                        <div id="account_box">
-                            <?php $this->echo_account_box(); ?>
-                        </div>
-                    <?php } ?>
-                    <div id="search">
-                        <?php $this->echo_search_form(); ?>
+                <div id="search">
+                    <?php $this->echo_search_form(); ?>
+                </div>
+                <div id="account_label">
+                    <?php $this->echo_account_label(); ?>
+                    <div id="account_box">
+                        <?php $this->echo_account_box(); ?>
+                        <div style="clear:both"></div>
                     </div>
                 </div>
             </div>
