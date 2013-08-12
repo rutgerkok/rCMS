@@ -343,11 +343,12 @@ div#containerwrapper
     background:transparent;
 }
 
-/* header en zoekvak */
+/* Header */
 div#header
 {
-    background:#e4f2e9 url(images/logo.png) 15px center no-repeat;
-    height:100px;
+    background: #e4f2e9 url(images/logo.png) 15px center no-repeat;
+    height: 100px;
+    position: relative;
 }
 div#header h1
 {
@@ -360,12 +361,14 @@ div#header h1
     text-align:left;
     height:1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
 }
+/* Search */
 div#header div#search
 {
-    float:right;
-    margin-right:20px;
-    margin-top:5px;
+    position: absolute;
+    right: 20px;
+    top: 2.5em;
 }
+/* Search textfield */
 div#header div#search #searchbox
 {
     height:1.4em;
@@ -373,7 +376,50 @@ div#header div#search #searchbox
     margin:0;
     padding:0em;
 }
-
+/* Accountbox */
+div#account_label
+{
+    position: absolute;
+    right: 0;
+    top: 100%;
+    font-size: 85%;
+    text-align: right;
+    
+}
+div#account_label p
+{
+    color: white;
+}
+div#account_box
+{
+    background: #e4f2e9;
+    text-align: left;
+    margin-top: -7px;
+    display: none;
+    box-shadow: 0 0 13px #9a9a79;
+}
+div#account_label:hover div#account_box
+{
+    display: block;
+}
+div#account_box img
+{
+    float: left;
+    margin: 8px;
+}
+div#account_box ul
+{
+    float: left;
+    list-style-type: none;
+    margin: 8px;
+    padding: 0;
+}
+div#account_box a
+{
+    padding-left: 5px;
+    background: transparent url(images/arrow.gif) center left no-repeat;
+    text-transform: uppercase;
+}
 /* content 	*/
 div#content
 {
@@ -381,7 +427,6 @@ div#content
     clear:left;
     float:left;
     min-height:600px;
-    position:relative;
     overflow:hidden;
 }
 div#contentwide
@@ -392,7 +437,6 @@ div#contentwide
     clear:left;
     float:left;
     min-height:600px;
-    position:relative;
     overflow:hidden;
 }
 div#contentadmin
@@ -403,7 +447,6 @@ div#contentadmin
     clear:left;
     float:left;
     min-height:600px;
-    position:relative;
 }
 
 
@@ -423,7 +466,7 @@ div#nav
     float:left;
 }
 
-/* horizontale balk */
+/* Horizontal link bar */
 div#hornav
 {
     background: #9a9a79;
@@ -464,8 +507,7 @@ div#hornav ul li a:hover
     text-decoration: none;
     border: 0;
 }
-
-/* inlog */
+/* Login link of horizontal bar */
 div#hornav ul#accountlinks
 {
     float:right;

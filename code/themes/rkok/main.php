@@ -9,7 +9,7 @@
     <body <?php if($this->logged_in()) { 
         echo 'class="logged_in"';
     }
-?>>
+    ?>>
         <div id="container">
             <div id="header">
                 <h1> <?php echo $this->get_site_title(); ?> </h1>
