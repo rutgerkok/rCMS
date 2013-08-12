@@ -81,7 +81,7 @@ class Themes {
             $welcome_text.= $oWebsite->t("main.log_in") . "</a>\n";
         } else {
             // Logged in
-            $welcome_text = $oWebsite->t_replaced("main.welcome_user", $user->get_display_name());
+            $welcome_text = $oWebsite->t_replaced("main.welcome_user", htmlspecialchars($user->get_display_name()));
             $welcome_text.= ' <span class="username">(@' . $user->get_username() . ')</span>';
         }
         echo "<p>" . $welcome_text . "</p>";          

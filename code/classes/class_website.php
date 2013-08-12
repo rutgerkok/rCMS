@@ -334,7 +334,7 @@ class Website {
 
                 if (!file_exists($this->get_uri_page($this->current_page_id))) {
                     // Page doesn't exist, show error and redirect
-                    $this->add_error($this->t("main.page") . " '" . $this->current_page_id . "' " . $this->t('errors.not_found'));
+                    $this->add_error($this->t("main.page") . " '" . htmlspecialchars($this->current_page_id) . "' " . $this->t('errors.not_found'));
                     $this->current_page_id = 'home';
                 }
             } else {
