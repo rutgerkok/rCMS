@@ -386,9 +386,10 @@ div#account_label
     text-align: right;
     
 }
-div#account_label p
+div#account_label p, a.user_welcome_link
 {
     color: white;
+    border: 0;
 }
 div#account_box
 {
@@ -417,6 +418,7 @@ div#account_box ul
 div#account_box a
 {
     padding-left: 5px;
+    color: #6b966b;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-transform: uppercase;
 }

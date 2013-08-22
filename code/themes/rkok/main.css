@@ -378,10 +378,6 @@ ul#main_menu
     height: 2.5em;
     list-style-type: none;
 }
-body.logged_in ul#main_menu
-{
-    padding-right: 14em;
-}
 ul#main_menu li
 {
     margin: 0;
@@ -389,7 +385,7 @@ ul#main_menu li
     float: left;
     height: 100%;
     color: gray;
-    width: 7em;
+    width: 8em;
     display: block;
 }
 ul#main_menu li a
@@ -420,6 +416,7 @@ div#account_box
     display: none;
     text-align: left;
     min-height: 6em;
+    min-width: 18em;
 }
 body.logged_in div#account_label:hover div#account_box
 {
