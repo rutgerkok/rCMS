@@ -7,6 +7,7 @@ not_correct=is niet goed ingevuld.
 not_saved=kon niet worden opgeslagen.
 not_removeable=kan niet verwijderd worden.
 not_editable=kan niet bewerkt worden.
+please_enter_this=Vul alstublief een # in.
 is_not_created=kon niet worden gemaakt.
 is_not_removed=kon niet worden verwijderd.
 is_too_short=is te kort.

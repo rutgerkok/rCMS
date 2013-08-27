@@ -58,7 +58,7 @@ class Articles {
         $limit = (int) $limit; //stuk veiliger
         $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
         $sql.= "`artikel_intro`, `artikel_afbeelding`, `categorie_naam`, ";
-        $sql.= "`user_id`, `user_display_name`, `artikel_gepind`, ";
+        $sql.= "`categorie_id`, `user_id`, `user_display_name`, `artikel_gepind`, ";
         $sql.= "`artikel_verborgen`, `artikel_id` FROM `artikel` ";
         $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
         $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
@@ -89,7 +89,7 @@ class Articles {
         $result = $oDB->query($sql);
         if ($result && $oDB->rows($result) > 0) {
             while ($row = $oDB->fetch($result)) {
-                $return_value[] = new Article($row[10], $row);
+                $return_value[] = new Article($row[11], $row);
             }
             return $return_value;
         } else {
@@ -489,67 +489,6 @@ EOT;
         }
 
         return $return_value;
-    }
-
-}
-
-/**
- * Represents a single article. All data is raw HTML, handle with extreme
- * caution (read: htmlspecialchars)
- */
-class Article {
-
-    public $id;
-    public $title;
-    public $created;
-    public $last_edited;
-    public $intro;
-    public $featured_image;
-    public $category;
-    public $author;
-    public $author_id;
-    public $pinned;
-    public $hidden;
-    public $body;
-    public $show_comments;
-
-    public function __construct($id, $data) {
-        $id = (int) $id;
-        $this->id = $id;
-        if ($data instanceof Database) {
-            // Fetch from database
-            $oDatabase = $data;
-            $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
-            $sql.= "`artikel_intro`, `artikel_afbeelding`, ";
-            $sql.= "`categorie_naam`, `user_id`, `user_display_name`, `artikel_gepind`, ";
-            $sql.= "`artikel_verborgen`, `artikel_inhoud`, `artikel_reacties` FROM `artikel` ";
-            $sql.= "LEFT JOIN `categorie` USING ( `categorie_id` ) ";
-            $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
-            $sql.= "WHERE artikel_id = {$this->id} ";
-            $result = $oDatabase->query($sql);
-            if ($result && $oDatabase->rows($result) >= 1) {
-                $data = $oDatabase->fetch($result);
-            } else {
-                throw new InvalidArgumentException("Article not found");
-            }
-        }
-        // Set all variables
-        if (is_array($data) && count($data) >= 10) {
-            $this->title = $data[0];
-            $this->created = $data[1];
-            $this->last_edited = $data[2];
-            $this->intro = $data[3];
-            $this->featured_image = $data[4];
-            $this->category = $data[5];
-            $this->author_id = (int) $data[6];
-            $this->author = $data[7];
-            $this->pinned = (boolean) $data[8];
-            $this->hidden = (boolean) $data[9];
-            if (count($data) >= 12) {
-                $this->body = $data[10];
-                $this->show_comments = (boolean) $data[11];
-            }
-        }
     }
 
 }

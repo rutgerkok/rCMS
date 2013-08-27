@@ -95,26 +95,34 @@ legend
 }
 .button,button/*ook geschikt voor links*/
 {
-    background:#ddd; 
+    background: #ccc; 
     border:0;
-    color:#444444;
+    padding: 5px;
     border-radius: 4px;
     box-shadow: none;
     text-decoration:none;
     color:black;
-    padding:3px;
     border:0;
     cursor:pointer;
     font-size:100%;
 }
 .button:hover, button:hover
 {
-    background:#f2f2f2; 
+    background: #ddd; 
     border:0;
 }
 .button:focus,button:focus
 {
-    background:#eee; /*geen andere achtergrond */
+    background: #ddd; /*geen andere achtergrond */
+}
+.primary_button
+{
+    background: #9a9a79;
+    color: white;
+}
+.primary_button:hover
+{
+    background: #b4b488;
 }
 .checkbox
 {
@@ -123,6 +131,10 @@ legend
     border:0;
     border-radius:0;
     box-shadow:none;
+}
+.full_width
+{
+    width: 98%;
 }
 
 /*links*/
@@ -173,7 +185,7 @@ a img
 }
 
 
-/* klassen */
+/* Message boxes */
 div.error
 {
     font-family: verdana, sans-serif;

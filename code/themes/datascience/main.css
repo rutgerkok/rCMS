@@ -116,11 +116,25 @@ legend
 {
     background:#eee; /*geen andere achtergrond */
 }
+.primary_button
+{
+    background: #990000;
+    color: white;
+}
+.primary_button:hover
+{
+    background: #bb0000;
+    color: white;
+}
 .checkbox
 {
     background:transparent;
     border:0;
     box-shadow:none;
+}
+.full_width
+{
+    width: 98%;
 }
 
 
@@ -426,8 +440,8 @@ div#contentwide
 div#contentadmin
 {
     background: #e9e9e9 url(images/blocks.gif) bottom right no-repeat;
-    width: 93%;
-    padding: 0 5% 0 2%;
+    width: 98%;
+    padding: 0 1% 0 1%;
     clear:left;
     float:left;
     min-height:600px;
