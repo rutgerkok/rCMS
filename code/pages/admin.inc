@@ -50,6 +50,7 @@ if ($logged_in) {
 
     <p>
         <a href="<?php echo $this->get_url_page("site_settings") ?>" class="arrow"><?php echo $this->t("main.site_settings") ?></a><br />
+        <a href="<?php echo $this->get_url_page("widgets") ?>" class="arrow"><?php echo $this->t("main.edit") . " " . $this->t("main.widgets") ?></a>
     </p>
 
     <h3><?php echo $this->t("main.articles") ?></h3>
@@ -80,13 +81,6 @@ if ($logged_in) {
     <?php
     echo $cat_rename_list;
     echo $cat_delete_list;
-    ?>
 
-    <h3><?php echo $this->t("main.widgets") ?></h3>
-    <p>
-        <a href="<?php echo $this->get_url_page("widgets") ?>" class="arrow"><?php echo $this->t("main.edit") ?></a>
-    </p>
-
-    <?php
 }
 ?>
