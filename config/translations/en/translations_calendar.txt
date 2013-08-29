@@ -1,0 +1,2 @@
+calendar_for=Calendar for
+calendar_for_twelve_months=Event calendar for the next twelve months

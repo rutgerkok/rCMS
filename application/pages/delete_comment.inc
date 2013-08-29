@@ -1,0 +1,57 @@
+<h2><?php echo $this->t("editor.comment.delete") ?></h2>
+<?php
+//OBJECTEN
+$oAuth = new Authentication($this);
+$oComments = new Comments($this, $oAuth);
+$loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
+$is_moderator = $oAuth->check(Authentication::$MODERATOR_RANK, false);
+
+//INHOUD VOOR PAGINA
+$textToDisplay = '';
+
+if ($loggedIn) {
+
+    $comment_id = isSet($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
+    $comment = $oComments->get_comment($comment_id);
+    if ($comment == null) {
+        // Comment not found
+        $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlMain() . '">' . $this->t("main.home") . '</a></p>';
+    } else {
+        if ($is_moderator || $oComments->get_user_id($comment) == $oAuth->getCurrentUser()->getId()) {
+            // Enough rights
+            if (isSet($_REQUEST['confirm'])) {
+                // Confirmed
+                if ($oComments->delete_comment($comment_id)) {
+                    $textToDisplay.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("editor.is_deleted") . '</p>';
+                    $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
+                } else {
+                    $textToDisplay.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("errors.is_not_removed") . '</p>';
+                    $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
+                }
+            } else {
+                // Show confirmation message
+                $textToDisplay.= '<p>' . $this->t("editor.comment.delete.confirm") . '</p>';
+
+                //en laat daarbij de comment zien
+                $comment_html = $oComments->get_comment_html($comment, false);
+                $textToDisplay.= $comment_html;
+                $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("delete_comment", $comment_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . "</a> | \n";
+                $textToDisplay.= '<a class="arrow" href="' . $this->getUrlMain() . '" onclick="history.back();return false">' . $this->t("main.no") . '</a></p>';
+            }
+        } else {
+            // Not enough rights
+            $textToDisplay.= '<p>' . $this->t("comments.comment") . ' ' . $this->t("errors.not_removeable") . '</p>';
+            $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("article", $oComments->get_article_id($comment)) . '">' . $this->t("main.ok") . '</a></p>';
+        }
+    }
+}
+
+unset($oComments);
+
+//FOUTAFHANDELING
+if (!$this->errorsDisplayed) {
+    $this->echoErrors();
+}
+
+//WEERGEVEN
+echo $textToDisplay;

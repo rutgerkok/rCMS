@@ -1,0 +1,5 @@
+all=Alle categorie&euml;n
+search.all_in_year=Doorzoek alle categorie&euml;n in #
+create=Maak nieuwe categorie
+articles_in_category=Artikelen in categorie
+show_all=Toon alle categorie&euml;n
