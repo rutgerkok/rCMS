@@ -1,10 +1,8 @@
 <h2><?php echo $this->t("main.admin") ?></h2> <!-- admin -->
 <?php
 //OBJECTEN
-$oDB = $this->getDatabase();
 $oAuth = new Authentication($this);
-$oCat = new Categories($oDB, $this);
-unset($oDB); //al niet meer nodig, want doorgegeven als parameter
+$oCat = new Categories($this);
 //AUTHENTICATIE
 $loggedIn = $oAuth->check(true, true);
 unset($oAuth);

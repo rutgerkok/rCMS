@@ -3,9 +3,8 @@
 $textToDisplay='';
 
 //OBJECTEN
-$oDB = $this->getDatabase();
 $oAuth = new Authentication($this);
-$oCat = new Categories($oDB,$this);
+$oCat = new Categories($this);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 
 //INLOGGEN

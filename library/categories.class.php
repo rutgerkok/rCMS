@@ -5,19 +5,9 @@ class Categories {
     protected $databaseObject;
     protected $websiteObject;
 
-    function __construct($oWebsite, $oDB = null) {
-        if ($oWebsite instanceof Database) {
-            //website object is geen website object, argumenten zijn verkeerd om aangeleverd
-            //(voor 5 november 2011 was dat de standaard bij class_authentication, vanaf 24 januari 2012 ook hier)
-            $this->databaseObject = $oWebsite;
-            $this->websiteObject = $oDB;
-        } else {
-            $this->websiteObject = $oWebsite;
-            $this->databaseObject = $oDB;
-            if ($this->databaseObject == null) {
-                $this->databaseObject = $oWebsite->getDatabase();
-            }
-        }
+    function __construct(Website $oWebsite) {
+        $this->websiteObject = $oWebsite;
+        $this->databaseObject = $oWebsite->getDatabase();
     }
 
     function getCategories() { //retourneert de categorieeen als array id=>naam
@@ -73,7 +63,7 @@ class Categories {
 			
 EOT;
         } else {
-            $oWebsite->add_error('Category could not be created. Please try again later.');
+            $oWebsite->addError('Category could not be created. Please try again later.');
             return '';
         }
     }
@@ -99,29 +89,29 @@ EOT;
             $name = $oDB->escapeData($_REQUEST['name']);
 
             if ($id == 0) {
-                $oWebsite->add_error('Category was not found.');
+                $oWebsite->addError('Category was not found.');
                 return ''; //breek onmiddelijk af
             }
 
             if (strLen($name) < 2) {
-                $oWebsite->add_error('Category name is too short!');
+                $oWebsite->addError('Category name is too short!');
             }
 
             if (strLen($name) > 30) {
-                $oWebsite->add_error('Category name is too long! Maximum length is 30 characters.');
+                $oWebsite->addError('Category name is too long! Maximum length is 30 characters.');
             }
 
-            if ($oWebsite->errorCount() == 0) { //het is veilig om te hernoemen
+            if ($oWebsite->getErrorCount() == 0) { //het is veilig om te hernoemen
                 $sql = "UPDATE `categorie` SET categorie_naam = '$name' WHERE categorie_id = $id";
                 if ($oDB->query($sql)) {
                     if ($oDB->affectedRows() == 1) {
                         return '<p>Category is succesfully renamed.</p>';
                     } else { //categorie niet gevonden
-                        $oWebsite->add_error('Category was not found.');
+                        $oWebsite->addError('Category was not found.');
                         return ''; //breek onmiddelijk af
                     }
                 } else {
-                    $oWebsite->add_error("Cannot rename category!");
+                    $oWebsite->addError("Cannot rename category!");
                 }
             }
         }
@@ -137,7 +127,7 @@ EOT;
         }
         return <<<EOT
 		
-		<form action="{$oWebsite->get_url_main()}" method="post">
+		<form action="{$oWebsite->getUrlMain()}" method="post">
 			<p>
 				<label for="name"> New name for category '$oldname':</label>
 				<input type="text" size="30" id="name" name="name" value="$name" />
@@ -145,7 +135,7 @@ EOT;
 				<input type="hidden" name="p" value="rename_category" />
 				<br />
 				<input type="submit" value="Save" class="button" /> 
-				<a href="{$oWebsite->get_url_page('rename_category')}" class="button">Cancel</a>
+				<a href="{$oWebsite->getUrlPage('rename_category')}" class="button">Cancel</a>
 			</p>
 		</form>
 EOT;
@@ -162,11 +152,11 @@ EOT;
         $id = (int) $_REQUEST['id'];
 
         if ($id == 0) {//ongeldig nummer
-            $oWebsite->add_error('Category was not found.');
+            $oWebsite->addError('Category was not found.');
             return '';
         }
         if ($id == 1) { //"No category" category cannot be removed
-            $oWebsite->add_error('You cannot delete this category, but it is possible to rename it.');
+            $oWebsite->addError('You cannot delete this category, but it is possible to rename it.');
             return '';
         }
 
@@ -181,7 +171,7 @@ EOT;
                 //geef melding
                 return '<p>Category is removed.</p>';
             } else {
-                $oWebsite->add_error('Category could not be removed.');
+                $oWebsite->addError('Category could not be removed.');
                 return '<p>Category is NOT removed.</p>';
             }
         } else { //laat bevestingingsvraag zien
@@ -190,14 +180,15 @@ EOT;
             if (!empty($cat_name)) {
                 $returnValue = '<p>Are you sure you want to remove the category \'' . $cat_name . '\'?';
                 $returnValue.= ' This action cannot be undone. Please note that some articles might get uncatogorized.</p>';
-                $returnValue.= '<p><a href="' . $oWebsite->get_url_page("delete_category", $id, array("confirm" => 1)) . '">Yes</a>|';
-                $returnValue.= '<a href="' . $oWebsite->get_url_page("delete_category") . '">No</a></p>';
+                $returnValue.= '<p><a href="' . $oWebsite->getUrlPage("delete_category", $id, array("confirm" => 1)) . '">Yes</a>|';
+                $returnValue.= '<a href="' . $oWebsite->getUrlPage("delete_category") . '">No</a></p>';
                 return $returnValue;
             } else {
                 return '';
             }
         }
     }
+
 }
 
 ?>

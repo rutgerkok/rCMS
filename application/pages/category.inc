@@ -3,7 +3,7 @@
 $cat_id = 0; //standaardwaarde
 $textToDisplay = '';
 
-$oCats = new Categories($this->getDatabase(), $this);
+$oCats = new Categories($this);
 
 if (isSet($_REQUEST['id'])) {
     $cat_id = (int) $_REQUEST['id'];
