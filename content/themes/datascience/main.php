@@ -47,11 +47,11 @@
 
                     <?php if ($this->getPageType() == "HOME") { ?>
                     <div id="sidebar">
-    <?php $this->echo_widgets(2); ?>
+    <?php $this->echoWidgets(2); ?>
                         &nbsp;
                     </div>
                     <div id="nav">
-    <?php $this->echo_widgets(3); ?>
+    <?php $this->echoWidgets(3); ?>
                         &nbsp;
                     </div>
                 <?php } ?>

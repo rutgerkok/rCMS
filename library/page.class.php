@@ -20,7 +20,7 @@ abstract class Page {
      * Gets the minimum rank required to view this page, like Authentication::$USER_RANK.
      * @return int The minimum rank required to view this page.
      */
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return -1;
     }
 
@@ -36,15 +36,26 @@ abstract class Page {
      * @param Website $oWebsite The website object.
      * @return string The short title of this page.
      */
-    public function get_short_page_title(Website $oWebsite) {
+    public function getShortPageTitle(Website $oWebsite) {
         return $this->getPageTitle($oWebsite);
+    }
+    
+    /**
+     * Returns the view of this page. Not overriding this method is deprecated.
+     * @return View|null A view, or null if not using a view (deprecated).
+     */
+    public function getView(Website $oWebsite) {
+        return null;
     }
 
     /**
-     * Gets the HTML content of this page.
+     * Gets the HTML content of this page. Overriding this method is deprecated,
+     * you should provide a view instead using {@link #getView(Website)}.
      * @return string The HTML content of this page.
      */
-    public abstract function get_page_content(Website $oWebsite);
+    public function getPageContent(Website $oWebsite) {
+        return $this->getView($oWebsite)->getText();
+    }
 }
 
-?>
+

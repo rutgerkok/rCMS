@@ -9,7 +9,7 @@ class EditDisplayNamePage extends EditPasswordPage {
         return $oWebsite->t("editor.display_name.edit");
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         // Check selected user
         if ($this->user == null) {
             return "";

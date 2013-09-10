@@ -20,7 +20,7 @@ class Widgets {
      * Gets a list of all installed widgets.
      * @return \WidgetInfo List of all installed widgets.
      */
-    public function get_widgets_installed() {
+    public function getInstalledWidgets() {
         $widgets = array();
         $directoryToScan = $this->websiteObject->getUriWidgets();
         if (is_dir($directoryToScan)) {
@@ -110,11 +110,11 @@ class Widgets {
     }
 
     // Echoes all widgets in the specified sidebar
-    public function echoWidgetsSidebar($sidebarId) {
+    public function getWidgetsSidebar($sidebarId) {
         $oWebsite = $this->websiteObject;
         $oDB = $oWebsite->getDatabase();
         $loggedInAsAdmin = $oWebsite->isLoggedInAsStaff(true);
-
+        $output = "";
         $sidebarId = (int) $sidebarId;
 
         // Get all widgets that should be displayed
@@ -135,13 +135,13 @@ class Widgets {
 
             // Check if load was succesfull. Display widget or display error.
             if (isSet(Widgets::$loadedWidgets[$directory_name])) {
-                echo Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JSONHelper::stringToArray($data));
+                $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JSONHelper::stringToArray($data));
                 if ($loggedInAsAdmin) {
                     // Links for editing and deleting
-                    echo "<p>\n";
-                    echo '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . " " . $oWebsite->t("main.widget") . '</a> ';
-                    echo '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
-                    echo "</p>\n";
+                    $output.= "<p>\n";
+                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . " " . $oWebsite->t("main.widget") . '</a> ';
+                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
+                    $output.= "</p>\n";
                 }
             } else {
                 $oWebsite->addError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.", "A widget was missing.");
@@ -150,10 +150,12 @@ class Widgets {
 
         // Link to manage widgets
         if ($loggedInAsAdmin) {
-            echo '<p><a class="arrow" href="' . $oWebsite->getUrlPage("widgets") . '">';
-            echo $oWebsite->t("main.manage") . " " . strtolower($oWebsite->t("main.widgets"));
-            echo "</a></p>\n";
+            $output.= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("widgets") . '">';
+            $output.= $oWebsite->t("main.manage") . " " . strToLower($oWebsite->t("main.widgets"));
+            $output.= "</a></p>\n";
         }
+        
+        return $output;
     }
 
     /**

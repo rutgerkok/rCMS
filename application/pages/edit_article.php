@@ -52,7 +52,7 @@ class ArticleEditPage extends Page {
         }
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$MODERATOR_RANK;
     }
 
@@ -71,11 +71,11 @@ class ArticleEditPage extends Page {
         return $page_title;
     }
 
-    public function get_short_page_title(Website $oWebsite) {
+    public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("articles.edit");
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         if ($this->article_editor == null) {
             return "";
         }

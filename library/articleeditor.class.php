@@ -92,12 +92,15 @@ class ArticleEditor {
 
         // Category
         if (isSet($inputArray['article_category'])) {
-            $category_id = (int) $oWebsite->getRequestString('article_category', 0);
-            if(!$oCategories->getCategoryName($category_id)) {
+            $categoryId = (int) $oWebsite->getRequestString('article_category', 0);
+            if($categoryId == 0) {
+                // Silent failure when category id is set to 0
+                $noErrors = false;
+            } elseif(!$oCategories->getCategoryName($categoryId)) {
                 $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
                 $noErrors = false;
             }
-            $article->categoryId = $category_id;
+            $article->categoryId = $categoryId;
         }
 
         // Featured image

@@ -12,6 +12,7 @@ class WidgetRkokArticles extends WidgetDefinition {
     const SORT_OLDEST_TOP = 0;
 
     public function getWidget(Website $oWebsite, $id, $data) {
+        // Check variables
         if (!isSet($data["title"]) || !isSet($data["count"])
                 || !isSet($data["display_type"]) || !isSet($data["categories"])) {
             // The order variable is not checked, as older configurations may
@@ -20,39 +21,42 @@ class WidgetRkokArticles extends WidgetDefinition {
         }
 
         $returnValue = "";
+
+
+        // Title
         if (strLen($data["title"]) > 0) {
             $returnValue.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
         }
 
+        // Get options
         $categories = $data["categories"];
         $articlesCount = (int) $data["count"];
-        $display_type = (int) $data["display_type"];
-        $options = 0;
+        $displayType = (int) $data["display_type"];
+
         // Sorting
+        $oldestTop = false;
         if (isSet($data["order"]) && $data["order"] == self::SORT_OLDEST_TOP) {
-            $options+= Articles::OLDEST_TOP;
+            $oldestTop = true;
         }
+        
         // Archive link
+        $showArchiveLink = false;
         if (!isSet($data["archive"]) || $data["archive"] == true) {
-            $options+= Articles::ARCHIVE;
+            $showArchiveLink = true;
         }
-        $oArticles = new Articles($oWebsite, $oWebsite->getDatabase());
-        if ($display_type == self::TYPE_LIST) {
-            // As list without images
-            $returnValue.= $oArticles->get_articles_bullet_list($categories, $articlesCount, $options);
-        } elseif ($display_type == self::TYPE_LIST_WITH_IMAGES) {
-            // As list with images
-            $options += Articles::IMAGES;
-            $returnValue.= $oArticles->get_articles_bullet_list($categories, $articlesCount, $options);
-        } elseif ($display_type == self::TYPE_WITH_METADATA) {
-            // As paragraphs with metadata
-            $options += Articles::METAINFO;
-            $returnValue.= $oArticles->get_articles_list_category($categories, $articlesCount, $options);
-        } else { // So $display_type should be TYPE_WITHOUT_METADATA
-            // As paragrapsh without metadata
-            $returnValue.= $oArticles->get_articles_list_category($categories, $articlesCount, $options);
+
+        $oArticles = new Articles($oWebsite);
+        $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);
+        
+        if($displayType >= self::TYPE_LIST) {
+            // Small <ul> list
+            $oArticlesView = new ArticleSmallListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
+        } else {
+            // Real paragraphs
+            $oArticlesView = new ArticleListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink);
         }
-        return $returnValue;
+        
+        return $oArticlesView->getText();
     }
 
     public function getEditor(Website $oWebsite, $widget_id, $data) {
@@ -98,13 +102,13 @@ class WidgetRkokArticles extends WidgetDefinition {
         $textToDisplay.= '<p><label for="display_type_' . $widget_id . '">' . $oWebsite->t("articles.display_type") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<select name="display_type_' . $widget_id . '" id="display_type_' . $widget_id . '">';
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.display_type.without_metadata"), self::TYPE_WITHOUT_METADATA, $display_type);
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.display_type.with_metadata"), self::TYPE_WITH_METADATA, $display_type);
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.display_type.list"), self::TYPE_LIST, $display_type);
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.display_type.list_with_images"), self::TYPE_LIST_WITH_IMAGES, $display_type);
         $textToDisplay.= "</select>\n";
         $textToDisplay.= "</p>\n";
@@ -113,15 +117,15 @@ class WidgetRkokArticles extends WidgetDefinition {
         $textToDisplay.= '<p><label for="order_' . $widget_id . '">' . $oWebsite->t("articles.order") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<select name="order_' . $widget_id . '" id="dorder_' . $widget_id . '">';
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.order.newest_top"), self::SORT_NEWEST_TOP, $order);
-        $textToDisplay.= $this->get_select_option(
+        $textToDisplay.= $this->getSelectOption(
                 $oWebsite->t("articles.order.oldest_top"), self::SORT_OLDEST_TOP, $order);
         $textToDisplay.= "</select>\n";
         $textToDisplay.= "</p>\n";
-        
+
         // Archive
-        $checked = $archive? 'checked="checked"' : "";
+        $checked = $archive ? 'checked="checked"' : "";
         $textToDisplay.= <<<EOT
             <p>
                 <label for="archive_$widget_id">{$oWebsite->t("articles.archive")}:</label>
@@ -132,7 +136,7 @@ EOT;
         return $textToDisplay;
     }
 
-    private function get_select_option($display, $value_of_this_option, $current_value) {
+    private function getSelectOption($display, $value_of_this_option, $current_value) {
         $textToDisplay = '<option value="' . $value_of_this_option . '"';
         if ($value_of_this_option == $current_value) {
             $textToDisplay.= ' selected="selected"';
@@ -213,9 +217,9 @@ EOT;
             $oWebsite->addError($oWebsite->t("articles.order") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }
-        
+
         // Archive
-        if(isSet($_REQUEST["archive_" . $id])) {
+        if (isSet($_REQUEST["archive_" . $id])) {
             $data["archive"] = true;
         } else {
             $data["archive"] = false;

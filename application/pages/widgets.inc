@@ -39,7 +39,7 @@ if ($loggedIn) {
      // Get installed widgets
     $textToDisplay.= '<div id="sidebar_page_content">' . "\n";
     $textToDisplay.= '<h3 class="notable">' . $this->t("widgets.installed_widgets") . "</h3>\n";
-    $widgets = $oWidgets->get_widgets_installed();
+    $widgets = $oWidgets->getInstalledWidgets();
     if (count($widgets) === 0) {
         $textToDisplay.= "<p><em>" . $this->t("widgets.no_widgets_found") . "</em></p>";
     } else {

@@ -42,7 +42,7 @@
 
             <?php if($this->getPageType()!="BACKSTAGE") { ?>
                     <div id="sidebar">
-                            <?php $this->echo_widgets(2); ?>
+                            <?php $this->echoWidgets(2); ?>
                     </div>
             <?php } ?>
 

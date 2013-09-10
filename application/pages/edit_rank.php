@@ -9,11 +9,11 @@ class EditRankPage extends EditPasswordPage {
         return $oWebsite->t("editor.rank.edit");
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         // Check selected user
         if ($this->user == null) {
             return "";

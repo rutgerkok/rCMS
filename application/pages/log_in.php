@@ -6,15 +6,15 @@ class LoginPage extends Page {
         return $oWebsite->t("main.log_in") . '...';
     }
 
-    public function get_short_page_title(Website $oWebsite) {
+    public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.log_in");
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$USER_RANK;
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         $admin_links = "";
         if ($oWebsite->isLoggedInAsStaff(true)) {
             $admin_links = <<<EOT

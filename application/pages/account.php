@@ -31,12 +31,12 @@ class AccountPage extends Page {
         }
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         if ($oWebsite->getRequestInt("id", 0) == 0) {
             // Need to be logged in to view your own account
             return Authentication::$USER_RANK;
         } else {
-            return parent::get_minimum_rank($oWebsite);
+            return parent::getMinimumRank($oWebsite);
         }
     }
 
@@ -55,11 +55,11 @@ class AccountPage extends Page {
         }
     }
 
-    public function get_short_page_title(Website $oWebsite) {
+    public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("users.profile_page");
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         if ($this->user == null) {
             // Error - user not found
             $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
@@ -87,12 +87,11 @@ EOT;
     public function get_articles_html(Website $oWebsite) {
         $oArticles = new Articles($oWebsite);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
+        $oArticleView = new ArticleListView($oWebsite, $articles, 0, true, false);
         $loggedInStaff = $oWebsite->isLoggedInAsStaff();
         if (count($articles) > 0) {
             $returnValue = '<h3 class="notable">' . $oWebsite->t("main.articles") . "</h3>\n";
-            foreach ($articles as $article) {
-                $returnValue .= $oArticles->getArticleTextSmall($article, true, $loggedInStaff);
-            }
+            $returnValue.= $oArticleView->getText();
             return $returnValue;
         } else {
             return "";

@@ -10,11 +10,11 @@ class LoginPage extends Page {
         return $oWebsite->t("main.log_out") . '...';
     }
 
-    public function get_short_page_title(Website $oWebsite) {
+    public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.log_out");
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         return <<<EOT
             <h3>{$oWebsite->t('users.logged_out')}</h3>
             <p>{$oWebsite->t('users.succesfully_logged_out')}</p>

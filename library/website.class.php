@@ -362,12 +362,12 @@ class Website {
                 // Page title
                 $this->current_page_title = $this->currentPage->getPageTitle($this);
                 if ($this->getSiteSetting('append_page_title')) {
-                    $this->site_title.= ' - ' . $this->currentPage->get_short_page_title($this);
+                    $this->site_title.= ' - ' . $this->currentPage->getShortPageTitle($this);
                 }
                 // Page type
                 $this->current_page_type = $this->currentPage->getPageType();
                 // Authentication stuff
-                $rank = (int) $this->currentPage->get_minimum_rank($this);
+                $rank = (int) $this->currentPage->getMinimumRank($this);
                 if ($rank >= 0) {
                     $oAuth = $this->getAuth();
                     if (!$oAuth->check($rank, false)) {
@@ -432,7 +432,7 @@ class Website {
                 if ($this->authentication_failed_rank >= 0) {
                     $textToDisplay = $this->authentication_object->getLoginForm($this->authentication_failed_rank);
                 } else {
-                    $textToDisplay = $this->currentPage->get_page_content($this);
+                    $textToDisplay = $this->currentPage->getPageContent($this);
                 }
 
                 // Echo errors

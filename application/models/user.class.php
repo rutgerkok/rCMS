@@ -130,7 +130,7 @@ class User {
     public function getDisplayName() {
         return $this->displayName;
     }
-    
+
     // Gravatar
     // Gets the gravatar url based on the hash and size.
     private static function getUserAvatarUrl($hash, $gravatar_size) {
@@ -155,7 +155,7 @@ class User {
             return self::getStandardAvatarUrl($gravatar_size);
         }
     }
-    
+
     /**
      * Returns the url of the default gravatar.
      * @param int $gravatar_size Size (width and height) of the gravatar in pixels.

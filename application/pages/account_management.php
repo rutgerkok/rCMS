@@ -4,7 +4,7 @@ class AccountManagementPage extends Page {
 
     const USERS_PER_PAGE = 50;
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$ADMIN_RANK;
     }
 
@@ -33,7 +33,7 @@ class AccountManagementPage extends Page {
         return true;
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         $page = max(0, $oWebsite->getRequestInt("id", 0));
         $usersCount = $oWebsite->getAuth()->get_registered_usersCount();
 

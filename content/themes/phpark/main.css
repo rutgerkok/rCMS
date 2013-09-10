@@ -281,7 +281,7 @@ div#sidebar_page_sidebar img
     max-width: 100%;
     margin:1px;
 }
-
+/* Other */
 p.lijn
 {
     border-top: 1px #999999 dotted;
@@ -312,6 +312,16 @@ h3.notable
     color:#9d8a0a;
     font-size: 110%;
     font-family: Georgia, "Times New Roman", Times, serif;
+}
+ul.no_bullets
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.no_bullets li
+{
+    margin: 0.2em 0 0 1em;
 }
 /* tooltip */
 #tooltip

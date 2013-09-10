@@ -123,7 +123,7 @@ EOT;
         // Nog de laatste link?
         if ($oWebsite->getPageId() != 'home') {
             if($oWebsite->getPage() != null) {
-                echo ' <a href="#">' . $oWebsite->getPage()->get_short_page_title($oWebsite) . '</a>';
+                echo ' <a href="#">' . $oWebsite->getPage()->getShortPageTitle($oWebsite) . '</a>';
             } else {
                 echo ' <a href="#">' . $oWebsite->getPageTitle() . '</a>';
             }
@@ -165,11 +165,13 @@ EOT;
         echo '</form>';
     }
 
-    public function echo_widgets($area) {
-        $oWebsite = $this->websiteObject;
-
+    public function echoWidgets($area) {
+        echo $this->getWidgets($area);
+    }
+    
+    public function getWidgets($area) {
         $oWidgets = $this->widgets_object;
-        $oWidgets->echoWidgetsSidebar($area);
+        return $oWidgets->getWidgetsSidebar($area);
     }
     
     /**

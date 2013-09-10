@@ -9,7 +9,7 @@ class EditEmailPage extends EditPasswordPage {
         return $oWebsite->t("editor.email.edit");
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         // Check selected user
         if ($this->user == null) {
             return "";

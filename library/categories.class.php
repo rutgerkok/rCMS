@@ -5,9 +5,12 @@ class Categories {
     protected $databaseObject;
     protected $websiteObject;
 
-    function __construct(Website $oWebsite) {
+    function __construct(Website $oWebsite, Database $oDatabase = null) {
         $this->websiteObject = $oWebsite;
-        $this->databaseObject = $oWebsite->getDatabase();
+        $this->databaseObject = $oDatabase;
+        if (!$this->databaseObject) {
+            $this->databaseObject = $oWebsite->getDatabase();
+        }
     }
 
     function getCategories() { //retourneert de categorieeen als array id=>naam
@@ -23,22 +26,22 @@ class Categories {
         return $return_array;
     }
 
+    /**
+     * Returns the name of the category with the given id. Does a database call
+     * for this. Returns an empty string when the category isn't found.
+     * @param int $id Id of the category.
+     * @return string Name of the category, emtpy if not found.
+     */
     function getCategoryName($id) {
-        $oWebsite = $this->websiteObject;
         $oDB = $this->databaseObject;
 
         $id = (int) $id;
-        if ($id == 0) {
-            $oWebsite->addError('Category was not found!');
-            return '';
-        }
 
         $result = $oDB->query("SELECT categorie_naam FROM `categorie` WHERE categorie_id = $id");
         if ($oDB->rows($result) == 1) {
             $result = $oDB->fetchNumeric($result);
             return($result[0]);
         } else {
-            $oWebsite->addError('Category was not found!');
             return '';
         }
     }

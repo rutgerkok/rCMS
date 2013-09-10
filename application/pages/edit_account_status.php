@@ -11,7 +11,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         return $oWebsite->t("editor.status.edit");
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$MODERATOR_RANK;
     }
     
@@ -20,7 +20,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         return $oWebsite->isLoggedInAsStaff(false);
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         // Check selected user
         if ($this->user == null) {
             return "";

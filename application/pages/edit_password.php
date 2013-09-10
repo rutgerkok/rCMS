@@ -44,7 +44,7 @@ class EditPasswordPage extends Page {
         return $oWebsite->t("editor.password.edit");
     }
 
-    public function get_minimum_rank(Website $oWebsite) {
+    public function getMinimumRank(Website $oWebsite) {
         return Authentication::$USER_RANK;
     }
 
@@ -52,7 +52,7 @@ class EditPasswordPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function get_page_content(Website $oWebsite) {
+    public function getPageContent(Website $oWebsite) {
         // Check selected user
         if ($this->user == null) {
             return "";

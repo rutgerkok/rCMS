@@ -15,13 +15,18 @@ if (strLen($keyword) < 3) {
     $this->addError($this->t("articles.search_term") . " " . $this->t("errors.is_too_short"));
     $result = '<p>' . $this->t("articles.search_term") . " " . $this->tReplaced("errors.is_too_short_num", 3) . '</p>';
 } else {
-    $oDB = $this->getDatabase();
-
     // Articles
     $result = "<h3 class=\"notable\">" . $this->t('articles.search.results_in_articles') . "</h3>\n"; //resultaten in artikelen
-    $oArticles = new Articles($this, $oDB);
-    $result.= $oArticles->get_articles_search($_REQUEST['searchbox'], $page);
-    unset($oArticles);
+    
+    $oArticles = new Articles($this);
+    $totalNumberOfArticles = $oArticles->getMatchesFor($keyword);
+    $articlesPerPage = ArticleSearchView::ARTICLES_PER_PAGE;
+    $startNumber = ArticleSearchView::getStartNumber($page);
+    $articles = $oArticles->getArticlesDataMatch($keyword, $articlesPerPage, $startNumber);
+    $oSearchView = new ArticleSearchView($this, $keyword, $articles, $page, $totalNumberOfArticles);
+
+    
+    $result.= $oSearchView->getText();
 
     // Links
     $oMenu = new Menus($this);
