@@ -15,18 +15,18 @@ function __autoLoad($class) {
 
     // Try to see if it's a view
     if (subStr($class, -4) == "view") {
-        require_once('../application/views/' . $class . '.class.php');
+        require_once('application/views/' . $class . '.class.php');
         return;
     }
 
     // Try to see if it's a class in the library
-    if (file_exists('../library/' . $class . '.class.php')) {
-        require_once('../library/' . $class . '.class.php');
+    if (file_exists('application/library/' . $class . '.class.php')) {
+        require_once('application/library/' . $class . '.class.php');
         return;
     }
 
     // Try to load a model
-    require_once('../application/models/' . $class . '.class.php');
+    require_once('application/models/' . $class . '.class.php');
 }
 
 // Display site

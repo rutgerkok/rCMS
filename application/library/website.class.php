@@ -169,11 +169,6 @@ class Website {
         return $this->getSiteSetting('uri') . "library/";
     }
     
-    /** Returns the path of the config directory */
-    public function getUriConfigs() {
-        return $this->getSiteSetting('uri') . "config/";
-    }
-    
     /** Returns the path of all default controllers, models, pages and views */
     public function getUriApplication() {
         return $this->getSiteSetting('uri') . "application/";
@@ -196,7 +191,7 @@ class Website {
     
     /** Returns the url of the public content directory of this site */
     public function getUrlContent() {
-        return $this->getSiteSetting('url');
+        return $this->getSiteSetting('url') . "content/";
     }
     
     /** Returns the internal uri of the public content directory */
@@ -245,11 +240,11 @@ class Website {
 
     //Geeft de map van alle widgets terug als uri
     public function getUriWidgets() {
-        return $this->getUriConfigs() . "widgets/";
+        return $this->getUriContent() . "widgets/";
     }
 
     public function getUriTranslations() {
-        return $this->getUriConfigs() . "translations/";
+        return $this->getUriContent() . "translations/";
     }
     
     public function getUrlJavaScripts() {
@@ -498,7 +493,7 @@ class Website {
         $this->config["title"] = "Welcome!";
 
         // Load other settings from config.php (required)
-        $file = "../config/config.php";
+        $file = "content/config.php";
         if (file_exists($file)) {
             require($file);
         } else {
