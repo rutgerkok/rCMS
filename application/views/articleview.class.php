@@ -56,21 +56,36 @@ class ArticleView extends View {
 
         // Echo the sidebar
         $returnValue.= '<div id="sidebar_page_sidebar">';
+        
+        // Featured image
         if (!empty($article->featuredImage))
             $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></p>';
         $returnValue.= '<p class="meta">';
+        
+        // Created and last edited
         $returnValue.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
         if ($article->lastEdited)
             $returnValue.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
-        $returnValue.= " <br /> " . $oWebsite->t('main.category') . ": " . $article->category;
+        
+        // Category
+        $returnValue.= " <br /> " . $oWebsite->t('main.category') . ': ';
+        $returnValue.= '<a href="' . $oWebsite->getUrlPage("category", $article->categoryId) . '">';
+        $returnValue.= htmlSpecialChars($article->category) . '</a>';
+        
+        // Author
         $returnValue.= " <br /> " . $oWebsite->t('articles.author') . ': ';
-        $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">' . $article->author . '</a>';
+        $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">';
+        $returnValue.= htmlSpecialChars($article->author) . '</a>';
+        
+        // Pinned, hidden, comments
         if ($article->pinned)
-            $returnValue.= "<br />" . $oWebsite->t('articles.pinned') . " "; //gepind
+            $returnValue.= "<br />" . $oWebsite->t('articles.pinned') . " ";
         if ($article->hidden)
-            $returnValue.= "<br />" . $oWebsite->t('articles.hidden'); //verborgen
+            $returnValue.= "<br />" . $oWebsite->t('articles.hidden');
         if ($loggedIn && $article->showComments)
-            $returnValue.= "<br />" . $oWebsite->t('comments.allowed'); //reacties
+            $returnValue.= "<br />" . $oWebsite->t('comments.allowed');
+        
+        // Edit, delete
         $returnValue.= '</p>';
         if ($loggedIn) {
             $returnValue.= "<p style=\"clear:both\">";
@@ -78,31 +93,16 @@ class ArticleView extends View {
                     '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
             $returnValue.= "</p>";
         }
-        if ($article->showComments) {
-            $returnValue.= <<<EOT
-                        <!-- AddThis Button BEGIN -->
-                            <div class="addthis_toolbox addthis_default_style ">
-                                <a class="addthis_button_facebook_like" fb:like:layout="buttonCount"></a>
-                                <br /><br />
-                                <a class="addthis_button_tweet"></a>
-                                <br /><br />
-                                <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-                                <br /><br />
-                                <a class="addthisCounter addthis_pill_style"></a>
-                            </div>
-                            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-50f99223106b78e7"></script>
-                        <!-- AddThis Button END -->
-EOT;
-        }
         $returnValue.= '</div>';
 
+        // Article
         $returnValue.= '<div id="sidebar_page_content">';
-        //artikel
         if ($loggedIn && $article->hidden)
             $returnValue.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
         $returnValue.= '<p class="intro">' . htmlSpecialChars($article->intro) . '</p>';
         $returnValue.= $article->body;
-        // Show comments
+        
+        // Comments
         if ($article->showComments && $oComments != null) {
             $comments = $oComments->get_comments_article($id);
             $commentCount = count($comments);
@@ -121,8 +121,8 @@ EOT;
 
             // Comment add link
             $returnValue.= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
-            // Show comments
 
+            // Show comments
             $current_user_id = $oWebsite->getCurrentUserId();
             $show_actions = $oWebsite->isLoggedInAsStaff();
             foreach ($comments as $comment) {

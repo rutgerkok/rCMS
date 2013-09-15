@@ -69,31 +69,40 @@ class ArticleListView extends View {
         $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
-            $returnValue.= $oWebsite->t('articles.created') . " " . $article->created . ' - '; //gemaakt op
+            // Created and last edited
+            $returnValue.= $oWebsite->t('articles.created') . " " . $article->created . ' - ';
             if ($article->lastEdited) {
-                $returnValue.= lcFirst($oWebsite->t('articles.last_edited')) . " " . $article->lastEdited . '<br />'; //laatst bewerkt op
+                $returnValue.= lcFirst($oWebsite->t('articles.last_edited')) . " " . $article->lastEdited . '<br />';
             }
             // Category
-            $returnValue.= $oWebsite->t('main.category') . ": " . $article->category;
+            $returnValue.= $oWebsite->t('main.category') . ": ";
+            $returnValue.= '<a href="' . $oWebsite->getUrlPage("category", $article->categoryId) . '">';
+            $returnValue.= htmlSpecialChars($article->category) . '</a>';
             // Author
             $returnValue.= " - " . $oWebsite->t('articles.author') . ": ";
-            $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">' . $article->author . "</a>";
+            $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">';
+            $returnValue.= htmlSpecialChars($article->author) . "</a>";
+            // Pinned
             if ($article->pinned) {
-                $returnValue.= " - " . $oWebsite->t('articles.pinned'); //vastgepind?
+                $returnValue.= " - " . $oWebsite->t('articles.pinned');
             }
+            // Hidden
             if ($article->hidden) {
-                $returnValue.= " - " . $oWebsite->t('articles.hidden'); //verborgen?
+                $returnValue.= " - " . $oWebsite->t('articles.hidden');
             }
             $returnValue.= '</p>';
         }
 
+        // Featured image
         if (!empty($article->featuredImage)) {
             $returnValue.= '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" />';
         }
 
+        // Intro
         $returnValue.= '<p class="intro">';
         $returnValue.= htmlSpecialChars($article->intro);
         $returnValue.= '</p> <p class="article_teaser_links">';
+        // Edit and delete links
         $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
             $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
@@ -102,19 +111,8 @@ class ArticleListView extends View {
         $returnValue.= "</p>";
 
         $returnValue.= '<p style="clear:both"></p>';
-
         $returnValue.= "</div>";
 
-        return $returnValue;
-    }
-
-    public function getArticleTextListEntry(Article $article, $display_images = false) {
-        $returnValue = '<li><a href="' . $this->websiteObject->getUrlPage("article", $article->id) . '"';
-        $returnValue.= 'title="' . $article->intro . '">';
-        if ($display_images && !empty($article->featuredImage)) {
-            $returnValue.= '<div class="linklist_icon_image"><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></div>';
-        }
-        $returnValue.= "<span>" . htmlSpecialChars($article->title) . "</span></a></li>\n";
         return $returnValue;
     }
 
