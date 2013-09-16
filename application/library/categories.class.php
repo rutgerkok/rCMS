@@ -137,7 +137,7 @@ EOT;
 				<input type="hidden" name="id" value="$id" />
 				<input type="hidden" name="p" value="rename_category" />
 				<br />
-				<input type="submit" value="Save" class="button" /> 
+				<input type="submit" value="Save" class="button primary_button" /> 
 				<a href="{$oWebsite->getUrlPage('rename_category')}" class="button">Cancel</a>
 			</p>
 		</form>

@@ -120,7 +120,7 @@ class ArticleView extends View {
             }
 
             // Comment add link
-            $returnValue.= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
+            $returnValue.= '<p><a class="button primary_button" href="' . $oWebsite->getUrlPage("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
 
             // Show comments
             $current_user_id = $oWebsite->getCurrentUserId();

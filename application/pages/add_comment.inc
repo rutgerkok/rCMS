@@ -53,7 +53,8 @@ EOT;
             <p>
                 <input type="hidden" name="id" value="$article_id" />
                 <input type="hidden" name="p" value="add_comment" />
-                <input type="submit" name="submit" value="{$this->t('comments.add')}" class="button" />
+                <input type="submit" name="submit" value="{$this->t('comments.add')}" class="button primary_button" />
+                <a href="{$this->getUrlPage("article", $article_id)}" class="button">{$this->t("editor.quit")}</a>
             </p>
         </form>
 EOT;

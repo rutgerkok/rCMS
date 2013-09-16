@@ -149,7 +149,7 @@ EOT;
                             <label for="pass">{$oWebsite->t('users.password')}:</label> <br />
                             <input type="password" name="pass" id="pass" /> <br />
 
-                            <input type="submit" value="{$oWebsite->t('main.log_in')}" class="button" />
+                            <input type="submit" value="{$oWebsite->t('main.log_in')}" class="button primary_button" />
 
 EOT;
         foreach ($_REQUEST as $key => $value) {

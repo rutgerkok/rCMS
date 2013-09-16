@@ -79,14 +79,15 @@ input:focus,textarea:focus,select:focus
 }
 fieldset
 {
-    border: 2px solid #8592bb;
+    border: none;
+    border-bottom: 2px solid #8592bb;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0;
 }
-fieldset.panel
+fieldset:last-of-type
 {
-    width:45%;
-    float:left;
-    min-height:200px;
-    margin:0.5%;
+    border-bottom: none;
 }
 legend
 {

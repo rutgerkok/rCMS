@@ -115,7 +115,7 @@ if ($loggedIn) {
         $textToDisplay.= $widget_definition->getEditor($this, $widget->getId(), $widget_data);
 
         // Save button
-        $textToDisplay.= '<input type="submit" class="button" value="';
+        $textToDisplay.= '<input type="submit" class="button primary_button" value="';
         $textToDisplay.= $this->t("editor.save") . '" name="sent" />' . "\n";
 
         // "Invisble"  data

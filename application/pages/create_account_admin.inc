@@ -84,7 +84,7 @@ EOT;
 		</p>
 		<p>
 			<input type="hidden" name="p" value="create_account_admin" />
-			<input type="submit" value="Create account" class="button" />
+			<input type="submit" value="Create account" class="button primary_button" />
 		</p>
 	</form>
 EOT;

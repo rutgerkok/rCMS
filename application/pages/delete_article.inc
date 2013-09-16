@@ -4,7 +4,7 @@ $textToDisplay = '';
 
 //OBJECTEN
 $oDB = $this->getDatabase();
-$oEdit = new ArticleEdit($oDB, new Categories($oDB, $this), $this);
+$oEdit = new ArticleEdit($oDB, new Categories($this), $this);
 $oAuth = new Authentication($this);
 unset($oDB); //al niet meer nodig, want doorgegeven als parameter
 //INLOGGEN

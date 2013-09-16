@@ -109,7 +109,7 @@ EOT;
                 </p>
                 <p>
                     <input type="hidden" name="p" value="{$oWebsite->getPageId()}" />
-                    <input type="submit" name="submit" class="button" value="{$oWebsite->t("editor.save")}" />
+                    <input type="submit" name="submit" class="button primary_button" value="{$oWebsite->t("editor.save")}" />
                 </p>
             </form>
             <p>
