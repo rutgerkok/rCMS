@@ -166,7 +166,7 @@ class Website {
 
     /** Returns the path of the library directory */
     public function getUriLibraries() {
-        return $this->getSiteSetting('uri') . "library/";
+        return $this->getUriApplication() . "library/";
     }
     
     /** Returns the path of all default controllers, models, pages and views */

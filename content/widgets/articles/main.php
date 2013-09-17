@@ -20,12 +20,12 @@ class WidgetRkokArticles extends WidgetDefinition {
             return;
         }
 
-        $returnValue = "";
+        $titleHTML = "";
 
 
         // Title
         if (strLen($data["title"]) > 0) {
-            $returnValue.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
+            $titleHTML.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
         }
 
         // Get options
@@ -56,7 +56,7 @@ class WidgetRkokArticles extends WidgetDefinition {
             $oArticlesView = new ArticleListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink);
         }
         
-        return $oArticlesView->getText();
+        return $titleHTML . $oArticlesView->getText();
     }
 
     public function getEditor(Website $oWebsite, $widget_id, $data) {
