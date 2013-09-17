@@ -99,7 +99,7 @@ class ArticleListView extends View {
         }
 
         // Intro
-        $returnValue.= '<p class="intro">';
+        $returnValue.= '<p>';
         $returnValue.= htmlSpecialChars($article->intro);
         $returnValue.= '</p> <p class="article_teaser_links">';
         // Edit and delete links

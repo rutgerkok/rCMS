@@ -260,7 +260,7 @@ div#sidebar_page_content
     margin-left:0;
     margin-right:0;
 }
-div#sidebar_page_content p.intro
+p.intro
 {
     font-style: italic;
 }
