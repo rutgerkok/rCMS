@@ -19,6 +19,7 @@ rank=Rank
 rank.admin=Site Administator
 rank.moderator=Moderator
 rank.user=User
+rank.visitor=Visitor
 rank.unknown=Unknown
 the_username=The username
 the_display_name=The display name

@@ -104,7 +104,7 @@ class ArticleView extends View {
         
         // Comments
         if ($article->showComments && $oComments != null) {
-            $comments = $oComments->get_comments_article($id);
+            $comments = $oComments->getCommentsArticle($id);
             $commentCount = count($comments);
 
             // Title
@@ -126,10 +126,10 @@ class ArticleView extends View {
             $current_user_id = $oWebsite->getCurrentUserId();
             $show_actions = $oWebsite->isLoggedInAsStaff();
             foreach ($comments as $comment) {
-                if ($show_actions || $oComments->get_user_id($comment) == $current_user_id) {
-                    $returnValue.= $oComments->get_comment_html($comment, true);
+                if ($show_actions || $oComments->getUserId($comment) == $current_user_id) {
+                    $returnValue.= $oComments->getCommentHTML($comment, true);
                 } else {
-                    $returnValue.= $oComments->get_comment_html($comment, false);
+                    $returnValue.= $oComments->getCommentHTML($comment, false);
                 }
             }
         }

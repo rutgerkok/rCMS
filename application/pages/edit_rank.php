@@ -32,7 +32,7 @@ class EditRankPage extends EditPasswordPage {
             // Sent
             $rank = $oWebsite->getRequestInt("rank");
             $oAuth = $oWebsite->getAuth();
-            if ($oAuth->is_valid_rank($rank)) {
+            if ($oAuth->isValidRankForAccounts($rank)) {
                 // Valid rank id
                 $this->user->setRank($rank);
                 if ($this->user->save()) {
@@ -89,7 +89,7 @@ EOT;
     protected function get_ranks_box_html(Authentication $oAuth, $ranks, $selected) {
         $selection_box = '<select name="rank" id="rank">';
         foreach ($ranks as $id) {
-            $label = $oAuth->get_rank_name($id);
+            $label = $oAuth->getRankName($id);
             $selection_box.= '<option value="' . $id . '"';
             if ($selected == $id) {
                 $selection_box.= ' selected="selected"';

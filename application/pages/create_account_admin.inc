@@ -39,7 +39,7 @@ if ($loggedIn) {
             $valid = false;
             $this->addError($this->t("users.the_email") . " " . Validate::get_last_error($this));
         }
-        if($rank < 0 || $rank > $oAuth->get_highest_rank_id()) {
+        if($oAuth->isValidRankForAccounts($rank)) {
             $valid = false;
             $this->addError("Invalid rank!", "Invalid rank (" . $rank . ") posted by " . $oAuth->getCurrentUser()->getUsername());
         }
@@ -76,8 +76,8 @@ if ($loggedIn) {
 				<select class="button" id="rank" name="rank">
 EOT;
         // Echo all ranks
-        for ($i = 0; $i <= $oAuth->get_highest_rank_id(); $i++) {
-            $textToDisplay .= '<option value="' . $i . '">' . $oAuth->get_rank_name($i) . '</option>' . "\n";
+        foreach ($oAuth->getRanks() as $rankId => $rankName) {
+            $textToDisplay .= '<option value="' . $rankId . '">' . $rankName . '</option>' . "\n";
         }
         $textToDisplay .= <<<EOT
 				</select>

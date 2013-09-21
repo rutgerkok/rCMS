@@ -19,6 +19,7 @@ rank=Accounttype
 rank.admin=Sitebeheerder
 rank.moderator=Redacteur
 rank.user=Gebruiker
+rank.visitor=Bezoeker
 rank.unknown=Onbekend
 the_username=De gebruikersnaam
 the_display_name=De weergavenaam

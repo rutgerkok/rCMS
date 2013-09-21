@@ -2,6 +2,7 @@
 
 class Authentication {
 
+    public static $LOGGED_OUT_RANK = -1;
     public static $ADMIN_RANK = 1;
     public static $MODERATOR_RANK = 0;
     public static $USER_RANK = 2;
@@ -221,19 +222,32 @@ EOT;
     }
 
     /**
-     * Returns the highest id in use for a rank.
-     * @return int The highest id in use for a rank.
+     * Returns all ranks as id=>name pairs.
+     * @return array The highest id in use for a rank.
      */
-    public function get_highest_rank_id() {
-        return 2;
+    public function getRanks() {
+        $rankIds = array(self::$USER_RANK, self::$MODERATOR_RANK, self::$ADMIN_RANK);
+        $ranks = array();
+        foreach ($rankIds as $rankId) {
+            $ranks[$rankId] = $this->getRankName($rankId);
+        }
+        return $ranks;
     }
 
-    public function get_standard_rank_id() {
+    /**
+     * Gets the rank id assigned to new accounts.
+     * @return int The rank id.
+     */
+    public function getDefaultRankForAccounts() {
         return self::$USER_RANK;
     }
 
-    /** Returns true if the given number is a valid rank id */
-    public function is_valid_rank($id) {
+    /**
+     * Returns true if the given number is a valid rank id for accounts.
+     * The LOGGED_OUT rank isn't a valid rank for accounts.
+     * @return boolean Whether the rank is valid. 
+     */
+    public function isValidRankForAccounts($id) {
         if ($id == self::$USER_RANK || $id == self::$ADMIN_RANK || $id == self::$MODERATOR_RANK) {
             return true;
         } else {
@@ -241,16 +255,23 @@ EOT;
         }
     }
 
-    public function get_rank_name($id) {
+    /**
+     * Gets the translated name of the rank with the given id. When the rank is
+     * not found, the translation of users.rank.unknown is returned.
+     * @param int $id The rank id.
+     * @return string The translated rank name.
+     */
+    public function getRankName($id) {
         $oWebsite = $this->websiteObject;
         switch ($id) {
+            case -1: return $oWebsite->t("users.rank.visitor");
             case 0: return $oWebsite->t("users.rank.moderator");
             case 1: return $oWebsite->t("users.rank.admin");
             case 2: return $oWebsite->t("users.rank.user");
             default: return $oWebsite->t("users.rank.unknown");
         }
     }
-    
+
     public function is_valid_status($id) {
         if ($id == self::NORMAL_STATUS || $id == self::DELETED_STATUS || $id == self::BANNED_STATUS) {
             return true;
@@ -269,22 +290,26 @@ EOT;
         }
     }
 
-    public function isHigherOrEqualRank($rank_id, $compare_to) {
-        if ($compare_to == self::$USER_RANK) {
-            // Comparing to normal user
+    public function isHigherOrEqualRank($rankId, $compareTo) {
+        if ($compareTo == self::$LOGGED_OUT_RANK) {
+            // Comparing to logged out user
             return true;
         }
-        if ($compare_to == self::$MODERATOR_RANK) {
+        if ($compareTo == self::$USER_RANK) {
+            // Comparing to normal user
+            return $rankId != self::$LOGGED_OUT_RANK;
+        }
+        if ($compareTo == self::$MODERATOR_RANK) {
             // Comparing to moderator
-            if ($rank_id == self::$USER_RANK) {
-                // Normal users aren't higher or equal
+            if ($rankId == self::$USER_RANK || $rankId == self::$LOGGED_OUT_RANK) {
+                // Normal and logged out users aren't higher or equal
                 return false;
             }
             return true;
         }
-        if ($compare_to == self::$ADMIN_RANK) {
+        if ($compareTo == self::$ADMIN_RANK) {
             // Only other admins have the same rank
-            return $rank_id == self::$ADMIN_RANK;
+            return $rankId == self::$ADMIN_RANK;
         }
     }
 

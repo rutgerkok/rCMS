@@ -20,13 +20,13 @@ if ($article_id == 0) {
         // Logged in
         $comment_body = $_POST["comment"];
         $poster = $oAuth->getCurrentUser();
-        $comment = $oComments->make_comment(true, 0, "", "", $comment_body, $poster->getId(), $article_id);
+        $comment = $oComments->makeComment(true, 0, "", "", $comment_body, $poster->getId(), $article_id);
     } elseif (isSet($_POST["comment"]) && isSet($_POST["name"]) && isSet($_POST["email"])) {
         // Logged out, can still comment
         $comment_body = $_POST["comment"];
         $author_name = $_POST["name"];
         $author_email = $_POST["email"];
-        $comment = $oComments->make_comment(true, 0, $author_name, $author_email, $comment_body, 0, $article_id);
+        $comment = $oComments->makeComment(true, 0, $author_name, $author_email, $comment_body, 0, $article_id);
     }
     if ($comment != null && $this->getErrorCount() == 0) {
         if ($oComments->save($comment)) {
@@ -48,7 +48,7 @@ if ($saved) {
     echo <<<EOT
         <form action="{$this->getUrlMain()}" method="post">
 EOT;
-    $oComments->echo_editor($comment);
+    $oComments->echoEditor($comment);
     echo <<<EOT
             <p>
                 <input type="hidden" name="id" value="$article_id" />

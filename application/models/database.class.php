@@ -2,7 +2,7 @@
 
 class Database {
 
-    const CURRENT_DATABASE_VERSION = 2;
+    const CURRENT_DATABASE_VERSION = 3;
 
     protected $dbc = false;
     protected $websiteObject;
@@ -21,8 +21,8 @@ class Database {
         // Fill prefix replacement arrays
         $prefix = $oWebsite->getSiteSetting('database_table_prefix');
         $this->prefix = $prefix;
-        self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`users`', '`links`', '`artikel`', '`reacties`', '`menus`', '`widgets`', '`settings`');
-        self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}reacties`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
+        self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`users`', '`links`', '`artikel`', '`comments`', '`menus`', '`widgets`', '`settings`');
+        self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}comments`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
 
         // Abort on error
         if (!$this->dbc) {
@@ -77,10 +77,8 @@ class Database {
         }
 
         // Comments
-        $result_comments = $this->query("CREATE TABLE `reacties` (`reactie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `artikel_id` INT UNSIGNED NOT NULL, `gebruiker_id` INT UNSIGNED NULL, `reactie_email` varchar(100) NOT NULL, `reactie_gemaakt` DATETIME NOT NULL, `reactie_naam` VARCHAR(20) NOT NULL, `reactie_inhoud` TEXT NOT NULL ) ENGINE=MyISAM", false);
-        if ($result_comments) {
-            $this->query("ALTER TABLE `reacties` ADD INDEX (`artikel_id`)", false);
-        }
+        $this->query("CREATE TABLE IF NOT EXISTS `comments` (`comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `article_id` int(10) unsigned NOT NULL, `user_id` int(10) unsigned NULL, `comment_parent_id` int(10) unsigned NULL, `comment_name` varchar(20) NULL, `comment_email` varchar(100) NULL, `comment_created` datetime NOT NULL, `comment_last_edited` datetime NULL, `comment_body` text NOT NULL, `comment_status` tinyint(3) unsigned NOT NULL, PRIMARY KEY (`comment_id`)) ENGINE=MyISAM");
+        $this->query("ALTER TABLE `comments` ADD FULLTEXT `comment_body` (`comment_body`), ADD INDEX `article_id` (`article_id`)");
 
         // Widgets
         if ($this->query("CREATE TABLE `widgets` (`widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_priority` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL) ENGINE=MyISAM", false)) {
@@ -127,24 +125,50 @@ EOT;
             // Update from version 1
             // Update users table (prefix needs to be included, since that isn't
             // automatically added by $this->query() )
-            $update_sql = <<<SQL
-                ALTER TABLE `{$this->prefix}gebruikers` CHANGE `gebruiker_id` `user_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
-                CHANGE `gebruiker_admin` `user_rank` TINYINT( 4 ) NOT NULL ,
-                CHANGE `gebruiker_login` `user_login` VARCHAR( 30 ) NOT NULL ,
-                CHANGE `gebruiker_naam` `user_display_name` VARCHAR( 30 ) NULL DEFAULT NULL ,
-                CHANGE `gebruiker_wachtwoord` `user_password` VARCHAR( 255 ) NOT NULL ,
-                CHANGE `gebruiker_email` `user_email` VARCHAR( 100 ) NOT NULL,
+            $updateSql = <<<SQL
+                ALTER TABLE `{$this->prefix}gebruikers`
+                CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                CHANGE `gebruiker_admin` `user_rank` TINYINT(4) NOT NULL,
+                CHANGE `gebruiker_login` `user_login` VARCHAR(30) NOT NULL,
+                CHANGE `gebruiker_naam` `user_display_name` VARCHAR(30) NULL DEFAULT NULL,
+                CHANGE `gebruiker_wachtwoord` `user_password` VARCHAR(255) NOT NULL,
+                CHANGE `gebruiker_email` `user_email` VARCHAR(100) NOT NULL,
                 ADD `user_joined` DATETIME NOT NULL,
                 ADD `user_last_login` DATETIME NOT NULL,
                 ADD `user_status` TINYINT NOT NULL,
                 ADD `user_status_text` VARCHAR( 255 ) NOT NULL,
                 ADD `user_extra_data` TEXT NOT NULL
 SQL;
-            if ($this->query($update_sql)) {
-                $rename_sql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
-                $this->query($rename_sql);
+            if ($this->query($updateSql)) {
+                $renameSql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
+                $this->query($renameSql);
+            }
+
+            $version = 2; // Continue to next step
+        }
+        if ($version == 2) {
+            // Update from version 2
+            // Update comments table
+            $updateSql = <<<SQL
+                ALTER TABLE `{$this->prefix}reacties`
+                CHANGE `reactie_id` `comment_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                CHANGE `artikel_id` `article_id` INT(10) UNSIGNED NOT NULL,
+                CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL,
+                CHANGE `reactie_email` `comment_email` VARCHAR(100) NULL,
+                CHANGE `reactie_gemaakt` `comment_created` DATETIME NOT NULL,
+                CHANGE `reactie_inhoud` `comment_body` TEXT NOT NULL,
+                CHANGE `reactie_naam` `comment_name` VARCHAR(20) NULL,
+                ADD `comment_last_edited` DATETIME NULL,
+                ADD `comment_parent_id` INT(10) UNSIGNED NULL,
+                ADD `comment_status` TINYINT(3) UNSIGNED NOT NULL
+SQL;
+            if ($this->query($updateSql)) {
+                $renameSql = "RENAME TABLE `{$this->prefix}reacties` TO `comments`";
+                $this->query($renameSql);
             }
         }
+
+        // Done updating
         $this->websiteObject->setSiteSetting("database_version", self::CURRENT_DATABASE_VERSION);
         return 1;
     }
@@ -166,7 +190,11 @@ SQL;
      * @return string[]
      */
     public function fetchNumeric($result) {
-        return(@mysqli_fetch_array($result, MYSQLI_NUM));
+        return mysqli_fetch_array($result, MYSQLI_NUM);
+    }
+
+    public function fetchAssoc($result) {
+        return @mysqli_fetch_assoc($result);
     }
 
     //Geeft de primaire sleutel terug van de laatst ingevoegde rij
@@ -196,6 +224,22 @@ SQL;
             }
         }
         return $result;
+    }
+
+    /**
+     * 
+     * @param type $sql
+     * @return boolean
+     */
+    public function singleRowQuery($sql) {
+        $result = $this->query($sql);
+        if ($result && $this->rows($result) > 0) {
+            $row = $this->fetchAssoc($result);
+            mysqli_free_result($result);
+            return $row;
+        } else {
+            return false;
+        }
     }
 
     /**

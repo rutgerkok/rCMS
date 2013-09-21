@@ -10,18 +10,18 @@ $loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
 if ($loggedIn) {
     // Load the latest comments
     $oComments = new Comments($this);
-    $latest_comments = $oComments->get_comments_latest();
+    $latest_comments = $oComments->getCommentsLatest();
     $textToDisplay.= "<p>" . $this->t("comments.view_latest_on_site") . "</p>";
     $displayed_a_comment = false;
 
     // Display commments
     foreach ($latest_comments as $comment) {
         $displayed_a_comment = true;
-        $textToDisplay.= $oComments->get_comment_html($comment, true);
+        $textToDisplay.= $oComments->getCommentHTML($comment, true);
         // Add a link to context
         $textToDisplay.= '<p><a class="arrow" href="';
-        $textToDisplay.= $this->getUrlPage("article", $oComments->get_article_id($comment));
-        $textToDisplay.= "#comment-" . $oComments->get_comment_id($comment);
+        $textToDisplay.= $this->getUrlPage("article", $oComments->getArticleId($comment));
+        $textToDisplay.= "#comment-" . $oComments->getCommentId($comment);
         $textToDisplay.= '">' . $this->t("comments.view_context") . "</a></p>";
     }
 

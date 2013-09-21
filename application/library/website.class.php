@@ -5,7 +5,7 @@ class Website {
     const MAX_SITE_OPTION_LENGTH = 200;
 
     protected $errors = array();
-    protected $debug = false;
+    protected $debug = true;
     protected $errorsDisplayed = false;
     protected $databaseObject;
 

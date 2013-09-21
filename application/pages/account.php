@@ -222,16 +222,16 @@ EOT;
     /** Returns the HTML of the comments of the user, including the header */
     public function get_comments_html(Website $oWebsite) {
         $oComments = new Comments($oWebsite);
-        $comments = $oComments->get_comments_user($this->user->getId());
+        $comments = $oComments->getCommentsUser($this->user->getId());
         $returnValue = '<h3 class="notable">' . $oWebsite->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {
             foreach ($comments as $comment) {
                 // Add comment
-                $returnValue .= $oComments->get_comment_html($comment, $this->can_edit_user);
+                $returnValue .= $oComments->getCommentHTML($comment, $this->can_edit_user);
                 // Add a link to context
                 $returnValue .= '<p><a class="arrow" href="';
-                $returnValue .= $oWebsite->getUrlPage("article", $oComments->get_article_id($comment));
-                $returnValue .= "#comment-" . $oComments->get_comment_id($comment);
+                $returnValue .= $oWebsite->getUrlPage("article", $oComments->getArticleId($comment));
+                $returnValue .= "#comment-" . $oComments->getCommentId($comment);
                 $returnValue .= '">' . $oWebsite->t("comments.view_context") . "</a></p>";
             }
         } else {

@@ -110,7 +110,7 @@ class AccountManagementPage extends Page {
                 // Others
                 $username = $user->getUsername(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlSpecialChars($user->getDisplayName());
-                $rank_name = $oAuth->get_rank_name($user->getRank());
+                $rank_name = $oAuth->getRankName($user->getRank());
                 if($user->getStatus() == Authentication::BANNED_STATUS) {
                     $rank_name = $oWebsite->t("users.status.banned");
                 }

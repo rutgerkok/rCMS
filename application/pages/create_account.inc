@@ -60,7 +60,7 @@ if (!$display_page) {
 
                 $user = new User(
                             $this, 0, $creating_username, $creating_display_name, 
-                            '', $creating_email, $oAuth->get_standard_rank_id(),
+                            '', $creating_email, $oAuth->getDefaultRankForAccounts(),
                             0, 0, Authentication::NORMAL_STATUS, ""
                         );
                 $user->setPassword($creating_password1);
