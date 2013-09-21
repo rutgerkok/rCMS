@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 $this->registerWidget(new WidgetRkokArticles());
 
 class WidgetRkokArticles extends WidgetDefinition {
@@ -38,7 +43,7 @@ class WidgetRkokArticles extends WidgetDefinition {
         if (isSet($data["order"]) && $data["order"] == self::SORT_OLDEST_TOP) {
             $oldestTop = true;
         }
-        
+
         // Archive link
         $showArchiveLink = false;
         if (!isSet($data["archive"]) || $data["archive"] == true) {
@@ -47,15 +52,15 @@ class WidgetRkokArticles extends WidgetDefinition {
 
         $oArticles = new Articles($oWebsite);
         $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);
-        
-        if($displayType >= self::TYPE_LIST) {
+
+        if ($displayType >= self::TYPE_LIST) {
             // Small <ul> list
             $oArticlesView = new ArticleSmallListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
         } else {
             // Real paragraphs
             $oArticlesView = new ArticleListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink);
         }
-        
+
         return $titleHTML . $oArticlesView->getText();
     }
 

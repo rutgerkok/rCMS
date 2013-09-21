@@ -1,7 +1,9 @@
 <?php
 
-// The display_name extends the password page, since they are highly similar
-require_once($this->getUriPage("edit_password"));
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
 
 class EditDisplayNamePage extends EditPasswordPage {
 
@@ -71,6 +73,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new EditDisplayNamePage());
-?>

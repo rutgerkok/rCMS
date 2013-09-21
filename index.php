@@ -18,6 +18,12 @@ function __autoLoad($class) {
         require_once('application/views/' . $class . '.class.php');
         return;
     }
+    
+    // Try to see if it's a page
+    if (subStr($class, -4) == "page" && $class != "page") {
+        require_once('application/pages/' . $class . '.class.php');
+        return;
+    }
 
     // Try to see if it's a class in the library
     if (file_exists('application/library/' . $class . '.class.php')) {

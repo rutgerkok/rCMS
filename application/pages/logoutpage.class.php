@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class LoginPage extends Page {
 
     public function init(Website $oWebsite) {
@@ -25,6 +30,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new LoginPage());
-?>

@@ -1,6 +1,11 @@
 <?php
 
-class ArticleEditPage extends Page {
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
+class EditArticlePage extends Page {
 
     /** @var ArticleEditor $article_editor */
     protected $article_editor;
@@ -248,6 +253,3 @@ ARTICLE_FORM;
     }
 
 }
-
-$this->registerPage(new ArticleEditPage());
-?>

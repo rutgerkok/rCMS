@@ -186,7 +186,6 @@ VALUES ($articleId, $userId, $qUserName, $qUserEmail, "$commentCreated", "$body"
 SQL;
 
             // Save to database
-            echo $sql;
             if ($oDatabase->query($sql)) {
                 $this->id = $oDatabase->getLastInsertedId();
                 return true;

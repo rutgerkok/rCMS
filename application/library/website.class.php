@@ -5,7 +5,7 @@ class Website {
     const MAX_SITE_OPTION_LENGTH = 200;
 
     protected $errors = array();
-    protected $debug = true;
+    protected $debug = false;
     protected $errorsDisplayed = false;
     protected $databaseObject;
 
@@ -80,10 +80,6 @@ class Website {
         return $this->current_page_type;
     }
 
-    public function registerPage(Page $page) {
-        $this->currentPage = $page;
-    }
-
     // GETTING OTHER OBJECTS
 
     /**
@@ -92,6 +88,24 @@ class Website {
      */
     public function getDatabase() {
         return $this->databaseObject;
+    }
+
+    /**
+     * Loads and sets the page being displayed. Causes a fatal error for pages still
+     * using the old .inc page system.
+     * @param string $pageId The page id.
+     */
+    protected function setCurrentPage($pageId) {
+        // Convert page id to class name
+        $pageParts = explode("_", $pageId);
+        $pageClassName = "";
+        foreach($pageParts as $part) {
+            $pageClassName .= ucFirst($part);
+        }
+        $pageClassName .= "Page";
+        
+        // Load that class
+        $this->currentPage = new $pageClassName();
     }
 
     /**
@@ -224,7 +238,7 @@ class Website {
         if (file_exists($uri_old)) {
             return $uri_old;
         } else {
-            return $this->getUriPages() . $name . ".php";
+            return $this->getUriPages() . str_replace("_", "", $name) . "page.class.php";
         }
     }
 
@@ -353,7 +367,7 @@ class Website {
             $uri = $this->getUriPage($this->current_page_id);
             if (substr($uri, -4) == ".php") {
                 // We're on the new page system
-                require($uri);
+                $this->setCurrentPage($this->current_page_id);
                 // Page title
                 $this->current_page_title = $this->currentPage->getPageTitle($this);
                 if ($this->getSiteSetting('append_page_title')) {

@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class EditPasswordPage extends Page {
 
     /** @var User $user_to_edit */
@@ -161,6 +166,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new EditPasswordPage());
-?>

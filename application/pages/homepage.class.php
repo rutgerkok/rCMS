@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class HomePage extends Page {
     public function getPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.home");
@@ -13,6 +18,3 @@ class HomePage extends Page {
         return "HOME";
     }
 }
-
-$this->registerPage(new HomePage());
-

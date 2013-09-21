@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class SiteSettingsPage extends Page {
 
     protected $title;
@@ -220,6 +225,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new SiteSettingsPage());
-?>

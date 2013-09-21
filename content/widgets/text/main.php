@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 $this->registerWidget(new WidgetRkokText());
 
 class WidgetRkokText extends WidgetDefinition {

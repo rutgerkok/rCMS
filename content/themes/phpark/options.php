@@ -1,4 +1,10 @@
 <?php
+
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class PrinsHendrikparkTheme extends Theme {
     public function getWidgetAreas(Website $oWebsite) {
         return array(
@@ -12,5 +18,5 @@ class PrinsHendrikparkTheme extends Theme {
     }
 }
 
-$this->register_theme(new PrinsHendrikparkTheme());
+$this->registerTheme(new PrinsHendrikparkTheme());
 ?>

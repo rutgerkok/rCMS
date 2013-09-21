@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 /**
  * The code for the profile page of an user.
  */
@@ -241,6 +246,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new AccountPage());
-?>

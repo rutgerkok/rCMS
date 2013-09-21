@@ -1,7 +1,9 @@
 <?php
 
-// The rank page extends the password page, since they are highly similar
-require_once($this->getUriPage("edit_password"));
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
 
 class EditRankPage extends EditPasswordPage {
 
@@ -101,6 +103,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new EditRankPage());
-?>

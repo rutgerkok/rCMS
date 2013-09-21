@@ -1,8 +1,5 @@
 <?php
 
-// The account status page extends the password page, since they are highly similar
-require_once($this->getUriPage("edit_password"));
-
 class EditAccountStatusPage extends EditPasswordPage {
 
     const MAXIMUM_STATUS_TEXT_LENGTH = 255;
@@ -129,6 +126,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new EditAccountStatusPage());
-?>

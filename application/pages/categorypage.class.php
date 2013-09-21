@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class CategoryPage extends Page {
 
     /** @var Article $article The article object, or null if not found */
@@ -38,5 +43,3 @@ class CategoryPage extends Page {
     }
 
 }
-
-$this->registerPage(new CategoryPage());

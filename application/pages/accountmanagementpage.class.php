@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class AccountManagementPage extends Page {
 
     const USERS_PER_PAGE = 50;
@@ -141,6 +146,3 @@ EOT;
     }
 
 }
-
-$this->registerPage(new AccountManagementPage());
-?>

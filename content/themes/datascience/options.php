@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 // Define the options class
 class DataScienceTheme extends Theme {
 
@@ -17,5 +22,5 @@ class DataScienceTheme extends Theme {
 }
 
 // ...and register
-$this->register_theme(new DataScienceTheme());
+$this->registerTheme(new DataScienceTheme());
 ?>

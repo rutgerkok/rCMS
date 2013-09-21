@@ -1,4 +1,10 @@
 <?php
+
+// Protect against calling this script directly
+if (!isset($this)) {
+    die();
+}
+
 class MetroTheme extends Theme {
     public function getWidgetAreas(Website $oWebsite) {
         return array(
@@ -7,5 +13,5 @@ class MetroTheme extends Theme {
     }
 }
 
-$this->register_theme(new MetroTheme());
+$this->registerTheme(new MetroTheme());
 ?>

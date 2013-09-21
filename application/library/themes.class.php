@@ -41,7 +41,7 @@ class Themes {
      * Used by a theme (in it's options.php) to register itself.
      * @param Theme $theme The theme to register.
      */
-    public function register_theme(Theme $theme) {
+    public function registerTheme(Theme $theme) {
         $this->theme = $theme;
     }
 
