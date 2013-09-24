@@ -1,10 +1,8 @@
 <?php
-
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
-
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,51 +16,51 @@ if (!isset($this)) {
         <div id="container">
             <div id="containerwrapper">
                 <div id="breadcrumbs">
-                    <?php $this->echo_breadcrumbs(); ?>
+<?php $this->echo_breadcrumbs(); ?>
                     <ul id="accountlinks">
-                        <?php $this->echo_accounts_menu(); ?>
+                    <?php $this->echo_accounts_menu(); ?>
                     </ul>
                 </div>
                 <div id="header">
                     <div id="search">
-                        <?php $this->echo_search_form(); ?>
+<?php $this->echo_search_form(); ?>
                     </div>
                     <h1>
-                        <?php echo $this->getSiteTitle(); ?>
+<?php echo $this->getSiteTitle(); ?>
                     </h1>
                 </div>
                 <div id="hornav">
                     <ul>
-                        <?php $this->echo_menu(); ?>
+<?php $this->echo_menu(); ?>
                     </ul>
                 </div>
                 <div <?php
-                        if ($this->getPageType() == "HOME") {
-                            echo 'id="content"';
-                        } elseif ($this->getPageType() == "BACKSTAGE") {
-                            echo 'id="contentadmin"';
-                        } else { // dus $this->get_page_type()=="NORMAL"
-                            echo 'id="contentwide"';
-                        }
-                        ?> >
+if ($this->getPageType() == "HOME") {
+    echo 'id="content"';
+} elseif ($this->getPageType() == "BACKSTAGE") {
+    echo 'id="contentadmin"';
+} else { // dus $this->get_page_type()=="NORMAL"
+    echo 'id="contentwide"';
+}
+?> >
                     <!-- Einde header -->
 
-                <?php $this->echoPageContent(); ?>
+<?php $this->echoPageContent(); ?>
 
                     <!-- Begin footer -->
 
                 </div><!-- id="content"/"contentwide" -->
 
-                    <?php if ($this->getPageType() == "HOME") { ?>
+<?php if ($this->getPageType() == "HOME") { ?>
                     <div id="sidebar">
-    <?php $this->echoWidgets(2); ?>
+                    <?php $this->echoWidgets(2); ?>
                         &nbsp;
                     </div>
                     <div id="nav">
     <?php $this->echoWidgets(3); ?>
                         &nbsp;
                     </div>
-                <?php } ?>
+<?php } ?>
 
                 <div id="footer">
 <?php $this->echo_copyright(); ?>

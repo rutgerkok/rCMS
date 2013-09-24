@@ -62,8 +62,8 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
     <channel>
         <title><?php echo $oWebsite->getSiteSetting('title') ?></title>
         <link><?php echo $oWebsite->getUrlMain() ?></link>
-<?php
-echo $textToDisplay;
-?>
+        <?php
+        echo $textToDisplay;
+        ?>
     </channel>
 </rss>

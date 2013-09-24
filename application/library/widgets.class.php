@@ -154,7 +154,7 @@ class Widgets {
             $output.= $oWebsite->t("main.manage") . " " . strToLower($oWebsite->t("main.widgets"));
             $output.= "</a></p>\n";
         }
-        
+
         return $output;
     }
 

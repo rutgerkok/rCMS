@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -116,10 +116,10 @@ class AccountManagementPage extends Page {
                 $username = $user->getUsername(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlSpecialChars($user->getDisplayName());
                 $rank_name = $oAuth->getRankName($user->getRank());
-                if($user->getStatus() == Authentication::BANNED_STATUS) {
+                if ($user->getStatus() == Authentication::BANNED_STATUS) {
                     $rank_name = $oWebsite->t("users.status.banned");
                 }
-                if($user->getStatus() == Authentication::DELETED_STATUS) {
+                if ($user->getStatus() == Authentication::DELETED_STATUS) {
                     $rank_name = $oWebsite->t("users.statusdeleted");
                 }
                 $username_link = '<a href="' . $oWebsite->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';

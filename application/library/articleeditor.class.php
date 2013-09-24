@@ -3,10 +3,11 @@
 /**
  * Provides all method needed to build an article editor.
  */
-class ArticleEditor { 
+class ArticleEditor {
+
     /** @var Website $websiteObject The website */
     private $websiteObject;
-    
+
     /** @var Article $articleObject The article being edited */
     private $articleObject;
 
@@ -93,10 +94,10 @@ class ArticleEditor {
         // Category
         if (isSet($inputArray['article_category'])) {
             $categoryId = (int) $oWebsite->getRequestString('article_category', 0);
-            if($categoryId == 0) {
+            if ($categoryId == 0) {
                 // Silent failure when category id is set to 0
                 $noErrors = false;
-            } elseif(!$oCategories->getCategoryName($categoryId)) {
+            } elseif (!$oCategories->getCategoryName($categoryId)) {
                 $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
                 $noErrors = false;
             }
@@ -136,20 +137,20 @@ class ArticleEditor {
             $event_time = trim($oWebsite->getRequestString('article_eventtime'));
             $article->onCalendar = $eventDate . " " . $event_time;
         }
-        if($eventDate) {
-            if(strtotime($eventDate) === false) {
+        if ($eventDate) {
+            if (strtotime($eventDate) === false) {
                 $oWebsite->addError($oWebsite->t("articles.event_date") . " " . $oWebsite->tReplaced("ërrors.not_correct"));
                 $noErrors = false;
             }
         }
-        
+
         // Comments
         if (isSet($inputArray['article_comments'])) {
             $article->showComments = true;
         } elseif ($sent) {
             $article->showComments = false;
         }
-        
+
         return $noErrors;
     }
 

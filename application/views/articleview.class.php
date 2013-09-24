@@ -56,27 +56,27 @@ class ArticleView extends View {
 
         // Echo the sidebar
         $returnValue.= '<div id="sidebar_page_sidebar">';
-        
+
         // Featured image
         if (!empty($article->featuredImage))
             $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></p>';
         $returnValue.= '<p class="meta">';
-        
+
         // Created and last edited
         $returnValue.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
         if ($article->lastEdited)
             $returnValue.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
-        
+
         // Category
         $returnValue.= " <br /> " . $oWebsite->t('main.category') . ': ';
         $returnValue.= '<a href="' . $oWebsite->getUrlPage("category", $article->categoryId) . '">';
         $returnValue.= htmlSpecialChars($article->category) . '</a>';
-        
+
         // Author
         $returnValue.= " <br /> " . $oWebsite->t('articles.author') . ': ';
         $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">';
         $returnValue.= htmlSpecialChars($article->author) . '</a>';
-        
+
         // Pinned, hidden, comments
         if ($article->pinned)
             $returnValue.= "<br />" . $oWebsite->t('articles.pinned') . " ";
@@ -84,7 +84,7 @@ class ArticleView extends View {
             $returnValue.= "<br />" . $oWebsite->t('articles.hidden');
         if ($loggedIn && $article->showComments)
             $returnValue.= "<br />" . $oWebsite->t('comments.allowed');
-        
+
         // Edit, delete
         $returnValue.= '</p>';
         if ($loggedIn) {
@@ -101,7 +101,7 @@ class ArticleView extends View {
             $returnValue.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
         $returnValue.= '<p class="intro">' . htmlSpecialChars($article->intro) . '</p>';
         $returnValue.= $article->body;
-        
+
         // Comments
         if ($article->showComments && $oComments != null) {
             $comments = $oComments->getCommentsArticle($id);

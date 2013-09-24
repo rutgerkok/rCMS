@@ -27,6 +27,9 @@ class Website {
      */
 
     function __construct() {
+        // We're loaded (included files test for the existance this constant)
+        define("WEBSITE", "Loaded");
+
         // Site settings and database connection
         $this->readSiteSettingsFromFile();
         $this->databaseObject = new Database($this);
@@ -95,15 +98,15 @@ class Website {
      * using the old .inc page system.
      * @param string $pageId The page id.
      */
-    protected function setCurrentPage($pageId) {
+    protected function loadPage($pageId) {
         // Convert page id to class name
         $pageParts = explode("_", $pageId);
         $pageClassName = "";
-        foreach($pageParts as $part) {
+        foreach ($pageParts as $part) {
             $pageClassName .= ucFirst($part);
         }
         $pageClassName .= "Page";
-        
+
         // Load that class
         $this->currentPage = new $pageClassName();
     }
@@ -182,7 +185,7 @@ class Website {
     public function getUriLibraries() {
         return $this->getUriApplication() . "library/";
     }
-    
+
     /** Returns the path of all default controllers, models, pages and views */
     public function getUriApplication() {
         return $this->getSiteSetting('uri') . "application/";
@@ -202,12 +205,12 @@ class Website {
     public function getUriMain() {
         return $this->getSiteSetting('uri');
     }
-    
+
     /** Returns the url of the public content directory of this site */
     public function getUrlContent() {
         return $this->getSiteSetting('url') . "content/";
     }
-    
+
     /** Returns the internal uri of the public content directory */
     public function getUriContent() {
         return $this->getSiteSetting('uri') . "content/";
@@ -260,7 +263,7 @@ class Website {
     public function getUriTranslations() {
         return $this->getUriContent() . "translations/";
     }
-    
+
     public function getUrlJavaScripts() {
         return $this->getUrlContent() . "scripts/";
     }
@@ -329,14 +332,14 @@ class Website {
      */
     public function echoPage() {
         // Rewrite view_url to p and id
-        if(isset($_GET["view_url"])) {
+        if (isset($_GET["view_url"])) {
             $split = explode("/", $_GET["view_url"], 2);
             $_REQUEST["p"] = $_POST["p"] = $_GET["p"] = $split[0];
-            if(count($split) == 2) {
+            if (count($split) == 2) {
                 $_REQUEST["id"] = $_POST["id"] = $_GET["id"] = $split[1];
             }
         }
-        
+
         // Check for site password
         if ($this->hasAccess()) {
             // Site title
@@ -367,7 +370,7 @@ class Website {
             $uri = $this->getUriPage($this->current_page_id);
             if (substr($uri, -4) == ".php") {
                 // We're on the new page system
-                $this->setCurrentPage($this->current_page_id);
+                $this->loadPage($this->current_page_id);
                 // Page title
                 $this->current_page_title = $this->currentPage->getPageTitle($this);
                 if ($this->getSiteSetting('append_page_title')) {
@@ -394,13 +397,7 @@ class Website {
                 }
                 // Page type
                 switch ($this->current_page_id) {
-                    case "home":
-                        $this->current_page_type = "HOME";
-                        break;
-                    case "category":
                     case "search":
-                    case "article":
-                    case "view_article":
                     case "archive":
                     case "calendar":
                         $this->current_page_type = "NORMAL";
@@ -428,7 +425,7 @@ class Website {
             // Locales
             setlocale(LC_ALL, explode("|", $this->t("main.locales")));
 
-            if ($this->currentPage != null) {
+            if ($this->currentPage) {
                 // New page system
                 // Title
                 $title = $this->currentPage->getPageTitle($this);

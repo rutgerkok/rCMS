@@ -68,13 +68,13 @@ class Themes {
             echo '<li><a href="' . $oWebsite->getUrlPage("log_in") . '">' . $this->websiteObject->t("main.log_in") . '</a></li>';
         }
     }
-    
+
     public function echo_account_label() {
         $oWebsite = $this->websiteObject;
         $user = $oWebsite->getAuth()->getCurrentUser();
-        
+
         // Get welcome text
-        if($user == null) {
+        if ($user == null) {
             // Logged out
             $welcome_text = $oWebsite->t("main.welcome_guest") . " ";
             $welcome_text.= '<a class="arrow" href="' . $oWebsite->getUrlPage("log_in") . '">';
@@ -89,21 +89,21 @@ class Themes {
                                 </a>
 EOT;
         }
-        echo "<p>" . $welcome_text . "</p>";          
+        echo "<p>" . $welcome_text . "</p>";
     }
-    
+
     public function echo_account_box($gravatar_size = 140) {
         $oWebsite = $this->websiteObject;
         $user = $oWebsite->getAuth()->getCurrentUser();
-        
-        if($user == null) {
+
+        if ($user == null) {
             // Nothing to display
             return;
         }
-        
+
         // Get avatar url
         $avatar_url = $user->getAvatarUrl($gravatar_size);
-        
+
         // Display account box
         echo '<img id="account_box_gravatar" src="' . $avatar_url . '" />';
         echo '<ul>';
@@ -122,12 +122,11 @@ EOT;
 EOT;
         // Nog de laatste link?
         if ($oWebsite->getPageId() != 'home') {
-            if($oWebsite->getPage() != null) {
+            if ($oWebsite->getPage() != null) {
                 echo ' <a href="#">' . $oWebsite->getPage()->getShortPageTitle($oWebsite) . '</a>';
             } else {
                 echo ' <a href="#">' . $oWebsite->getPageTitle() . '</a>';
             }
-            
         }
     }
 
@@ -168,12 +167,12 @@ EOT;
     public function echoWidgets($area) {
         echo $this->getWidgets($area);
     }
-    
+
     public function getWidgets($area) {
         $oWidgets = $this->widgets_object;
         return $oWidgets->getWidgetsSidebar($area);
     }
-    
+
     /**
      * Returns whether the user viewing the page is logged in.
      * @return boolean True if logged in, false otherwise.

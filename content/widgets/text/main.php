@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -12,8 +12,7 @@ class WidgetRkokText extends WidgetDefinition {
      * Implementation detail:
      * (HTML) tags are saved unfiltered in the database, but filtered when displayed.
      */
-    
-    
+
     public function getWidget(Website $oWebsite, $id, $data) {
         if (!isSet($data["text"]) || !isSet($data["title"])) {
             return "";
@@ -62,13 +61,14 @@ class WidgetRkokText extends WidgetDefinition {
             $oWebsite->addError($oWebsite->t("editor.message") . " " . $oWebsite->t("errors.not_entered"));
             $return_array["valid"] = false;
         }
-        if(strip_tags($return_array["text"]) == $return_array["text"]) {
+        if (strip_tags($return_array["text"]) == $return_array["text"]) {
             // No HTML tags, add the needed <p> and <br />
             $return_array["text"] = "<p>" . nl2br($return_array["text"], true) . "</p>";
         }
 
         return $return_array;
     }
+
 }
 
 ?>

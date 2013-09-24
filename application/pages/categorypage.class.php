@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -23,7 +23,7 @@ class CategoryPage extends Page {
         } else {
             // Display articles in a catgory
             $this->pageTitle = $oCategories->getCategoryName($categoryId);
-            if(empty($this->pageTitle)) {
+            if (empty($this->pageTitle)) {
                 $this->pageTitle = $oWebsite->t("main.category");
                 $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
                 $this->view = new View();

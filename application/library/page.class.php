@@ -1,11 +1,13 @@
 <?php
 
 abstract class Page {
+
     /**
      * Called before any output is done. Can be used to set cookies, for example
      * @param Website $oWebsite The website object.
      */
     public function init(Website $oWebsite) {
+        
     }
 
     /**
@@ -39,7 +41,7 @@ abstract class Page {
     public function getShortPageTitle(Website $oWebsite) {
         return $this->getPageTitle($oWebsite);
     }
-    
+
     /**
      * Returns the view of this page. Not overriding this method is deprecated.
      * @return View|null A view, or null if not using a view (deprecated).
@@ -56,6 +58,6 @@ abstract class Page {
     public function getPageContent(Website $oWebsite) {
         return $this->getView($oWebsite)->getText();
     }
-}
 
+}
 

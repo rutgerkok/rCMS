@@ -1,10 +1,8 @@
 <?php
-
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -20,30 +18,30 @@ if (!isset($this)) {
             <div id="containerwrapper">
                 <div id="header">
                     <h1>
-                        <?php echo $this->getSiteTitle(); ?>
+<?php echo $this->getSiteTitle(); ?>
                     </h1>
                     <div id="search">
-                        <?php $this->echo_search_form(); ?>
+<?php $this->echo_search_form(); ?>
                     </div>
-                    <?php if($this->isLoggedIn()) { ?>
+                        <?php if ($this->isLoggedIn()) { ?>
                         <div id="account_label">
-                            <?php $this->echo_account_label(); ?>
+                        <?php $this->echo_account_label(); ?>
                             <div id="account_box">
-                                <?php $this->echo_account_box(80); ?>
+                            <?php $this->echo_account_box(80); ?>
                                 <div style="clear:both"></div>
                             </div>
                         </div>
-                    <?php } ?>
+<?php } ?>
                 </div>
                 <div id="hornav">
                     <ul>
-                        <?php $this->echo_menu(); ?>
+<?php $this->echo_menu(); ?>
                     </ul>
-                    <?php if(!$this->isLoggedIn()) { ?>
+                        <?php if (!$this->isLoggedIn()) { ?>
                         <ul id="accountlinks">
-                            <?php $this->echo_accounts_menu(); ?>
+                        <?php $this->echo_accounts_menu(); ?>
                         </ul>
-                    <?php } ?>
+                        <?php } ?>
                 </div>
                 <div <?php
                         if ($this->getPageType() == "HOME") {
@@ -54,22 +52,22 @@ if (!isset($this)) {
                             echo 'id="contentwide"';
                         }
                         ?> >
-                <!-- Einde header -->
+                    <!-- Einde header -->
 
-                <?php $this->echoPageContent(); ?>
+<?php $this->echoPageContent(); ?>
 
-                <!-- Begin footer -->
+                    <!-- Begin footer -->
 
                 </div><!-- id="content"/"contentwide" -->
 
-                    <?php if ($this->getPageType() == "HOME") { ?>
+<?php if ($this->getPageType() == "HOME") { ?>
                     <div id="sidebar">
-                        <?php $this->echoWidgets(2); ?>
+                    <?php $this->echoWidgets(2); ?>
                     </div>
                     <div id="nav">
-                        <?php $this->echoWidgets(3); ?>
+    <?php $this->echoWidgets(3); ?>
                     </div>
-                <?php } ?>
+                    <?php } ?>
 
                 <div id="footer">
 <?php $this->echo_copyright(); ?>

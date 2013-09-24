@@ -118,8 +118,7 @@ class Calendar {
         // Make links open in new window (those links are inside onmouseover,
         // so they will need to be escaped). Also adds a fancy hover effect.
         $calendar = str_replace(
-                array('href=', '<td '), 
-                array(htmlSpecialChars('target="_blank" href='), '<td class="highlight" onclick="sendAndClose(this)" '), $calendar
+                array('href=', '<td '), array(htmlSpecialChars('target="_blank" href='), '<td class="highlight" onclick="sendAndClose(this)" '), $calendar
         );
         return $calendar;
     }
@@ -145,4 +144,5 @@ class Calendar {
     }
 
 }
+
 ?>

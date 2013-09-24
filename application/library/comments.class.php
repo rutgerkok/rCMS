@@ -306,7 +306,7 @@ EOT;
     private function getCommentsQuery($where_clausule, $limit, $new_comments_first) {
         $oDB = $this->databaseObject;
 
-                $sql = <<<SQL
+        $sql = <<<SQL
 SELECT `comment_id`, `article_id`, `user_id`, `user_display_name`, 
 `user_login`, `user_email`, `user_rank`, `comment_name`, `comment_email`, 
 `comment_created`, `comment_last_edited`, `comment_body`, `comment_status` 

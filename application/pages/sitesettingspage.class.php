@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -13,7 +13,6 @@ class SiteSettingsPage extends Page {
     protected $language;
     protected $theme;
     protected $user_account_creation;
-    
     protected $saved = false;
 
     public function init(Website $oWebsite) {
@@ -37,7 +36,7 @@ class SiteSettingsPage extends Page {
     public function getPageTitle(Website $oWebsite) {
         return $oWebsite->t("site_settings.editing_site_settings");
     }
-    
+
     public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.site_settings");
     }
@@ -49,10 +48,10 @@ class SiteSettingsPage extends Page {
     public function getPageContent(Website $oWebsite) {
         $themes = $this->get_sub_directory_names($oWebsite->getUriThemes());
         $languages = $this->get_sub_directory_names($oWebsite->getUriTranslations());
-        $user_account_creation_checked = $this->user_account_creation? 'checked="checked"' : '';
+        $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';
         $top_message = $oWebsite->t("site_settings.editing_site_settings.explained");
 
-        if($this->saved) {
+        if ($this->saved) {
             $top_message = <<<EOT
                 <em>{$oWebsite->t("site_settings.site_settings")} {$oWebsite->t("editor.are_changed")}</em>
                 <a class="arrow" href="{$oWebsite->getUrlPage("admin")}">
@@ -60,7 +59,7 @@ class SiteSettingsPage extends Page {
                 </a>
 EOT;
         }
-        
+
         return <<<EOT
             <p>
                 $top_message
@@ -130,15 +129,15 @@ EOT;
         $this->save_string($oWebsite, "title", false);
         $this->save_string($oWebsite, "copyright", true);
         $this->save_string($oWebsite, "password", true);
-        
+
         // If a password is set, pass it as a parameter, to avoid getting locked out
-        if(!empty($this->password)) {
+        if (!empty($this->password)) {
             $_POST["key"] = $this->password;
             setcookie("key", $this->password, time() + 3600 * 24 * 365, "/");
         }
-        
+
         // Whether users can create accounts
-        if(isSet($_REQUEST["option_user_account_creation"])) {
+        if (isSet($_REQUEST["option_user_account_creation"])) {
             $this->user_account_creation = true;
             $oWebsite->setSiteSetting("user_account_creation", true);
         } else {

@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -10,4 +10,5 @@ if (!isset($this)) {
  * urls to the newer article urls.
  */
 class ViewArticlePage extends ArticlePage {
+    
 }

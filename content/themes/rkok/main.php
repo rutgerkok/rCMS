@@ -1,23 +1,22 @@
 <?php
-
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
-
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="<?php echo $this->get_url_theme()."main.css" ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"> </script>
         <title><?php echo $this->getSiteTitle(); ?></title>
     </head>
-    <body <?php if($this->isLoggedIn()) { 
-        echo 'class="loggedIn"';
-    }
-    ?>>
+    <body <?php
+if ($this->isLoggedIn()) {
+    echo 'class="loggedIn"';
+}
+?>>
         <div id="container">
             <div id="header">
                 <h1> <?php echo $this->getSiteTitle(); ?> </h1>
@@ -36,26 +35,23 @@ if (!isset($this)) {
                 </div>
             </div>
             <div <?php
-                    if($this->getPageType()=="BACKSTAGE")
-                    {
+                        if ($this->getPageType() == "BACKSTAGE") {
                             echo 'id="contentadmin"';
-                    }
-                    else
-                    {
+                        } else {
                             echo 'id="content"';
-                    }
-                    ?>>
-                <?php $this->echoPageContent(); ?>
+                        }
+                        ?>>
+            <?php $this->echoPageContent(); ?>
             </div>
 
-            <?php if($this->getPageType()!="BACKSTAGE") { ?>
-                    <div id="sidebar">
-                            <?php $this->echoWidgets(2); ?>
-                    </div>
+                <?php if ($this->getPageType() != "BACKSTAGE") { ?>
+                <div id="sidebar">
+    <?php $this->echoWidgets(2); ?>
+                </div>
             <?php } ?>
 
             <div id="footer">
-                    <?php $this->echo_copyright(); ?>
+            <?php $this->echo_copyright(); ?>
             </div>
         </div>
     </body>

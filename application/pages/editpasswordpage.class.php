@@ -1,7 +1,7 @@
 <?php
 
 // Protect against calling this script directly
-if (!isset($this)) {
+if (!defined("WEBSITE")) {
     die();
 }
 
@@ -33,7 +33,7 @@ class EditPasswordPage extends Page {
             }
         }
     }
-    
+
     /**
      * Returns whether the user viewing this page can edit the account of
      * someone else. By default, only admins can edit someone else, but this

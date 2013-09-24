@@ -100,7 +100,7 @@ EOT;
                 }
             </script>
 EOT;
-        return $returnValue;     
+        return $returnValue;
     }
 
 }
