@@ -346,16 +346,16 @@ class Website {
             $this->siteTitle = $this->getSiteSetting('title');
 
             // Get id of page to display
-            $given_page_id = $this->getRequestString("p", "home");
-            if ($given_page_id != 'home') {
+            $givenPageId = $this->getRequestString("p", "home");
+            if ($givenPageId != 'home') {
                 // Get current page title and id 
-                $this->currentPageId = $given_page_id;
-
-                if (!file_exists($this->getUriPage($this->currentPageId))) {
+                if (!preg_match('/^[a-z0-9_]+$/i', $givenPageId) || !file_exists($this->getUriPage($givenPageId))) {
                     // Page doesn't exist, show error and redirect
                     http_response_code(404);
-                    $this->addError($this->t("main.page") . " '" . htmlSpecialChars($this->currentPageId) . "' " . $this->t('errors.not_found'));
+                    $this->addError($this->t("main.page") . " '" . htmlSpecialChars($givenPageId) . "' " . $this->t('errors.not_found'));
                     $this->currentPageId = 'home';
+                } else {
+                    $this->currentPageId = $givenPageId;
                 }
             } else {
                 // No page id given
