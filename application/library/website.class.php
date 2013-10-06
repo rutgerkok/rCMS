@@ -5,22 +5,22 @@ class Website {
     const MAX_SITE_OPTION_LENGTH = 200;
 
     protected $errors = array();
-    protected $debug = false;
+    protected $debug = true;
     protected $errorsDisplayed = false;
     protected $databaseObject;
 
     /** @var Themes $themes_object */
-    protected $themes_object;
-    protected $current_page_id;
-    protected $site_title;
-    protected $current_page_title; // Title of the page
-    protected $current_page_type; // HOME, NORMAL or BACKSTAGE
+    protected $themesObject;
+    protected $currentPageId;
+    protected $siteTitle;
+    protected $currentPageTitle; // Title of the page
+    protected $currentPageType; // HOME, NORMAL or BACKSTAGE
     /** @var Authentication $authentication_object */
-    protected $authentication_object;
+    protected $authenticationObject;
     // The following two fields are only available when using the new page system
     /** @var Page $current_page */
     protected $currentPage; // Available during/after echo_page
-    protected $authentication_failed_rank = -1; // Number of required rank which the user didn't have, or -1 if the user's rank is already high enough
+    protected $authenticationFailedRank = -1; // Number of required rank which the user didn't have, or -1 if the user's rank is already high enough
 
     /**
      * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
@@ -35,7 +35,7 @@ class Website {
         $this->databaseObject = new Database($this);
         $this->readSiteSettingsFromDatabase();
 
-        $this->authentication_object = new Authentication($this);
+        $this->authenticationObject = new Authentication($this);
 
         // Patch for PHP 5.2.0, they don't have lcFirst
         if (!function_exists("lcFirst")) {
@@ -48,7 +48,7 @@ class Website {
      * @return string The title.
      */
     public function getSiteTitle() {
-        return $this->site_title;
+        return $this->siteTitle;
     }
 
     /**
@@ -56,7 +56,7 @@ class Website {
      * be converted to an url/uri using the get_ur*_page methods.
      */
     public function getPageId() {
-        return $this->current_page_id;
+        return $this->currentPageId;
     }
 
     /**
@@ -72,7 +72,7 @@ class Website {
      * @return string The shorter title.
      */
     public function getPageTitle() {
-        return $this->current_page_title;
+        return $this->currentPageTitle;
     }
 
     /**
@@ -80,7 +80,7 @@ class Website {
      * @return string The current page type.
      */
     public function getPageType() {
-        return $this->current_page_type;
+        return $this->currentPageType;
     }
 
     // GETTING OTHER OBJECTS
@@ -117,7 +117,7 @@ class Website {
      * @return Themes The theme manager.
      */
     public function getThemeManager() {
-        return $this->themes_object;
+        return $this->themesObject;
     }
 
     /**
@@ -125,7 +125,7 @@ class Website {
      * @return Authentication The authentication object.
      */
     public function getAuth() {
-        return $this->authentication_object;
+        return $this->authenticationObject;
     }
 
     // SITEVARS
@@ -343,22 +343,22 @@ class Website {
         // Check for site password
         if ($this->hasAccess()) {
             // Site title
-            $this->site_title = $this->getSiteSetting('title');
+            $this->siteTitle = $this->getSiteSetting('title');
 
             // Get id of page to display
             $given_page_id = $this->getRequestString("p", "home");
             if ($given_page_id != 'home') {
                 // Get current page title and id 
-                $this->current_page_id = $given_page_id;
+                $this->currentPageId = $given_page_id;
 
-                if (!file_exists($this->getUriPage($this->current_page_id))) {
+                if (!file_exists($this->getUriPage($this->currentPageId))) {
                     // Page doesn't exist, show error and redirect
-                    $this->addError($this->t("main.page") . " '" . htmlSpecialChars($this->current_page_id) . "' " . $this->t('errors.not_found'));
-                    $this->current_page_id = 'home';
+                    $this->addError($this->t("main.page") . " '" . htmlSpecialChars($this->currentPageId) . "' " . $this->t('errors.not_found'));
+                    $this->currentPageId = 'home';
                 }
             } else {
                 // No page id given
-                $this->current_page_id = 'home';
+                $this->currentPageId = 'home';
             }
 
             // Set cookie
@@ -367,23 +367,23 @@ class Website {
             }
 
             // Perform page logic (supporting both the old .inc and the new .php pages)
-            $uri = $this->getUriPage($this->current_page_id);
+            $uri = $this->getUriPage($this->currentPageId);
             if (substr($uri, -4) == ".php") {
                 // We're on the new page system
-                $this->loadPage($this->current_page_id);
+                $this->loadPage($this->currentPageId);
                 // Page title
-                $this->current_page_title = $this->currentPage->getPageTitle($this);
+                $this->currentPageTitle = $this->currentPage->getPageTitle($this);
                 if ($this->getSiteSetting('append_page_title')) {
-                    $this->site_title.= ' - ' . $this->currentPage->getShortPageTitle($this);
+                    $this->siteTitle.= ' - ' . $this->currentPage->getShortPageTitle($this);
                 }
                 // Page type
-                $this->current_page_type = $this->currentPage->getPageType();
+                $this->currentPageType = $this->currentPage->getPageType();
                 // Authentication stuff
                 $rank = (int) $this->currentPage->getMinimumRank($this);
                 if ($rank >= 0) {
                     $oAuth = $this->getAuth();
                     if (!$oAuth->check($rank, false)) {
-                        $this->authentication_failed_rank = $rank;
+                        $this->authenticationFailedRank = $rank;
                     }
                 }
                 // Call init methord
@@ -391,26 +391,26 @@ class Website {
             } else {
                 // Old page system
                 // Page title
-                $this->current_page_title = ucfirst(str_replace('_', ' ', $this->current_page_id));
+                $this->currentPageTitle = ucfirst(str_replace('_', ' ', $this->currentPageId));
                 if ($this->getSiteSetting('append_page_title')) {
-                    $this->site_title.= ' - ' . $this->current_page_title;
+                    $this->siteTitle.= ' - ' . $this->currentPageTitle;
                 }
                 // Page type
-                switch ($this->current_page_id) {
+                switch ($this->currentPageId) {
                     case "search":
                     case "archive":
                     case "calendar":
-                        $this->current_page_type = "NORMAL";
+                        $this->currentPageType = "NORMAL";
                         break;
                     default:
-                        $this->current_page_type = "BACKSTAGE";
+                        $this->currentPageType = "BACKSTAGE";
                         break;
                 }
             }
 
             // Output page
-            $this->themes_object = new Themes($this);
-            $this->themes_object->output();
+            $this->themesObject = new Themes($this);
+            $this->themesObject->output();
         } else {
             // Echo site code page
             require($this->getUriLibraries() . 'login_page.php');
@@ -435,8 +435,8 @@ class Website {
 
                 // Get page content (based on permissions)
                 $textToDisplay = "";
-                if ($this->authentication_failed_rank >= 0) {
-                    $textToDisplay = $this->authentication_object->getLoginForm($this->authentication_failed_rank);
+                if ($this->authenticationFailedRank >= 0) {
+                    $textToDisplay = $this->authenticationObject->getLoginForm($this->authenticationFailedRank);
                 } else {
                     $textToDisplay = $this->currentPage->getPageContent($this);
                 }
@@ -450,7 +450,7 @@ class Website {
                 echo $textToDisplay;
             } else {
                 // Old page system
-                require($this->getUriPage($this->current_page_id));
+                require($this->getUriPage($this->currentPageId));
             }
         }
     }

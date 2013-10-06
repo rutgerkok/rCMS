@@ -23,7 +23,7 @@ abstract class Page {
      * @return int The minimum rank required to view this page.
      */
     public function getMinimumRank(Website $oWebsite) {
-        return -1;
+        return Authentication::$LOGGED_OUT_RANK;
     }
 
     /**

@@ -4,7 +4,7 @@
 $oAuth = new Authentication($this);
 $oComments = new Comments($this, $oAuth);
 $loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
-$is_moderator = $oAuth->check(Authentication::$MODERATOR_RANK, false);
+$is_moderator = $this->isLoggedInAsStaff();
 
 //INHOUD VOOR PAGINA
 $textToDisplay = '';

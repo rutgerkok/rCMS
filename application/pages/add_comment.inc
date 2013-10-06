@@ -3,7 +3,7 @@
 //OBJECTEN
 $oAuth = new Authentication($this);
 $oComments = new Comments($this, $oAuth);
-$loggedIn = $oAuth->check(Authentication::$USER_RANK, false);
+$loggedIn = $this->isLoggedIn();
 
 $display_page = true;
 $saved = false;

@@ -5,7 +5,7 @@
  */
 
 // Only execute if rCMS is loaded
-if(!isSet($this)) die();
+if(!defined("WEBSITE")) die();
 
 //DATABASE SETTINGS
 $this->config['database_location'] = 'localhost'; // Location of mysql server, for example: 'localhost' or 'mysql://example.net'. Prefix with p: to make connection pernament.

@@ -4,7 +4,7 @@
 $oAuth = new Authentication($this);
 $oComments = new Comments($this, $oAuth);
 $loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
-$is_moderator = $oAuth->check(Authentication::$MODERATOR_RANK, false);
+$is_moderator = $this->isLoggedInAsStaff();
 $display_form = false;
 
 //INHOUD VOOR PAGINA
@@ -58,7 +58,7 @@ EOT;
                 <p>
                     <input type="hidden" name="id" value="$comment_id" />
                     <input type="hidden" name="p" value="edit_comment" />
-                    <input type="submit" name="submit" value="{$this->t('editor.save')}" class="button" />
+                    <input type="submit" name="submit" value="{$this->t('editor.save')}" class="button primary_button" />
                 </p>
             </form>
 EOT;

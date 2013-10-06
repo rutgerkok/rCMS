@@ -2,7 +2,7 @@
 
 // Get user object
 $oAuth = new Authentication($this);
-$loggedIn = $oAuth->check(false, false);
+$loggedIn = $this->isLoggedIn();
 
 $display_page = $this->getSiteSetting("user_account_creation") && !$oAuth->check(true, false);
 

@@ -5,7 +5,7 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-class LoginPage extends Page {
+class LogoutPage extends Page {
 
     public function init(Website $oWebsite) {
         $oWebsite->getAuth()->log_out();
