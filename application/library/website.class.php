@@ -353,6 +353,7 @@ class Website {
 
                 if (!file_exists($this->getUriPage($this->currentPageId))) {
                     // Page doesn't exist, show error and redirect
+                    http_response_code(404);
                     $this->addError($this->t("main.page") . " '" . htmlSpecialChars($this->currentPageId) . "' " . $this->t('errors.not_found'));
                     $this->currentPageId = 'home';
                 }
