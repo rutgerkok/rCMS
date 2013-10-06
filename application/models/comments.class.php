@@ -219,56 +219,14 @@ EOT;
     }
 
     /**
-     * Gets the HTML of the comment
-     * 
-     * @param type $comment The comment to show.
-     * @param type $show_actions Whether or not to show the edit and delete link
-     * @return string The HTML output.
+     * @deprecated Use the new comment view
      */
-    function getCommentHTML(Comment $comment, $show_actions) { //geeft reactie kant-en-klaar terug
-        $oWebsite = $this->websiteObject;
-
-        $comment_id = $comment->getId();
-        $author_name = htmlSpecialChars($comment->getUserDisplayName());
-        $author_email = $comment->getUserEmail();
-        $comment_date_raw = $comment->getDateCreated();
-        $comment_body = nl2br(htmlSpecialChars($comment->getBodyRaw()));
-        $account_id = $comment->getUserId();
-        // Time format
-        $comment_date = str_replace(' 0', ' ', strftime("%A %d %B %Y %X", $comment_date_raw));
-        // Name format
-        if ($comment->getUserRank() != Authentication::$LOGGED_OUT_RANK) {
-            // Name of author is not set when user id is set
-            $author_name = '<a href="' . $oWebsite->getUrlPage("account", $account_id) . '">' . $author_name . '</a>';
-        }
-        // Header
-        $returnValue = "<h3 id=\"comment-$comment_id\">$author_name ($comment_date)</h3>"; //naam en datum
-        // Show email, edit and delete links
-        if ($show_actions) {
-            $oWebsite = $this->websiteObject;
-            $returnValue.= "<p>\n";
-            if (strLen($author_email) > 0) {
-                // Email
-                $returnValue.= $oWebsite->t("users.email") . ': <a href="mailto:' . $author_email . '">' . $author_email . "</a> &nbsp;&nbsp;&nbsp;\n";
-            }
-            // Edit + delete
-            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_comment", $comment_id) . '">' . $oWebsite->t("main.edit") . "</a>\n";
-            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_comment", $comment_id) . '">' . $oWebsite->t("main.delete") . "</a>\n";
-            $returnValue.= "</p>";
-        }
-        // Show comment body
-        $returnValue.= "<p>" . $comment_body . "</p>";
-        // Return
-        return $returnValue;
+    function getCommentHTML(Comment $comment, $show_actions) {
+        return CommentsTreeView::getSingleComment($this->websiteObject, $comment, $show_actions, false); 
     }
 
     /**
-     * Returns a comment.
-     * 
-     * Returns null if the comment wasn't found.
-     * 
-     * @param int $commentId The id of the comment
-     * @return Comment The comment.
+     * @deprecated Use Comment::getById
      */
     function getComment($commentId) {
         return Comment::getById($this->databaseObject, $commentId);
@@ -276,12 +234,12 @@ EOT;
 
     /**
      * Gets all comments for an article. Safe method.
-     * @param int $article_id The article of the comments.
+     * @param int $articleId The article of the comments.
      * @return array[][] The comments.
      */
-    function getCommentsArticle($article_id) {
-        $article_id = (int) $article_id;
-        return $this->getCommentsQuery("`article_id` = $article_id", 0, false);
+    function getCommentsArticle($articleId) {
+        $articleId = (int) $articleId;
+        return $this->getCommentsQuery("`article_id` = $articleId", 0, false);
     }
 
     /**
@@ -294,12 +252,12 @@ EOT;
 
     /**
      * Gets the latest 10 comments of the given user.
-     * @param int $user_id The id of the user.
+     * @param int $userId The id of the user.
      * @return array The comments.
      */
-    public function getCommentsUser($user_id) {
-        $user_id = (int) $user_id;
-        return $this->getCommentsQuery("`user_id` = $user_id", 10, true);
+    public function getCommentsUser($userId) {
+        $userId = (int) $userId;
+        return $this->getCommentsQuery("`user_id` = $userId", 10, true);
     }
 
     // Unsafe method - doesn't sanitize input
@@ -334,18 +292,22 @@ SQL;
     }
 
     /**
-     * Get the id of the user who posted the comment.
-     * @param array[] $comment The comment array.
-     * @return int The id of the user that posted the comment.
+     * @deprecated Use $comment->getUserId()
      */
     function getUserId(Comment $comment) {
         return $comment->getUserId();
     }
 
+    /**
+     * @deprecated Use $comment->getArticleId()
+     */
     function getArticleId(Comment $comment) {
         return $comment->getArticleId();
     }
 
+    /**
+     * @deprecated Use $comment->getId()
+     */
     function getCommentId(Comment $comment) {
         return $comment->getId();
     }

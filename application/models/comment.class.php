@@ -20,6 +20,9 @@ class Comment {
     private $body;
     private $status;
 
+    /** @var Comment[] Child comments */
+    private $childComments;
+
     public function __construct($commentId, $articleId, $userId, $userName, $userDisplayName, $userEmail, $userRank, $created, $lastEdited, $body, $status) {
         $this->id = (int) $commentId;
         $this->articleId = (int) $articleId;
@@ -173,7 +176,7 @@ SQL;
         $body = $oDatabase->escapeData($this->body);
         $userId = $accountLinked ? (int) $this->userId : "NULL";
         // $q is to indicate that the quotes are already included for the query
-        $qUserName = $accountLinked ? "NULL" : '"' . $oDatabase->escapeData($this->userName) . '"';
+        $qUserName = $accountLinked ? "NULL" : '"' . $oDatabase->escapeData($this->userDisplayName) . '"';
         $qUserEmail = $accountLinked ? "NULL" : '"' . $oDatabase->escapeData($this->userEmail) . '"';
         $status = (int) $this->status;
 
@@ -206,6 +209,28 @@ SQL;
             // Save to databasse
             return $oDatabase->query($sql) != false;
         }
+    }
+
+    /**
+     * Gets all child comments, which have been set previously by the
+     * setChildComments method. Returns an empty array if there are no child
+     * comments or if the child comments have not been set.
+     * @return type
+     */
+    public function getChildComments() {
+        if (!$this->childComments) {
+            return array();
+        }
+        return $this->childComments;
+    }
+
+    /**
+     * Sets all child comments for viewing purpose. The parent_id of the child
+     * comments is ignored. Make sure that there are no cyclical relations.
+     * @param Comment[] $childComments Array of child comments.
+     */
+    public function setChildComments($childComments) {
+        $this->childComments = $childComments;
     }
 
 }

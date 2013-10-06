@@ -251,6 +251,43 @@ ul.linklist li div.linklist_icon_image
     padding: 0;
 }
 
+/* Comments */
+article.comment {
+    min-height: 7em;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+article.comment p.comment_body {
+    background: #f9f9f9;
+    border: 1px solid #e3e3e3;
+    border-radius: 3px;
+    padding: 6px;
+    margin-left: 0;
+}
+article.comment header {
+    min-height: 40px;
+}
+article.comment header img {
+    float: left;
+    margin: 0 3px 0 0;
+}
+article.comment .comment_title {
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+article.comment .comment_author_rank {
+    font-style: italic;
+}
+article.comment .comment_actions {
+    float:right;
+}
+article.comment .comment_date {
+    color: #666;
+    font-size: 90%;
+}
+
 /* Pages with an extra sidebar on the left */
 div#sidebar_page_content
 {	/*gebruikt bij de artikelpagina*/

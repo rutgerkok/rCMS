@@ -236,6 +236,51 @@ ul.linklist li div.linklist_icon_image
     margin: -5px 0 0 0;
     padding: 0;
 }
+
+/* Comments */
+article.comment {
+    position: relative; /* For email field */
+    min-height: 7em;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    background: #f3fdf6;
+    border: 1px solid #e4f2e9;
+}
+article.comment p.comment_body {
+    padding: 6px;
+    margin-left: 0;
+}
+article.comment header {
+    min-height: 40px;
+    border-bottom: 1px solid #e4f2e9;
+}
+article.comment header img {
+    float: left;
+    margin: 0 3px 0 0;
+}
+article.comment .comment_title {
+    margin: 0;
+    padding: 0;
+}
+article.comment .comment_author_rank {
+    font-style: italic;
+    font-weight: normal;
+}
+article.comment .comment_actions {
+    float: right;
+    font-size: 100%;
+}
+article.comment .comment_email {
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+article.comment .comment_date {
+    color: #666;
+    font-size: 90%;
+}
+
 /* Page sidebars */
 div#sidebar_page_sidebar
 {

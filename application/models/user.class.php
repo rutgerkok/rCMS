@@ -133,36 +133,46 @@ class User {
 
     // Gravatar
     // Gets the gravatar url based on the hash and size.
-    private static function getUserAvatarUrl($hash, $gravatar_size) {
-        if ((int) $gravatar_size < 5) {
-            throw new BadMethodCallException("Gravatar size $gravatar_size is too small");
+    private static function getUserAvatarUrl($hash, $gravatarSize) {
+        if ((int) $gravatarSize < 5) {
+            throw new BadMethodCallException("Gravatar size $gravatarSize is too small");
         }
         $gravatar_url = self::GRAVATAR_URL_BASE . $hash;
-        $gravatar_url.= "?size=$gravatar_size&d=mm";
+        $gravatar_url.= "?size=$gravatarSize&d=mm";
         return $gravatar_url;
     }
 
     /**
-     * Returns the url of the gravatar of the user.
-     * @param int $gravatar_size Size (width and height) of the gravatar in pixels.
+     * Returns the url of the default gravatar.
+     * @param int $gravatarSize Size (width and height) of the gravatar in pixels.
      * @return string The url.
      */
-    public function getAvatarUrl($gravatar_size = 400) {
-        if (isSet($this->email) && strLen($this->email) > 0) {
-            return self::getUserAvatarUrl(md5(strtolower($this->email)), $gravatar_size);
+    public static function getStandardAvatarUrl($gravatarSize = 400) {
+        return self::getUserAvatarUrl("00000000000000000000000000000000", $gravatarSize);
+    }
+
+    /**
+     * Returns the url of the gravatar of an email.
+     * @param string $email The email of the user, may be empty or null.
+     * @param int $gravatarSize Size (width and height) of the gravatar in pixels.
+     * @return string The url.
+     */
+    public static function getAvatarUrlFromEmail($email, $gravatarSize) {
+        if ($email != null && strLen($email) > 0) {
+            return self::getUserAvatarUrl(md5(strToLower($email)), $gravatarSize);
         } else {
             // No email given
-            return self::getStandardAvatarUrl($gravatar_size);
+            return self::getStandardAvatarUrl($gravatarSize);
         }
     }
 
     /**
-     * Returns the url of the default gravatar.
-     * @param int $gravatar_size Size (width and height) of the gravatar in pixels.
+     * Returns the url of the gravatar of the user.
+     * @param int $gravatarSize Size (width and height) of the gravatar in pixels.
      * @return string The url.
      */
-    public static function getStandardAvatarUrl($gravatar_size = 400) {
-        return self::getUserAvatarUrl("00000000000000000000000000000000", $gravatar_size);
+    public function getAvatarUrl($gravatarSize = 400) {
+        return self::getAvatarUrlFromEmail($this->email, $gravatarSize);
     }
 
     /**
@@ -246,6 +256,10 @@ class User {
 
     public function isAdmin() {
         return ($this->rank == Authentication::$ADMIN_RANK);
+    }
+
+    public function isStaff() {
+        return $this->rank == Authentication::$MODERATOR_RANK || Authentication::$ADMIN_RANK;
     }
 
     public function getRank() {

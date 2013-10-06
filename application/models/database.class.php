@@ -130,7 +130,7 @@ EOT;
                 CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `gebruiker_admin` `user_rank` TINYINT(4) NOT NULL,
                 CHANGE `gebruiker_login` `user_login` VARCHAR(30) NOT NULL,
-                CHANGE `gebruiker_naam` `user_display_name` VARCHAR(30) NULL DEFAULT NULL,
+                CHANGE `gebruiker_naam` `user_display_name` VARCHAR(30) NULL,
                 CHANGE `gebruiker_wachtwoord` `user_password` VARCHAR(255) NOT NULL,
                 CHANGE `gebruiker_email` `user_email` VARCHAR(100) NOT NULL,
                 ADD `user_joined` DATETIME NOT NULL,
@@ -153,7 +153,7 @@ SQL;
                 ALTER TABLE `{$this->prefix}reacties`
                 CHANGE `reactie_id` `comment_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `artikel_id` `article_id` INT(10) UNSIGNED NOT NULL,
-                CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL,
+                CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NULL,
                 CHANGE `reactie_email` `comment_email` VARCHAR(100) NULL,
                 CHANGE `reactie_gemaakt` `comment_created` DATETIME NOT NULL,
                 CHANGE `reactie_inhoud` `comment_body` TEXT NOT NULL,

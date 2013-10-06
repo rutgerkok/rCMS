@@ -123,15 +123,8 @@ class ArticleView extends View {
             $returnValue.= '<p><a class="button primary_button" href="' . $oWebsite->getUrlPage("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
 
             // Show comments
-            $current_user_id = $oWebsite->getCurrentUserId();
-            $show_actions = $oWebsite->isLoggedInAsStaff();
-            foreach ($comments as $comment) {
-                if ($show_actions || $oComments->getUserId($comment) == $current_user_id) {
-                    $returnValue.= $oComments->getCommentHTML($comment, true);
-                } else {
-                    $returnValue.= $oComments->getCommentHTML($comment, false);
-                }
-            }
+            $commentTreeView = new CommentsTreeView($oWebsite, $comments, false);
+            $returnValue .= $commentTreeView->getText();
         }
         $returnValue.= '</div>';
 
