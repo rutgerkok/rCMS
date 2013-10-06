@@ -37,9 +37,21 @@ class Website {
 
         $this->authenticationObject = new Authentication($this);
 
-        // Patch for PHP 5.2.0, they don't have lcFirst
-        if (!function_exists("lcFirst")) {
-            require_once($this->getUriLibraries() . "function_lcfirst.php");
+        // Workarounds for older PHP versions (5.2, 5.3 and 5.4)
+        $this->requireFunctions("lcfirst", "http_response_code");
+    }
+
+    /**
+     * For compability with old PHP versions, this method loads PHP equivalents
+     * of unimplemented functions.
+     * @param $functions string[] The functions to load.
+     */
+    private function requireFunctions($functions) {
+        $functions = func_get_args();
+        foreach ($functions as $function) {
+            if (!function_exists($function)) {
+                require_once ($this->getUriLibraries() . $function . '.function.php');
+            }
         }
     }
 
