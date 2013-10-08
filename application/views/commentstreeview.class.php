@@ -44,8 +44,12 @@ class CommentsTreeView extends View {
         // Add link and rank to author when linked to account
         if ($comment->getUserId() > 0) {
             $author = '<a href="' . $oWebsite->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
-            $rankName = $oWebsite->getAuth()->getRankName($comment->getUserRank());
-            $author .= ' <span class="comment_author_rank">' . $rankName . '</span>';
+            $oAuth = $oWebsite->getAuth();
+            $rank = $comment->getUserRank();
+            if ($oAuth->isHigherOrEqualRank($rank, Authentication::$MODERATOR_RANK)) {
+                $rankName = $oAuth->getRankName($rank);
+                $author .= ' <span class="comment_author_rank">' . $rankName . '</span>';
+            }
         }
 
         // Edit and delete links
