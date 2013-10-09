@@ -1,3 +1,8 @@
+/* HTML5 fixes for IE8 */
+header, article, footer {
+    display: block;
+}
+
 /* Fonts and margins of common elements */
 body
 {

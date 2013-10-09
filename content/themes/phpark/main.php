@@ -4,13 +4,15 @@ if (!defined("WEBSITE")) {
     die();
 }
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"> </script>
+        <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+        <!--[if lte IE 8]>
+            <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
+        <![endif]-->
         <title><?php echo $this->getSiteTitle(); ?></title>
     </head>
     <body>

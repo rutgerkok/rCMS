@@ -9,7 +9,10 @@ if (!defined("WEBSITE")) {
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+        <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+        <!--[if lte IE 8]>
+            <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
+        <![endif]-->
         <title><?php echo $this->getSiteTitle(); ?></title>
     </head>
     <body>
