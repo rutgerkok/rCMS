@@ -79,12 +79,17 @@ class Authentication {
 
     /**
      * Logs the user in with the given username and password.
-     * @param string $username The username.
+     * @param string $usernameOrEmail The username.
      * @param string $password The unhashed password.
      * @return boolean Whether the login was succesfull
      */
-    public function logIn($username, $password) {
-        $user = User::getByName($this->websiteObject, $username);
+    public function logIn($usernameOrEmail, $password) {
+        if (strPos($usernameOrEmail, '@') === false) {
+            $user = User::getByName($this->websiteObject, $usernameOrEmail);
+        } else {
+            $user = User::getByEmail($this->websiteObject, $usernameOrEmail);
+        }
+
         if ($user != null && $user->loginCheck($this->websiteObject, $password)) {
             // Matches!
             $this->setCurrentUser($user);
@@ -135,17 +140,18 @@ class Authentication {
             // Only display the standard error if there was no other error
             $returnValue.= <<<EOT
                 <div class="error">
-                    <p>{$oWebsite->t("errors.invalid_username_or_password")}</p>
+                    <p>{$oWebsite->t("errors.invalid_login_credentials")}</p>
                 </div>
 EOT;
         }
-        if ($minimumRank != self::$USER_RANK)
+        if ($minimumRank != self::$USER_RANK) {
             $loginText.=' <strong><em> ' . $oWebsite->t("users.as_administrator") . '</em></strong>';
+        }
         $returnValue.= <<<EOT
             <form method="post" action="{$oWebsite->getUrlMain()}">
                     <h3>$loginText</h3>
                     <p>
-                            <label for="user">{$oWebsite->t('users.username')}:</label> <br />
+                            <label for="user">{$oWebsite->t('users.username_or_email')}:</label> <br />
                             <input type="text" name="user" id="user" autofocus="autofocus" /> <br />
                             <label for="pass">{$oWebsite->t('users.password')}:</label> <br />
                             <input type="password" name="pass" id="pass" /> <br />

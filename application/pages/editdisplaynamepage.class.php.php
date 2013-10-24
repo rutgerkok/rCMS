@@ -22,7 +22,7 @@ class EditDisplayNamePage extends EditPasswordPage {
         if (isSet($_REQUEST["display_name"])) {
             // Sent
             $display_name = $oWebsite->getRequestString("display_name");
-            if (Validate::display_name($display_name)) {
+            if (Validate::displayName($display_name)) {
                 // Valid display_name
                 $this->user->setDisplayName($display_name);
                 if ($this->user->save()) {
@@ -36,7 +36,7 @@ class EditDisplayNamePage extends EditPasswordPage {
                 }
             } else {
                 // Invalid display_name
-                $oWebsite->addError($oWebsite->t("users.display_name") . ' ' . Validate::get_last_error($oWebsite));
+                $oWebsite->addError($oWebsite->t("users.display_name") . ' ' . Validate::getLastError($oWebsite));
                 $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.display_name", true) . '</em></p>';
             }
         }

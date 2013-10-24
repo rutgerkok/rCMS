@@ -47,8 +47,8 @@ class Comments {
                     $valid = false;
                 } else {
                     $author_name = htmlSpecialChars(trim($author_name));
-                    if (!Validate::display_name($author_name)) {
-                        $oWebsite->addError($oWebsite->t("users.name") . ' ' . Validate::get_last_error($oWebsite));
+                    if (!Validate::displayName($author_name)) {
+                        $oWebsite->addError($oWebsite->t("users.name") . ' ' . Validate::getLastError($oWebsite));
                         $valid = false;
                     }
                 }
@@ -60,7 +60,7 @@ class Comments {
                 } else {
                     $author_email = trim($author_email);
                     if (!Validate::email($author_email)) {
-                        $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::get_last_error($oWebsite));
+                        $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::getLastError($oWebsite));
                         $valid = false;
                     }
                 }

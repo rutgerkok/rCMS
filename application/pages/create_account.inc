@@ -37,21 +37,31 @@ if (!$display_page) {
         if(isSet($_POST["creating_username"])) {
             // Handle input
             $valid = true;
-            if (!Validate::username($creating_username, $this)) {
+            if (!Validate::username($creating_username)) {
                 $valid = false;
-                $this->addError($this->t("users.the_username") . " " . Validate::get_last_error($this));
+                $this->addError($this->t("users.the_username") . " " . Validate::getLastError($this));
             }
-            if (!Validate::display_name($creating_display_name)) {
+            if (!Validate::displayName($creating_display_name)) {
                 $valid = false;
-                $this->addError($this->t("users.the_display_name") . " " . Validate::get_last_error($this));
+                $this->addError($this->t("users.the_display_name") . " " . Validate::getLastError($this));
             }
             if (!Validate::password($creating_password1, $creating_password2)) {
                 $valid = false;
-                $this->addError($this->t("users.the_password") . " " . Validate::get_last_error($this));
+                $this->addError($this->t("users.the_password") . " " . Validate::getLastError($this));
             }
             if (!Validate::email($creating_email)) {
                 $valid = false;
-                $this->addError($this->t("users.the_email") . " " . Validate::get_last_error($this));
+                $this->addError($this->t("users.the_email") . " " . Validate::getLastError($this));
+            }
+            if (User::getByName($this, $creating_username) != null) {
+                // User with that name already exists
+                $valid = false;
+                $this->addError($this->t("users.the_username") . " " . $this->t("errors.already_in_use_on_this_site"));
+            }
+            if (!empty($creating_email) && User::getByEmail($this, $creating_email) != null) {
+                // User with that email already exists
+                $valid = false;
+                $this->addError($this->t("users.the_email") . " " . $this->t("errors.already_in_use_on_this_site"));
             }
 
             if ($valid) {

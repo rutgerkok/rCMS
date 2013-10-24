@@ -21,11 +21,11 @@ if ($loggedIn) {
         $valid = true;
         if (!Validate::url($link_url)) {
             $valid = false;
-            $this->addError($this->t("links.url") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("links.url") . " " . Validate::getLastError($this));
         }
-        if (!Validate::link_text($link_text)) {
+        if (!Validate::nameOfLink($link_text)) {
             $valid = false;
-            $this->addError($this->t("links.text") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("links.text") . " " . Validate::getLastError($this));
         }
         if (!$oMenu->get_menu_name($menu_id)) {
             $valid = false;

@@ -1,14 +1,19 @@
 <?php
 
+/**
+ * Contains methods to check whether various things inputted by the user are
+ * valid. If a function returns false, you can get the error message using
+ * Validate::getLastError(..).
+ */
 class Validate {
 
-    private static $last_error;
-    private static $replace_in_last_error = "";
+    private static $lastError;
+    private static $replaceInLastError = "";
     public static $MIN_PASSWORD_LENGHT = 5;
 
-    private static function set_error($code, $replace_in_code = "") {
-        Validate::$last_error = $code;
-        Validate::$replace_in_last_error = $replace_in_code;
+    private static function setError($code, $replaceInCode = "") {
+        Validate::$lastError = $code;
+        Validate::$replaceInLastError = $replaceInCode;
     }
 
     /**
@@ -16,96 +21,100 @@ class Validate {
      * @param Website $oWebsite The website object
      * @return string The localized error message
      */
-    public static function get_last_error(Website $oWebsite) {
-        if (Validate::$replace_in_last_error === "") {
-            $message = $oWebsite->t("errors." . Validate::$last_error);
+    public static function getLastError(Website $oWebsite) {
+        if (Validate::$replaceInLastError === "") {
+            $message = $oWebsite->t("errors." . Validate::$lastError);
         } else {
-            $message = str_replace("#", Validate::$replace_in_last_error, $oWebsite->t("errors." . Validate::$last_error));
+            $message = $oWebsite->tReplaced("errors." . Validate::$lastError, Validate::$replaceInLastError);
         }
-        Validate::$last_error = "";
-        Validate::$replace_in_last_error = "";
+        Validate::$lastError = "";
+        Validate::$replaceInLastError = "";
         return $message;
     }
 
+    /**
+     * Gets whether the input would be valid as an email address. As emails
+     * should always be optional, an emtpy string is also valid.
+     * @param string $email The email address.
+     * @return boolean Whether the email is valid.
+     */
     public static function email($email) {
-        if ($email === '')
+        if ($email === '') {
             return true; // Email is optional, so allow empty email addresses
+        }
 
         if (strLen($email) > 100) {
-            Validate::set_error("is_too_long_num", "100");
+            Validate::setError("is_too_long_num", "100");
             return false;
         }
 
         if (preg_match('/^([*+!.&#$�\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i', $email)) { //ingewikkeld, maar werkt
             return true;
         } else {
-            Validate::set_error("is_invalid");
+            Validate::setError("is_invalid");
             return false;
         }
     }
 
+    /**
+     * Checks if the passwords are equal and valid.
+     * @param string $password1 The first password.
+     * @param string $password2 The second password.
+     * @return boolean Whether the passwords are equal and valid.
+     */
     public static function password($password1, $password2) {
         $valid = true;
 
         if (strLen($password1) < self::$MIN_PASSWORD_LENGHT) {
-            Validate::set_error("is_too_short_num", Validate::$MIN_PASSWORD_LENGHT);
+            Validate::setError("is_too_short_num", Validate::$MIN_PASSWORD_LENGHT);
             $valid = false;
         }
         if ($password1 != $password2) {
-            Validate::set_error("is_not_equal_to_other_password");
+            Validate::setError("is_not_equal_to_other_password");
             $valid = false;
         }
         return $valid;
     }
 
-    public static function display_name($display_name) {
+    public static function displayName($displayName) {
         $valid = true;
 
-        if (strLen($display_name) < 4) {
-            Validate::set_error("is_too_short_num", "4");
+        if (strLen($displayName) < 4) {
+            Validate::setError("is_too_short_num", "4");
             $valid = false;
         }
-        if (strLen($display_name) > 20) {
-            Validate::set_error("is_too_long_num", "20");
+        if (strLen($displayName) > 20) {
+            Validate::setError("is_too_long_num", "20");
             $valid = false;
         }
-        if ($display_name != strip_tags($display_name)) {
-            Validate::set_error("contains_html");
+        if ($displayName != strip_tags($displayName)) {
+            Validate::setError("contains_html");
             $valid = false;
         }
         return $valid;
     }
 
-    public static function username($username, Website $oWebsite) {
+    public static function username($username) {
         $valid = true;
 
-        $username = strtolower(trim($username));
+        $username = strToLower(trim($username));
 
         if (strLen($username) < 4) {
-            Validate::set_error("is_too_short_num", "4");
+            Validate::setError("is_too_short_num", "4");
             $valid = false;
         }
         if (strLen($username) > 30) {
-            Validate::set_error("is_too_long_num", "30");
+            Validate::setError("is_too_long_num", "30");
             $valid = false;
         }
         if (!preg_match("/^[a-z0-9_]*$/", $username)) {
-            Validate::set_error("contains_invalid_chars");
+            Validate::setError("contains_invalid_chars");
             $valid = false;
         }
         if (is_numeric($username)) {
             // Require letters to avoid the username 125234186528752396592318659213 matching with 1252341865287523960000000000000
-            Validate::set_error("contains_no_letters");
+            Validate::setError("contains_no_letters");
             $valid = false;
-        }
-
-        if ($valid) {
-            $oDB = $oWebsite->getDatabase();
-            $username = $oDB->escapeData(htmlSpecialChars(strtolower($username)));
-            if ($oDB->rows($oDB->query('SELECT `user_id` FROM `users` WHERE `user_login` = \'' . $username . '\' LIMIT 0 , 1')) > 0) {
-                Validate::set_error("already_exists");
-                $valid = false;
-            }
         }
 
         return $valid;
@@ -113,61 +122,50 @@ class Validate {
 
     public static function range($number, $min, $max) {
         if (!is_numeric($number)) {
-            Validate::set_error("is_not_numeric");
+            Validate::setError("is_not_numeric");
             return false;
         }
         $number = (int) $number;
         if ($number < $min) {
-            Validate::set_error("is_too_low_num", $min);
+            Validate::setError("is_too_low_num", $min);
             return false;
         }
         if ($number > $max) {
-            Validate::set_error("is_not_high_num", $max);
+            Validate::setError("is_not_high_num", $max);
             return false;
         }
         return true;
     }
 
-    public static function string_length($string, $min, $max) {
+    /**
+     * Returns whether the strings has the correct length;.
+     * @param string $string The string to check.
+     * @param int $min The minimum length, inclusive.
+     * @param int $max The maximum length, inclusive.
+     * @return boolean Whether the length of the given string is correct.
+     */
+    public static function stringLength($string, $min, $max) {
         if (strLen($string) < $min) {
             if ($min == 1) {
-                Validate::set_error("not_entered");
+                Validate::setError("not_entered");
             } else {
-                Validate::set_error("is_too_short_num", $min);
+                Validate::setError("is_too_short_num", $min);
             }
             return false;
         }
         if (strLen($string) > $max) {
-            Validate::set_error("is_too_long_num", $max);
+            Validate::setError("is_too_long_num", $max);
             return false;
         }
         return true;
     }
 
-    public static function url($link_url) {
-        if (strLen($link_url) <= 7) {
-            self::set_error("not_entered");
-            return false;
-        }
-        if (strLen($link_url) > Menus::MAX_URL_LENGTH) {
-            self::set_error("is_too_long_num", Menus::MAX_URL_LENGTH);
-            return false;
-        }
-        return true;
+    public static function url($linkUrl) {
+        return self::stringLength($linkUrl, 1, Menus::MAX_URL_LENGTH);
     }
 
-    public static function link_text($link_text) {
-        if (strLen($link_text) == 0) {
-            self::set_error("not_entered");
-            return false;
-        }
-        if (strLen($link_text) > Menus::MAX_LINK_TEXT_LENGTH) {
-            self::set_error("is_too_long_num", Menus::MAX_LINK_TEXT_LENGTH);
-            return false;
-        }
-        return true;
+    public static function nameOfLink($linkText) {
+        return self::stringLength($linkText, 1, Menus::MAX_LINK_TEXT_LENGTH);
     }
 
 }
-
-?>

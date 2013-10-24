@@ -23,25 +23,35 @@ if ($loggedIn) {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isSet($_POST['pass2'])) {
         $valid = true;
-        if (!Validate::username($user, $this)) {
+        if (!Validate::username($user)) {
             $valid = false;
-            $this->addError($this->t("users.the_username") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("users.the_username") . " " . Validate::getLastError($this));
         }
-        if (!Validate::display_name($name)) {
+        if (!Validate::displayName($name)) {
             $valid = false;
-            $this->addError($this->t("users.the_display_name") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("users.the_display_name") . " " . Validate::getLastError($this));
         }
         if (!Validate::password($pass, $pass2)) {
             $valid = false;
-            $this->addError($this->t("users.the_password") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("users.the_password") . " " . Validate::getLastError($this));
         }
         if (!Validate::email($email)) {
             $valid = false;
-            $this->addError($this->t("users.the_email") . " " . Validate::get_last_error($this));
+            $this->addError($this->t("users.the_email") . " " . Validate::getLastError($this));
         }
-        if($oAuth->isValidRankForAccounts($rank)) {
+        if ($oAuth->isValidRankForAccounts($rank)) {
             $valid = false;
             $this->addError("Invalid rank!", "Invalid rank (" . $rank . ") posted by " . $oAuth->getCurrentUser()->getUsername());
+        }
+        if (User::getByName($this, $user) != null) {
+            // User with that name already exists
+            $valid = false;
+            $this->addError($this->t("users.the_username") . " " . $this->t("errors.already_in_use_on_this_site"));
+        }
+        if (!empty($email) && User::getByEmail($this, $email) != null) {
+            // User with that email already exists
+            $valid = false;
+            $this->addError($this->t("users.the_email") . " " . $this->t("errors.already_in_use_on_this_site"));
         }
 
         if ($valid) { //maak gebruiker aan

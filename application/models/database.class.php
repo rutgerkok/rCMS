@@ -52,6 +52,7 @@ class Database {
             $this->query("INSERT INTO `categorie` (`categorie_naam`) VALUES ('No category'), ('Events'), ('News');");
         }
 
+        // Users
         if ($this->query("CREATE TABLE IF NOT EXISTS `users` (`user_id` int(10) unsigned NOT NULL AUTO_INCREMENT, " .
                         "`user_login` varchar(30) NOT NULL, `user_password` varchar(255) NOT NULL, " .
                         "`user_display_name` varchar(30) NOT NULL, `user_email` varchar(100) NOT NULL, " .

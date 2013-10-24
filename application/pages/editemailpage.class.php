@@ -36,7 +36,7 @@ class EditEmailPage extends EditPasswordPage {
                 }
             } else {
                 // Invalid email
-                $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::get_last_error($oWebsite));
+                $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::getLastError($oWebsite));
                 $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.email", true) . '</em></p>';
             }
         }

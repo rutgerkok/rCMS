@@ -90,7 +90,7 @@ class EditPasswordPage extends Page {
                     }
                 } else {
                     // Invalid new password
-                    $oWebsite->addError($oWebsite->t("users.password") . ' ' . Validate::get_last_error($oWebsite));
+                    $oWebsite->addError($oWebsite->t("users.password") . ' ' . Validate::getLastError($oWebsite));
                     $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
                 }
             } else {

@@ -47,8 +47,8 @@ class EditAccountStatusPage extends EditPasswordPage {
             }
 
             // Check status text
-            if (!Validate::string_length($status_text, 1, self::MAXIMUM_STATUS_TEXT_LENGTH)) {
-                $oWebsite->addError($oWebsite->t("users.status_text") . " " . Validate::get_last_error($oWebsite));
+            if (!Validate::stringLength($status_text, 1, self::MAXIMUM_STATUS_TEXT_LENGTH)) {
+                $oWebsite->addError($oWebsite->t("users.status_text") . " " . Validate::getLastError($oWebsite));
                 $valid = false;
             }
 

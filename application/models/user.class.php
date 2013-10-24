@@ -65,32 +65,51 @@ class User {
         }
         return true;
     }
+    
+    // Vulnerable to SQL injection attacks, so it must be private. Safe, public
+    // method are available below.
+    private static function getByCondition(Website $oWebsite, $sqlCondition) {
+        $oDB = $oWebsite->getDatabase();
+
+        
+
+        $sql = 'SELECT `user_id`, `user_login`, `user_display_name`, `user_password`, ';
+        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
+        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
+        $sql.= 'FROM `users` WHERE ' . $sqlCondition;
+        $result = $oDB->query($sql);
+
+        // Create user object and return
+        if($oDB->rows($result) > 0) {
+            list($id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData) = $oDB->fetchNumeric($result);
+            return new User($oWebsite, $id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Get the user by name. Returns null if the user isn't found.
      * @param Website $oWebsite The Website object.
      * @param string $username The username. Case insensitive.
-     * @return User The User, or null if it isn't found.
+     * @return User|null The User, or null if it isn't found.
      */
     public static function getByName(Website $oWebsite, $username) {
-        $oDB = $oWebsite->getDatabase();
-
-        $username = strtolower($username);
-        $escaped_username = $oDB->escapeData(strtolower($username));
-
-        $sql = 'SELECT `user_id`, `user_display_name`, `user_password`, ';
-        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
-        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
-        $sql.= 'FROM `users` WHERE `user_login` = "' . $escaped_username . '" ';
-        $result = $oDB->query($sql);
-
-        // Create user object and return
-        if ($oDB->rows($result) === 1) {
-            list($id, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data) = $oDB->fetchNumeric($result);
-            return new User($oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data);
-        } else {
-            return null;
-        }
+        $escapedUsername = $oWebsite->getDatabase()->escapeData(strToLower($username));
+        $sqlCondition = '`user_login` = "' . $escapedUsername . '"';
+        return self::getByCondition($oWebsite, $sqlCondition);
+    }
+    
+    /**
+     * Get the user by email. Returns null if the user isn't found.
+     * @param Website $oWebsite The Website object.
+     * @param string $email The email address. Case sensitive.
+     * @return User|null The User, or null if it isn't found.
+     */
+    public static function getByEmail(Website $oWebsite, $email) {
+        $escapedEmail = $oWebsite->getDatabase()->escapeData($email);
+        $sqlCondition = '`user_email` = "' . $escapedEmail . '"';
+        return self::getByCondition($oWebsite, $sqlCondition);
     }
 
     /**
@@ -98,25 +117,12 @@ class User {
      * the user doesn't exist.
      * @param Website $oWebsite The Website object.
      * @param int $id The user id.
-     * @return User The User, or null if it isn't found.
+     * @return User|null The User, or null if it isn't found.
      */
-    public static function getById(Website $oWebsite, $user_id) {
-        $oDB = $oWebsite->getDatabase();
-        $user_id = (int) $user_id;
-
-        $sql = 'SELECT `user_login`, `user_display_name`, `user_password`, ';
-        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
-        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
-        $sql.= 'FROM `users` WHERE `user_id` = "' . $user_id . '" ';
-        $result = $oDB->query($sql);
-
-        // Create user object and return
-        if ($oDB->rows($result) === 1) {
-            list($username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data) = $oDB->fetchNumeric($result);
-            return new User($oWebsite, $user_id, $username, $display_name, $password_hashed, $email, $rank, strToTime($joined), strToTime($last_login), $status, $status_text, $extra_data);
-        } else {
-            return null;
-        }
+    public static function getById(Website $oWebsite, $userId) {
+        $userId = (int) $userId;
+        $sqlCondition = '`user_id` = "' . $userId . '"';
+        return self::getByCondition($oWebsite, $sqlCondition);
     }
 
     /**
@@ -345,16 +351,16 @@ class User {
     }
 
     /**
-     * Set the hashed password of the user directly
-     * @param string $password_hashed
+     * Set the hashed password of the user directly.
+     * @param string $password_hashed The hashed password.
      */
     public function setPasswordHashed($password_hashed) {
         $this->passwordHashed = $password_hashed;
     }
 
     /**
-     * Sets the email of the user
-     * @param string $email
+     * Sets the email of the user. Case senstive.
+     * @param string $email The email.
      */
     public function setEmail($email) {
         $this->email = $email;

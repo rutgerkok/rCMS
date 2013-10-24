@@ -187,7 +187,7 @@ EOT;
         if (isSet($_REQUEST["count_" . $id])) {
             $data["count"] = (int) $_REQUEST["count_" . $id];
             if (!Validate::range($data["count"], 1, 20)) {
-                $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . Validate::get_last_error($oWebsite));
+                $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . Validate::getLastError($oWebsite));
                 $data["valid"] = false;
             }
         } else {
