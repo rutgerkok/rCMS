@@ -387,25 +387,29 @@ ul.no_bullets li
     background:#e4f2e9;
     width: 50%;
     margin: 100px auto auto auto;
-    padding:25px;
+    padding: 25px;
     box-shadow: white 0 0 20px;
 }
 /* body en container */
 body
 {
-    background:#416f4a url(images/achtergrond.jpg) top center no-repeat;
-    height:100%;
+    background: #416f4a url(images/achtergrond.jpg) top center no-repeat;
+    height: 100%;
 }
 div#container
 {
     margin: 22px auto;
     padding:0;
-    width:950px;
-    background:white url(images/stippellijntje.png) top right repeat-y;
+    width: 950px;
+    background:white;
 }
-div#containerwrapper
-{
-    background:transparent;
+@media all and (max-width : 1000px) {
+    div#container 
+    {
+        /* Placed in a media query so that webpage isn't responsive on old IE versions */
+        max-width: 950px;
+        width: 100%;
+    }
 }
 
 /* Header */
@@ -426,12 +430,46 @@ div#header h1
     text-align:left;
     height:1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
 }
+@media all and (max-width : 800px) {
+    /* Smaller screens */
+    div#header h1
+    {
+        font-size: 400%;
+    }
+}
+@media all and (max-width : 670px) {
+    /* Even smaller screens */
+    div#header h1
+    {
+        font-size: 300%;
+        padding-top: 30px;
+    }
+}
+@media all and (max-width : 600px) {
+    /* Mobile, place logo in center,  move title below logo */
+    div#header
+    {
+        background: #e4f2e9 url(images/logo.png) center 30px no-repeat;
+        height: 150px;
+    }
+    div#header h1
+    {
+        font-size: 170%;
+        text-align: center;
+        padding: 0;
+        position: absolute;
+        bottom: 3px;
+        left: 3px;
+        right: 3px;
+    }
+}
+
 /* Search */
-div#header div#search
+div#search
 {
     position: absolute;
-    right: 20px;
-    top: 2.5em;
+    top: 0;
+    right: 0;
 }
 /* Search textfield */
 div#header div#search #searchbox
@@ -441,6 +479,7 @@ div#header div#search #searchbox
     margin:0;
     padding:0em;
 }
+
 /* Accountbox */
 div#account_label
 {
@@ -449,7 +488,7 @@ div#account_label
     top: 100%;
     font-size: 85%;
     text-align: right;
-    
+
 }
 div#account_label p, a.user_welcome_link
 {
@@ -516,46 +555,66 @@ div#contentadmin
     min-height:600px;
 }
 
-
-/* sidebar */
+/* Sidebars on home page */
 div#sidebar
 {
-    width:30%;
-    float:left;
-    height:100%;
+    width: 30%;
+    height: max-content;
+    float: left;
+    height: 100%;
+    border-left: 1px dotted #999999;
 }
-
-/* navigatie 
-        /* verticale balk rechts */
 div#nav
 {
-    width:30%;
-    float:left;
+    width: 30%;
+    float: left;
+    border-left: 1px dotted #999999;
+}
+@media all and (max-width : 800px) {
+    /* Small screen, place one sidebar below */
+    div#content {
+        width: 59%;
+    }
+    div#sidebar {
+        width: 40%;
+    }
+    div#nav {
+        float: none;
+        clear: both;
+        width: 100%;
+        border-left: none;
+        border-top: 1px dotted #999999;
+    }
+}
+@media all and (max-width : 600px) {
+    /* Mobile, place all sidebars below */
+    div#content, div#sidebar, div#nav {
+        float: none;
+        width: 100%;
+        border: none;
+    }
 }
 
-/* Horizontal link bar */
+/* Horizontal link bar on top of page */
 div#hornav
 {
     background: #9a9a79;
-    min-height:19px;
-    padding-left:10px;
+    min-height: 19px;
+    padding-left: 10px;
+    overflow: auto;
 }
 div#hornav ul
 {
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
     list-style-type: none;
-    height:100%;
 }
 div#hornav ul li
 {
-    float:left;
+    float: left;
     background: transparent;
-    border-style: none dotted none none;
-    border-width: 0 1px 0 0;
-    border-color: white;
-    height:100%;
-    color:white;
+    border-right: 1px dotted white;
+    color: white;
 }
 div#hornav ul li a
 {
@@ -564,20 +623,38 @@ div#hornav ul li a
     padding: 2px 5px 2px 5px;
     font-family: verdana, sans-serif;
     font-size: 85%;
-    display:block;
-    height:100%;
+    display: block;
+    margin-bottom: 2px;
 }
 div#hornav ul li a:hover
 {
-    background:transparent;
+    background: transparent;
     color: #303030;
     text-decoration: none;
     border: 0;
 }
+@media all and (max-width : 600px) {
+    /* Mobile, switch to vertical menu */
+    div#hornav
+    {
+        padding: 0;
+    }
+    div#hornav ul
+    {
+        width: 100%;
+        margin-top: 2em;
+    }
+    div#hornav ul li
+    {
+        float: none;
+        border-right: none;
+        border-top: 1px dotted white;
+    }
+}
 /* Login link of horizontal bar */
 div#hornav ul#accountlinks
 {
-    float:right;
+    float: right;
 }
 div#hornav ul#accountlinks li
 {
