@@ -26,7 +26,7 @@ class CategoryPage extends Page {
             if (empty($this->pageTitle)) {
                 $this->pageTitle = $oWebsite->t("main.category");
                 $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
-                $this->view = new View();
+                $this->view = new EmptyView($oWebsite);
             } else {
                 $articles = $oArticles->getArticlesData($categoryId);
                 $this->view = new ArticleListView($oWebsite, $articles, $categoryId, true, true);

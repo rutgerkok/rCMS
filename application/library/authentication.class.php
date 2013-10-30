@@ -106,7 +106,7 @@ class Authentication {
 
     /**
      * Checks whether the user has access to the current page, taking POST
-     * parameters into account.. If not, a login screen is optionally displayed.
+     * parameters into account. If not, a login screen is optionally displayed.
      * @param int $minimumRank The minimum rank required.
      * @param boolean $showform Whether a login form should be shown on failure.
      * @return boolean Whether the login was succesfull.
@@ -116,10 +116,14 @@ class Authentication {
         $minimumRank = (int) $minimumRank;
         $currentUser = $this->getCurrentUser();
 
+        if ($minimumRank == self::$LOGGED_OUT_RANK) {
+            throw new InvalidArgumentException("Rank for logging in cannot be LOGGED_OUT_RANK");
+        }
+
         // Try to login if data was sent
         $usernameOrEmail = $oWebsite->getRequestString("user");
         $password = $oWebsite->getRequestString("pass");
-        if($usernameOrEmail && $password) {
+        if ($usernameOrEmail && $password) {
             if ($this->logIn($usernameOrEmail, $password)) {
                 $currentUser = $this->getCurrentUser();
             } else {
@@ -139,7 +143,7 @@ class Authentication {
             return false;
         }
     }
-    
+
     /**
      * Returns true if the login of the user has failed because the username,
      * password or email was wrong.

@@ -6,6 +6,13 @@ if (!defined("WEBSITE")) {
 }
 
 class LoginPage extends Page {
+    public function init(Website $oWebsite) {
+        // Handle login ourselves
+        // (Using the provided getMinimumRank helper gives an ugly
+        // "You need to be logged in to view this page" message.)
+        $oWebsite->getAuth()->check(Authentication::$USER_RANK, false);
+    }
+    
     public function getPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.log_in") . '...';
     }

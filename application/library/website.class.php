@@ -233,9 +233,9 @@ class Website {
         if ($id == -1337 && count($args) == 0) { // just the page name
             return $this->getUrlMain() . $name;
         } else { // also the other arguments
-            if (count($args) == 0)
+            if (count($args) == 0) {
                 return $this->getUrlMain() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
-            else { //wel andere variabelen
+            } else { //wel andere variabelen
                 $url = $this->getUrlMain() . "index.php?p=" . $name . "&amp;id=" . $id;
                 foreach ($args as $key => $value)
                     $url.="&amp;$key=" . urlencode($value);
@@ -401,9 +401,11 @@ class Website {
 
             // Authentication stuff
             $rank = (int) $this->currentPage->getMinimumRank($this);
-            if ($this->getAuth()->check($rank, false)) {
+            if ($rank == Authentication::$LOGGED_OUT_RANK || $this->getAuth()->check($rank, false)) {
                 // Call init methord
                 $this->currentPage->init($this);
+            } else {
+                $this->authenticationFailedRank = $rank;
             }
         } else {
             // Old page system
