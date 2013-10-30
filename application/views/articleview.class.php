@@ -11,9 +11,6 @@ class ArticleView extends View {
     /** @var Comments $oComments */
     protected $oComments;
 
-    /** @var Website $oWebsite */
-    protected $oWebsite;
-
     /**
      * Creates a new article viewer.
      * @param Website $oWebsite The website object.
@@ -21,9 +18,9 @@ class ArticleView extends View {
      * @param Comments $oComments The comments model, or null to disable comments.
      */
     public function __construct(Website $oWebsite, $article, Comments $oComments = null) {
+        parent::__construct($oWebsite);
         $this->article = $article;
         $this->oComments = $oComments;
-        $this->oWebsite = $oWebsite;
 
         // Check if article exists
         if (!$this->article) {

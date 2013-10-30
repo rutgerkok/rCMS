@@ -2,11 +2,10 @@
 
 class WidgetsView extends View {
 
-    protected $oWebsite;
     protected $area;
 
     public function __construct(Website $oWebsite, $area) {
-        $this->oWebsite = $oWebsite;
+        parent::__construct($oWebsite);
         $this->area = $area;
     }
 
@@ -15,4 +14,3 @@ class WidgetsView extends View {
     }
 
 }
-

@@ -3,14 +3,17 @@
 /**
  * Represents a view. This class produces just an empty page.
  */
-class View {
+abstract class View {
+
+    /** @var Website $oWebsite The website object. */
+    protected $oWebsite;
+
+    public function __construct(Website $oWebsite) {
+        $this->oWebsite = $oWebsite;
+    }
 
     /**
      * Renders this view.
      */
-    public function getText() {
-        return "";
-    }
-
+    public abstract function getText();
 }
-

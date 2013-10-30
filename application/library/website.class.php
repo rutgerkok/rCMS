@@ -353,118 +353,140 @@ class Website {
         }
 
         // Check for site password
-        if ($this->hasAccess()) {
-            // Site title
-            $this->siteTitle = $this->getSiteSetting('title');
-
-            // Get id of page to display
-            $givenPageId = $this->getRequestString("p", "home");
-            if ($givenPageId != 'home') {
-                // Get current page title and id 
-                if (!preg_match('/^[a-z0-9_]+$/i', $givenPageId) || !file_exists($this->getUriPage($givenPageId))) {
-                    // Page doesn't exist, show error and redirect
-                    http_response_code(404);
-                    $this->addError($this->t("main.page") . " '" . htmlSpecialChars($givenPageId) . "' " . $this->t('errors.not_found'));
-                    $this->currentPageId = 'home';
-                } else {
-                    $this->currentPageId = $givenPageId;
-                }
-            } else {
-                // No page id given
-                $this->currentPageId = 'home';
-            }
-
-            // Set cookie
-            if (strLen($this->getSiteSetting('password')) != 0) {
-                setcookie("key", $this->getSiteSetting('password'), time() + 3600 * 24 * 365, "/");
-            }
-
-            // Perform page logic (supporting both the old .inc and the new .php pages)
-            $uri = $this->getUriPage($this->currentPageId);
-            if (substr($uri, -4) == ".php") {
-                // We're on the new page system
-                $this->loadPage($this->currentPageId);
-                // Page title
-                $this->currentPageTitle = $this->currentPage->getPageTitle($this);
-                if ($this->getSiteSetting('append_page_title')) {
-                    $this->siteTitle.= ' - ' . $this->currentPage->getShortPageTitle($this);
-                }
-                // Page type
-                $this->currentPageType = $this->currentPage->getPageType();
-                // Authentication stuff
-                $rank = (int) $this->currentPage->getMinimumRank($this);
-                if ($rank >= 0) {
-                    $oAuth = $this->getAuth();
-                    if (!$oAuth->check($rank, false)) {
-                        $this->authenticationFailedRank = $rank;
-                    }
-                }
-                // Call init methord
-                $this->currentPage->init($this);
-            } else {
-                // Old page system
-                // Page title
-                $this->currentPageTitle = ucfirst(str_replace('_', ' ', $this->currentPageId));
-                if ($this->getSiteSetting('append_page_title')) {
-                    $this->siteTitle.= ' - ' . $this->currentPageTitle;
-                }
-                // Page type
-                switch ($this->currentPageId) {
-                    case "search":
-                    case "archive":
-                    case "calendar":
-                        $this->currentPageType = "NORMAL";
-                        break;
-                    default:
-                        $this->currentPageType = "BACKSTAGE";
-                        break;
-                }
-            }
-
-            // Output page
-            $this->themesObject = new Themes($this);
-            $this->themesObject->output();
-        } else {
+        if (!$this->hasAccess()) {
             // Echo site code page
             require($this->getUriLibraries() . 'login_page.php');
+            return;
         }
+
+        // Site title
+        $this->siteTitle = $this->getSiteSetting('title');
+
+        // Get id of page to display
+        $givenPageId = $this->getRequestString("p", "home");
+        if ($givenPageId != 'home') {
+            // Get current page title and id 
+            if (!preg_match('/^[a-z0-9_]+$/i', $givenPageId) || !file_exists($this->getUriPage($givenPageId))) {
+                // Page doesn't exist, show error and redirect
+                http_response_code(404);
+                $this->addError($this->t("main.page") . " '" . htmlSpecialChars($givenPageId) . "' " . $this->t('errors.not_found'));
+                $this->currentPageId = 'home';
+            } else {
+                $this->currentPageId = $givenPageId;
+            }
+        } else {
+            // No page id given
+            $this->currentPageId = 'home';
+        }
+
+        // Set password cookie
+        if (strLen($this->getSiteSetting('password')) != 0) {
+            setCookie("key", $this->getSiteSetting('password'), time() + 3600 * 24 * 365, "/");
+        }
+
+        // Perform page logic (supporting both the old .inc and the new .php pages)
+        $uri = $this->getUriPage($this->currentPageId);
+        if (substr($uri, -4) == ".php") {
+            // We're on the new page system
+            $this->loadPage($this->currentPageId);
+
+            // Page title
+            $this->currentPageTitle = $this->currentPage->getPageTitle($this);
+            if ($this->getSiteSetting('append_page_title')) {
+                $this->siteTitle.= ' - ' . $this->currentPage->getShortPageTitle($this);
+            }
+
+            // Page type
+            $this->currentPageType = $this->currentPage->getPageType();
+
+            // Authentication stuff
+            $rank = (int) $this->currentPage->getMinimumRank($this);
+            if ($this->getAuth()->check($rank, false)) {
+                // Call init methord
+                $this->currentPage->init($this);
+            }
+        } else {
+            // Old page system
+            // Page title
+            $this->currentPageTitle = ucfirst(str_replace('_', ' ', $this->currentPageId));
+            if ($this->getSiteSetting('append_page_title')) {
+                $this->siteTitle.= ' - ' . $this->currentPageTitle;
+            }
+
+            // Page type
+            switch ($this->currentPageId) {
+                case "search":
+                case "archive":
+                case "calendar":
+                    $this->currentPageType = "NORMAL";
+                    break;
+                default:
+                    $this->currentPageType = "BACKSTAGE";
+                    break;
+            }
+        }
+
+        // Output page
+        $this->themesObject = new Themes($this);
+        $this->themesObject->output();
     }
 
     /**
      * Echoes only the main content of the page, without any clutter.
      */
     public function echoPageContent() { //geeft de hoofdpagina weer
-        if ($this->hasAccess()) {
-            // Locales
-            setlocale(LC_ALL, explode("|", $this->t("main.locales")));
+        // Locales
+        setLocale(LC_ALL, explode("|", $this->t("main.locales")));
 
-            if ($this->currentPage) {
-                // New page system
-                // Title
-                $title = $this->currentPage->getPageTitle($this);
-                if (!empty($title)) {
-                    echo "<h2>" . $title . "</h2>\n";
-                }
-
-                // Get page content (based on permissions)
-                $textToDisplay = "";
-                if ($this->authenticationFailedRank >= 0) {
-                    $textToDisplay = $this->authenticationObject->getLoginForm($this->authenticationFailedRank);
-                } else {
-                    $textToDisplay = $this->currentPage->getPageContent($this);
-                }
-
-                // Echo errors
-                if (!$this->errorsDisplayed) {
-                    $this->echoErrors();
-                }
-
-                // Display page content
-                echo $textToDisplay;
-            } else {
-                // Old page system
-                require($this->getUriPage($this->currentPageId));
+        if ($this->currentPage) {
+            // New page system
+            // Title
+            $title = $this->currentPage->getPageTitle($this);
+            if (!empty($title)) {
+                echo "<h2>" . $title . "</h2>\n";
             }
+
+            // Get page content (based on permissions)
+            $textToDisplay = "";
+            if ($this->authenticationFailedRank >= 0) {
+                $loginView = new LoginView($this, $this->authenticationFailedRank);
+                $textToDisplay = $loginView->getText();
+            } else {
+                $textToDisplay = $this->currentPage->getPageContent($this);
+            }
+
+            // Echo errors
+            if (!$this->errorsDisplayed) {
+                $this->echoErrors();
+            }
+
+            // Display page content
+            echo $textToDisplay;
+        } else {
+            // Old page system
+            require($this->getUriPage($this->currentPageId));
+        }
+    }
+
+    /**
+     * Checks if the current user viewing the site has the rank.
+     * @param int $neededRank The needed rank.
+     * @return boolean Whether the user has that rank.
+     */
+    public function userHasRank($neededRank) {
+        $oAuth = $this->getAuth();
+        $user = $oAuth->getCurrentUser();
+        if ($user) {
+            $userRank = $user->getRank();
+            if ($oAuth->isHigherOrEqualRank($userRank, $neededRank)) {
+                return true;
+            } else {
+                return false;
+            }
+        } elseif (!$oAuth->isValidRankForAccounts($neededRank)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -473,17 +495,11 @@ class Website {
     }
 
     public function isLoggedInAsStaff($admin = false) {
-        $needed_rank = Authentication::$MODERATOR_RANK;
+        $neededRank = Authentication::$MODERATOR_RANK;
         if ($admin) {
-            $needed_rank = Authentication::$ADMIN_RANK;
+            $neededRank = Authentication::$ADMIN_RANK;
         }
-        $oAuth = $this->getAuth();
-        $user = $oAuth->getCurrentUser();
-        if ($user != null && $oAuth->isHigherOrEqualRank($user->getRank(), $needed_rank)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->userHasRank($neededRank);
     }
 
     /**

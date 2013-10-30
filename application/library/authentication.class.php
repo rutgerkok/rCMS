@@ -64,11 +64,14 @@ class Authentication {
      */
     public function setCurrentUser(User $user) {
         if (!$user->canLogIn()) {
+            // User is banned or something
             return false;
         }
 
         $_SESSION['user_id'] = $user->getId();
         if ($this->isHigherOrEqualRank($user->getRank(), self::$MODERATOR_RANK)) {
+            // This session vars are purely used for CKEditor.
+            // In rCMS there are much better, easier and safer ways to check this.
             $_SESSION['moderator'] = true;
         } else {
             $_SESSION['moderator'] = false;
@@ -85,8 +88,10 @@ class Authentication {
      */
     public function logIn($usernameOrEmail, $password) {
         if (strPos($usernameOrEmail, '@') === false) {
+            // Logging in with username and password
             $user = User::getByName($this->websiteObject, $usernameOrEmail);
         } else {
+            // Logging in with email and password
             $user = User::getByEmail($this->websiteObject, $usernameOrEmail);
         }
 
@@ -100,80 +105,54 @@ class Authentication {
     }
 
     /**
-     * Checks whether the user has access to the current page. If not, a login
-     * screen is optionally displayed.
+     * Checks whether the user has access to the current page, taking POST
+     * parameters into account.. If not, a login screen is optionally displayed.
      * @param int $minimumRank The minimum rank required.
      * @param boolean $showform Whether a login form should be shown on failure.
      * @return boolean Whether the login was succesfull.
      */
     public function check($minimumRank, $showform = true) {
+        $oWebsite = $this->websiteObject;
         $minimumRank = (int) $minimumRank;
-        $current_user = $this->getCurrentUser();
+        $currentUser = $this->getCurrentUser();
 
         // Try to login if data was sent
-        if (isSet($_POST['user']) && isSet($_POST['pass'])) {
-            if ($this->logIn($_POST['user'], $_POST['pass'])) {
-                $current_user = $this->getCurrentUser();
+        $usernameOrEmail = $oWebsite->getRequestString("user");
+        $password = $oWebsite->getRequestString("pass");
+        if($usernameOrEmail && $password) {
+            if ($this->logIn($usernameOrEmail, $password)) {
+                $currentUser = $this->getCurrentUser();
             } else {
                 $this->loginFailed = true;
             }
         }
 
-        if ($current_user != null && $this->isHigherOrEqualRank($current_user->getRank(), $minimumRank)) {
+        if ($currentUser != null && $this->isHigherOrEqualRank($currentUser->getRank(), $minimumRank)) {
             // Logged in with enough rights
             return true;
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                echo $this->getLoginForm($minimumRank);
+                $loginView = new LoginView($this->websiteObject, $minimumRank);
+                echo $loginView->getText();
             }
             return false;
         }
     }
-
-    function getLoginForm($minimumRank = 0) { //laat een inlogformulier zien
-        //huidige pagina ophalen
-        $oWebsite = $this->websiteObject;
-        $loginText = $oWebsite->t("users.please_log_in");
-        $returnValue = "";
-        if ($this->loginFailed && $oWebsite->getErrorCount() == 0) {
-            // Only display the standard error if there was no other error
-            $returnValue.= <<<EOT
-                <div class="error">
-                    <p>{$oWebsite->t("errors.invalid_login_credentials")}</p>
-                </div>
-EOT;
-        }
-        if ($minimumRank != self::$USER_RANK) {
-            $loginText.=' <strong><em> ' . $oWebsite->t("users.as_administrator") . '</em></strong>';
-        }
-        $returnValue.= <<<EOT
-            <form method="post" action="{$oWebsite->getUrlMain()}">
-                    <h3>$loginText</h3>
-                    <p>
-                            <label for="user">{$oWebsite->t('users.username_or_email')}:</label> <br />
-                            <input type="text" name="user" id="user" autofocus="autofocus" /> <br />
-                            <label for="pass">{$oWebsite->t('users.password')}:</label> <br />
-                            <input type="password" name="pass" id="pass" /> <br />
-
-                            <input type="submit" value="{$oWebsite->t('main.log_in')}" class="button primary_button" />
-
-EOT;
-        foreach ($_REQUEST as $key => $value) {
-            // Repost all variables
-            if ($key != "user" && $key != "pass") {
-                $returnValue.= '<input type="hidden" name="' . htmlSpecialChars($key) . '" value="' . htmlSpecialChars($value) . '" />';
-            }
-        }
-        // End form and return it
-        $returnValue.= <<<EOT
-                    </p>
-            </form>
-EOT;
-        return $returnValue;
+    
+    /**
+     * Returns true if the login of the user has failed because the username,
+     * password or email was wrong.
+     */
+    public function hasLoginFailed() {
+        return $this->loginFailed;
     }
 
-    function log_out() {
+    /**
+     * Logs the current user out. Does nothing if the user is already logged
+     * out.
+     */
+    public function logOut() {
         unset($_SESSION['user_id']);
         unset($_SESSION['moderator']);
         $this->currentUser = null;
@@ -181,7 +160,7 @@ EOT;
     }
 
     /** Gets the number of registered users. Returns 0 on failure. */
-    public function get_registered_usersCount() {
+    public function getRegisteredUsersCount() {
         $oDB = $this->websiteObject->getDatabase();
         $sql = "SELECT COUNT(*) FROM `users`";
         $result = $oDB->query($sql);
@@ -196,9 +175,9 @@ EOT;
      * Gets all registered users.
      * @param int $start The index to start searching.
      * @param int $limit The maximum number of users to find.
-     * @return \User List of users.
+     * @return User[] List of users.
      */
-    public function get_registered_users($start, $limit) {
+    public function getRegisteredUsers($start, $limit) {
         // Variables and casting
         $users = array();
         $oWebsite = $this->websiteObject;
@@ -219,9 +198,7 @@ EOT;
         $rank, $joined, $last_login, $status, $status_text, $extra_data
         ) = $oDB->fetchNumeric($result)) {
             $users[] = new User(
-                            $oWebsite, $id, $username, $display_name,
-                            $password_hashed, $email, $rank, $joined, $last_login,
-                            $status, $status_text, $extra_data
+                    $oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data
             );
         }
         return $users;
@@ -278,7 +255,7 @@ EOT;
         }
     }
 
-    public function is_valid_status($id) {
+    public function isValidStatus($id) {
         if ($id == self::NORMAL_STATUS || $id == self::DELETED_STATUS || $id == self::BANNED_STATUS) {
             return true;
         } else {
@@ -286,7 +263,7 @@ EOT;
         }
     }
 
-    public function get_status_name($id) {
+    public function getStatusName($id) {
         $oWebsite = $this->websiteObject;
         switch ($id) {
             case self::BANNED_STATUS: return $oWebsite->t("users.status.banned");

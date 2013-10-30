@@ -2,11 +2,10 @@
 
 class CategoriesView extends View {
 
-    protected $oWebsite;
     protected $oCategories;
 
     public function __construct(Website $oWebsite, Categories $oCategories) {
-        $this->oWebsite = $oWebsite;
+        parent::__construct($oWebsite);
         $this->oCategories = $oCategories;
     }
 

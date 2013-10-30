@@ -5,9 +5,6 @@
  */
 class CommentsTreeView extends View {
 
-    /** @var Website $oWebsite The website object */
-    private $oWebsite;
-
     /** @var Comment[] $comments The comment list */
     private $comments;
     private $viewedByStaff;
@@ -22,8 +19,8 @@ class CommentsTreeView extends View {
      * @param User|null $viewer The user viewing the comments.
      */
     public function __construct(Website $oWebsite, $comments, $viewedOutOfContext) {
+        parent::__construct($oWebsite);
         $viewer = $oWebsite->getAuth()->getCurrentUser();
-        $this->oWebsite = $oWebsite;
         $this->comments = $comments;
         $this->viewedByStaff = $viewer ? $viewer->isStaff() : false;
         $this->viewedOutOfContext = $viewedOutOfContext;

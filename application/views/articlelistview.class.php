@@ -5,10 +5,7 @@
  */
 class ArticleListView extends View {
 
-    /** @var Website $websiteObject */
-    protected $websiteObject;
-
-    /** @var \Article $articles List of articles */
+    /** @var Article[] $articles List of articles */
     protected $articles;
     protected $mainCategoryId;
     protected $metainfo;
@@ -17,13 +14,13 @@ class ArticleListView extends View {
     /**
      * Creates a new view for a list of articles.
      * @param Website $oWebsite The website object.
-     * @param \Article $articles List of articles.
+     * @param Article[] $articles List of articles.
      * @param int $mainCategoryId The category id for archive and create article links.
      * @param boolean $metainfo Whether author, date and category are shown.
      * @param boolean $archive Whether a link to the archive is shown.
      */
     public function __construct(Website $oWebsite, $articles, $mainCategoryId, $metainfo, $archive) {
-        $this->websiteObject = $oWebsite;
+        parent::__construct($oWebsite);
         $this->articles = $articles;
         $this->mainCategoryId = (int) $mainCategoryId;
         $this->metainfo = (boolean) $metainfo;
@@ -32,7 +29,7 @@ class ArticleListView extends View {
 
     public function getText() {
         $output = '';
-        $oWebsite = $this->websiteObject;
+        $oWebsite = $this->oWebsite;
         $loggedInStaff = $oWebsite->isLoggedInAsStaff();
         $mainCategoryId = $this->mainCategoryId;
 
@@ -64,7 +61,7 @@ class ArticleListView extends View {
     }
 
     public function getArticleTextSmall(Article $article, $show_metainfo, $show_edit_delete_links) {
-        $oWebsite = $this->websiteObject;
+        $oWebsite = $this->oWebsite;
         $returnValue = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $oWebsite->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";
         if ($show_metainfo) {

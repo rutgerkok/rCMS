@@ -8,7 +8,7 @@ if (!defined("WEBSITE")) {
 class LogoutPage extends Page {
 
     public function init(Website $oWebsite) {
-        $oWebsite->getAuth()->log_out();
+        $oWebsite->getAuth()->logOut();
     }
 
     public function getPageTitle(Website $oWebsite) {
@@ -19,14 +19,8 @@ class LogoutPage extends Page {
         return $oWebsite->t("main.log_out");
     }
 
-    public function getPageContent(Website $oWebsite) {
-        return <<<EOT
-            <h3>{$oWebsite->t('users.logged_out')}</h3>
-            <p>{$oWebsite->t('users.succesfully_logged_out')}</p>
-            <p>
-                <a href="{$oWebsite->getUrlMain()}" class="arrow">{$oWebsite->t("main.home")}</a>
-            </p>
-EOT;
+    public function getView(Website $oWebsite) {
+        return new LoggedOutView($oWebsite);
     }
 
 }

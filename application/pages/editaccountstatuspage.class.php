@@ -41,7 +41,7 @@ class EditAccountStatusPage extends EditPasswordPage {
             $valid = true;
 
             // Check status id
-            if (!$oAuth->is_valid_status($status)) {
+            if (!$oAuth->isValidStatus($status)) {
                 $oWebsite->addError($oWebsite->t("users.status") . ' ' . $oWebsite->t("errors.not_found"));
                 $valid = false;
             }
@@ -114,7 +114,7 @@ EOT;
     protected function get_statuses_box_html(Authentication $oAuth, $statuss, $selected) {
         $selection_box = '<select name="status" id="status">';
         foreach ($statuss as $id) {
-            $label = $oAuth->get_status_name($id);
+            $label = $oAuth->getStatusName($id);
             $selection_box.= '<option value="' . $id . '"';
             if ($selected == $id) {
                 $selection_box.= ' selected="selected"';

@@ -19,7 +19,7 @@ class ArticleSearchView extends ArticleListView {
     }
 
     public function getText() {
-        $oWebsite = $this->websiteObject;
+        $oWebsite = $this->oWebsite;
         $resultcount = $this->totalNumberOfArticles;
 
         $returnValue = '';
@@ -43,7 +43,7 @@ class ArticleSearchView extends ArticleListView {
     }
 
     protected function getMenuBar() {
-        $oWebsite = $this->websiteObject;
+        $oWebsite = $this->oWebsite;
         $keywordHTML = htmlSpecialChars($this->keyword);
         $page = $this->pageNumber;
         $resultCount = $this->totalNumberOfArticles;
