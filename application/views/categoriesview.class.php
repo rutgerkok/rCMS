@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!defined("WEBSITE")) {
+    die();
+}
+
 class CategoriesView extends View {
 
     protected $oCategories;

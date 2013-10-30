@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!defined("WEBSITE")) {
+    die();
+}
+
 /**
  * Represents a view. This class produces just an empty page.
  */

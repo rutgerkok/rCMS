@@ -1,5 +1,10 @@
 <?php
 
+// Protect against calling this script directly
+if (!defined("WEBSITE")) {
+    die();
+}
+
 /**
  * Renders a list of comments and all of its subcomments.
  */
