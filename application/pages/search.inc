@@ -8,9 +8,14 @@ if (isSet($_REQUEST['page'])) {
 } else {
     $page = 1;
 }
-?>
-<h2><?php echo $this->t("articles.search_for") ?> "<?php if (!empty($keyword)) echo $_REQUEST['searchbox']; ?>" </h2>
-<?php
+
+// Display title
+$title = $this->t("articles.search_for");
+if ($keyword) {
+    $title.= htmlSpecialChars($keyword);
+}
+echo "<h2>" . $title . "</h2>";
+
 if (strLen($keyword) < 3) {
     $this->addError($this->t("articles.search_term") . " " . $this->t("errors.is_too_short"));
     $result = '<p>' . $this->t("articles.search_term") . " " . $this->tReplaced("errors.is_too_short_num", 3) . '</p>';
