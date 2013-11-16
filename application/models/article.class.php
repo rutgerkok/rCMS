@@ -80,20 +80,20 @@ class Article {
         if ($this->id == 0) {
             // New article
             $sql = "INSERT INTO `artikel` ";
-            $sql.="(`categorie_id`, ";
-            $sql.="`artikel_titel`, `artikel_intro`, `artikel_gepind`, `artikel_verborgen`, `artikel_reacties`, ";
-            $sql.="`artikel_inhoud`, `artikel_afbeelding`, `artikel_verwijsdatum`, `gebruiker_id`, `artikel_gemaakt`  ) VALUES ";
-            $sql.="('" . ((int) $this->categoryId) . "', ";
-            $sql.="'" . $oDB->escapeData($this->title) . "', ";
-            $sql.="'" . $oDB->escapeData($this->intro) . "', ";
-            $sql.="'" . ((boolean) $this->pinned) . "', ";
-            $sql.="'" . ((boolean) $this->hidden) . "', ";
-            $sql.="'" . ((boolean) $this->showComments) . "', ";
-            $sql.="'" . $oDB->escapeData($this->body) . "', ";
-            $sql.="'" . $oDB->escapeData($this->featuredImage) . "', ";
-            $sql.="'" . $oDB->escapeData($this->onCalendar) . "', ";
-            $sql.="'" . ((int) $this->authorId) . "', ";
-            $sql.=" NOW() );";
+            $sql.= "(`categorie_id`, ";
+            $sql.= "`artikel_titel`, `artikel_intro`, `artikel_gepind`, `artikel_verborgen`, `artikel_reacties`, ";
+            $sql.= "`artikel_inhoud`, `artikel_afbeelding`, `artikel_verwijsdatum`, `gebruiker_id`, `artikel_gemaakt`  ) VALUES ";
+            $sql.= "('" . ((int) $this->categoryId) . "', ";
+            $sql.= "'" . $oDB->escapeData($this->title) . "', ";
+            $sql.= "'" . $oDB->escapeData($this->intro) . "', ";
+            $sql.= "'" . ((boolean) $this->pinned) . "', ";
+            $sql.= "'" . ((boolean) $this->hidden) . "', ";
+            $sql.= "'" . ((boolean) $this->showComments) . "', ";
+            $sql.= "'" . $oDB->escapeData($this->body) . "', ";
+            $sql.= "'" . $oDB->escapeData($this->featuredImage) . "', ";
+            $sql.= "'" . $oDB->escapeData($this->onCalendar) . "', ";
+            $sql.= "'" . ((int) $this->authorId) . "', ";
+            $sql.= " NOW() );";
             if ($oDB->query($sql)) {
                 // We now have an id
                 $this->id = $oDB->getLastInsertedId();
@@ -105,17 +105,17 @@ class Article {
         } else {
             // Update existing article
             $sql = "UPDATE `artikel` SET ";
-            $sql.="`artikel_titel` = '" . $oDB->escapeData($this->title) . "', ";
-            $sql.="`categorie_id` = '" . ((int) $this->categoryId) . "', ";
-            $sql.="`artikel_intro` = '" . $oDB->escapeData($this->intro) . "', ";
-            $sql.="`artikel_gepind` = '" . ((boolean) $this->pinned) . "', ";
-            $sql.="`artikel_verborgen` = '" . ((boolean) $this->hidden) . "', ";
-            $sql.="`artikel_reacties` = '" . ((boolean) $this->showComments) . "', ";
-            $sql.="`artikel_inhoud` = '" . $oDB->escapeData($this->body) . "', ";
-            $sql.="`artikel_afbeelding` = '" . $oDB->escapeData($this->featuredImage) . "', ";
-            $sql.="`artikel_verwijsdatum` = '" . $oDB->escapeData($this->onCalendar) . "', ";
-            $sql.="`artikel_bewerkt` = NOW() ";
-            $sql.=" WHERE `artikel_id` = {$this->id};";
+            $sql.= "`artikel_titel` = '" . $oDB->escapeData($this->title) . "', ";
+            $sql.= "`categorie_id` = '" . ((int) $this->categoryId) . "', ";
+            $sql.= "`artikel_intro` = '" . $oDB->escapeData($this->intro) . "', ";
+            $sql.= "`artikel_gepind` = '" . ((boolean) $this->pinned) . "', ";
+            $sql.= "`artikel_verborgen` = '" . ((boolean) $this->hidden) . "', ";
+            $sql.= "`artikel_reacties` = '" . ((boolean) $this->showComments) . "', ";
+            $sql.= "`artikel_inhoud` = '" . $oDB->escapeData($this->body) . "', ";
+            $sql.= "`artikel_afbeelding` = '" . $oDB->escapeData($this->featuredImage) . "', ";
+            $sql.= "`artikel_verwijsdatum` = '" . $oDB->escapeData($this->onCalendar) . "', ";
+            $sql.= "`artikel_bewerkt` = NOW() ";
+            $sql.= " WHERE `artikel_id` = " . ((int) $this->id);
             if ($oDB->query($sql)) {
                 return true;
             } else {
@@ -124,6 +124,21 @@ class Article {
         }
     }
 
-}
+    /**
+     * Pernamently deletes the article.
+     * @param Database $oDatabase The database to delete the article from.
+     * @return Whether the article was deleted.
+     */
+    public function delete(Database $oDatabase) {
+        $sql = "DELETE FROM `artikel` ";
+        $sql.= "WHERE `artikel_id` = " . ((int) $this->id);
+        if ($oDatabase->query($sql)) {
+            // Reset article id
+            $this->id = 0;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-?>
+}
