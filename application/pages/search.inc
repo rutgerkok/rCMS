@@ -12,7 +12,7 @@ if (isSet($_REQUEST['page'])) {
 // Display title
 $title = $this->t("articles.search_for");
 if ($keyword) {
-    $title.= htmlSpecialChars($keyword);
+    $title.= " " . htmlSpecialChars($keyword);
 }
 echo "<h2>" . $title . "</h2>";
 

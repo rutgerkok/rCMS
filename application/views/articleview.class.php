@@ -60,14 +60,16 @@ class ArticleView extends View {
         $returnValue.= '<div id="sidebar_page_sidebar">';
 
         // Featured image
-        if (!empty($article->featuredImage))
+        if (!empty($article->featuredImage)) {
             $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></p>';
+        }
         $returnValue.= '<p class="meta">';
 
         // Created and last edited
         $returnValue.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
-        if ($article->lastEdited)
+        if ($article->lastEdited) {
             $returnValue.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
+        }
 
         // Category
         $returnValue.= " <br /> " . $oWebsite->t('main.category') . ': ';
@@ -80,12 +82,15 @@ class ArticleView extends View {
         $returnValue.= htmlSpecialChars($article->author) . '</a>';
 
         // Pinned, hidden, comments
-        if ($article->pinned)
+        if ($article->pinned) {
             $returnValue.= "<br />" . $oWebsite->t('articles.pinned') . " ";
-        if ($article->hidden)
+        }
+        if ($article->hidden) {
             $returnValue.= "<br />" . $oWebsite->t('articles.hidden');
-        if ($loggedIn && $article->showComments)
+        }
+        if ($loggedIn && $article->showComments) {
             $returnValue.= "<br />" . $oWebsite->t('comments.allowed');
+        }
 
         // Edit, delete
         $returnValue.= '</p>';
@@ -99,8 +104,9 @@ class ArticleView extends View {
 
         // Article
         $returnValue.= '<div id="sidebar_page_content">';
-        if ($loggedIn && $article->hidden)
+        if ($loggedIn && $article->hidden) {
             $returnValue.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
+        }
         $returnValue.= '<p class="intro">' . htmlSpecialChars($article->intro) . '</p>';
         $returnValue.= $article->body;
 
@@ -135,5 +141,3 @@ class ArticleView extends View {
     }
 
 }
-
-?>
