@@ -37,17 +37,16 @@ class Articles {
      * Gets more articles at once. Protected because of it's dangerous
      * $where_clausule, which can be vulnerable to SQL injection. Other parameters
      * won't harm the database when their value is incorrect.
-     * @param string $where_clausule Everything that should come after WHERE.
+     * @param string $whereClausules Everything that should come after WHERE.
      * @param int $limit Limit the number of rows.
      * @param int $start Start position of the limit.
      * @param boolean $oldestTop Whether old articles should be at the top.
      * @param boolean $pinnedTop Set this to false to ignore pinned articles.
      * @return \Article Array of Articles.
      */
-    protected function getArticlesDataUnsafe($where_clausule = "", $limit = 9, $start = 0, $oldestTop = false, $pinnedTop = true) {
+    protected function getArticlesDataUnsafe($whereClausules = "", $limit = 9, $start = 0, $oldestTop = false, $pinnedTop = true) {
         $oDB = $this->databaseObject; //afkorting
         $oWebsite = $this->websiteObject; //afkorting
-        $loggedInStaff = $oWebsite->isLoggedInAsStaff() ? 1 : 0; //ingelogd? (nodig om de juiste artikelen op te halen)
         $start = (int) $start;
         $limit = (int) $limit;
         $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
@@ -56,14 +55,15 @@ class Articles {
         $sql.= "`artikel_verborgen`, `artikel_id` FROM `artikel` ";
         $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
         $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
-        if (!$loggedInStaff) {
+        if (!$oWebsite->isLoggedInAsStaff()) {
+            // Don't display hidden articles in the list
             $sql.= "WHERE `artikel_verborgen` = 0 ";
-            if (!empty($where_clausule)) {
-                $sql.= "AND $where_clausule ";
+            if (!empty($whereClausules)) {
+                $sql.= "AND ($whereClausules) ";
             }
         } else {
-            if (!empty($where_clausule)) {
-                $sql.= "WHERE $where_clausule ";
+            if (!empty($whereClausules)) {
+                $sql.= "WHERE $whereClausules ";
             }
         }
 
@@ -78,7 +78,7 @@ class Articles {
         }
 
         // Limit
-        $sql.= "LIMIT $start , $limit";
+        $sql.= "LIMIT $start, $limit";
 
         $result = $oDB->query($sql);
         if ($result && $oDB->rows($result) > 0) {
@@ -107,15 +107,15 @@ class Articles {
         $limit = ($year == 0) ? 50 : 500;
 
         // Add where clausules
-        $where_clausules = array();
+        $whereClausules = array();
         if ($year != 0) {
-            $where_clausules[] = "YEAR(`artikel_gemaakt`) = $year";
+            $whereClausules[] = "YEAR(`artikel_gemaakt`) = $year";
         }
         if ($category_id != 0) {
-            $where_clausules[] = "`categorie_id` = $category_id";
+            $whereClausules[] = "`categorie_id` = $category_id";
         }
 
-        return $this->getArticlesDataUnsafe(join(" AND ", $where_clausules), $limit);
+        return $this->getArticlesDataUnsafe(join(" AND ", $whereClausules), $limit, 0, false, false);
     }
 
     /**
