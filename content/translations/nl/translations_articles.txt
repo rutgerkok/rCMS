@@ -30,7 +30,6 @@ search.results_in_links=Resultaten in links
 search.result_found=Een resultaat gevonden.
 search.results_found=# resultaten gevonden.
 search.no_results_found=Geen resultaten gevonden.
-articleCount=Aantal artikelen
 display_type=Weergavetype
 display_type.list=Compacte lijst
 display_type.list_with_images=Compacte lijst met kleine afbeelding

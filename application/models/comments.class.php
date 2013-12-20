@@ -233,7 +233,7 @@ EOT;
     }
 
     /**
-     * Gets all comments for an article. Safe method.
+     * Gets all comments for an article.
      * @param int $articleId The article of the comments.
      * @return array[][] The comments.
      */
@@ -243,11 +243,12 @@ EOT;
     }
 
     /**
-     * Gets the latest comments on the site. Safe method.
+     * Gets the latest comments on the site.
+     * @param int $amount The amount of comments to fetch.
      * @return array[][] The comments.
      */
-    function getCommentsLatest() {
-        return $this->getCommentsQuery("", 20, true);
+    function getCommentsLatest($amount = 20) {
+        return $this->getCommentsQuery("", (int) $amount, true);
     }
 
     /**

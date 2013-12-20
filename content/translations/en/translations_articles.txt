@@ -30,7 +30,6 @@ search.results_in_links=Results in links
 search.result_found=Found one result.
 search.results_found=Found # results.
 search.no_results_found=No results were found.
-articleCount=Article count
 display_type=Display type
 display_type.list=List without intro or image
 display_type.list_with_images=List with images, without intro

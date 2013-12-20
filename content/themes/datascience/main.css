@@ -179,6 +179,11 @@ a:active
     text-decoration: underline;
     border-bottom: 1px solid #990000;
 }
+a.disguised_link
+{
+    color: inherit;
+    border-bottom: none;
+}
 
 /* afbeeldingen */
 img
@@ -249,8 +254,8 @@ article.comment {
     margin-left: 10px;
     margin-bottom: 20px;
     margin-top: 20px;
-    background: #f3fdf6;
-    border: 1px solid #e4f2e9;
+    background: #f7f8fc;
+    border: 1px solid #edf0fc;
 }
 article.comment p.comment_body {
     padding: 6px;
@@ -258,7 +263,7 @@ article.comment p.comment_body {
 }
 article.comment header {
     min-height: 40px;
-    border-bottom: 1px solid #e4f2e9;
+    background: #edf0fc;
 }
 article.comment header img {
     float: left;

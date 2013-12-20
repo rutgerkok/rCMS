@@ -1,0 +1,6 @@
+name=Comments
+description=Displays the latest comments.
+version=1.0
+website=http://www.rutgerkok.nl/
+author=Rutger Kok
+author.website=http://www.rutgerkok.nl/

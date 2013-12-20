@@ -131,7 +131,7 @@ class Validate {
             return false;
         }
         if ($number > $max) {
-            Validate::setError("is_not_high_num", $max);
+            Validate::setError("is_too_high_num", $max);
             return false;
         }
         return true;

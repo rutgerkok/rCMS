@@ -162,10 +162,13 @@ a.arrow
 a.arrow-disabled
 {
     padding-left:5px;
-    /*background: transparent url(images/arrow.gif) center left no-repeat;*/
     text-transform: uppercase;
     color:gray;
     font-size: 0.85em;
+}
+a.disguised_link
+{
+    color: inherit;
 }
 a:link
 {
@@ -175,6 +178,10 @@ a:hover
 {
     text-decoration: none;
     border-bottom: 1px solid;
+}
+a.disguised_link:hover
+{
+    border-bottom: none;
 }
 a:active
 {

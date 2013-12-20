@@ -167,6 +167,10 @@ a:active
 {
     text-decoration: none;
 }
+a.disguised_link
+{
+    color: inherit;
+}
 a.arrow
 {
     margin-left: 10px;

@@ -97,7 +97,7 @@ class WidgetRkokArticles extends WidgetDefinition {
         $textToDisplay.= "</p>\n";
 
         // Count
-        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $oWebsite->t("articles.articleCount") . ':';
+        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $oWebsite->t("editor.article.count") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<input type="number" id="count_' . $widget_id . '" ';
         $textToDisplay.= 'name="count_' . $widget_id . '" value="' . $count . '" />';
@@ -187,11 +187,11 @@ EOT;
         if (isSet($_REQUEST["count_" . $id])) {
             $data["count"] = (int) $_REQUEST["count_" . $id];
             if (!Validate::range($data["count"], 1, 20)) {
-                $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . Validate::getLastError($oWebsite));
+                $oWebsite->addError($oWebsite->t("editor.article.count") . " " . Validate::getLastError($oWebsite));
                 $data["valid"] = false;
             }
         } else {
-            $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . $oWebsite->t("errors.not_found"));
+            $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }
 
@@ -202,11 +202,11 @@ EOT;
                     $data["display_type"] != self::TYPE_WITHOUT_METADATA &&
                     $data["display_type"] != self::TYPE_WITH_METADATA &&
                     $data["display_type"] != self::TYPE_LIST_WITH_IMAGES) {
-                $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . $oWebsite->t("errors.not_found"));
+                $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
                 $data["valid"] = false;
             }
         } else {
-            $oWebsite->addError($oWebsite->t("articles.articleCount") . " " . $oWebsite->t("errors.not_found"));
+            $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }
 
