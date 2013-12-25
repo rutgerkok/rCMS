@@ -3,7 +3,9 @@ header, article, footer {
     display: block;
 }
 
-/* Fonts and margins of common elements */
+/*
+ * Fonts, colors and margins of common elements
+ */
 body
 {
     font-size: 85%;
@@ -38,6 +40,167 @@ div
     margin: 0;
     padding: 0;
 }
+
+/*
+ * Large boxes that make up the page
+ */
+
+/* Body en container */
+body
+{
+    background: #a0a0a0;
+}
+div#container
+{
+    margin: 22px auto;
+    padding: 0;
+    width: 80%;
+    min-width: 68em;
+    background: white;
+    box-shadow: 0px 0px 35px #262626;
+}
+@media all and (max-width : 59em)
+{
+    body
+    {
+        background: white;
+    }
+    div#container
+    {
+        margin: 0;
+        box-shadow: none;
+        width: 100%;
+        min-width: 1px;
+    }
+}
+
+/* Header */
+div#header
+{
+    background: #f4f4f4;
+    position: relative;
+}
+@media all and (max-width : 59em)
+{
+    div#header
+    {
+        /*
+         * Gives search box more room,
+         * as well as correcting for the top margin at the container that
+         * is gone at smaller devices.
+         */
+        padding-top: 22px;
+        overflow: auto;
+    }
+}
+
+/* Main content area */
+div#content
+{
+    width: 58%;
+    margin-right: 9%;
+    margin-left: 2%;
+    clear: left;
+    float: left;
+    position: relative;
+    overflow: hidden;
+}
+div#contentadmin
+{
+    width: 93%;
+    padding-right: 5%;
+    padding-left: 2%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: relative;
+    background: #f4f4f4;
+}
+
+
+/* Sidebar on the right of the page */
+div#sidebar
+{
+    width: 30%;
+    float: left;
+}
+@media all and (max-width : 50em)
+{
+    /* No sidebar at lower resolutions */
+    div#content
+    {
+        float: none;
+        width: auto;
+    }
+    div#sidebar
+    {
+        width: auto;
+        float: none;
+        /* The border makes it more clear that the content is not of the page */
+        margin-top: 30px;
+        border-top: 30px solid #f4f4f4;
+    }
+}
+
+/* Pages with an extra sidebar on the left */
+div#sidebar_page_content
+{	/*gebruikt bij de artikelpagina*/
+    float:left;
+    padding-left: 1%;
+    width:69%;
+    margin-left:0;
+    margin-right:0;
+}
+div#sidebar_page_sidebar
+{
+    float: left;
+    width: 27%;
+    padding-right: 2px;
+}
+div#sidebar_page_sidebar img
+{
+    max-width: 100%;
+    margin: 1px;
+}
+
+@media all and (max-width: 40em)
+{
+    /* No sidebar on smaller screens */
+    div#sidebar_page_content, div#sidebar_page_sidebar
+    {
+        width: auto;
+        float: none;
+    }
+    div#sidebar_page_sidebar img
+    {
+        max-width: 15em;
+        float: right;
+    }
+}
+@media all and (max-width: 30em)
+{
+    div#sidebar_page_sidebar img
+    {
+        width: 100%;
+        max-width: 15em;
+        float: none;
+    }
+}
+
+/* Page footer */
+div#footer
+{
+    clear: both;
+    padding: 2px 0 0 0;
+    min-height: 30px;
+    text-align: right;
+    font-family: verdana, sans-serif;
+    padding-right: 5px;
+    background: #f4f4f4;
+}
+
+/*
+ * Smaller things
+ */
 
 /* Tables */
 table
@@ -134,7 +297,7 @@ legend
     background-color: #a7fcff;
     background-image: linear-gradient(#D4FCFE, #6FF6FA);
 }
-.checkbox
+input.checkbox
 {
     background:white;
     padding:0;
@@ -142,11 +305,10 @@ legend
     border-radius:0;
     box-shadow:none;
 }
-.full_width
+input.full_width, textarea.full_width
 {
     width: 98%;
 }
-
 
 /* Links */
 a
@@ -229,7 +391,7 @@ div.article_teaser img
     width: 20%;
     max-width: 140px;
     min-width: 60px;
-    float: left;	
+    float: left;
 }
 
 /* Lists of links */
@@ -297,31 +459,6 @@ article.comment .comment_date {
     font-size: 90%;
 }
 
-/* Pages with an extra sidebar on the left */
-div#sidebar_page_content
-{	/*gebruikt bij de artikelpagina*/
-    float:left;
-    padding-left: 1%;
-    width:69%;
-    margin-left:0;
-    margin-right:0;
-}
-p.intro
-{
-    font-style: italic;
-}
-div#sidebar_page_sidebar
-{
-    float:left;
-    width:27%;
-    padding-right:2px;
-}
-div#sidebar_page_sidebar img
-{
-    max-width: 100%;
-    margin: 1px;
-}
-
 /* Some random classes */
 p.lijn
 {
@@ -357,16 +494,20 @@ h3.notable
     border:solid 1px white;
     background: #eeeeee;
     background: rgba(228,242,233,0.8);
-    min-width:100px; 
+    min-width:100px;
     padding:1px;
-    position:absolute; 
-    z-index:100;	
+    position:absolute;
+    z-index:100;
     font-family: verdana, sans-serif;
     box-shadow: white 0 0 20px;
 }
 span.username{
     color: #666;
     font-size: 90%;
+}
+p.intro
+{
+    font-style: italic;
 }
 
 /* Site login screen */
@@ -378,57 +519,7 @@ span.username{
     padding:25px;
     box-shadow: white 0 0 20px;
 }
-/* body en container */
-body
-{
-    background: #a0a0a0;
-}
-div#container
-{
-    margin: 22px auto;
-    padding: 0;
-    width: 80%;
-    min-width: 930px;
-    background: white;
-    box-shadow: 0px 0px 35px #262626;
-}
 
-/* content */
-div#content
-{
-    width: 58%;
-    margin-right: 9%;
-    margin-left: 2%;
-    clear: left;
-    float: left;
-    position: relative;
-    overflow: hidden;
-}
-div#contentadmin
-{
-    width: 93%;
-    padding-right: 5%;
-    padding-left: 2%;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    position: relative;
-    background: #f4f4f4;
-}
-
-
-/* sidebar */
-div#sidebar
-{
-    width:30%;
-    float:left;
-    height:100%;
-}
-/* Header */
-div#header
-{
-    background: #f4f4f4;
-    position: relative;
-}
 /* Header menu */
 div#header h1
 {
@@ -490,7 +581,7 @@ div#account_box
     min-height: 6em;
     min-width: 18em;
 }
-body.loggedIn div#account_label:hover div#account_box
+body.logged_in div#account_label:hover div#account_box
 {
     display: block;
 }
@@ -518,15 +609,4 @@ input#searchbutton
 {
     min-width: 80px;
     padding: 2px;
-}
-/* footer */
-div#footer
-{
-    clear: both;
-    padding: 2px 0 0 0;
-    min-height: 19px;
-    text-align: right;
-    font-family: verdana, sans-serif;
-    padding-right: 5px;
-    background: #f4f4f4;
 }

@@ -8,6 +8,7 @@ if (!defined("WEBSITE")) {
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no">
         <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
         <!--[if lte IE 8]>
@@ -17,7 +18,7 @@ if (!defined("WEBSITE")) {
     </head>
     <body <?php
 if ($this->isLoggedIn()) {
-    echo 'class="loggedIn"';
+    echo 'class="logged_in"';
 }
 ?>>
         <div id="container">
