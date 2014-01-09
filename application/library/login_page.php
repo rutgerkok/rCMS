@@ -2,11 +2,11 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <link href="<?php echo $this->getUrlThemes() . $this->getSiteSetting("theme") . "/main.css" ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->getUrlThemes() . $this->getConfig()->get("theme") . "/main.css" ?>" rel="stylesheet" type="text/css" />
     </head>
     <body style="background-image:none;text-align:center">
         <div id="login">
-            <h1><?php echo $this->getSiteSetting('hometitle') ?></h1>
+            <h1><?php echo $this->getConfig()->get('hometitle') ?></h1>
             <form action="" method="post">
                 <p>
                     <?php echo $this->t("main.code_request") ?>

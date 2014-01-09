@@ -3,12 +3,15 @@
 class Website {
 
     const MAX_SITE_OPTION_LENGTH = 200;
+    const CONFIG_FILE = "content/config.php";
 
     protected $errors = array();
     protected $debug = true;
     protected $errorsDisplayed = false;
     protected $databaseObject;
-
+    
+    /** @var Config $config Settings of the site. */
+    protected $config;
     /** @var Themes $themes_object */
     protected $themesObject;
     protected $currentPageId;
@@ -31,9 +34,9 @@ class Website {
         define("WEBSITE", "Loaded");
 
         // Site settings and database connection
-        $this->readSiteSettingsFromFile();
+        $this->config = new Config(self::CONFIG_FILE);
         $this->databaseObject = new Database($this);
-        $this->readSiteSettingsFromDatabase();
+        $this->config->readFromDatabase($this->databaseObject);
 
         $this->authenticationObject = new Authentication($this);
 
@@ -139,56 +142,13 @@ class Website {
     public function getAuth() {
         return $this->authenticationObject;
     }
-
-    // SITEVARS
-
+    
     /**
-     * Gets a setting from either the options.php or the settings table.
-     * @param string $name Name of the setting.
-     * @return mixed false if not found, otherwise the value.
+     * Gets all settings manager of the site.
+     * @return Config The settings manager.
      */
-    public function getSiteSetting($name) {
-        if (isSet($this->config[$name])) {
-            $value = $this->config[$name];
-            if (strtolower($value) == "false") {
-                // Because "false" == true
-                return false;
-            }
-            return $value;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Changes a setting. Saves a setting to the database. Does nothing if the setting is unchanged.
-     * @param string $name The name of the setting.
-     * @param string $value The value of the setting.
-     */
-    public function setSiteSetting($name, $value) {
-        if (isSet($this->config[$name]) && $this->config[$name] == $value) {
-            // No need to update
-            return;
-        }
-
-        // Apply on current page
-        $this->config[$name] = $value;
-
-        // Save to database
-        $oDB = $this->getDatabase();
-        if (isSet($this->config[$name])) {
-            // Update setting
-            $sql = "UPDATE `settings` SET ";
-            $sql.= "`setting_value` = '{$oDB->escapeData($value)}' ";
-            $sql.= "WHERE `setting_name` = '{$oDB->escapeData($name)}'";
-            $oDB->query($sql);
-        } else {
-            // New setting
-            $sql = "INSERT INTO `settings` (`setting_name`, `setting_value`) ";
-            $sql.= " VALUES ('{$oDB->escapeData($name)}', ";
-            $sql.= "'{$oDB->escapeData($value)}')";
-            $oDB->query($sql);
-        }
+    public function getConfig() {
+        return $this->config;
     }
 
     // Paths
@@ -200,7 +160,7 @@ class Website {
 
     /** Returns the path of all default controllers, models, pages and views */
     public function getUriApplication() {
-        return $this->getSiteSetting('uri') . "application/";
+        return $this->getConfig()->get('uri') . "application/";
     }
 
     /** Returns the path of all pages */
@@ -210,22 +170,22 @@ class Website {
 
     /** Returns the main site url. Other urls start with this */
     public function getUrlMain() {
-        return $this->getSiteSetting('url');
+        return $this->getConfig()->get('url');
     }
 
     /** Returns the site root directory */
     public function getUriMain() {
-        return $this->getSiteSetting('uri');
+        return $this->getConfig()->get('uri');
     }
 
     /** Returns the url of the public content directory of this site */
     public function getUrlContent() {
-        return $this->getSiteSetting('url') . "content/";
+        return $this->getConfig()->get('url') . "content/";
     }
 
     /** Returns the internal uri of the public content directory */
     public function getUriContent() {
-        return $this->getSiteSetting('uri') . "content/";
+        return $this->getConfig()->get('uri') . "content/";
     }
 
     /** Returns the url of a page, ready for links */
@@ -327,14 +287,15 @@ class Website {
 
     function hasAccess() { //kijkt of site mag worden geladen
         $access = false;
-        if ($this->getSiteSetting('password') == "")
+        if ($this->getConfig()->get('password') == "") {
             $access = true;
-        if (isSet($_POST['key']) && $this->getSiteSetting('password') == $_POST['key'])
+        } elseif (isSet($_POST['key']) && $this->getConfig()->get('password') == $_POST['key']) {
             $access = true;
-        if (isSet($_GET['key']) && $this->getSiteSetting('password') == $_GET['key'])
+        } elseif (isSet($_GET['key']) && $this->getConfig()->get('password') == $_GET['key']) {
             $access = true;
-        if (isSet($_COOKIE['key']) && $this->getSiteSetting('password') == $_COOKIE['key'])
+        } elseif (isSet($_COOKIE['key']) && $this->getConfig()->get('password') == $_COOKIE['key']) {
             $access = true;
+        }
 
         return $access;
     }
@@ -360,7 +321,7 @@ class Website {
         }
 
         // Site title
-        $this->siteTitle = $this->getSiteSetting('title');
+        $this->siteTitle = $this->getConfig()->get('title');
 
         // Get id of page to display
         $givenPageId = $this->getRequestString("p", "home");
@@ -380,8 +341,8 @@ class Website {
         }
 
         // Set password cookie
-        if (strLen($this->getSiteSetting('password')) != 0) {
-            setCookie("key", $this->getSiteSetting('password'), time() + 3600 * 24 * 365, "/");
+        if (strLen($this->getConfig()->get('password')) != 0) {
+            setCookie("key", $this->getConfig()->get('password'), time() + 3600 * 24 * 365, "/");
         }
 
         // Perform page logic (supporting both the old .inc and the new .php pages)
@@ -392,7 +353,7 @@ class Website {
 
             // Page title
             $this->currentPageTitle = $this->currentPage->getPageTitle($this);
-            if ($this->getSiteSetting('append_page_title')) {
+            if ($this->getConfig()->get('append_page_title')) {
                 $this->siteTitle.= ' - ' . $this->currentPage->getShortPageTitle($this);
             }
 
@@ -411,7 +372,7 @@ class Website {
             // Old page system
             // Page title
             $this->currentPageTitle = ucfirst(str_replace('_', ' ', $this->currentPageId));
-            if ($this->getSiteSetting('append_page_title')) {
+            if ($this->getConfig()->get('append_page_title')) {
                 $this->siteTitle.= ' - ' . $this->currentPageTitle;
             }
 
@@ -527,34 +488,6 @@ class Website {
         return count($this->getThemeManager()->get_theme()->getWidgetAreas($this)) + 1;
     }
 
-    protected function readSiteSettingsFromFile() {
-        // Apply some standard settings to get the site running (in case those
-        // cannot be loaded from the database)
-        $this->config["language"] = "en";
-        $this->config["theme"] = "rkok";
-        $this->config["title"] = "Welcome!";
-
-        // Load other settings from config.php (required)
-        $file = "content/config.php";
-        if (file_exists($file)) {
-            require($file);
-        } else {
-            echo "<code>" . $file . "</code> was not found! Please create a config file.";
-            die();
-        }
-    }
-
-    protected function readSiteSettingsFromDatabase() {
-        // Load settings from the database
-        $oDatabase = $this->getDatabase();
-        $result = $oDatabase->query("SELECT `setting_name`, `setting_value` FROM `settings`", false);
-        if ($result) {
-            while (list($key, $value) = $oDatabase->fetchNumeric($result)) {
-                $this->config[$key] = $value;
-            }
-        }
-    }
-
     // TRANSLATIONS
 
     public function t($key) {
@@ -562,7 +495,7 @@ class Website {
         if (isSet($this->translations[$keys[0]])) { //al geladen
             return $this->translations[$keys[0]][$keys[1]];
         } else { //moet nog geladen worden
-            $translationsFile = $this->getUriTranslations() . $this->getSiteSetting("language") . "/translations_" . $keys[0] . ".txt";
+            $translationsFile = $this->getUriTranslations() . $this->getConfig()->get("language") . "/translations_" . $keys[0] . ".txt";
             if (file_exists($translationsFile)) { //laad
                 $fileContents = file($translationsFile);
                 foreach ($fileContents as $line) {
@@ -635,5 +568,3 @@ class Website {
     }
 
 }
-
-?>

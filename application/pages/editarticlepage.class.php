@@ -133,9 +133,9 @@ class EditArticlePage extends Page {
         $returnValue = <<<ARTICLE_FORM
             <!-- Date picker and CKFinder integration -->
             <script type="text/javascript" src="{$oWebsite->getUrlJavaScripts()}article_editor.js"></script>
-            <script type="text/javascript" src="{$oWebsite->getSiteSetting("ckfinder_url")}ckfinder.js"></script>
+            <script type="text/javascript" src="{$oWebsite->getConfig()->get("ckfinder_url")}ckfinder.js"></script>
             <script type="text/javascript">
-                initialize("{$oWebsite->getSiteSetting("ckfinder_url")}");
+                initialize("{$oWebsite->getConfig()->get("ckfinder_url")}");
             </script>  
 
             $message_on_top_of_page

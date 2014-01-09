@@ -41,7 +41,7 @@ $oCalendar->set_month_and_year($selected_month,$selected_year);//voor calender
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link href="<?php echo $oWebsite->getUrlThemes() . $oWebsite->getSiteSetting('theme') ?>/main.css" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $oWebsite->getUrlThemes() . $oWebsite->getConfig()->get('theme') ?>/main.css" rel="stylesheet" type="text/css" />
 		<link href="<?php echo $oWebsite->getUrlContent() ?>whitebackground.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="<?php echo $oWebsite->getUrlJavaScripts() ?>tooltip.js"> </script>
 		<title>Kies een datum</title>

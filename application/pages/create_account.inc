@@ -4,7 +4,7 @@
 $oAuth = new Authentication($this);
 $loggedIn = $this->isLoggedIn();
 
-$display_page = $this->getSiteSetting("user_account_creation") && !$oAuth->check(true, false);
+$display_page = $this->getConfig()->get("user_account_creation") && !$oAuth->check(true, false);
 
 if (!$display_page) {
     // Delegate to admin account creation screen if

@@ -45,10 +45,10 @@ if ($articles) {
         $textToDisplay.="  <title>" . htmlSpecialChars($article->title) . "</title>\n";
         $textToDisplay.="  <link>" . $oWebsite->getUrlPage('article', $article->id) . "</link>\n";
         $textToDisplay.="  <description>" . htmlSpecialChars($article->intro) . "</description>\n";
-        $textToDisplay.="  <pubDate>" . $pubdate . "</pubDate>\n";
+        $textToDisplay.="  <pubDate>" . htmlSpecialChars($pubdate) . "</pubDate>\n";
         $textToDisplay.="  <author>" . htmlSpecialChars($article->author) . "</author>\n";
-        $textToDisplay.="  <image>" . $article->featuredImage . "</image>\n";
-        $textToDisplay.="  <category>" . $article->category . "</category>\n";
+        $textToDisplay.="  <image>" . htmlSpecialChars($article->featuredImage) . "</image>\n";
+        $textToDisplay.="  <category>" . htmlSpecialChars($article->category) . "</category>\n";
         $textToDisplay.="</item>\n\n";
     }
 }
@@ -60,8 +60,8 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 
 <rss version="2.0">
     <channel>
-        <title><?php echo $oWebsite->getSiteSetting('title') ?></title>
-        <link><?php echo $oWebsite->getUrlMain() ?></link>
+        <title><?php echo htmlSpecialChars($oWebsite->getConfig()->get('title')) ?></title>
+        <link><?php echo htmlSpecialChars($oWebsite->getUrlMain()) ?></link>
         <?php
         echo $textToDisplay;
         ?>

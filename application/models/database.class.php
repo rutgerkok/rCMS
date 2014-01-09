@@ -14,12 +14,13 @@ class Database {
     public function __construct(Website $oWebsite) {
         // Save website object in this object
         $this->websiteObject = $oWebsite;
+        $config = $oWebsite->getConfig();
 
         // Connect
-        $this->dbc = @mysqli_connect($oWebsite->getSiteSetting('database_location'), $oWebsite->getSiteSetting('database_user'), $oWebsite->getSiteSetting('database_password'), $oWebsite->getSiteSetting('database_name'));
+        $this->dbc = @mysqli_connect($config->get('database_location'), $config->get('database_user'), $config->get('database_password'), $config->get('database_name'));
 
         // Fill prefix replacement arrays
-        $prefix = $oWebsite->getSiteSetting('database_table_prefix');
+        $prefix = $config->get('database_table_prefix');
         $this->prefix = $prefix;
         self::$TABLE_NAMES_TO_REPLACE = array('`categorie`', '`users`', '`links`', '`artikel`', '`comments`', '`menus`', '`widgets`', '`settings`');
         self::$REPLACING_TABLE_NAMES = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}comments`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
@@ -35,7 +36,7 @@ class Database {
      * @return boolean True if the database is installed and up to date, false otherwise.
      */
     public function isUpToDate() {
-        return $this->websiteObject->getSiteSetting("database_version") == self::CURRENT_DATABASE_VERSION;
+        return $this->websiteObject->getConfig()->get("database_version") == self::CURRENT_DATABASE_VERSION;
     }
 
     //Geeft aan hoeveel rows er bij de laatste query aangepast zijn
@@ -112,7 +113,7 @@ EOT;
      * @return int
      */
     public function updateTables() {
-        $version = $this->websiteObject->getSiteSetting("database_version");
+        $version = $this->websiteObject->getConfig()->get("database_version");
         if ($version == self::CURRENT_DATABASE_VERSION) {
             // Nothing to update
             return 0;
@@ -170,7 +171,7 @@ SQL;
         }
 
         // Done updating
-        $this->websiteObject->setSiteSetting("database_version", self::CURRENT_DATABASE_VERSION);
+        $this->websiteObject->getConfig()->set($this, "database_version", self::CURRENT_DATABASE_VERSION);
         return 1;
     }
 

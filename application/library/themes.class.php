@@ -61,7 +61,7 @@ class Themes {
             echo '<li><a href="' . $oWebsite->getUrlPage("log_out") . '">' . $this->websiteObject->t("main.log_out") . '</a></li>';
         } else {
             // Not logged in
-            if ($oWebsite->getSiteSetting("user_account_creation")) {
+            if ($oWebsite->getConfig()->get("user_account_creation")) {
                 // Show account creation link
                 echo '<li><a href="' . $oWebsite->getUrlPage("create_account") . '">' . $this->websiteObject->t("main.create_account") . '</a></li>';
             }
@@ -131,7 +131,7 @@ EOT;
     }
 
     public function echo_copyright() {
-        echo $this->websiteObject->getSiteSetting("copyright");
+        echo $this->websiteObject->getConfig()->get("copyright");
     }
 
     public function echo_menu() {
@@ -201,11 +201,11 @@ EOT;
     }
 
     public function get_uri_theme() {
-        return $this->websiteObject->getUriThemes() . $this->websiteObject->getSiteSetting("theme") . "/";
+        return $this->websiteObject->getUriThemes() . $this->websiteObject->getConfig()->get("theme") . "/";
     }
 
     public function get_url_theme() {
-        return $this->websiteObject->getUrlThemes() . $this->websiteObject->getSiteSetting("theme") . "/";
+        return $this->websiteObject->getUrlThemes() . $this->websiteObject->getConfig()->get("theme") . "/";
     }
 
 }

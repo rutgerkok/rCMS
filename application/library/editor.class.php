@@ -27,10 +27,10 @@ class Editor {
         $returnValue = "";
         $field_value = htmlSpecialChars($field_value);
         $editor_color = $oWebsite->getThemeManager()->get_theme()->getTextEditorColor();
-        if ($oWebsite->getSiteSetting("ckeditor_url")) {
+        if ($oWebsite->getConfig()->get("ckeditor_url")) {
             // Load JavaScript stuff if needed
             if (!$this->included_ckeditor_js) {
-                $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getSiteSetting("ckeditor_url") . 'ckeditor.js"></script>';
+                $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getConfig()->get("ckeditor_url") . 'ckeditor.js"></script>';
                 $this->included_ckeditor_js = true;
             }
 
@@ -44,16 +44,16 @@ class Editor {
                 });
             </script>
 EOT;
-            if ($oWebsite->getSiteSetting("ckfinder_url")) {
+            if ($oWebsite->getConfig()->get("ckfinder_url")) {
                 // CKFinder stuff
                 if (!$this->included_ckfinder_js) {
-                    $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getSiteSetting("ckfinder_url") . 'ckfinder.js"></script>';
+                    $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getConfig()->get("ckfinder_url") . 'ckfinder.js"></script>';
                     $this->included_ckfinder_js = true;
                 }
                 if (!$this->launched_ckfinder_for_ckeditor) {
                     $returnValue.= <<<EOT
                         <script type="text/javascript">
-                            CKFinder.setupCKEditor(null, '{$oWebsite->getSiteSetting("ckfinder_url")}');
+                            CKFinder.setupCKEditor(null, '{$oWebsite->getConfig()->get("ckfinder_url")}');
                         </script>
 EOT;
                     $this->launched_ckfinder_for_ckeditor = true;
@@ -79,7 +79,7 @@ EOT;
 
         if (!$this->included_ckfinder_js) {
             // Include CKFinder if needed
-            $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getSiteSetting("ckfinder_url") . 'ckfinder.js"></script>';
+            $returnValue .= '<script type="text/javascript" src="' . $oWebsite->getConfig()->get("ckfinder_url") . 'ckfinder.js"></script>';
             $this->included_ckfinder_js = true;
         }
 
@@ -89,7 +89,7 @@ EOT;
                 function browseServer_$field_name()
                 {
                     var finder = new CKFinder();
-                    finder.basePath = '{$oWebsite->getSiteSetting("ckfinder_url")}';
+                    finder.basePath = '{$oWebsite->getConfig()->get("ckfinder_url")}';
                     finder.selectActionFunction = setFileField_$field_name;
                     finder.popup();
                 }

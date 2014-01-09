@@ -16,12 +16,12 @@ class SiteSettingsPage extends Page {
     protected $saved = false;
 
     public function init(Website $oWebsite) {
-        $this->title = $oWebsite->getSiteSetting("title");
-        $this->copyright = $oWebsite->getSiteSetting("copyright");
-        $this->password = $oWebsite->getSiteSetting("password");
-        $this->language = $oWebsite->getSiteSetting("language");
-        $this->theme = $oWebsite->getSiteSetting("theme");
-        $this->user_account_creation = $oWebsite->getSiteSetting("user_account_creation");
+        $this->title = $oWebsite->getConfig()->get("title");
+        $this->copyright = $oWebsite->getConfig()->get("copyright");
+        $this->password = $oWebsite->getConfig()->get("password");
+        $this->language = $oWebsite->getConfig()->get("language");
+        $this->theme = $oWebsite->getConfig()->get("theme");
+        $this->user_account_creation = $oWebsite->getConfig()->get("user_account_creation");
 
         if (isSet($_REQUEST["submit"])) {
             $this->save_values($oWebsite);
@@ -125,6 +125,9 @@ EOT;
     }
 
     protected function save_values(Website $oWebsite) {
+        $config = $oWebsite->getConfig();
+        $database = $oWebsite->getDatabase();
+        
         // Title, copyright, password
         $this->save_string($oWebsite, "title", false);
         $this->save_string($oWebsite, "copyright", true);
@@ -133,23 +136,23 @@ EOT;
         // If a password is set, pass it as a parameter, to avoid getting locked out
         if (!empty($this->password)) {
             $_POST["key"] = $this->password;
-            setcookie("key", $this->password, time() + 3600 * 24 * 365, "/");
+            setCookie("key", $this->password, time() + 3600 * 24 * 365, "/");
         }
 
         // Whether users can create accounts
         if (isSet($_REQUEST["option_user_account_creation"])) {
             $this->user_account_creation = true;
-            $oWebsite->setSiteSetting("user_account_creation", true);
+            $config->set($database, "user_account_creation", true);
         } else {
             $this->user_account_creation = false;
-            $oWebsite->setSiteSetting("user_account_creation", false);
+            $config->set($database, "user_account_creation", false);
         }
 
         // Language
         $language = $oWebsite->getRequestString("option_language", $this->language);
         if (is_dir($oWebsite->getUriTranslations() . $language . '/')) {
             $this->language = $language;
-            $oWebsite->setSiteSetting("language", $language);
+            $config->set($database, "language", $language);
         } else {
             $oWebsite->addError($oWebsite->t("site_settings.language") . " " . $oWebsite->t("errors.not_found"));
         }
@@ -158,7 +161,7 @@ EOT;
         $theme = $oWebsite->getRequestString("option_theme", $this->theme);
         if (is_dir($oWebsite->getUriThemes() . $theme . '/')) {
             $this->theme = $theme;
-            $oWebsite->setSiteSetting("theme", $theme);
+            $config->set($database, "theme", $theme);
         } else {
             $oWebsite->addError($oWebsite->t("site_settings.theme") . " " . $oWebsite->t("errors.not_found"));
         }
@@ -168,7 +171,7 @@ EOT;
         $value = trim($oWebsite->getRequestString("option_$name", $this->$name));
         if ($optional || !empty($value)) {
             $this->$name = substr($value, 0, Website::MAX_SITE_OPTION_LENGTH);
-            $oWebsite->setSiteSetting($name, $this->$name);
+            $oWebsite->getConfig()->set($oWebsite->getDatabase(), $name, $this->$name);
         } else {
             $oWebsite->addError($oWebsite->t("site_settings.$name") . " " . $oWebsite->t("errors.not_found"));
         }
