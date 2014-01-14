@@ -1,8 +1,13 @@
+<?php
+$themeManager = $this->getThemeManager();
+$theme = $themeManager->getCurrentTheme();
+$stylesheet = $themeManager->getUrlTheme($theme) . $theme->getErrorPageStylesheet();
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <link href="<?php echo $this->getUrlThemes() . $this->getConfig()->get("theme") . "/main.css" ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $stylesheet ?>" rel="stylesheet" type="text/css" />
     </head>
     <body style="background-image:none;text-align:center">
         <div id="login">

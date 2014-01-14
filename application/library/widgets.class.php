@@ -18,22 +18,28 @@ class Widgets {
 
     /**
      * Gets a list of all installed widgets.
-     * @return \WidgetInfo List of all installed widgets.
+     * @return WidgetInfoFile List of all installed widgets.
      */
     public function getInstalledWidgets() {
         $widgets = array();
         $directoryToScan = $this->websiteObject->getUriWidgets();
-        if (is_dir($directoryToScan)) {
-            $files = scanDir($directoryToScan);
-            foreach ($files as $file) {
-                if ($file{0} != '.') {
-                    // Ignore hidden files and directories above this one
-                    if (is_dir($directoryToScan . $file)) {
-                        $widgets[] = new WidgetInfo($file, $directoryToScan . $file . "/info.txt");
-                    }
+
+        // Check directory
+        if (!is_dir($directoryToScan)) {
+            return;
+        }
+
+        // Scan it
+        $files = scanDir($directoryToScan);
+        foreach ($files as $file) {
+            if ($file{0} != '.') {
+                // Ignore hidden files and directories above this one
+                if (is_dir($directoryToScan . $file)) {
+                    $widgets[] = new WidgetInfoFile($file, $directoryToScan . $file . "/info.txt");
                 }
             }
         }
+
         return $widgets;
     }
 
@@ -43,7 +49,7 @@ class Widgets {
      * @return array Array of widget, (numeric) id => name
      */
     public function getWidgetAreas() {
-        $areas = $this->websiteObject->getThemeManager()->get_theme()->getWidgetAreas($this->websiteObject);
+        $areas = $this->websiteObject->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->websiteObject);
         $areas[1] = $this->websiteObject->t("widgets.homepage");
         return $areas;
     }
@@ -110,7 +116,7 @@ class Widgets {
     }
 
     // Echoes all widgets in the specified sidebar
-    public function getWidgetsSidebar($sidebarId) {
+    public function getWidgetsHTML($sidebarId) {
         $oWebsite = $this->websiteObject;
         $oDB = $oWebsite->getDatabase();
         $loggedInAsAdmin = $oWebsite->isLoggedInAsStaff(true);
@@ -167,133 +173,3 @@ class Widgets {
     }
 
 }
-
-/**
- * Holds the code of a widget.
- */
-abstract class WidgetDefinition {
-
-    /**
-     * Gets the text of the widget.
-     * @param Website $oWebsite The currently used website.
-     * @param int $id The unique id of the widget.
-     * @param array $data All data attached to the widget, key->value pairs.
-     * @return string The text.
-     */
-    public abstract function getWidget(Website $oWebsite, $id, $data);
-
-    /**
-     * Gets the widget's editor. The data is either the saved data, or the data
-     * just returned from parse_data (even if that was marked as invalid!)
-     * @return string The editor.
-     */
-    public abstract function getEditor(Website $oWebsite, $id, $data);
-
-    /**
-     * Parses all input created by get_editor. You'll have to use the $_REQUEST
-     * array. Make sure to sanitize your input, but don't escape it, that will
-     * be done for your!
-     * 
-     * If the data is invalid set $return_array["valid"] to false. If you want
-     * to give any feedback to the user, use $oWebsite->add_error(message).
-     * 
-     * @param Website $oWebsite The currently used website.
-     * @param int $id The unique id of the widget.
-     * @return array Array of all data.
-     */
-    public abstract function parseData(Website $oWebsite, $id);
-}
-
-/**
- * Stores info about a widget. All methods return strings.
- */
-class WidgetInfo {
-
-    private $name;
-    private $description;
-    private $version;
-    private $author;
-    private $authorWebsite;
-    private $website;
-    private $directoryName;
-    private $infoFile;
-
-    public function __construct($directoryName, $infoFile) {
-        $this->directoryName = $directoryName;
-        $this->infoFile = $infoFile;
-    }
-
-    public function getName() {
-        $this->init();
-        return $this->name;
-    }
-
-    public function getDescription() {
-        $this->init();
-        return $this->description;
-    }
-
-    public function getDirectoryName() {
-        return $this->directoryName;
-    }
-
-    public function getVersion() {
-        $this->init();
-        return $this->version;
-    }
-
-    public function getAuthor() {
-        $this->init();
-        return $this->author;
-    }
-
-    public function getAuthorWebsite() {
-        $this->init();
-        return $this->authorWebsite;
-    }
-
-    public function getWidgetWebsite() {
-        $this->init();
-        return $this->website;
-    }
-
-    private function init() {
-        if (isSet($this->name)) {
-            return;
-        }
-
-        if (file_exists($this->infoFile)) {
-            $lines = file($this->infoFile);
-            foreach ($lines as $line) {
-                $split = explode("=", $line, 2);
-                if (count($split) < 2) {
-                    continue;
-                }
-                if ($split[0] == "author") {
-                    $this->author = $split[1];
-                }
-                if ($split[0] == "author.website") {
-                    $this->authorWebsite = $split[1];
-                }
-                if ($split[0] == "name") {
-                    $this->name = $split[1];
-                }
-                if ($split[0] == "description") {
-                    $this->description = $split[1];
-                }
-                if ($split[0] == "version") {
-                    $this->version = $split[1];
-                }
-                if ($split[0] == "website") {
-                    $this->website = $split[1];
-                }
-            }
-        } else {
-            $this->name = $this->directoryName;
-            $this->description = "info.txt not found.";
-        }
-    }
-
-}
-
-?>

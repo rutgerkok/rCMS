@@ -39,6 +39,8 @@ class Website {
         $this->config->readFromDatabase($this->databaseObject);
 
         $this->authenticationObject = new Authentication($this);
+        $this->themesObject = new Themes($this);
+        
 
         // Workarounds for older PHP versions (5.2, 5.3 and 5.4)
         $this->requireFunctions("lcfirst", "http_response_code");
@@ -145,7 +147,7 @@ class Website {
     
     /**
      * Gets all settings manager of the site.
-     * @return Config The settings manager.
+     * SiteConfign Config The settings manager.
      */
     public function getConfig() {
         return $this->config;
@@ -390,7 +392,6 @@ class Website {
         }
 
         // Output page
-        $this->themesObject = new Themes($this);
         $this->themesObject->output();
     }
 
@@ -485,7 +486,7 @@ class Website {
      */
     public function getThemeWidgetAreaCount() {
         // Defined sidebars plus one for the homepage
-        return count($this->getThemeManager()->get_theme()->getWidgetAreas($this)) + 1;
+        return count($this->getThemeManager()->getCurrentTheme()->getWidgetAreas($this)) + 1;
     }
 
     // TRANSLATIONS

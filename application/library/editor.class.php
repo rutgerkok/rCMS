@@ -26,7 +26,9 @@ class Editor {
 
         $returnValue = "";
         $field_value = htmlSpecialChars($field_value);
-        $editor_color = $oWebsite->getThemeManager()->get_theme()->getTextEditorColor();
+        $currentTheme = $oWebsite->getThemeManager()->getCurrentTheme();
+        $editor_color = $currentTheme->getTextEditorColor();
+        $editor_style = $oWebsite->getThemeManager()->getUrlTheme($currentTheme) . $currentTheme->getTextStylesheet();
         if ($oWebsite->getConfig()->get("ckeditor_url")) {
             // Load JavaScript stuff if needed
             if (!$this->included_ckeditor_js) {
@@ -40,7 +42,7 @@ class Editor {
                 CKEDITOR.replace( '$field_name', {
                     uiColor: '$editor_color',
                     format_tags : 'p;h3;pre',
-                    contentsCss : ['{$oWebsite->getThemeManager()->get_url_theme()}main.css', '{$oWebsite->getUrlContent()}whitebackground.css']
+                    contentsCss : ['$editor_style', '{$oWebsite->getUrlContent()}whitebackground.css']
                 });
             </script>
 EOT;

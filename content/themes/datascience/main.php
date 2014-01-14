@@ -8,7 +8,7 @@ if (!defined("WEBSITE")) {
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
         <!--[if lte IE 8]>
             <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
@@ -19,14 +19,14 @@ if (!defined("WEBSITE")) {
         <div id="container">
             <div id="containerwrapper">
                 <div id="breadcrumbs">
-<?php $this->echo_breadcrumbs(); ?>
+<?php $this->echoBreadcrumbs(); ?>
                     <ul id="accountlinks">
-                    <?php $this->echo_accounts_menu(); ?>
+                    <?php $this->echoAccountsMenu(); ?>
                     </ul>
                 </div>
                 <div id="header">
                     <div id="search">
-<?php $this->echo_search_form(); ?>
+<?php $this->echoSearchForm(); ?>
                     </div>
                     <h1>
 <?php echo $this->getSiteTitle(); ?>
@@ -34,7 +34,7 @@ if (!defined("WEBSITE")) {
                 </div>
                 <div id="hornav">
                     <ul>
-<?php $this->echo_menu(); ?>
+<?php $this->echoTopMenu(); ?>
                     </ul>
                 </div>
                 <div <?php
@@ -66,7 +66,7 @@ if ($this->getPageType() == "HOME") {
 <?php } ?>
 
                 <div id="footer">
-<?php $this->echo_copyright(); ?>
+<?php $this->echoCopyright(); ?>
                 </div>
             </div><!-- id="containerwrapper" -->
         </div><!-- id="container" -->

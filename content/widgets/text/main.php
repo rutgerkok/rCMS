@@ -5,8 +5,6 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-$this->registerWidget(new WidgetRkokText());
-
 class WidgetRkokText extends WidgetDefinition {
     /*
      * Implementation detail:
@@ -71,4 +69,5 @@ class WidgetRkokText extends WidgetDefinition {
 
 }
 
-?>
+// Register itself
+$this->registerWidget(new WidgetRkokText());

@@ -9,7 +9,7 @@ if (!defined("WEBSITE")) {
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no">
-        <link href="<?php echo $this->get_url_theme() . "main.css" ?>" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
         <!--[if lte IE 8]>
             <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
@@ -25,15 +25,15 @@ if ($this->isLoggedIn()) {
             <div id="header">
                 <h1> <?php echo $this->getSiteTitle(); ?> </h1>
                 <ul id="main_menu">
-                    <?php $this->echo_menu(); ?>
+                    <?php $this->echoTopMenu(); ?>
                 </ul>
                 <div id="search">
-                    <?php $this->echo_search_form(); ?>
+                    <?php $this->echoSearchForm(); ?>
                 </div>
                 <div id="account_label">
-                    <?php $this->echo_account_label(); ?>
+                    <?php $this->echoAccountLabel(); ?>
                     <div id="account_box">
-                        <?php $this->echo_account_box(); ?>
+                        <?php $this->echoAccountBox(); ?>
                         <div style="clear:both"></div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ if ($this->isLoggedIn()) {
             <?php } ?>
 
             <div id="footer">
-            <?php $this->echo_copyright(); ?>
+            <?php $this->echoCopyright(); ?>
             </div>
         </div>
     </body>

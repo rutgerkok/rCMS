@@ -5,8 +5,6 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-$this->registerWidget(new WidgetRkokLinks());
-
 class WidgetRkokLinks extends WidgetDefinition {
 
     const TITLE_MAX_LENGTH = 40;
@@ -101,4 +99,5 @@ EOT;
 
 }
 
-?>
+// Register itself
+$this->registerWidget(new WidgetRkokLinks());

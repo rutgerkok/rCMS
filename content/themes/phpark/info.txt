@@ -1,0 +1,8 @@
+name=Prins Hendrikpark
+description=Thema voor prinshendrikpark.nl
+version=1.0
+website=http://www.prinshendrikpark.nl/
+author=Prins Hendrikpark
+author.website=http://www.prinshendrikpark.nl/
+widget_areas=2
+editor_color=#9a9a79

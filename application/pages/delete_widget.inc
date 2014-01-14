@@ -31,7 +31,7 @@ if ($loggedIn) {
             $textToDisplay.= '<p>' . $this->t("editor.widget.delete.confirm") . '</p>';
 
             //en laat daarbij de comment zien
-            $widget_info = $widget->get_widget_info();
+            $widget_info = $widget->getWidgetInfo();
             $textToDisplay.= '<h3>' . $widget_info->getName() . "</h3>\n";
             $textToDisplay.= '<p>' . $widget_info->getDescription() . "</h3>\n";
             $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("delete_widget", $widget_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . "</a> | \n";

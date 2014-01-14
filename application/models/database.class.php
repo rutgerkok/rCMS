@@ -14,11 +14,12 @@ class Database {
     public function __construct(Website $oWebsite) {
         // Save website object in this object
         $this->websiteObject = $oWebsite;
+        
         $config = $oWebsite->getConfig();
 
         // Connect
-        $this->dbc = @mysqli_connect($config->get('database_location'), $config->get('database_user'), $config->get('database_password'), $config->get('database_name'));
-
+        $this->dbc = mysqli_connect($config->get('database_location'), $config->get('database_user'), $config->get('database_password'), $config->get('database_name'));
+        
         // Fill prefix replacement arrays
         $prefix = $config->get('database_table_prefix');
         $this->prefix = $prefix;

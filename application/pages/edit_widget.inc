@@ -32,9 +32,9 @@ if ($loggedIn) {
         $this->addError($this->t("main.widget") . ' ' . $this->t("errors.not_found"));
     } else {
         // Get data from widget
-        $widget_info = $widget->get_widget_info();
+        $widget_info = $widget->getWidgetInfo();
         $widget_definition = $widget->getWidgetDefinition($oWidgets);
-        $widget_data = $widget->get_data();
+        $widget_data = $widget->getData();
 
         // Show header
         $textToDisplay.= '<h3>' . $widget_info->getName() . "</h3>\n";
@@ -46,7 +46,7 @@ if ($loggedIn) {
             if (isSet($_REQUEST["sidebar_id"])) {
                 $sidebar_id = (int) $_REQUEST["sidebar_id"];
                 if ($sidebar_id > 0 && $sidebar_id <= $this->getThemeWidgetAreaCount()) {
-                    $widget->set_sidebar_id($sidebar_id);
+                    $widget->setSidebarId($sidebar_id);
                 } else {
                     $this->addError($this->tReplacedKey(""));
                     $valid_sidebar_id = false;
@@ -54,14 +54,14 @@ if ($loggedIn) {
             }
             // Set priority if filled in
             if (isSet($_REQUEST["priority"])) {
-                $widget->set_priority((int) $_REQUEST["priority"]);
+                $widget->setPriority((int) $_REQUEST["priority"]);
             }
             // Set data
             $widget_data = $widget_definition->parseData($this, $widget->getId());
             if (!isSet($widget_data["valid"]) || $widget_data["valid"]) {
                 // Only continue if there is tag about validation, or if the
                 // tag has been set to true
-                $widget->set_data($widget_data);
+                $widget->setData($widget_data);
                 // Get whether this is a new widget (id will be changed to a real
                 // one after it has saved, so check has to come before that)
                 $is_new_widget = ($widget->getId() == 0);
@@ -98,7 +98,7 @@ if ($loggedIn) {
         $sidebarCount = $this->getThemeWidgetAreaCount();
         foreach ($oWidgets->getWidgetAreas() as $i => $name) {
             $textToDisplay.= '<option ';
-            if ($i == $widget->get_sidebar_id()) {
+            if ($i == $widget->getSidebarId()) {
                 $textToDisplay.= 'selected="selected" ';
             }
             $textToDisplay.= 'value="' . $i . '">' . $name . "</option>\n";
@@ -108,7 +108,7 @@ if ($loggedIn) {
         // Priority
         $textToDisplay.= '<p><label for="priority">' . $this->t("widgets.priority") . ":</label>";
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
-        $textToDisplay.= '<input type="number" step="1" name="priority" id="priority" value="' . $widget->get_priority() . '" />';
+        $textToDisplay.= '<input type="number" step="1" name="priority" id="priority" value="' . $widget->getPriority() . '" />';
         $textToDisplay.= '</p>';
 
         // Widget settings

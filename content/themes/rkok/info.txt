@@ -1,0 +1,6 @@
+name=Main theme
+description=Main theme of rCMS
+version=1.0
+website=http://www.rutgerkok.nl/
+author=Rutger Kok
+author.website=http://www.rutgerkok.nl/

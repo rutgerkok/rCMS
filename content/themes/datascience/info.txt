@@ -1,0 +1,8 @@
+name=Datascience
+description=Datascience theme
+version=1.0
+website=http://www.rutgerkok.nl/joosts/map/met/datascience/
+author=Rutger Kok
+author.website=http://www.rutgerkok.nl/
+widget_areas=2
+editor_color=#cccccc

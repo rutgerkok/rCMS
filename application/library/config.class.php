@@ -5,6 +5,8 @@
  */
 class Config {
 
+    private $config = array();
+
     /**
      * Creates a new Config instance. The settings will be read from the 
      * provided file. Make sure to call the readFromDatabase method after this
@@ -58,7 +60,7 @@ class Config {
     public function get($name) {
         if (isSet($this->config[$name])) {
             $value = $this->config[$name];
-            if (strtolower($value) == "false") {
+            if (strToLower($value) == "false") {
                 // Because "false" == true
                 return false;
             }

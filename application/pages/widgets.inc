@@ -19,7 +19,7 @@ if ($loggedIn) {
         $widgets_in_sidebar = $oWidgets->getPlacedWidgetsFromSidebar($i);
         foreach ($widgets_in_sidebar as $widget_in_sidebar) {
             $textToDisplay.= "<h3>\n";
-            $textToDisplay.= $widget_in_sidebar->get_widget_info()->getName();
+            $textToDisplay.= $widget_in_sidebar->getWidgetInfo()->getName();
             $textToDisplay.= "</h3><p>\n";
             $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("edit_widget", $widget_in_sidebar->getId()) . '">';
             $textToDisplay.= $this->t("main.edit");

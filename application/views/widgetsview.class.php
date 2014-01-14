@@ -15,7 +15,7 @@ class WidgetsView extends View {
     }
 
     public function getText() {
-        return $this->oWebsite->getThemeManager()->getWidgets($this->area);
+        return $this->oWebsite->getThemeManager()->getWidgetsHTML($this->area);
     }
 
 }

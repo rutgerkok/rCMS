@@ -5,8 +5,6 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-$this->registerWidget(new WidgetRkokArticles());
-
 class WidgetRkokArticles extends WidgetDefinition {
 
     const TYPE_WITHOUT_METADATA = 0;
@@ -235,4 +233,5 @@ EOT;
 
 }
 
-?>
+// Register itself
+$this->registerWidget(new WidgetRkokArticles());

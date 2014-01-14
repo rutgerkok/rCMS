@@ -5,8 +5,6 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-$this->registerWidget(new WidgetRkokComments());
-
 class WidgetRkokComments extends WidgetDefinition {
 
     const MIN_COMMENTS = 1;
@@ -63,3 +61,6 @@ FORM;
     }
 
 }
+
+// Register itself
+$this->registerWidget(new WidgetRkokComments());

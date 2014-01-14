@@ -2,53 +2,120 @@
 
 class Themes {
 
+    const THEME_INFO_FILE_NAME = "info.txt";
+
     private $websiteObject; //bewaart het website-object
-    private $widgets_object; //bewaart het widgets-object
+    private $widgetsObject; //bewaart het widgets-object
     private $theme;
 
     public function __construct(Website $oWebsite) {
         $this->websiteObject = $oWebsite;
-        $this->widgets_object = new Widgets($oWebsite);
+        $this->widgetsObject = new Widgets($oWebsite);
+
+        // Load theme info file
+        $this->theme = $this->loadTheme($oWebsite->getConfig()->get("theme"));
+    }
+
+    /**
+     * Loads the theme with the given directory name.
+     * @param string $themeName The directory name, like "my_theme".
+     * @return Theme The loaded theme.
+     * @throws BadMethodCallException If no theme with that name exists.
+     */
+    private function loadTheme($themeName) {
+        $themeDirectory = $this->websiteObject->getUriThemes() . $themeName . "/";
+        $themeInfoFile = $themeDirectory . self::THEME_INFO_FILE_NAME;
+        return new Theme($themeName, $themeInfoFile);
+    }
+
+    /**
+     * Gets the theme with the given name.
+     * @param string $directoryName Name of the directory of the theme,
+     *  like "my_theme".
+     * @return Theme|null The theme, or null if not found.
+     */
+    public function getTheme($directoryName) {
+        if ($this->theme->getName() == $directoryName) {
+            return $this->theme;
+        }
+        if ($this->themeExists($directoryName)) {
+            return loadTheme($directoryName);
+        }
+        return null;
+    }
+
+    /**
+     * Gets whether a theme with that name exists on this site.
+     * @param string $directoryName Name of the directory of the theme, like
+     *  "my_theme".
+     * @return boolean Whether that theme exists.
+     */
+    public function themeExists($directoryName) {
+        return is_dir($this->websiteObject->getUriThemes() . $directoryName);
     }
 
     /**
      * Called by Website. Echoes the whole page.
      */
     public function output() {
-        if (file_exists($this->get_uri_theme() . "main.php")) {
-            require($this->get_uri_theme() . "main.php");
+        if (file_exists($this->getUriTheme() . "main.php")) {
+            require($this->getUriTheme() . "main.php");
         } else {
-            die("<code>" . $this->get_uri_theme() . "main.php</code> was not found! Theme is missing/incomplete.");
+            die("<code>" . $this->getUriTheme() . "main.php</code> was not found! Theme is missing/incomplete.");
         }
     }
 
     /**
-     * Normall called by Website. Gets the page object
-     * @return Theme The page.
+     * Gets the theme currently used on the site.
+     * @return Theme The theme.
      */
-    public function get_theme() {
-        if (!$this->theme) {
-            if (file_exists($this->get_uri_theme() . "options.php")) {
-                require($this->get_uri_theme() . "options.php");
-            } else {
-                die("<code>" . $this->get_uri_theme() . "options.php</code> was not found! Theme is missing/incomplete.");
-            }
-        }
+    public function getCurrentTheme() {
         return $this->theme;
     }
 
     /**
-     * Used by a theme (in it's options.php) to register itself.
-     * @param Theme $theme The theme to register.
+     * Gets the uri of theme directory.
+     * @param Theme $theme The theme to get the uri for, use null for the
+     *  current theme.
+     * @return string The uri.
      */
-    public function registerTheme(Theme $theme) {
-        $this->theme = $theme;
+    public function getUriTheme($theme = null) {
+        if ($theme == null) {
+            $theme = $this->theme;
+        }
+        return $this->websiteObject->getUriThemes() . $theme->getName() . "/";
+    }
+
+    /**
+     * Gets the url of theme directory.
+     * @param Theme $theme The theme to get the url for, use null for the
+     *  current theme.
+     * @return string The uri.
+     */
+    public function getUrlTheme($theme = null) {
+        if ($theme == null) {
+            $theme = $this->theme;
+        }
+        return $this->websiteObject->getUrlThemes() . $theme->getName() . "/";
+    }
+    
+    // Below this line are the methods for the individual themes to use to
+    // display all the dynamic content on the page.
+
+    /**
+     * Gets the HTML of all widgets in the given widget area.
+     * @param int $area The widget area, starting at 2. 1 is used for the
+     *  widgets on the home page.
+     * @return string The widgets.
+     */
+    public function getWidgetsHTML($area) {
+        return $this->widgetsObject->getWidgetsHTML($area);
     }
 
     /**
      * Echoes three &lt;li&gt; links representing the accounts menu.
      */
-    public function echo_accounts_menu() {
+    public function echoAccountsMenu() {
         $oWebsite = $this->websiteObject;
 
         if ($oWebsite->isLoggedInAsStaff(true)) {
@@ -69,7 +136,7 @@ class Themes {
         }
     }
 
-    public function echo_account_label() {
+    public function echoAccountLabel() {
         $oWebsite = $this->websiteObject;
         $user = $oWebsite->getAuth()->getCurrentUser();
 
@@ -92,7 +159,7 @@ EOT;
         echo "<p>" . $welcome_text . "</p>";
     }
 
-    public function echo_account_box($gravatar_size = 140) {
+    public function echoAccountBox($gravatar_size = 140) {
         $oWebsite = $this->websiteObject;
         $user = $oWebsite->getAuth()->getCurrentUser();
 
@@ -107,11 +174,11 @@ EOT;
         // Display account box
         echo '<img id="account_box_gravatar" src="' . $avatar_url . '" />';
         echo '<ul>';
-        echo $this->echo_accounts_menu();
+        echo $this->echoAccountsMenu();
         echo '</ul>';
     }
 
-    public function echo_breadcrumbs() {
+    public function echoBreadcrumbs() {
         $oWebsite = $this->websiteObject;
 
         echo <<<EOT
@@ -130,11 +197,11 @@ EOT;
         }
     }
 
-    public function echo_copyright() {
+    public function echoCopyright() {
         echo $this->websiteObject->getConfig()->get("copyright");
     }
 
-    public function echo_menu() {
+    public function echoTopMenu() {
         $oWebsite = $this->websiteObject; //afkorting
         $oMenu = new Menus($oWebsite);
         echo $oMenu->get_as_html($oMenu->get_menu_top(new Categories($oWebsite, $oWebsite->getDatabase())));
@@ -149,14 +216,13 @@ EOT;
     }
 
     //Geeft een zoekformulier weer
-    public function echo_search_form() {
+    public function echoSearchForm() {
         $oWebsite = $this->websiteObject;
 
-        //Zoekwoord
-        $keyword = "";
-        if (isSet($_REQUEST['searchbox']))
-            $keyword = htmlSpecialChars($_REQUEST['searchbox']);
+        // Last entered search term
+        $keyword = htmlSpecialChars($oWebsite->getRequestString("searchbox"));
 
+        // Echo the form
         echo '<form id="searchform" name="searchform" action="' . $oWebsite->getUrlMain() . '" method="get">';
         echo '<input type="hidden" name="p" value="search" />';
         echo '<input type="search" size="21" name="searchbox" id="searchbox" value="' . $keyword . '" />';
@@ -165,12 +231,7 @@ EOT;
     }
 
     public function echoWidgets($area) {
-        echo $this->getWidgets($area);
-    }
-
-    public function getWidgets($area) {
-        $oWidgets = $this->widgets_object;
-        return $oWidgets->getWidgetsSidebar($area);
+        echo $this->widgetsObject->getWidgetsHTML($area);
     }
 
     /**
@@ -200,14 +261,4 @@ EOT;
         return $this->websiteObject->getUrlJavaScripts();
     }
 
-    public function get_uri_theme() {
-        return $this->websiteObject->getUriThemes() . $this->websiteObject->getConfig()->get("theme") . "/";
-    }
-
-    public function get_url_theme() {
-        return $this->websiteObject->getUrlThemes() . $this->websiteObject->getConfig()->get("theme") . "/";
-    }
-
 }
-
-?>

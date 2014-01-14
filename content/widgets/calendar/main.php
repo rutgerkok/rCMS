@@ -5,8 +5,6 @@ if (!defined("WEBSITE")) {
     die();
 }
 
-$this->registerWidget(new WidgetRkokCalendar());
-
 class WidgetRkokCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
@@ -50,4 +48,5 @@ EOT;
 
 }
 
-?>
+// Register itself
+$this->registerWidget(new WidgetRkokCalendar());
