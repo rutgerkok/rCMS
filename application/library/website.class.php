@@ -3,7 +3,7 @@
 class Website {
 
     const MAX_SITE_OPTION_LENGTH = 200;
-    const CONFIG_FILE = "content/config.php";
+    const CONFIG_FILE = "config.php";
 
     protected $errors = array();
     protected $debug = true;
