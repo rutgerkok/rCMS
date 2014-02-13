@@ -204,13 +204,18 @@ class Articles {
      * @param string $keywordUnprotected Unescaped keyword.
      * @param int $articlesPerPage Number of articles on each page.
      * @param int $start The offset of the articles.
-     * @return \Article List of articles.
+     * @return Article[] List of articles.
      */
     public function getArticlesDataMatch($keywordUnprotected, $articlesPerPage, $start) {
         $oDB = $this->databaseObject;
         $keyword = $oDB->escapeData($keywordUnprotected);
+        $articlesPerPage = (int) $articlesPerPage;
+        $start = (int) $start;
+        if ($start < 0) {
+            $start = 0;
+        }
 
-        return $this->getArticlesDataUnsafe("(artikel_titel LIKE '%$keyword%' OR artikel_intro LIKE '%$keyword%' OR artikel_inhoud LIKE '%$keyword%')", $articlesPerPage, $start);
+        return $this->getArticlesDataUnsafe("(`artikel_titel` LIKE '%$keyword%' OR `artikel_intro` LIKE '%$keyword%' OR `artikel_inhoud` LIKE '%$keyword%')", $articlesPerPage, $start);
     }
 
 }

@@ -46,8 +46,26 @@ abstract class Page {
      * Returns the view of this page. Not overriding this method is deprecated.
      * @return View|null A view, or null if not using a view (deprecated).
      */
-    public function getView(Website $oWebsite) {
+    protected function getView(Website $oWebsite) {
         return null;
+    }
+    
+    /**
+     * Gets all views on this page.
+     * @param Website $oWebsite The website object.
+     * @return View[] Array of views. May be empty if this page is not using
+     * views (deprecated).
+     */
+    public function getViews(Website $oWebsite) {
+        // Fall back on method to get a single view
+        $view = $this->getView($oWebsite);
+
+        if (!$view) {
+            // No view found, return empty array
+            return array();
+        }
+
+        return array($view);
     }
 
     /**
@@ -56,7 +74,12 @@ abstract class Page {
      * @return string The HTML content of this page.
      */
     public function getPageContent(Website $oWebsite) {
-        return $this->getView($oWebsite)->getText();
+        $returnValue = "";
+        $views = $this->getViews($oWebsite);
+        foreach($views as $view) {
+            $returnValue.= $view->getText();
+        }
+        return $returnValue;
     }
 
 }

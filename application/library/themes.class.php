@@ -159,7 +159,7 @@ EOT;
         echo "<p>" . $welcome_text . "</p>";
     }
 
-    public function echoAccountBox($gravatar_size = 140) {
+    public function echoAccountBox($gravatarSize = 140) {
         $oWebsite = $this->websiteObject;
         $user = $oWebsite->getAuth()->getCurrentUser();
 
@@ -169,10 +169,10 @@ EOT;
         }
 
         // Get avatar url
-        $avatar_url = $user->getAvatarUrl($gravatar_size);
+        $avatarUrl = $user->getAvatarUrl($gravatarSize);
 
         // Display account box
-        echo '<img id="account_box_gravatar" src="' . $avatar_url . '" />';
+        echo '<img id="account_box_gravatar" src="' . $avatarUrl . '" />';
         echo '<ul>';
         echo $this->echoAccountsMenu();
         echo '</ul>';
@@ -204,7 +204,7 @@ EOT;
     public function echoTopMenu() {
         $oWebsite = $this->websiteObject; //afkorting
         $oMenu = new Menus($oWebsite);
-        echo $oMenu->get_as_html($oMenu->get_menu_top(new Categories($oWebsite, $oWebsite->getDatabase())));
+        echo $oMenu->getAsHtml($oMenu->getMenuTop(new Categories($oWebsite, $oWebsite->getDatabase())));
         unset($oMenu);
     }
 

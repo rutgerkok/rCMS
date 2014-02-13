@@ -27,13 +27,13 @@ if ($loggedIn) {
             $valid = false;
             $this->addError($this->t("links.text") . " " . Validate::getLastError($this));
         }
-        if (!$oMenu->get_menu_name($menu_id)) {
+        if (!$oMenu->getMenuByName($menu_id)) {
             $valid = false;
             $this->addError($this->t("links.menu") . " " . $this->t("errors.not_found"));
         }
         if ($valid) {
             // Save
-            if ($oMenu->add_link($menu_id, $link_url, $link_text)) {
+            if ($oMenu->addLink($menu_id, $link_url, $link_text)) {
                 $show_form = false; // Don't show form on success
 
                 $textToDisplay.= "<p>" . $this->t("main.link") . " " . $this->t("editor.is_created") . "</p>";
@@ -77,7 +77,7 @@ if ($loggedIn) {
                     </label><br />
                     <select name="id" id="menu_id">
 EOT;
-        foreach ($oMenu->get_menus() as $id=>$name) {
+        foreach ($oMenu->getMenus() as $id=>$name) {
             $textToDisplay.= '<option value="'.$id.'"';
             if($id == $menu_id) {
                 // Currently selected menu

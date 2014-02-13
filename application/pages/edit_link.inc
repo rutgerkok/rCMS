@@ -11,7 +11,7 @@ unset($oAuth);
 if ($loggedIn) {
     $link_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
     $oMenu = new Menus($this);
-    $link = $oMenu->get_link($link_id);
+    $link = $oMenu->getLink($link_id);
 
     if ($link) {
         // Valid link id
@@ -35,7 +35,7 @@ if ($loggedIn) {
             }
             if ($valid) {
                 // Validated, update
-                if ($oMenu->update_link($link_id, $link_url, $link_text)) {
+                if ($oMenu->updateLink($link_id, $link_url, $link_text)) {
                     $textToDisplay.="<p><em>" . $this->t("main.link") . " " . $this->t("editor.is_edited") . "</em></p>";
                 } else {
                     // System error

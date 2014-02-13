@@ -18,7 +18,7 @@ if ($loggedIn) {
             $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", Menus::MAX_MENU_NAME_LENGTH));
             $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
         } else {
-            if ($oMenu->add_menu($name)) {
+            if ($oMenu->addMenu($name)) {
                 $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("editor.is_created") . "</em></p>";
             } else {
                 $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
@@ -27,11 +27,11 @@ if ($loggedIn) {
     }
 
     // Echo all menus
-    $menus = $oMenu->get_menus();
+    $menus = $oMenu->getMenus();
     foreach ($menus as $menu_id => $menu_name) {
-        $links = $oMenu->get_links_menu($menu_id);
+        $links = $oMenu->getLinksByMenu($menu_id);
         if (count($links) > 0) {
-            $links_html = $oMenu->get_as_html($links, false, true);
+            $links_html = $oMenu->getAsHtml($links, false, true);
         } else {
             $links_html = "<li><em>" . $this->t("errors.nothing_found") . "</em></li>";
         }

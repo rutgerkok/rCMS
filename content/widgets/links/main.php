@@ -26,7 +26,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         // Links
         $oMenu = new Menus($oWebsite);
         $returnValue.= '<ul class="linklist">';
-        $returnValue.= $oMenu->get_as_html($oMenu->get_links_menu($menu_id), true, $loggedInStaff);
+        $returnValue.= $oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff);
         $returnValue.= "</ul>";
 
         // Link to add link
@@ -45,7 +45,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doesn't support constants
         // Build menu options
         $oMenu = new Menus($oWebsite);
-        $menus = $oMenu->get_menus();
+        $menus = $oMenu->getMenus();
         $menu_options = "";
         if (count($menus) > 0) {
             $menu_options.= "<select name=\"menu_id_$id\" id=\"menu_id_$id\">\n";
@@ -90,7 +90,7 @@ EOT;
         }
         $data["menu_id"] = isSet($_REQUEST["menu_id_" . $id]) ? (int) $_REQUEST["menu_id_" . $id] : 0;
         $oMenu = new Menus($oWebsite);
-        if ($oMenu->get_menu_name($data["menu_id"]) == null) {
+        if ($oMenu->getMenuByName($data["menu_id"]) == null) {
             $oWebsite->addError($oWebsite->t("widgets.menu") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }

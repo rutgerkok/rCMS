@@ -11,11 +11,11 @@ unset($oAuth);
 if ($loggedIn) {
     $oMenu = new Menus($this);
     $menu_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $menu_name = $oMenu->get_menu_name($menu_id);
+    $menu_name = $oMenu->getMenuByName($menu_id);
     if ($menu_name != null) {
         if (isSet($_REQUEST["confirm"])) {
             // Deletion confirmed
-            if($oMenu->delete_menu($menu_id)) {
+            if($oMenu->deleteMenu($menu_id)) {
                 // Deleted
                 $textToDisplay.= "<p>" . $this->t("links.menu") . " " . $this->t("editor.is_deleted") . "</p>";
             } else {
@@ -24,7 +24,7 @@ if ($loggedIn) {
             }
         } else {
             // Confirm deletion
-            $linkCount = count($oMenu->get_links_menu($menu_id));
+            $linkCount = count($oMenu->getLinksByMenu($menu_id));
             $textToDisplay.= <<<EOT
                 <p>{$this->t("links.menu.delete.confirm")}</p>
                 <p>

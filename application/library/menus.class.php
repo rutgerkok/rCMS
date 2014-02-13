@@ -18,7 +18,7 @@ class Menus {
      * @param int $id Id of the menu.
      * @return array All links in the menu.
      */
-    public function get_links_menu($id) {
+    public function getLinksByMenu($id) {
         $id = (int) $id;
         $oDB = $this->websiteObject->getDatabase();
 
@@ -32,7 +32,7 @@ class Menus {
         return $links;
     }
 
-    public function get_links_search($keyword) {
+    public function getLinksBySearch($keyword) {
         $oDB = $this->websiteObject->getDatabase();
 
         // Escape keyword
@@ -53,7 +53,7 @@ class Menus {
      * @param int $id The id of the link.
      * @return null|array The link, or null if it isn't found.
      */
-    public function get_link($id) {
+    public function getLink($id) {
         $oDB = $this->websiteObject->getDatabase();
         $id = (int) $id;
         $sql = "SELECT `link_url`, `link_text` FROM `links` WHERE `link_id` = $id";
@@ -71,7 +71,7 @@ class Menus {
      * @param Categories $oCats The categories object.
      * @return string The HTML of the menu.
      */
-    public function get_menu_top(Categories $oCats) {
+    public function getMenuTop(Categories $oCats) {
         $oWebsite = $this->websiteObject;
 
         $categories = $oCats->getCategories();
@@ -108,7 +108,7 @@ class Menus {
      *  displayed. If true, those are displayed even if the user can't use them.
      * @return string
      */
-    public function get_as_html($menu_array, $open_in_new_window = false, $edit_links = false) {
+    public function getAsHtml($menu_array, $open_in_new_window = false, $edit_links = false) {
         $returnValue = "";
         $oWebsite = $this->websiteObject;
         foreach ($menu_array as $id => $value) {
@@ -133,7 +133,7 @@ class Menus {
      * @param type $link_url Url of the link.
      * @param type $link_text Display text of the link.
      */
-    public function add_link($menu_id, $link_url, $link_text) {
+    public function addLink($menu_id, $link_url, $link_text) {
         $oDB = $this->websiteObject->getDatabase();
 
         // Sanitize
@@ -150,7 +150,7 @@ class Menus {
         }
     }
 
-    public function update_link($link_id, $link_url, $link_text) {
+    public function updateLink($link_id, $link_url, $link_text) {
         $oDB = $this->websiteObject->getDatabase();
 
         // Sanitize
@@ -173,7 +173,7 @@ class Menus {
      * @param int $link_id The id of the link.
      * @return boolean Whether the link was removed.
      */
-    public function delete_link($link_id) {
+    public function deleteLink($link_id) {
         $oWebsite = $this->websiteObject;
         $oDB = $oWebsite->getDatabase();
 
@@ -195,7 +195,7 @@ class Menus {
      * Gets all menus. $id=>name. Names are parsed by htmlSpecialChars().
      * @return array All menus. $id=>name.
      */
-    public function get_menus() {
+    public function getMenus() {
         $oDB = $this->websiteObject->getDatabase();
         $sql = "SELECT `menu_id`, `menu_name` FROM `menus`";
         $result = $oDB->query($sql);
@@ -212,7 +212,7 @@ class Menus {
      * @param int $menu_id The id of the menu.
      * @return null|string The name of the menu, or null if the menu doesn't exist.
      */
-    public function get_menu_name($menu_id) {
+    public function getMenuByName($menu_id) {
         $menu_id = (int) $menu_id;
         $oDB = $this->websiteObject->getDatabase();
         $sql = "SELECT `menu_name` FROM `menus` WHERE `menu_id` = $menu_id";
@@ -230,7 +230,7 @@ class Menus {
      * @param string $name The name of the menu.
      * @return boolean Whether the menu was successfully added.
      */
-    public function add_menu($name) {
+    public function addMenu($name) {
         $oDB = $this->websiteObject->getDatabase();
         $name = $oDB->escapeData($name);
         $sql = 'INSERT INTO `menus` (`menu_name`) VALUES ("' . $name . '")';
@@ -247,7 +247,7 @@ class Menus {
      * @param string $new_name The new name.
      * @return boolean Whether the rename was successful.
      */
-    public function rename_menu($menu_id, $new_name) {
+    public function renameMenu($menu_id, $new_name) {
         $oDB = $this->websiteObject->getDatabase();
         $menu_id = (int) $menu_id;
         $new_name = $oDB->escapeData($new_name);
@@ -264,7 +264,7 @@ class Menus {
      * @param int $menu_id The id of the menu.
      * @return boolean Whether the deletion was successful.
      */
-    public function delete_menu($menu_id) {
+    public function deleteMenu($menu_id) {
         $oDB = $this->websiteObject->getDatabase();
         $menu_id = (int) $menu_id;
 

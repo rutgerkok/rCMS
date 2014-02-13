@@ -11,7 +11,7 @@ unset($oAuth);
 if ($loggedIn) {
     $menu_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
     $oMenu = new Menus($this);
-    $menu_name = $oMenu->get_menu_name($menu_id);
+    $menu_name = $oMenu->getMenuByName($menu_id);
     if ($menu_name !== null) {
         $show_form = true;
         if (isSet($_REQUEST["menu_name"])) {
@@ -26,7 +26,7 @@ if ($loggedIn) {
                 $valid = false;
             }
             if ($valid) {
-                if ($oMenu->rename_menu($menu_id, $menu_name)) {
+                if ($oMenu->renameMenu($menu_id, $menu_name)) {
                     // Great success!
                     $show_form = false;
                     $textToDisplay.="<p>" . $this->t("links.menu") . " " . $this->t("editor.is_changed") . "</p>";

@@ -10,17 +10,18 @@ if (!defined("WEBSITE")) {
  */
 class ArticleSearchView extends ArticleListView {
 
-    const ARTICLES_PER_PAGE = 5;
-
     protected $keyword;
     protected $totalNumberOfArticles;
     protected $pageNumber;
+    protected $highestPageNumber;
 
-    public function __construct(Website $oWebsite, $keyword, $displayedArticles, $pageNumber, $totalNumberOfArticles) {
+    public function __construct(Website $oWebsite, $keyword, $displayedArticles,
+            $pageNumber, $totalNumberOfArticles, $highestPageNumber) {
         parent::__construct($oWebsite, $displayedArticles, 0, true, false);
         $this->keyword = $keyword;
-        $this->totalNumberOfArticles = $totalNumberOfArticles;
-        $this->pageNumber = $pageNumber;
+        $this->totalNumberOfArticles = (int) $totalNumberOfArticles;
+        $this->pageNumber = (int) $pageNumber;
+        $this->highestPageNumber = (int) $highestPageNumber;
     }
 
     public function getText() {
@@ -49,28 +50,35 @@ class ArticleSearchView extends ArticleListView {
 
     protected function getMenuBar() {
         $oWebsite = $this->oWebsite;
-        $keywordHTML = htmlSpecialChars($this->keyword);
+        $keywordHtml = htmlSpecialChars($this->keyword);
         $page = $this->pageNumber;
-        $resultCount = $this->totalNumberOfArticles;
-        $returnValue = '';
+ 
+        $returnValue = '<p class="lijn">';
 
-        $returnValue.= '<p class="lijn">';
-        if ($page > 1) {
-            $returnValue.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("search", 0, array("searchbox" => $keywordHTML, "page" => $page - 1)) . '">' . $oWebsite->t('articles.page.previous') . '</a> ';
+        // Link to previous page
+        if ($page > 0) {
+            $returnValue.= ' <a class="arrow" href="';
+            $returnValue.= $oWebsite->getUrlPage("search", 0, array("searchbox" => $keywordHtml, "page" => $page - 1));
+            $returnValue.= '">' . $oWebsite->t('articles.page.previous') . '</a> ';
         }
-        $returnValue.= str_replace("\$", ceil($resultCount / self::ARTICLES_PER_PAGE), $oWebsite->tReplaced('articles.page.current', $page)); //pagina X van Y
-        if ($resultCount > self::getStartNumber($page) + self::ARTICLES_PER_PAGE) {
-            $returnValue.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("search", 0, array("searchbox" => $keywordHTML, "page" => $page + 1)) . '">' . $oWebsite->t('articles.page.next') . '</a>';
+
+        // Current page (converting from zero-indexed to one-indexed)
+        $returnValue.= str_replace("\$", $this->highestPageNumber + 1, $oWebsite->tReplaced('articles.page.current', $page + 1));
+
+        // Next page
+        if ($page < $this->highestPageNumber) {
+            $returnValue.= ' <a class="arrow" href="';
+            $returnValue.= $oWebsite->getUrlPage("search", 0, array("searchbox" => $keywordHtml, "page" => $page + 1));
+            $returnValue.= '">' . $oWebsite->t('articles.page.next') . '</a>';
         }
+
         $returnValue.= '</p>';
 
         return $returnValue;
     }
 
     public static function getStartNumber($page) {
-        return ($page - 1) * self::ARTICLES_PER_PAGE;
+        return $page * self::ARTICLES_PER_PAGE;
     }
 
 }
-
-?>

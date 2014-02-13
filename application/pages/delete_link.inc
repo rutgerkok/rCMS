@@ -11,11 +11,11 @@ unset($oAuth);
 if ($loggedIn) {
     $oMenu = new Menus($this);
     $id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $link = $oMenu->get_link($id);
+    $link = $oMenu->getLink($id);
     if ($link != null) {
         if (isSet($_REQUEST["confirm"])) {
             // Deletion confirmed
-            if ($oMenu->delete_link($id)) {
+            if ($oMenu->deleteLink($id)) {
                 // Deleted
                 $textToDisplay.= "<p>" . $this->t("main.link") . " " . $this->t("editor.is_deleted") . "</p>\n";
             } else {
@@ -31,7 +31,7 @@ if ($loggedIn) {
             $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("links") . '">';
             $textToDisplay.= $this->t("main.no") . "</a></p>\n";
 
-            $links = $oMenu->get_links_menu($id);
+            $links = $oMenu->getLinksByMenu($id);
         }
     } else {
         // Menu doens't exist
