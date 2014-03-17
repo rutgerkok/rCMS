@@ -46,7 +46,6 @@ function http_response_code($code = NULL) {
             case 505: $text = 'HTTP Version not supported'; break;
             default:
                 throw new RuntimeException('Unknown http status code "' . htmlSpecialChars($code) . '"');
-            break;
         }
 
         $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');

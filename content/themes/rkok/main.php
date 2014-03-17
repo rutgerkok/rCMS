@@ -8,7 +8,19 @@ if (!defined("WEBSITE")) {
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, user-scalable=no">
+ 
+        <!-- Viewport that supports orientation changes -->
+        <script>
+            if (navigator.userAgent.indexOf("Trident") >= 0) {
+                document.write('<meta name="viewport" content="width=device-width, user-scalable=no">');
+            } else {
+                document.write('<meta name="viewport" content="initial-scale=1">');
+            }
+        </script>
+        <noscript>
+            <meta name="viewport" content="initial-scale=1">
+        </noscript>
+
         <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
         <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
         <!--[if lte IE 8]>
