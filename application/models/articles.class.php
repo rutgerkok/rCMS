@@ -98,7 +98,7 @@ class Articles {
      * @param int $category_id The category id of the articles.
      * @return \Article List of articles.
      */
-    public function getArticlesDataArchive($year = -1, $category_id = -1) {
+    public function getArticlesDataArchive($year = 0, $category_id = 0) {
         $year = (int) $year;
         $category_id = (int) $category_id;
 
