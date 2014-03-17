@@ -123,7 +123,7 @@ class AccountManagementPage extends Page {
                     $rank_name = $oWebsite->t("users.statusdeleted");
                 }
                 $username_link = '<a href="' . $oWebsite->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';
-                $login_link = '<a class="arrow" href="' . $oWebsite->getUrlPage("log_in_other", $user->getId()) . '">' . $oWebsite->t("main.log_in") . '</a>';
+                $login_link = '<a class="arrow" href="' . $oWebsite->getUrlPage("login_other", $user->getId()) . '">' . $oWebsite->t("main.log_in") . '</a>';
                 if ($user->getId() == $current_user_id || !$user->canLogIn()) {
                     // No need to log in as that account
                     $login_link = "";

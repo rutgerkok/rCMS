@@ -197,7 +197,7 @@ EOT;
 
             // Only display login link if account is not deleted/banned
             if ($this->user->canLogIn()) {
-                $edit_links[] = $this->get_edit_link($oWebsite, "log_in_other", "main.log_in");
+                $edit_links[] = $this->get_edit_link($oWebsite, "login_other", "main.log_in");
             }
         }
 
