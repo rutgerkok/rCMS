@@ -9,9 +9,10 @@ class Website {
     protected $debug = true;
     protected $errorsDisplayed = false;
     protected $databaseObject;
-    
+
     /** @var Config $config Settings of the site. */
     protected $config;
+
     /** @var Themes $themes_object */
     protected $themesObject;
     protected $currentPageId;
@@ -40,7 +41,7 @@ class Website {
 
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
-        
+
 
         // Workarounds for older PHP versions (5.2, 5.3 and 5.4)
         $this->requireFunctions("lcfirst", "http_response_code");
@@ -144,7 +145,7 @@ class Website {
     public function getAuth() {
         return $this->authenticationObject;
     }
-    
+
     /**
      * Gets all settings manager of the site.
      * SiteConfign Config The settings manager.

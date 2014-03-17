@@ -40,4 +40,5 @@ class WidgetInfoFile extends InfoFile {
     public function getWidgetWebsite() {
         return $this->getString("website");
     }
+
 }

@@ -49,7 +49,7 @@ abstract class Page {
     protected function getView(Website $oWebsite) {
         return null;
     }
-    
+
     /**
      * Gets all views on this page.
      * @param Website $oWebsite The website object.
@@ -76,11 +76,10 @@ abstract class Page {
     public function getPageContent(Website $oWebsite) {
         $returnValue = "";
         $views = $this->getViews($oWebsite);
-        foreach($views as $view) {
+        foreach ($views as $view) {
             $returnValue.= $view->getText();
         }
         return $returnValue;
     }
 
 }
-

@@ -33,7 +33,9 @@ class User {
      * @param int $rank The rank of the account.
      * @throws InvalidArgumentException If the id is 0, but one of the other arguments is omitted.
      */
-    public function __construct(Website $oWebsite, $id, $username, $display_name, $password_hashed, $email, $rank, $joined, $last_login, $status, $status_text, $extra_data = null) {
+    public function __construct(Website $oWebsite, $id, $username,
+            $display_name, $password_hashed, $email, $rank, $joined,
+            $last_login, $status, $status_text, $extra_data = null) {
         $this->websiteObject = $oWebsite;
         $this->id = (int) $id;
         $this->setUsername($username);
@@ -65,13 +67,13 @@ class User {
         }
         return true;
     }
-    
+
     // Vulnerable to SQL injection attacks, so it must be private. Safe, public
     // method are available below.
     private static function getByCondition(Website $oWebsite, $sqlCondition) {
         $oDB = $oWebsite->getDatabase();
 
-        
+
 
         $sql = 'SELECT `user_id`, `user_login`, `user_display_name`, `user_password`, ';
         $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
@@ -80,7 +82,7 @@ class User {
         $result = $oDB->query($sql);
 
         // Create user object and return
-        if($oDB->rows($result) > 0) {
+        if ($oDB->rows($result) > 0) {
             list($id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData) = $oDB->fetchNumeric($result);
             return new User($oWebsite, $id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData);
         } else {
@@ -99,7 +101,7 @@ class User {
         $sqlCondition = '`user_login` = "' . $escapedUsername . '"';
         return self::getByCondition($oWebsite, $sqlCondition);
     }
-    
+
     /**
      * Get the user by email. Returns null if the user isn't found.
      * @param Website $oWebsite The Website object.

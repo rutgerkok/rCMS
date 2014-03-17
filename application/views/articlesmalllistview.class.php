@@ -30,7 +30,8 @@ class ArticleSmallListView extends View {
      * @param boolean $images Whether images should be shown.
      * @param boolean $archive Whether a link to the archive should be shown.
      */
-    public function __construct(Website $oWebsite, $articles, $mainCategoryId = 0, $images = false, $archive = false) {
+    public function __construct(Website $oWebsite, $articles,
+            $mainCategoryId = 0, $images = false, $archive = false) {
         parent::__construct($oWebsite);
         $this->articles = $articles;
         $this->mainCategoryId = (int) $mainCategoryId;
@@ -42,7 +43,8 @@ class ArticleSmallListView extends View {
         return $this->getArticlesList($this->articles, $this->mainCategoryId, $this->images, $this->archive);
     }
 
-    public function getArticlesList($articles, $mainCategoryId, $images = false, $archive = false) {
+    public function getArticlesList($articles, $mainCategoryId, $images = false,
+            $archive = false) {
         $oWebsite = $this->oWebsite;
 
         // Build article list
@@ -70,7 +72,8 @@ class ArticleSmallListView extends View {
     }
 
     /** Returns a single article enclosed in li tags */
-    public function getArticleTextListEntry(Article $article, $displayImage = false) {
+    public function getArticleTextListEntry(Article $article,
+            $displayImage = false) {
         $returnValue = '<li><a href="' . $this->oWebsite->getUrlPage("article", $article->id) . '"';
         $returnValue.= 'title="' . $article->intro . '">';
         if ($displayImage && !empty($article->featuredImage)) {

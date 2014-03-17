@@ -9,7 +9,7 @@ if (!defined("WEBSITE")) {
  * Used on the logout page.
  */
 class LoggedOutView extends View {
-    
+
     public function getText() {
         $oWebsite = $this->oWebsite;
         return <<<EOT

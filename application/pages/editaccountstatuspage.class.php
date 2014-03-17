@@ -11,7 +11,7 @@ class EditAccountStatusPage extends EditPasswordPage {
     public function getMinimumRank(Website $oWebsite) {
         return Authentication::$MODERATOR_RANK;
     }
-    
+
     // Overrided to allow moderators to (un)block someone else
     public function can_user_edit_someone_else(Website $oWebsite) {
         return $oWebsite->isLoggedInAsStaff(false);
@@ -111,7 +111,8 @@ EOT;
         return $textToDisplay;
     }
 
-    protected function get_statuses_box_html(Authentication $oAuth, $statuss, $selected) {
+    protected function get_statuses_box_html(Authentication $oAuth, $statuss,
+            $selected) {
         $selection_box = '<select name="status" id="status">';
         foreach ($statuss as $id) {
             $label = $oAuth->getStatusName($id);

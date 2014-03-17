@@ -88,7 +88,8 @@ EOT;
         return $textToDisplay;
     }
 
-    protected function get_ranks_box_html(Authentication $oAuth, $ranks, $selected) {
+    protected function get_ranks_box_html(Authentication $oAuth, $ranks,
+            $selected) {
         $selection_box = '<select name="rank" id="rank">';
         foreach ($ranks as $id) {
             $label = $oAuth->getRankName($id);

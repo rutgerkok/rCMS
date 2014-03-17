@@ -4,6 +4,7 @@
  * Page with the latest comments on the site.
  */
 class CommentsPage extends Page {
+
     /** @var Comment[] The latest comments on the site. */
     private $comments;
 
@@ -23,5 +24,5 @@ class CommentsPage extends Page {
     public function getView(Website $oWebsite) {
         return new CommentsTreeView($oWebsite, $this->comments, true);
     }
-}
 
+}

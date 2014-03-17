@@ -22,7 +22,8 @@ class PlacedWidget {
      * @param string $directory The full directory of where this widget is
      *    installed in.
      */
-    public function __construct($id, $sidebarId, $directoryName, $dataString, $priority, $directory) {
+    public function __construct($id, $sidebarId, $directoryName, $dataString,
+            $priority, $directory) {
         $this->id = (int) $id;
         $this->sidebarId = (int) $sidebarId;
         $this->directoryName = $directoryName;

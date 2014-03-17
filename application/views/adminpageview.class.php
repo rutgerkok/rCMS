@@ -4,7 +4,7 @@
  * Renders the admin page.
  */
 class AdminPageView extends View {
-    
+
     public function getText() {
         $oWebsite = $this->oWebsite;
         return <<<EOT
@@ -43,4 +43,5 @@ class AdminPageView extends View {
             </p>   
 EOT;
     }
+
 }

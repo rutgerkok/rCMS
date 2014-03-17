@@ -23,7 +23,9 @@ class Comment {
     /** @var Comment[] Child comments */
     private $childComments;
 
-    public function __construct($commentId, $articleId, $userId, $userName, $userDisplayName, $userEmail, $userRank, $created, $lastEdited, $body, $status) {
+    public function __construct($commentId, $articleId, $userId, $userName,
+            $userDisplayName, $userEmail, $userRank, $created, $lastEdited,
+            $body, $status) {
         $this->id = (int) $commentId;
         $this->articleId = (int) $articleId;
         $this->userId = (int) $userId;
@@ -234,4 +236,3 @@ SQL;
     }
 
 }
-

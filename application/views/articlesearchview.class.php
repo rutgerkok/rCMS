@@ -52,7 +52,7 @@ class ArticleSearchView extends ArticleListView {
         $oWebsite = $this->oWebsite;
         $keywordHtml = htmlSpecialChars($this->keyword);
         $page = $this->pageNumber;
- 
+
         $returnValue = '<p class="lijn">';
 
         // Link to previous page

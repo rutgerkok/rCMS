@@ -9,7 +9,7 @@ if (!defined("WEBSITE")) {
  * Used on the logout page.
  */
 class ArticleDeleteView extends View {
-    
+
     const STATE_CONFIRMATION = 0;
     const STATE_DELETED = 1;
     const STATE_HIDDEN = 2;
@@ -17,15 +17,15 @@ class ArticleDeleteView extends View {
 
     /** @var Article $article The article being deleted. */
     protected $article;
-    
     protected $state;
 
-    public function __construct(Website $oWebsite, Article $articleToDelete, $state) {
+    public function __construct(Website $oWebsite, Article $articleToDelete,
+            $state) {
         parent::__construct($oWebsite);
         $this->article = $articleToDelete;
         $this->state = (int) $state;
     }
-    
+
     public function getText() {
         switch ($this->state) {
             case self::STATE_CONFIRMATION:
@@ -39,7 +39,7 @@ class ArticleDeleteView extends View {
         }
         throw new BadMethodCallException("Unknown display state " . $this->state);
     }
-    
+
     protected function getErrorText() {
         $oWebsite = $this->oWebsite;
         $errorMessage = "<p><em>";
@@ -48,13 +48,13 @@ class ArticleDeleteView extends View {
         $errorMessage.= $this->getConfirmationText();
         return $errorMessage;
     }
-    
+
     protected function getDeletedText() {
         $oWebsite = $this->oWebsite;
         $returnValue = "<p>";
         $returnValue.= $oWebsite->t("editor.article.delete.done");
         $returnValue.= "</p>\n";
-        
+
         $returnValue.= "<p>";
         $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlMain() . '">' . $oWebsite->t("main.home") . '</a> ';
         if ($oWebsite->isLoggedInAsStaff(true)) {
@@ -63,14 +63,14 @@ class ArticleDeleteView extends View {
         $returnValue.= "</p>";
         return $returnValue;
     }
-    
+
     protected function getMadeHiddenText() {
         $oWebsite = $this->oWebsite;
         $article = $this->article;
         $returnValue = "<p>";
         $returnValue.= $oWebsite->t("editor.article.hidden.done");
         $returnValue.= "</p>\n";
-        
+
         $returnValue.= "<p>";
         $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t("articles.view") . '</a> ';
         if ($oWebsite->isLoggedInAsStaff(true)) {

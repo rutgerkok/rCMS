@@ -80,7 +80,7 @@ class ArticleArchiveView extends View {
      */
     protected function getYearsMenu() {
         $oWebsite = $this->oWebsite;
-        
+
         // Any year
         if ($this->selectedYear == 0) {
             $textToDisplay = '<br /><strong>' . $oWebsite->t("articles.archive.any_year") . "</strong>&nbsp;&nbsp;\n";

@@ -98,7 +98,7 @@ class Themes {
         }
         return $this->websiteObject->getUrlThemes() . $theme->getName() . "/";
     }
-    
+
     // Below this line are the methods for the individual themes to use to
     // display all the dynamic content on the page.
 

@@ -21,7 +21,7 @@ class CommentsSmallView extends View {
         foreach ($this->comments as $comment) {
             $returnValue.= $this->getSingleComment($comment);
         }
-        
+
         if (count($this->comments) == 0) {
             $returnValue.= "<p><em>" . $this->oWebsite->t("errors.nothing_found") . "</em></p>\n";
         }
@@ -58,7 +58,7 @@ class CommentsSmallView extends View {
                 </a>
             </p>
 EOT;
-        
+
         // Add a link for some context
         $returnValue.= <<<EOT
             <footer>

@@ -34,7 +34,8 @@ class Comments {
      * @param type $article_id Id of the article to comment on.
      * @return type
      */
-    function makeComment($validate, $comment_id, $author_name, $author_email, $comment_body, $account_id, $article_id) {
+    function makeComment($validate, $comment_id, $author_name, $author_email,
+            $comment_body, $account_id, $article_id) {
         if ($validate) {
             $oWebsite = $this->websiteObject;
             $loggedIn = $oWebsite->isLoggedIn();
@@ -222,7 +223,7 @@ EOT;
      * @deprecated Use the new comment view
      */
     function getCommentHTML(Comment $comment, $show_actions) {
-        return CommentsTreeView::getSingleComment($this->websiteObject, $comment, $show_actions, false); 
+        return CommentsTreeView::getSingleComment($this->websiteObject, $comment, $show_actions, false);
     }
 
     /**
@@ -262,7 +263,8 @@ EOT;
     }
 
     // Unsafe method - doesn't sanitize input
-    private function getCommentsQuery($where_clausule, $limit, $new_comments_first) {
+    private function getCommentsQuery($where_clausule, $limit,
+            $new_comments_first) {
         $oDB = $this->databaseObject;
 
         $sql = <<<SQL

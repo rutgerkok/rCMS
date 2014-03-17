@@ -22,7 +22,8 @@ class ArticleView extends View {
      * @param Article $article The article, or null if not found.
      * @param Comments $oComments The comments model, or null to disable comments.
      */
-    public function __construct(Website $oWebsite, $article, Comments $oComments = null) {
+    public function __construct(Website $oWebsite, $article,
+            Comments $oComments = null) {
         parent::__construct($oWebsite);
         $this->article = $article;
         $this->oComments = $oComments;
@@ -48,7 +49,8 @@ class ArticleView extends View {
         }
     }
 
-    public function getArticleTextFull(Article $article, Comments $oComments = null) {
+    public function getArticleTextFull(Article $article,
+            Comments $oComments = null) {
         // Store some variables for later use
         $oWebsite = $this->oWebsite;
         $id = (int) $article->id;

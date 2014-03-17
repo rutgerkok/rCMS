@@ -24,7 +24,8 @@ class ArticleListView extends View {
      * @param boolean $metainfo Whether author, date and category are shown.
      * @param boolean $archive Whether a link to the archive is shown.
      */
-    public function __construct(Website $oWebsite, $articles, $mainCategoryId, $metainfo, $archive) {
+    public function __construct(Website $oWebsite, $articles, $mainCategoryId,
+            $metainfo, $archive) {
         parent::__construct($oWebsite);
         $this->articles = $articles;
         $this->mainCategoryId = (int) $mainCategoryId;
@@ -65,7 +66,8 @@ class ArticleListView extends View {
         return $output;
     }
 
-    public function getArticleTextSmall(Article $article, $show_metainfo, $show_edit_delete_links) {
+    public function getArticleTextSmall(Article $article, $show_metainfo,
+            $show_edit_delete_links) {
         $oWebsite = $this->oWebsite;
         $returnValue = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $oWebsite->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";

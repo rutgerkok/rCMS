@@ -108,7 +108,8 @@ class Menus {
      *  displayed. If true, those are displayed even if the user can't use them.
      * @return string
      */
-    public function getAsHtml($menu_array, $open_in_new_window = false, $edit_links = false) {
+    public function getAsHtml($menu_array, $open_in_new_window = false,
+            $edit_links = false) {
         $returnValue = "";
         $oWebsite = $this->websiteObject;
         foreach ($menu_array as $id => $value) {

@@ -23,7 +23,8 @@ class CommentsTreeView extends View {
      * @param boolean $viewedOutOfContext Whether there should be a link to the article.
      * @param User|null $viewer The user viewing the comments.
      */
-    public function __construct(Website $oWebsite, $comments, $viewedOutOfContext) {
+    public function __construct(Website $oWebsite, $comments,
+            $viewedOutOfContext) {
         parent::__construct($oWebsite);
         $viewer = $oWebsite->getAuth()->getCurrentUser();
         $this->comments = $comments;
@@ -36,7 +37,8 @@ class CommentsTreeView extends View {
         return $this->getCommentTree($this->comments, $this->viewedByStaff, $this->viewedOutOfContext);
     }
 
-    public static function getSingleComment(Website $oWebsite, Comment $comment, $editDeleteLinks, $viewedOutOfContext) {
+    public static function getSingleComment(Website $oWebsite, Comment $comment,
+            $editDeleteLinks, $viewedOutOfContext) {
         $id = $comment->getId();
         $author = htmlSpecialChars($comment->getUserDisplayName());
         $postDate = strFTime('%a %d %b %Y %X', $comment->getDateCreated());

@@ -10,7 +10,7 @@ if (!defined("WEBSITE")) {
  * Website->addError(..).
  */
 class EmptyView extends View {
-    
+
     public function getText() {
         return "";
     }

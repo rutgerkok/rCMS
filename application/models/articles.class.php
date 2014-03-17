@@ -10,7 +10,8 @@ class Articles {
      * @param Website $websiteObject The website to use.
      * @param Database $databaseObject Not needed, for backwards compability.
      */
-    public function __construct(Website $websiteObject, Database $databaseObject = null) {
+    public function __construct(Website $websiteObject,
+            Database $databaseObject = null) {
         $this->websiteObject = $websiteObject;
         $this->databaseObject = $databaseObject;
         if ($this->databaseObject == null) {
@@ -44,7 +45,8 @@ class Articles {
      * @param boolean $pinnedTop Set this to false to ignore pinned articles.
      * @return \Article Array of Articles.
      */
-    protected function getArticlesDataUnsafe($whereClausules = "", $limit = 9, $start = 0, $oldestTop = false, $pinnedTop = true) {
+    protected function getArticlesDataUnsafe($whereClausules = "", $limit = 9,
+            $start = 0, $oldestTop = false, $pinnedTop = true) {
         $oDB = $this->databaseObject; //afkorting
         $oWebsite = $this->websiteObject; //afkorting
         $start = (int) $start;
@@ -134,7 +136,8 @@ class Articles {
      * @param int $limit Maximum number of articles to return.
      * @return \Article List of articles.
      */
-    public function getArticlesData($category_ids = 0, $limit = 9, $oldestTop = false) {
+    public function getArticlesData($category_ids = 0, $limit = 9,
+            $oldestTop = false) {
         $limit = (int) $limit;
 
         if (!is_array($category_ids)) {
@@ -206,7 +209,8 @@ class Articles {
      * @param int $start The offset of the articles.
      * @return Article[] List of articles.
      */
-    public function getArticlesDataMatch($keywordUnprotected, $articlesPerPage, $start) {
+    public function getArticlesDataMatch($keywordUnprotected, $articlesPerPage,
+            $start) {
         $oDB = $this->databaseObject;
         $keyword = $oDB->escapeData($keywordUnprotected);
         $articlesPerPage = (int) $articlesPerPage;
