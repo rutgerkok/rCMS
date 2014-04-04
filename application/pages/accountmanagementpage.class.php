@@ -120,7 +120,7 @@ class AccountManagementPage extends Page {
                     $rank_name = $oWebsite->t("users.status.banned");
                 }
                 if ($user->getStatus() == Authentication::DELETED_STATUS) {
-                    $rank_name = $oWebsite->t("users.statusdeleted");
+                    $rank_name = $oWebsite->t("users.status.deleted");
                 }
                 $username_link = '<a href="' . $oWebsite->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';
                 $login_link = '<a class="arrow" href="' . $oWebsite->getUrlPage("login_other", $user->getId()) . '">' . $oWebsite->t("main.log_in") . '</a>';
