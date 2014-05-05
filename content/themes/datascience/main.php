@@ -55,11 +55,11 @@ if ($this->getPageType() == "HOME") {
                 </div><!-- id="content"/"contentwide" -->
 
 <?php if ($this->getPageType() == "HOME") { ?>
-                    <div id="sidebar">
+                    <div id="homepage_sidebar_1">
                     <?php $this->echoWidgets(2); ?>
                         &nbsp;
                     </div>
-                    <div id="nav">
+                    <div id="homepage_sidebar_2">
     <?php $this->echoWidgets(3); ?>
                         &nbsp;
                     </div>

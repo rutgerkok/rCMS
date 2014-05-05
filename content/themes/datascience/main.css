@@ -1,23 +1,17 @@
-/* HTML5 FIXES FOR IE8 */
-header, article, footer {
-    display: block;
-}
 
-/* DITJES EN DATJES 
-        /*lettertype en lettergrote */
-body, html
-{
+/*
+ * Fonts, colors and margins of common elements
+ */
+body, html {
     font-size: 90%;
 }
-p, h1, h2, h3, h4
-{
+p, h1, h2, h3, h4 {
     font-family: verdana, sans-serif;
     color: #4a7180;
     margin: 1px 3px 10px 3px;
-    padding:1px;
+    padding: 1px;
 }
-h2
-{
+h2 {
     color: #4a7184;
     text-transform: uppercase;
     font-family: Georgia, "Times New Roman", Times, serif;
@@ -26,179 +20,372 @@ h2
     padding: 0 0 5px 0;
     border-bottom: 1px dotted #ccd5d3;
 }
-h3
-{
+h3 {
     color: #9d8a0a;
     font-size: 100%;
     margin: 12px 3px 1px 3px;
 }
-li
-{
+li {
     font-family: verdana, sans-serif;
     color: #4a7180;
 }
 
-/*tabellen*/
-table
-{
-    background:#ddd;
-    border-collapse:collapse;
+/* HTML5 fixes for IE8 */
+header, article, footer {
+    display: block;
 }
-th,td
-{
+
+/*
+ * Main page structure
+ */
+
+/* Body en container */
+body {
+    background: #dfe3ee;
+}
+div#container {
+    margin: 22px auto;
+    padding: 0;
+    width: 751px;
+    background: white url(images/right.png) top right repeat-y;
+}
+div#containerwrapper {
+    /* nodig voor extra achtergrond */
+    background: transparent url(images/blocks.png) bottom right no-repeat;
+}
+
+/* Header */
+div#header {
+    background: #0c2577 url(images/logo.gif) 15px center no-repeat;
+    min-height: 85px;
+}
+div#header h1 {
+    float: right;
+    color: white;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 140%;
+    margin: 40px 10px 0 0;
+    font-weight: normal;
+    max-width: 327px;
+    text-align: right;
+    height: 1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
+}
+div#header div#search {
+    float: right;
+    margin-right: 20px;
+    margin-top: 40px;
+}
+div#header div#search #searchbox {
+    height: 1.4em;
+    width: 11em;
+    margin: 0;
+    padding: 0em;
+}
+
+/* content 	*/
+div#content {
+    background: white;
+    width: 36%;
+    clear: left;
+    float: left;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+    padding: 0 2% 0 2%;
+}
+div#contentwide {
+    background: white url(images/blocks.gif) bottom right no-repeat;
+    width: 93%;
+    padding: 0 5% 0 2%;
+    clear: left;
+    float: left;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+}
+div#contentadmin {
+    background: #e9e9e9 url(images/blocks.gif) bottom right no-repeat;
+    width: 98%;
+    padding: 0 1% 0 1%;
+    clear: left;
+    float: left;
+    min-height: 600px;
+    position: relative;
+}
+
+
+/* Sidebars for homepage */
+div#homepage_sidebar_1 {
+    width: 30%;
+    float: left;
+    background: #f8f9fb;
+    height: 100%;
+}
+div#homepage_sidebar_2 {
+    width: 30%;
+    float: left;
+    background: #f8eea9;
+}
+div#homepage_sidebar_2 ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+div#homepage_sidebar_2 ul li {
+    border-bottom: 1px dotted #999999;
+    padding: 5px;
+    font-family: verdana, sans-serif;
+}
+
+/* Sidebars for two-column pages (like the article page) */
+div#sidebar_page_sidebar {
+    float: left;
+    width: 27%;
+    padding-right: 2px;
+}
+div#sidebar_page_sidebar img {
+    max-width: 100%;
+    margin: 1px;
+}
+div#sidebar_page_content {
+    /*gebruikt bij de artikelpagina*/
+    float: left;
+    border-left: 1px #bbbbbb dotted;
+    padding-left: 1%;
+    width: 69%;
+    margin-left: 0;
+    margin-right: 0;
+}
+div#sidebar_page_content img {
+    /*gebruikt bij de artikelenpagina*/
+    clear: both;
+    margin-bottom: 10px;
+}
+
+/* Horizontal navigation bar */
+div#hornav {
+    background: #8592bb;
+    height: 1.5em;
+    padding-left: 10px;
+}
+div#hornav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+}
+div#hornav ul li {
+    float: left;
+    background: #8592bb;
+    border-style: none dotted none none;
+    border-width: 0 1px 0 0;
+    border-color: #0c2577;
+    height: 100%;
+    color: white;
+}
+div#hornav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 2px 5px 2px 5px;
+    font-family: verdana, sans-serif;
+    font-size: 85%;
+    display: block;
+
+    height: 100%;
+}
+div#hornav ul li a:hover {
+    background: #dfe3ee;
+    color: #0c2577;
+}
+
+/* Footer */
+div#footer {
+    clear: both;
+    background: #0c2577 url(images/blue.png) bottom right repeat-y;
+    color: white;
+    padding: 2px 0 0 0;
+    min-height: 24px;
+    text-align: right;
+    font-size: 125%;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    padding-right: 35px;
+}
+
+/*
+ * Smaller elements on the page
+ */
+
+/* Breadcrumbs */
+div#breadcrumbs {
+    background: #dfe3ee;
+    padding-bottom: 2px;
+    overflow: hidden;
+    position: relative; /* for div#breadcrumbs #accountlinks */
+}
+div#breadcrumbs a {
+    color: #336699;
+    font-family: verdana, sans-serif;
+    font-size: 80%;
+    padding: 0 0 0 5px;
+    background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
+}
+div#breadcrumbs a.first {
+    padding: 0;
+    background: none;
+}
+div#breadcrumbs #accountlinks {
+    text-align: right;
+    position: absolute;
+    right: 0px;
+    top: -10px;
+}
+div#breadcrumbs #accountlinks li {
+    padding: 0 4px;
+    margin: 0;
+    list-style-type: none;
+    float: right;
+    border-right: 1px solid #90b7c6;
+}
+div#breadcrumbs #accountlinks li a {
+    background: none; /* disable those arrows */
+    padding: 0;
+    margin: 0;
+}
+
+/* Tables */
+table {
+    background: #ddd;
+    border-collapse: collapse;
+}
+th, td {
     border: 2px solid white;
     font-family: verdana, sans-serif;
     color: #4a7180;
-    text-align:left;
+    text-align: left;
 }
-table.layout
-{
-    background:transparent;
-    width:98%;
+table.layout {
+    background: transparent;
+    width: 98%;
 }
-table.layout th,table.layout td
-{
+table.layout th, table.layout td {
     background: transparent;
     border: none;
 }
-div#contentadmin th,div#contentadmin td
-{
+div#contentadmin th, div#contentadmin td {
     border-color: #e9e9e9;
 }
 
-/*formulieren*/
-input, textarea
-{
+/* Forms */
+input, textarea {
     font-family: verdana, sans-serif;
     color: #4a7180;
-    background:#fafafa;
-    border:1px solid #8592bb;
+    background: #fafafa;
+    border: 1px solid #8592bb;
     border-radius: 4px;
     box-shadow: inset 2px 2px 2px #ddd;
-    padding:3px;
-    margin:2px;
+    padding: 3px;
+    margin: 2px;
 }
-input:focus,textarea:focus,select:focus
-{
-    background:#efefef;
+input:focus, textarea:focus, select:focus {
+    background: #efefef;
 }
-fieldset
-{
+fieldset {
     border: none;
     border-bottom: 2px solid #8592bb;
     margin-top: 5px;
     margin-bottom: 5px;
     padding: 0;
 }
-fieldset:last-of-type
-{
+fieldset:last-of-type {
     border-bottom: none;
 }
-legend
-{
-    font-family:verdana,sans-serif;
-    font-weight:bold;
+legend {
+    font-family: verdana, sans-serif;
+    font-weight: bold;
 }
-.button,button/*ook geschikt voor links*/
-{
-    background:#ddd; 
-    border:0;
-    color:#444444;
+.button, button/*ook geschikt voor links*/ {
+    background: #ddd; 
+    border: 0;
+    color: #444444;
     border-radius: 4px;
     box-shadow: none;
-    text-decoration:none;
-    color:black;
-    padding:3px;
-    border:0;
-    cursor:pointer;
-    font-size:100%;
+    text-decoration: none;
+    color: black;
+    padding: 3px;
+    border: 0;
+    cursor: pointer;
+    font-size: 100%;
 }
-.button:hover, button:hover
-{
-    background:#f2f2f2; 
-    border:0;
+.button:hover, button:hover {
+    background: #f2f2f2; 
+    border: 0;
 }
-.button:focus,button:focus
-{
-    background:#eee; /*geen andere achtergrond */
+.button:focus, button:focus {
+    background: #eee; /*geen andere achtergrond */
 }
-.primary_button
-{
+.primary_button {
     background: #990000;
     color: white;
 }
-.primary_button:hover
-{
+.primary_button:hover {
     background: #bb0000;
     color: white;
 }
-.checkbox
-{
-    background:transparent;
-    border:0;
-    box-shadow:none;
+.checkbox {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
 }
-.full_width
-{
+.full_width {
     width: 98%;
 }
 
 
-/*links*/
-a
-{
-    color:#990000;
+/* Links */
+a {
+    color: #990000;
     text-decoration: none;
 }
-a.arrow
-{
-    padding-left:5px;
+a.arrow {
+    padding-left: 5px;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-transform: uppercase;
-    font-size:85%;
+    font-size: 85%;
 }
-a.arrow-disabled
-{
-    padding-left:5px;
+a.arrow-disabled {
+    padding-left: 5px;
     /*background: transparent url(images/arrow.gif) center left no-repeat;*/
     text-transform: uppercase;
-    color:gray;
-    font-size:85%;
+    color: gray;
+    font-size: 85%;
 }
-a:link
-{
+a:link {
     text-decoration: none;
 }
-a:hover
-{
+a:hover {
     text-decoration: none;
     border-bottom: 1px solid;
 }
-a:active
-{
+a:active {
     text-decoration: underline;
     border-bottom: 1px solid #990000;
 }
-a.disguised_link
-{
+a.disguised_link {
     color: inherit;
     border-bottom: none;
 }
 
-/* afbeeldingen */
-img
-{
-    margin:3px;
-    max-width:100%;
+/* Images */
+img {
+    margin: 3px;
+    max-width: 100%;
 }
-a img
-{
-    border:0;
+a img {
+    border: 0;
 }
 
 /* Errors */
-div.error
-{
+div.error {
     font-family: verdana, sans-serif;
     color: #990000;
     margin: 3px;
@@ -207,39 +394,33 @@ div.error
     background: #fafbfd;
 }
 
-/* Article teasers */
-div.article_teaser img
-{
+/* Article lists */
+div.article_teaser img {
     max-width: 140px;
     float: left;	
 }
-div.article_teaser p.article_teaser_links
-{
+div.article_teaser p.article_teaser_links {
     clear: both;
 }
 
-/* Linklijsten */
-ul.linklist
-{
-    margin:0;
-    padding:0;
-    list-style-type:none;
+/* Link lists */
+ul.linklist {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
 }
-ul.linklist li
-{
+ul.linklist li {
     border-bottom: 1px dotted #999999;
-    padding:5px;
+    padding: 5px;
     font-family: verdana, sans-serif;
 }
-ul.linklist li img
-{
+ul.linklist li img {
     max-width: 32px;
     max-height: 24px;
     padding: 0;
     margin: 0;
 }
-ul.linklist li div.linklist_icon_image
-{
+ul.linklist li div.linklist_icon_image {
     display: block;
     float: left;
     min-width: 32px;
@@ -291,51 +472,20 @@ article.comment .comment_date {
     font-size: 90%;
 }
 
-/* Page sidebars */
-div#sidebar_page_sidebar
-{
-    float:left;
-    width:27%;
-    padding-right:2px;
-}
-div#sidebar_page_sidebar img
-{
-    max-width: 100%;
-    margin:1px;
-}
-div#sidebar_page_content
-{	/*gebruikt bij de artikelpagina*/
-    float:left;
-    border-left: 1px #bbbbbb dotted;
-    padding-left: 1%;
-    width:69%;
-    margin-left:0;
-    margin-right:0;
-}
-div#sidebar_page_content img
-{	/*gebruikt bij de artikelenpagina*/
-    clear:both;
-    margin-bottom:10px;
-}
-
 /* Calendar */
-div.calender_month_wrapper
-{
+div.calender_month_wrapper {
     height: 14em;
     margin: 1%;
 }
-td.calendar_other_month
-{
+td.calendar_other_month {
     color: #aaa;
 }
-td.calendar_active_date
-{
+td.calendar_active_date {
     color: #990000;
     font-weight: bold;
 }
 /* On higher resulotions, multiple calendars can be placed next to each other */
-@media all and (min-width : 38em)
-{
+@media all and (min-width : 38em) {
     div.calender_month_wrapper
     {
         float: left;
@@ -345,37 +495,31 @@ td.calendar_active_date
 
 
 /* Other classes */
-p.meta
-{
+p.meta {
     color: #bbb;
     font-style: italic;
 }
-p.intro
-{
+p.intro {
     color: #666666;
 }
-p.lijn
-{
+p.lijn {
     border-top: 1px #999999 dotted;
     border-bottom: 1px #999999 dotted;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-span.required
-{
+span.required {
     color: #990000;
-    font-size:110%;
+    font-size: 110%;
 }
-h3.notable
-{
-    color:#9d8a0a;
+h3.notable {
+    color: #9d8a0a;
     font-size: 110%;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 /* Tooltips */
-#tooltip
-{
+#tooltip {
     border: solid 1px #0c2577;
     padding: 3px;
     position: absolute; 
@@ -383,243 +527,26 @@ h3.notable
     background: #8592bb;	
     font-family: verdana, sans-serif;
 }
-#tooltip a, #tooltip h3, #tooltip p
-{
+#tooltip a, #tooltip h3, #tooltip p {
     color: white;
 }
-#tooltip ul
-{
+#tooltip ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-#tooltip li
-{
+#tooltip li {
     margin: 5px;
 }
-.tooltip_contents
-{
+.tooltip_contents {
     /* Used to store tooltip contents on a page */
     display: none;
 }
 
-
-/* BOXMODEL 
-        /* inlogscherm */
-#login
-{
-    background:white;
+/* Login screen */
+#login {
+    background: white;
     width: 50%;
     margin: 100px auto auto auto;
     border: 1px solid #0c2577;
-}
-/* body en container */
-body
-{
-    background:#dfe3ee;
-    height:100%;
-}
-div#container
-{
-    margin: 22px auto;
-    padding:0;
-    width:751px;
-    background:white url(images/right.png) top right repeat-y;
-}
-div#containerwrapper
-{ /* nodig voor extra achtergrond */
-    background: transparent url(images/blocks.png) bottom right no-repeat;
-}
-
-/* header, breadcrumbs en zoekvak */
-div#breadcrumbs
-{
-    background:#dfe3ee;
-    padding-bottom:2px;
-    overflow:hidden;
-    position: relative; /* for div#breadcrumbs #accountlinks */
-}
-div#breadcrumbs a
-{
-    color:#336699;
-    font-family: verdana, sans-serif;
-    font-size:80%;
-    padding: 0 0 0 5px;
-    background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
-}
-div#breadcrumbs a.first
-{
-    padding: 0;
-    background: none;
-}
-div#breadcrumbs #accountlinks
-{
-    text-align: right;
-    position: absolute;
-    right: 0px;
-    top: -10px;
-}
-div#breadcrumbs #accountlinks li
-{
-    padding: 0 4px;
-    margin: 0;
-    list-style-type: none;
-    float: right;
-    border-right: 1px solid #90b7c6;
-}
-div#breadcrumbs #accountlinks li a
-{
-    background: none; /* disable those arrows */
-    padding: 0;
-    margin: 0;
-}
-div#header
-{
-    background:#0c2577 url(images/logo.gif) 15px center no-repeat;
-    min-height:85px;
-}
-div#header h1
-{
-    float:right;
-    color:white;
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size:140%;
-    margin:40px 10px 0 0;
-    font-weight:normal;
-    max-width:327px;
-    text-align:right;
-    height:1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
-}
-div#header div#search
-{
-    float:right;
-    margin-right:20px;
-    margin-top:40px;
-}
-div#header div#search #searchbox
-{
-    height:1.4em;
-    width:11em;
-    margin:0;
-    padding:0em;
-}
-
-/* content 	*/
-div#content
-{
-    background: white;
-    width: 36%;
-    clear:left;
-    float:left;
-    min-height:600px;
-    position:relative;
-    overflow:hidden;
-    padding: 0 2% 0 2%;
-}
-div#contentwide
-{
-    background: white url(images/blocks.gif) bottom right no-repeat;
-    width: 93%;
-    padding: 0 5% 0 2%;
-    clear:left;
-    float:left;
-    min-height:600px;
-    position:relative;
-    overflow:hidden;
-}
-div#contentadmin
-{
-    background: #e9e9e9 url(images/blocks.gif) bottom right no-repeat;
-    width: 98%;
-    padding: 0 1% 0 1%;
-    clear:left;
-    float:left;
-    min-height:600px;
-    position:relative;
-}
-
-
-/* sidebar */
-div#sidebar
-{
-    width:30%;
-    float:left;
-    background:#f8f9fb;
-    height:100%;
-}
-
-/* navigatie 
-        /* verticale balk rechts */
-div#nav
-{
-    width:30%;
-    float:left;
-    background:#f8eea9;
-}
-div#nav ul
-{
-    margin:0;
-    padding:0;
-    list-style-type:none;
-}
-div#nav ul li
-{
-    border-bottom: 1px dotted #999999;
-    padding:5px;
-    font-family: verdana, sans-serif;
-}
-
-/* horizontale balk */
-div#hornav
-{
-    background: #8592bb;
-    height:1.5em;
-    padding-left:10px;
-}
-div#hornav ul
-{
-    margin:0;
-    padding:0;
-    list-style-type: none;
-    height:100%;
-}
-div#hornav ul li
-{
-    float:left;
-    background: #8592bb;
-    border-style: none dotted none none;
-    border-width: 0 1px 0 0;
-    border-color: #0c2577;
-    height:100%;
-    color:white;
-}
-div#hornav ul li a
-{
-    color: white;
-    text-decoration:none;
-    padding: 2px 5px 2px 5px;
-    font-family: verdana, sans-serif;
-    font-size: 85%;
-    display:block;
-
-    height:100%;
-}
-div#hornav ul li a:hover
-{
-    background:#dfe3ee;
-    color: #0c2577;
-}
-
-/* footer */
-div#footer
-{
-    clear:both;
-    background: #0c2577 url(images/blue.png) bottom right repeat-y;
-    color: white;
-    padding:2px 0 0 0;
-    min-height:24px;
-    text-align: right;
-    font-size: 125%;
-    font-family: Georgia, "Times New Roman", Times, serif;
-    padding-right:35px;
 }
