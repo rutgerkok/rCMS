@@ -2,11 +2,10 @@
 /*
  * Fonts, colors and margins of common elements
  */
-body, html {
-    font-size: 90%;
-}
 p, h1, h2, h3, h4 {
     font-family: verdana, sans-serif;
+    font-size: 0.7em;
+    line-height: 1.4em;
     color: #4a7180;
     margin: 1px 3px 10px 3px;
     padding: 1px;
@@ -15,19 +14,20 @@ h2 {
     color: #4a7184;
     text-transform: uppercase;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 100%;
+    font-size: 1em;
     margin: 15px 15px 10px 3px;
     padding: 0 0 5px 0;
     border-bottom: 1px dotted #ccd5d3;
 }
 h3 {
     color: #9d8a0a;
-    font-size: 100%;
+    font-size: 0.8em;
     margin: 12px 3px 1px 3px;
 }
 li {
     font-family: verdana, sans-serif;
     color: #4a7180;
+    font-size: 0.7em;
 }
 
 /* HTML5 fixes for IE8 */
@@ -63,19 +63,24 @@ div#header h1 {
     float: right;
     color: white;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 140%;
+    font-size: 1.4em;
     margin: 40px 10px 0 0;
     font-weight: normal;
     max-width: 327px;
     text-align: right;
     height: 1.2em;/*zit menu nooit in de weg, ook niet met grote tekengrootte*/
 }
-div#header div#search {
+
+/* Search */
+div#search {
     float: right;
     margin-right: 20px;
     margin-top: 40px;
 }
-div#header div#search #searchbox {
+div#search input.button {
+    font-size: 0.9em;
+}
+#searchbox {
     height: 1.4em;
     width: 11em;
     margin: 0;
@@ -165,7 +170,7 @@ div#sidebar_page_content img {
 /* Horizontal navigation bar */
 div#hornav {
     background: #8592bb;
-    height: 1.5em;
+    height: 1.3em;
     padding-left: 10px;
 }
 div#hornav ul {
@@ -186,11 +191,9 @@ div#hornav ul li {
 div#hornav ul li a {
     color: white;
     text-decoration: none;
-    padding: 2px 5px 2px 5px;
+    padding: 2px 5px 0 5px;
     font-family: verdana, sans-serif;
-    font-size: 85%;
     display: block;
-
     height: 100%;
 }
 div#hornav ul li a:hover {
@@ -206,7 +209,7 @@ div#footer {
     padding: 2px 0 0 0;
     min-height: 24px;
     text-align: right;
-    font-size: 125%;
+    font-size: 1.1em;
     font-family: Georgia, "Times New Roman", Times, serif;
     padding-right: 35px;
 }
@@ -225,7 +228,7 @@ div#breadcrumbs {
 div#breadcrumbs a {
     color: #336699;
     font-family: verdana, sans-serif;
-    font-size: 80%;
+    font-size: 0.65em;
     padding: 0 0 0 5px;
     background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
 }
@@ -248,6 +251,7 @@ div#breadcrumbs #accountlinks li {
 }
 div#breadcrumbs #accountlinks li a {
     background: none; /* disable those arrows */
+    font-size: 1em;
     padding: 0;
     margin: 0;
 }
@@ -262,6 +266,7 @@ th, td {
     font-family: verdana, sans-serif;
     color: #4a7180;
     text-align: left;
+    font-size: 0.7em;
 }
 table.layout {
     background: transparent;
@@ -314,7 +319,7 @@ legend {
     padding: 3px;
     border: 0;
     cursor: pointer;
-    font-size: 100%;
+    font-size: 1.2em;
 }
 .button:hover, button:hover {
     background: #f2f2f2; 
@@ -350,14 +355,11 @@ a.arrow {
     padding-left: 5px;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-transform: uppercase;
-    font-size: 85%;
 }
 a.arrow-disabled {
     padding-left: 5px;
-    /*background: transparent url(images/arrow.gif) center left no-repeat;*/
     text-transform: uppercase;
     color: gray;
-    font-size: 85%;
 }
 a:link {
     text-decoration: none;
@@ -460,7 +462,6 @@ article.comment .comment_author_rank {
 }
 article.comment .comment_actions {
     float: right;
-    font-size: 100%;
 }
 article.comment .comment_email {
     position: absolute;
@@ -469,7 +470,6 @@ article.comment .comment_email {
 }
 article.comment .comment_date {
     color: #666;
-    font-size: 90%;
 }
 
 /* Calendar */
@@ -510,11 +510,12 @@ p.lijn {
 }
 span.required {
     color: #990000;
-    font-size: 110%;
+    font-size: 1.2em;
 }
 h3.notable {
-    color: #9d8a0a;
-    font-size: 110%;
+    color: #921;
+    font-size: 1.1em;
+    font-weight: normal;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
 
