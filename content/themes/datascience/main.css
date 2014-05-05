@@ -196,7 +196,6 @@ a img
     border:0;
 }
 
-
 /* Errors */
 div.error
 {
@@ -218,6 +217,7 @@ div.article_teaser p.article_teaser_links
 {
     clear: both;
 }
+
 /* Linklijsten */
 ul.linklist
 {
@@ -317,6 +317,34 @@ div#sidebar_page_content img
     clear:both;
     margin-bottom:10px;
 }
+
+/* Calendar */
+div.calender_month_wrapper
+{
+    height: 14em;
+    margin: 1%;
+}
+td.calendar_other_month
+{
+    color: #aaa;
+}
+td.calendar_active_date
+{
+    color: #990000;
+    font-weight: bold;
+}
+/* On higher resulotions, multiple calendars can be placed next to each other */
+@media all and (min-width : 38em)
+{
+    div.calender_month_wrapper
+    {
+        float: left;
+        width: 45%;
+    }
+}
+
+
+/* Other classes */
 p.meta
 {
     color: #bbb;
@@ -338,37 +366,43 @@ span.required
     color: #990000;
     font-size:110%;
 }
-span.eventdate
-{
-    color:#990000;
-    font-weight:bold;
-}
-td.highlight:hover
-{
-    background:#fff;
-    cursor:pointer;
-}
 h3.notable
 {
     color:#9d8a0a;
     font-size: 110%;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
-/* tooltip */
+
+/* Tooltips */
 #tooltip
 {
-    border:solid 1px #0c2577;
-    padding:3px;
-    position:absolute; 
-    z-index:100;
-    background:#8592bb;	
+    border: solid 1px #0c2577;
+    padding: 3px;
+    position: absolute; 
+    z-index: 100;
+    background: #8592bb;	
     font-family: verdana, sans-serif;
-    color:white;
 }
-#tooltip a
+#tooltip a, #tooltip h3, #tooltip p
 {
-    color:white;
+    color: white;
 }
+#tooltip ul
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#tooltip li
+{
+    margin: 5px;
+}
+.tooltip_contents
+{
+    /* Used to store tooltip contents on a page */
+    display: none;
+}
+
 
 /* BOXMODEL 
         /* inlogscherm */

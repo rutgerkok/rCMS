@@ -54,7 +54,7 @@ class Articles {
         $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
         $sql.= "`artikel_intro`, `artikel_afbeelding`, `categorie_id`, ";
         $sql.= "`categorie_naam`, `user_id`, `user_display_name`, `artikel_gepind`, ";
-        $sql.= "`artikel_verborgen`, `artikel_id` FROM `artikel` ";
+        $sql.= "`artikel_verborgen`, `artikel_verwijsdatum`, `artikel_id` FROM `artikel` ";
         $sql.= "LEFT JOIN `categorie` USING (`categorie_id`) ";
         $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
         if (!$oWebsite->isLoggedInAsStaff()) {
@@ -84,8 +84,9 @@ class Articles {
 
         $result = $oDB->query($sql);
         if ($result && $oDB->rows($result) > 0) {
+            $returnValue = array();
             while ($row = $oDB->fetchNumeric($result)) {
-                $returnValue[] = new Article($row[11], $row);
+                $returnValue[] = new Article($row[12], $row);
             }
             return $returnValue;
         } else {
@@ -128,6 +129,27 @@ class Articles {
     public function getArticlesDataUser($user_id) {
         $user_id = (int) $user_id;
         return $this->getArticlesDataUnsafe("`gebruiker_id` = $user_id", 5, 0, false, false);
+    }
+
+    /**
+     * Gets all articles with an event date in the given month.
+     * @param DateTime $month The month to look up.
+     * @return Article[] All articles with an event date in that month.
+     */
+    public function getArticlesDataCalendarMonth(DateTime $month) {
+        $monthNumber = (int) $month->format('n');
+        $yearNumber = (int) $month->format('Y');
+        return $this->getArticlesDataUnsafe("YEAR(`artikel_verwijsdatum`) = $yearNumber AND MONTH(`artikel_verwijsdatum`) = $monthNumber", 99);
+    }
+    
+    /**
+     * Gets all articles with the event date in the given year.
+     * @param DateTime $year The year to look up.
+     * @return Article[] All articles with an event date in that year.
+     */
+    public function getArticlesDataCalendarYear(DateTime $year) {
+        $yearNumber = (int) $year->format('Y');
+        return $this->getArticlesDataUnsafe("YEAR(`artikel_verwijsdatum`) = $yearNumber", 300);
     }
 
     /**

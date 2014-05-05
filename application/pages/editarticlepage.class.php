@@ -67,7 +67,7 @@ class EditArticlePage extends Page {
             $article_title = $this->article_editor->getArticle()->title;
             if ($article_title) {
                 // Editing existing article
-                $page_title.= ' "' . $article_title . '"';
+                $page_title.= ' "' . htmlSpecialChars($article_title) . '"';
             } else {
                 // New article
                 $page_title = $oWebsite->t('articles.create');
@@ -106,20 +106,9 @@ class EditArticlePage extends Page {
         // Date and time
         $date = "";
         $time = "";
-        $date_time = explode(" ", $article->onCalendar);
-        if (count($date_time) == 2) {
-            $date = $date_time[0];
-            // Empty the default values
-            if ($date == "0000-00-00") {
-                $date = "";
-            }
-            $time = $date_time[1];
-            if (strLen($time) > 5) {
-                $time = substr($time, 0, 5); // Remove seconds
-            }
-            if ($time == "00:00") {
-                $time = ""; // Remove 00:00 time
-            }
+        if ($article->onCalendar !== null) {
+            $date = $article->onCalendar->format("Y-m-d");
+            $time = $article->onCalendar->format("H:i");
         }
 
         // Message on top of the page

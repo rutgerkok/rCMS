@@ -135,7 +135,7 @@ class ArticleEditor {
         }
         if (isSet($inputArray['article_eventtime']) && $eventDate) {
             $event_time = trim($oWebsite->getRequestString('article_eventtime'));
-            $article->onCalendar = $eventDate . " " . $event_time;
+            $article->onCalendar = new DateTime($eventDate . " " . $event_time);
         }
         if ($eventDate) {
             if (strtotime($eventDate) === false) {

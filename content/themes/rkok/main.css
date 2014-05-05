@@ -1,7 +1,3 @@
-/* HTML5 fixes for IE8 */
-header, article, footer {
-    display: block;
-}
 
 /*
  * Fonts, colors and margins of common elements
@@ -41,8 +37,14 @@ div
     padding: 0;
 }
 
+/* HTML5 fixes for IE8 */
+header, article, footer
+{
+    display: block;
+}
+
 /*
- * Large boxes that make up the page
+ * Main page structure
  */
 
 /* Body en container */
@@ -116,6 +118,50 @@ div#contentadmin
     background: #f4f4f4;
 }
 
+/* Header menu */
+div#header h1
+{
+    margin: 0;
+    padding: 0;
+    padding-top: 40px;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 3em;
+    font-weight: normal;
+    color: #494949;
+}
+ul#main_menu
+{
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0.2em;
+    padding-top: 0.5em;
+    padding-bottom: 40px;
+    height: 2.5em;
+    list-style-type: none;
+}
+ul#main_menu li
+{
+    margin: 0;
+    padding: 0;
+    float: left;
+    height: 100%;
+    color: gray;
+    width: 8em;
+    display: block;
+}
+ul#main_menu li a
+{
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 100%;
+    color: #494949;
+    border: 0;
+}
+ul#main_menu li a:hover
+{
+    text-decoration: none;
+    color: #999;
+}
 
 /* Sidebar on the right of the page */
 div#sidebar
@@ -161,7 +207,6 @@ div#sidebar_page_sidebar img
     max-width: 100%;
     margin: 1px;
 }
-
 @media all and (max-width: 40em)
 {
     /* No sidebar on smaller screens */
@@ -459,111 +504,6 @@ article.comment .comment_date {
     font-size: 90%;
 }
 
-/* Some random classes */
-p.lijn
-{
-    border-top: 1px #c9c9c9 solid;
-    border-bottom: 1px #c9c9c9 solid;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-span.required
-{
-    color: #990000;
-    font-size:110%;
-}
-span.eventdate
-{
-    color:#0000ff;
-    font-weight:bold;
-    text-decoration:underline;
-}
-td.highlight:hover
-{
-    background:#eeeeee;
-    cursor:pointer;
-}
-h3.notable
-{
-    font-size: 200%;
-    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    font-weight: normal;
-}
-#tooltip
-{
-    border:solid 1px white;
-    background: #eeeeee;
-    background: rgba(228,242,233,0.8);
-    min-width:100px;
-    padding:1px;
-    position:absolute;
-    z-index:100;
-    font-family: verdana, sans-serif;
-    box-shadow: white 0 0 20px;
-}
-span.username{
-    color: #666;
-    font-size: 90%;
-}
-p.intro
-{
-    font-style: italic;
-}
-
-/* Site login screen */
-#login
-{
-    background:#eeeeee;
-    width: 50%;
-    margin: 100px auto auto auto;
-    padding:25px;
-    box-shadow: white 0 0 20px;
-}
-
-/* Header menu */
-div#header h1
-{
-    margin: 0;
-    padding: 0;
-    padding-top: 40px;
-    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    font-size: 3em;
-    font-weight: normal;
-    color: #494949;
-}
-ul#main_menu
-{
-    margin: 0;
-    padding-right: 0;
-    padding-left: 0.2em;
-    padding-top: 0.5em;
-    padding-bottom: 40px;
-    height: 2.5em;
-    list-style-type: none;
-}
-ul#main_menu li
-{
-    margin: 0;
-    padding: 0;
-    float: left;
-    height: 100%;
-    color: gray;
-    width: 8em;
-    display: block;
-}
-ul#main_menu li a
-{
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 100%;
-    color: #494949;
-    border: 0;
-}
-ul#main_menu li a:hover
-{
-    text-decoration: none;
-    color: #999;
-}
 /* Account box and label (inside header box) */
 div#account_label
 {
@@ -598,6 +538,7 @@ div#account_box ul
     list-style-type: none;
     text-transform: uppercase;
 }
+
 /* Search box */
 div#search
 {
@@ -609,4 +550,100 @@ input#searchbutton
 {
     min-width: 80px;
     padding: 2px;
+}
+
+/* Calendar */
+div.calender_month_wrapper
+{
+    height: 14em;
+    margin: 1%;
+}
+td.calendar_other_month
+{
+    color: #aaa;
+}
+td.calendar_active_date
+{
+    color:#0000ff;
+    font-weight:bold;
+    text-decoration:underline;
+}
+/* On higher resulotions, multiple calendars can be placed next to each other */
+@media all and (min-width : 38em)
+{
+    div.calender_month_wrapper
+    {
+        float: left;
+        width: 45%;
+    }
+}
+
+
+/* Some random classes */
+p.lijn
+{
+    border-top: 1px #c9c9c9 solid;
+    border-bottom: 1px #c9c9c9 solid;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+span.required
+{
+    color: #990000;
+    font-size:110%;
+}
+h3.notable
+{
+    font-size: 200%;
+    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-weight: normal;
+}
+span.username{
+    color: #666;
+    font-size: 90%;
+}
+p.intro
+{
+    font-style: italic;
+}
+
+/* Tooltips */
+#tooltip
+{
+    border: solid 1px white;
+    background: #eee;
+    background: rgba(244,244,244,0.8);
+    min-width: 100px;
+    padding: 1px;
+    position: absolute;
+    z-index: 100;
+    font-family: verdana, sans-serif;
+    box-shadow: #333 0 0 20px;
+}
+#tooltip ul
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#tooltip li
+{
+    margin: 5px;
+}
+.tooltip_contents
+{
+    /* Used to store tooltip contents on a page */
+    display: none;
+}
+
+/*
+ * Site login screen
+ */
+#login
+{
+    background:#eeeeee;
+    width: 50%;
+    margin: 100px auto auto auto;
+    padding:25px;
+    box-shadow: white 0 0 20px;
 }

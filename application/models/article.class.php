@@ -20,6 +20,7 @@ class Article {
     public $hidden;
     public $body;
     public $showComments;
+    /** @var DateTime|null Date for calendar. */
     public $onCalendar;
 
     /**
@@ -38,7 +39,7 @@ class Article {
             $sql = "SELECT `artikel_titel`, `artikel_gemaakt`, `artikel_bewerkt`, ";
             $sql.= "`artikel_intro`, `artikel_afbeelding`, ";
             $sql.= "`categorie_id`, `categorie_naam`, `user_id`, `user_display_name`, `artikel_gepind`, ";
-            $sql.= "`artikel_verborgen`, `artikel_inhoud`, `artikel_reacties`, `artikel_verwijsdatum` FROM `artikel` ";
+            $sql.= "`artikel_verborgen`, `artikel_verwijsdatum`, `artikel_inhoud`, `artikel_reacties` FROM `artikel` ";
             $sql.= "LEFT JOIN `categorie` USING ( `categorie_id` ) ";
             $sql.= "LEFT JOIN `users` ON `user_id` = `gebruiker_id` ";
             $sql.= "WHERE artikel_id = {$this->id} ";
@@ -62,10 +63,12 @@ class Article {
             $this->author = $data[8];
             $this->pinned = (boolean) $data[9];
             $this->hidden = (boolean) $data[10];
+            if (count($data) >= 12) {
+                 $this->onCalendar = Database::toDateTime($data[11]);
+            }
             if (count($data) >= 14) {
-                $this->body = $data[11];
-                $this->showComments = (boolean) $data[12];
-                $this->onCalendar = $data[13];
+                $this->body = $data[12];
+                $this->showComments = (boolean) $data[13];
             }
         }
     }
@@ -91,7 +94,7 @@ class Article {
             $sql.= "'" . ((boolean) $this->showComments) . "', ";
             $sql.= "'" . $oDB->escapeData($this->body) . "', ";
             $sql.= "'" . $oDB->escapeData($this->featuredImage) . "', ";
-            $sql.= "'" . $oDB->escapeData($this->onCalendar) . "', ";
+            $sql.= "'" . $oDB->escapeData($oDB->dateTimeToString($this->onCalendar)) . "', ";
             $sql.= "'" . ((int) $this->authorId) . "', ";
             $sql.= " NOW() );";
             if ($oDB->query($sql)) {
@@ -113,7 +116,7 @@ class Article {
             $sql.= "`artikel_reacties` = '" . ((boolean) $this->showComments) . "', ";
             $sql.= "`artikel_inhoud` = '" . $oDB->escapeData($this->body) . "', ";
             $sql.= "`artikel_afbeelding` = '" . $oDB->escapeData($this->featuredImage) . "', ";
-            $sql.= "`artikel_verwijsdatum` = '" . $oDB->escapeData($this->onCalendar) . "', ";
+            $sql.= "`artikel_verwijsdatum` = '" . $oDB->escapeData($oDB->dateTimeToString($this->onCalendar)) . "', ";
             $sql.= "`artikel_bewerkt` = NOW() ";
             $sql.= " WHERE `artikel_id` = " . ((int) $this->id);
             if ($oDB->query($sql)) {
