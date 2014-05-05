@@ -566,7 +566,7 @@ class Website {
                 return (int) $_REQUEST[$name];
             }
         }
-        return $default;
+        return (int) $default;
     }
 
 }

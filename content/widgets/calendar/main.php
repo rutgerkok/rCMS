@@ -10,18 +10,31 @@ class WidgetRkokCalendar extends WidgetDefinition {
     const MAX_TITLE_LENGTH = 50;
 
     public function getWidget(Website $oWebsite, $id, $data) {
-        $returnValue = "";
+
 
         // Title
+        $title = "";
         if (isSet($data["title"]) && strLen($data["title"]) > 0) {
-            $returnValue.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
+            $title = "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
         }
 
-        $oCal = new Calendar($oWebsite, $oWebsite->getDatabase());
-        $returnValue.= '<h3>' . ucfirst(strftime('%B')) . ' ' . date('Y') . '</h3>'; // Current month and year
-        $returnValue.= $oCal->get_calendar();
-        $returnValue.= "\n" . '<p> <a class="arrow" href="' . $oWebsite->getUrlPage("calendar") . '">' . $oWebsite->t("calendar.calendar_for_twelve_months") . '</a> </p>'; //link voor jaarkalender
-        return $returnValue;
+        $now = new DateTime();
+        $oArticles = new Articles($oWebsite);
+        $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
+        $calendar = new CalendarView($oWebsite, $now, $articlesInMonth);
+
+        $monthName = ucFirst($calendar->getMonthName($now));
+        $year = $now->format('Y');
+        return <<<WIDGET
+            $title
+            <h3>$monthName $year</h3>
+            {$calendar->getText()}
+            <p>
+                <a class="arrow" href="{$oWebsite->getUrlPage("calendar", $year)}">
+                    {$oWebsite->tReplaced("calendar.calendar_for_year", $year)}
+                </a>
+            </p>
+WIDGET;
     }
 
     public function getEditor(Website $oWebsite, $id, $data) {

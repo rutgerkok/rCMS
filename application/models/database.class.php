@@ -256,7 +256,30 @@ SQL;
         }
         return(@mysqli_num_rows($result));
     }
+    
+    /**
+     * Parses the standard date format of this database.
+     * @param string $string The string to parse.
+     * @return DateTime|null The date/time, or null if the string is not a date.
+     */
+    public static function toDateTime($string) {
+        if (empty($string) || $string === "0000-00-00 00:00:00") {
+            return null;
+        }
+        return DateTime::createFromFormat("Y-m-d H:i:s", $string);
+    }
+    
+    /**
+     * Turns the given date/time back into a string, so that it can be inserted
+     * into the database.
+     * @param DateTime|null $dateTime The date/time to turn into a string.
+     * @return string The date/time as a string.
+     */
+    public static function dateTimeToString(DateTime $dateTime = null) {
+        if ($dateTime === null) {
+            return "0000-00-00 00:00:00";
+        }
+        return $dateTime->format("Y-m-d H:i:s");
+    }
 
 }
-
-?>
