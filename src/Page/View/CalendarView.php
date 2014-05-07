@@ -116,10 +116,12 @@ DAY;
         $dayInterval = new DateInterval("P1D");
         $date = $this->getStartDate();
         $returnValue = '';
-        while ($this->month->diff($date)->m <= 0) {
+        // Always use six rows for consistency with other calendars that may be
+        // on the page. Six rows are always enough to display all dates.
+        for ($i = 0; $i < 6; $i++) {
             // Add row
             $returnValue.= '<tr>';
-            for ($i = 0; $i < 7; $i++) {
+            for ($j = 0; $j < 7; $j++) {
                 // Add cell
                 $returnValue.= $this->getDayCell($date, $this->month);
 
