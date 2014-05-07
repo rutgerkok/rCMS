@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use DateTime;
+use Rcms\Core\Articles;
+use Rcms\Core\Website;
+use Rcms\Page\View\YearCalendarView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

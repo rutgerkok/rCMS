@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2>Create a new category</h2>
 <?php
 $textToDisplay='';

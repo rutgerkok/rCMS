@@ -1,5 +1,9 @@
 <?php
 
+namespace Rcms\Page\View;
+
+use DateTime;
+
 /**
  * Like CalendarView, but without tooltips and with clickable dates. This
  * implementation assumes that the date picker is opened in a popup window, and
@@ -7,6 +11,9 @@
  * parameter: a JavaScript Date object that represents the clicked date.
  */
 class DatePickerView extends CalendarView {
+
+    const LOOKBACK_YEARS = 4;
+    const LOOKAHEAD_YEARS = 8;
 
     protected function getDayCell(DateTime $date, DateTime $calendarMonth) {
         $dayNumber = (int) $date->format('j');
@@ -29,7 +36,7 @@ CELL;
 
         $yearList = '<select id="year" name="year">';
         $currentYear = date('Y');
-        for ($i = $currentYear - LOOKBACK_YEARS; $i < $currentYear + LOOKAHEAD_YEARS; $i++) {
+        for ($i = $currentYear - self::LOOKBACK_YEARS; $i < $currentYear + self::LOOKAHEAD_YEARS; $i++) {
             $selected = $i === $selectedYear ? 'selected="selected"' : '';
             $yearList.= '<option ' . $selected . ' value="' . $i . '">' . $i . '</option>';
         }
@@ -71,7 +78,7 @@ CELL;
             {$table}
 TEXT;
     }
-    
+
     /**
      * Gets the JavaScript that provides the sendAndClose(int dayInMonth)
      * function.

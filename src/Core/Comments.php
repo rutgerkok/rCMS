@@ -1,5 +1,10 @@
 <?php
 
+namespace Rcms\Core;
+
+// Yeah, this should not be here
+use Rcms\Page\View\CommentsTreeView;
+
 class Comments {
     /* @var $websiteObject Website */
 

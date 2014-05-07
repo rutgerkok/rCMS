@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Themes {
 
     const THEME_INFO_FILE_NAME = "info.txt";

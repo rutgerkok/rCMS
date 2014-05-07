@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Contains methods to check whether various things inputted by the user are
  * valid. If a function returns false, you can get the error message using

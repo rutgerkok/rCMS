@@ -1,5 +1,9 @@
 <?php
 
+namespace Rcms\Page\View;
+
+use Rcms\Core\Website;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
@@ -15,7 +19,7 @@ class ArticleSearchView extends ArticleListView {
     protected $pageNumber;
     protected $highestPageNumber;
 
-    public function __construct(Website $oWebsite, $keyword, $displayedArticles,
+    public function __construct(Website $oWebsite, $keyword, array $displayedArticles,
             $pageNumber, $totalNumberOfArticles, $highestPageNumber) {
         parent::__construct($oWebsite, $displayedArticles, 0, true, false);
         $this->keyword = $keyword;

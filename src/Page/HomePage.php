@@ -1,5 +1,10 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Website;
+use Rcms\Page\View\WidgetsView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

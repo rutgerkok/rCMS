@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Authentication;
+use Rcms\Core\User;
+use Rcms\Core\Website;
+use Rcms\Page\View\LoggedInOtherView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
@@ -18,7 +25,7 @@ class LoginOtherPage extends Page {
         // Fetch user
         $user = User::getById($oWebsite, $userId);
         if ($user === null || !$user->canLogIn()) {
-            $oWebsite->addError($oWebsite->t("user.account") . " " . $oWebsite->t("errors.not_found"));
+            $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
             return;
         }
 

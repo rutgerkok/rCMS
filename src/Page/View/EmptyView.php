@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Page\View;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

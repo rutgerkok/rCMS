@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Class that currently wraps CKEditor and CKFinder, but it can be adapted
  * for any editor.

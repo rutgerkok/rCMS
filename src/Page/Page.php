@@ -1,5 +1,10 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Website;
+use Rcms\Core\Authentication;
+
 abstract class Page {
 
     /**

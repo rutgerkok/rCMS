@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Comments;
+use Rcms\Core\Website;
+use Rcms\Page\View\ArticleView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

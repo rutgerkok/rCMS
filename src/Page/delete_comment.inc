@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2><?php echo $this->t("editor.comment.delete") ?></h2>
 <?php
 //OBJECTEN

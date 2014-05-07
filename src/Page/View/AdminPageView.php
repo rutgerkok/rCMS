@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Page\View;
+
 /**
  * Renders the admin page.
  */

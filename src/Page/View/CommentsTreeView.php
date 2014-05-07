@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page\View;
+
+use Rcms\Core\Authentication;
+use Rcms\Core\Comment;
+use Rcms\Core\Website;
+use Rcms\Core\User;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

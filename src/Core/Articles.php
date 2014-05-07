@@ -1,5 +1,9 @@
 <?php
 
+namespace Rcms\Core;
+
+use DateTime;
+
 class Articles {
 
     protected $websiteObject;

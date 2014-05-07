@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2><?php echo $this->t("links.menu.rename") ?></h2>
 <?php
 $textToDisplay = '';

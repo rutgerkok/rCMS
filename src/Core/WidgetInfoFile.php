@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Stores info about a widget. All methods return strings.
  */

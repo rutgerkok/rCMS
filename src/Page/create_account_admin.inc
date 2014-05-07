@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+namespace Rcms\Core;
 
 $textToDisplay = '';
 

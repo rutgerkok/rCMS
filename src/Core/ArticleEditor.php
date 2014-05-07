@@ -1,5 +1,9 @@
 <?php
 
+namespace Rcms\Core;
+
+use DateTime;
+
 /**
  * Provides all method needed to build an article editor.
  */

@@ -1,5 +1,9 @@
 <?php
 
+namespace Rcms\Core;
+
+use DateTime;
+
 class Database {
 
     const CURRENT_DATABASE_VERSION = 3;

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Menus {
 
     const MAX_URL_LENGTH = 200;

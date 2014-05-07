@@ -1,5 +1,10 @@
 <?php
 
+namespace Rcms\Page\View;
+
+use Rcms\Core\Website;
+use Rcms\Core\Comment;
+
 /**
  * Description of commentsmallview
  */

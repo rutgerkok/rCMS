@@ -1,11 +1,20 @@
 <?php
 
+namespace Rkok\Extend\Widget;
+
+use DateTime;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Website;
+use Rcms\Core\WidgetDefinition;
+use Rcms\Page\View\CalendarView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
-class WidgetRkokCalendar extends WidgetDefinition {
+class WidgetCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
 
@@ -62,4 +71,4 @@ EOT;
 }
 
 // Register itself
-$this->registerWidget(new WidgetRkokCalendar());
+$this->registerWidget(new WidgetCalendar());

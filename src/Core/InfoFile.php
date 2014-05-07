@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * An InfoFile is a file that contains information about a piece of software on
  * the site, like a file describing a widget.

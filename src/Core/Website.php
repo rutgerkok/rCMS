@@ -1,9 +1,14 @@
 <?php
 
+namespace Rcms\Core;
+
+use Rcms\Page\View\LoginView; // Login view logic should be moved out of Website
+
 class Website {
 
     const MAX_SITE_OPTION_LENGTH = 200;
     const CONFIG_FILE = "config.php";
+    const BASE_NAMESPACE = "Rcms\\";
 
     protected $errors = array();
     protected $debug = true;
@@ -118,12 +123,7 @@ class Website {
      */
     protected function loadPage($pageId) {
         // Convert page id to class name
-        $pageParts = explode("_", $pageId);
-        $pageClassName = "";
-        foreach ($pageParts as $part) {
-            $pageClassName .= ucFirst($part);
-        }
-        $pageClassName .= "Page";
+        $pageClassName = self::BASE_NAMESPACE . "Page\\" . $this->getPageClassName($pageId);
 
         // Load that class
         $this->currentPage = new $pageClassName();
@@ -163,12 +163,12 @@ class Website {
 
     /** Returns the path of all default controllers, models, pages and views */
     public function getUriApplication() {
-        return $this->getConfig()->get('uri') . "application/";
+        return $this->getConfig()->get('uri') . "src/";
     }
 
     /** Returns the path of all pages */
     public function getUriPages() {
-        return $this->getUriApplication() . "pages/";
+        return $this->getUriApplication() . "Page/";
     }
 
     /** Returns the main site url. Other urls start with this */
@@ -207,6 +207,23 @@ class Website {
         }
     }
 
+    /**
+     * Gets the simple class name of the given page id. Doesn't check if the
+     * page actually exists. For example, "delete_article" would turn into
+     * "DeleteArticlePage", even if no such page would exist.
+     * @param string $pageId The page id.
+     * @return string The simple class name.
+     */
+    private function getPageClassName($pageId) {
+        $pageParts = explode("_", $pageId);
+        $pageClassName = "";
+        foreach ($pageParts as $part) {
+            $pageClassName .= ucFirst($part);
+        }
+        $pageClassName .= "Page";
+        return $pageClassName;
+    }
+
     /** Returns the internal uri of a page */
     public function getUriPage($name) {
         // Has to account for both the old .inc pages and the newer .php pages
@@ -216,7 +233,7 @@ class Website {
         if (file_exists($uri_old)) {
             return $uri_old;
         } else {
-            return $this->getUriPages() . str_replace("_", "", $name) . "page.class.php";
+            return $this->getUriPages() . $this->getPageClassName($name) . ".php";
         }
     }
 

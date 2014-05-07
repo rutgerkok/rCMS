@@ -1,11 +1,21 @@
 <?php
 
+namespace Rcms\Extend\Widget;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Categories;
+use Rcms\Core\Validate;
+use Rcms\Core\Website;
+use Rcms\Core\WidgetDefinition;
+use Rcms\Page\View\ArticleListView;
+use Rcms\Page\View\ArticleSmallListView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
-class WidgetRkokArticles extends WidgetDefinition {
+class WidgetArticles extends WidgetDefinition {
 
     const TYPE_WITHOUT_METADATA = 0;
     const TYPE_WITH_METADATA = 1;
@@ -234,4 +244,4 @@ EOT;
 }
 
 // Register itself
-$this->registerWidget(new WidgetRkokArticles());
+$this->registerWidget(new WidgetArticles());

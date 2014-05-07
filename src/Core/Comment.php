@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Comment {
 
     const NORMAL_STATUS = 0;

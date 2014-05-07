@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Categories;
+use Rcms\Core\Website;
+use Rcms\Page\View\ArticleListView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

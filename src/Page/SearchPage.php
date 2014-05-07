@@ -1,5 +1,13 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Menus;
+use Rcms\Core\Website;
+use Rcms\Page\View\ArticleSearchView;
+use Rcms\Page\View\LinkSearchView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

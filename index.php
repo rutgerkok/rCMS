@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 // Report all errors
 error_reporting(E_ALL);
 
@@ -10,32 +12,15 @@ session_start();
 ini_set('arg_separator.output', '&amp;');
 
 // Classloader
-function __autoLoad($class) {
-    $class = strToLower($class);
-
-    // Try to see if it's a view
-    if (subStr($class, -4) == "view") {
-        require_once('application/views/' . $class . '.class.php');
-        return;
-    }
-
-    // Try to see if it's a page
-    if (subStr($class, -4) == "page" && $class != "page") {
-        require_once('application/pages/' . $class . '.class.php');
-        return;
-    }
+spl_autoload_register(function($fullClassName) {
+    $class = str_replace('\\', '/', subStr($fullClassName, strLen("Rcms\\")));
 
     // Try to see if it's a class in the library
-    if (file_exists('application/library/' . $class . '.class.php')) {
-        require_once('application/library/' . $class . '.class.php');
-        return;
+    if (file_exists('src/' . $class . '.php')) {
+        require_once('src/' . $class . '.php');
     }
-
-    // Try to load a model
-    require_once('application/models/' . $class . '.class.php');
-}
+});
 
 // Display site
 $oWebsite = new Website();
 $oWebsite->echoPage();
-?>

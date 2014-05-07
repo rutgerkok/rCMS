@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Authentication;
+use Rcms\Core\Website;
+use Rcms\Page\View\ArticleDeleteView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2><?php echo $this->t("links.edit") ?></h2>
 <?php
 $textToDisplay = '';

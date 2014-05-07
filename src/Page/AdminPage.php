@@ -1,5 +1,11 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Authentication;
+use Rcms\Core\Website;
+use Rcms\Page\View\AdminPageView;
+
 /**
  * Page with links to all admin tasks of the site
  */

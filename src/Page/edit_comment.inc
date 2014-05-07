@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2><?php echo $this->t("editor.comment.edit") ?></h2>
 <?php
 //OBJECTEN

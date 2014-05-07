@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2>Rename a category</h2>
 <?php
 $textToDisplay='';

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 $oDB = $this->getDatabase();
 $installed_and_up_to_date = $oDB->isUpToDate();
 $loggedInStaff = $this->isLoggedInAsStaff(true);

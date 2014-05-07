@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class PlacedWidget {
 
     private $id;
@@ -45,7 +47,7 @@ class PlacedWidget {
      * @return mixed The array.
      */
     public function getData() {
-        return JSONHelper::stringToArray($this->dataString);
+        return JsonHelper::stringToArray($this->dataString);
     }
 
     /**
@@ -58,7 +60,7 @@ class PlacedWidget {
             $this->dataString = "{}";
         } else {
             if (!isSet($data["valid"]) || $data["valid"]) {
-                $this->dataString = JSONHelper::arrayToString($data);
+                $this->dataString = JsonHelper::arrayToString($data);
             }
         }
     }

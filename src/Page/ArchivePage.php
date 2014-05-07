@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Articles;
+use Rcms\Core\Categories;
+use Rcms\Core\Website;
+use Rcms\Page\View\ArticleArchiveView;
+
 /**
  * Page with links to all admin tasks of the site
  */

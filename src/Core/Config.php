@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Holds all settings of the site, both from options.php and the database.
  */

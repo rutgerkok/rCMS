@@ -1,5 +1,14 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Article;
+use Rcms\Core\ArticleEditor;
+use Rcms\Core\Authentication;
+use Rcms\Core\Categories;
+use Rcms\Core\Editor;
+use Rcms\Core\Website;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

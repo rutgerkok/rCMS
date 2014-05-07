@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 // Get user object
 $oAuth = new Authentication($this);
 $loggedIn = $this->isLoggedIn();

@@ -1,5 +1,11 @@
 <?php
 
+namespace Rcms\Extend\Widget;
+
+use Rcms\Core\Menus;
+use Rcms\Core\Website;
+use Rcms\Core\WidgetDefinition;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Categories {
 
     protected $databaseObject;

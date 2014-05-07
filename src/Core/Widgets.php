@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Widget manager
  */
@@ -141,7 +143,7 @@ class Widgets {
 
             // Check if load was succesfull. Display widget or display error.
             if (isSet(Widgets::$loadedWidgets[$directory_name])) {
-                $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JSONHelper::stringToArray($data));
+                $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JsonHelper::stringToArray($data));
                 if ($loggedInAsAdmin) {
                     // Links for editing and deleting
                     $output.= "<p>\n";

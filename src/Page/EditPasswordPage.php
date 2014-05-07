@@ -1,5 +1,12 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Authentication;
+use Rcms\Core\User;
+use Rcms\Core\Validate;
+use Rcms\Core\Website;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();

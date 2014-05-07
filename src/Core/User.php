@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class User {
 
     const GRAVATAR_URL_BASE = "http://www.gravatar.com/avatar/";
@@ -313,7 +315,7 @@ class User {
      */
     public function getExtraData() {
         if (!empty($this->extraData)) {
-            return JSONHelper::stringToArray($this->extraData);
+            return JsonHelper::stringToArray($this->extraData);
         } else {
             return array();
         }
@@ -415,7 +417,7 @@ class User {
         if (!$extra_data) {
             $this->extraData = "";
         } else if (is_array($extra_data)) {
-            $this->extraData = JSONHelper::arrayToString($extra_data);
+            $this->extraData = JsonHelper::arrayToString($extra_data);
         } else {
             $this->extraData = $extra_data;
         }

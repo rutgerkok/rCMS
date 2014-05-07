@@ -1,5 +1,17 @@
 <?php
 
+namespace Rcms\Page;
+
+use Rcms\Core\Authentication;
+use Rcms\Core\Comments;
+use Rcms\Core\Website;
+use Rcms\Page\View\CommentsTreeView;
+
+// Protect against calling this script directly
+if (!defined("WEBSITE")) {
+    die();
+}
+
 /**
  * Page with the latest comments on the site.
  */

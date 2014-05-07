@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Authentication {
 
     public static $LOGGED_OUT_RANK = -1;

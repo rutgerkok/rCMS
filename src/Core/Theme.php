@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 class Theme extends InfoFile {
 
     private $name;

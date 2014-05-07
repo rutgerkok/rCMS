@@ -1,11 +1,19 @@
 <?php
 
+namespace Rcms\Extend\Widget;
+
+use Rcms\Core\Comments;
+use Rcms\Core\Validate;
+use Rcms\Core\Website;
+use Rcms\Core\WidgetDefinition;
+use Rcms\Page\View\CommentsSmallView;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
-class WidgetRkokComments extends WidgetDefinition {
+class WidgetComments extends WidgetDefinition {
 
     const MIN_COMMENTS = 1;
     const MAX_COMMENTS = 30;
@@ -63,4 +71,4 @@ FORM;
 }
 
 // Register itself
-$this->registerWidget(new WidgetRkokComments());
+$this->registerWidget(new WidgetComments());

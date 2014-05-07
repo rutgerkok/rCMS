@@ -1,3 +1,5 @@
+<?php namespace Rcms\Core; ?>
+
 <h2>Delete a category</h2>
 <?php
 $textToDisplay='';

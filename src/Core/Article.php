@@ -1,5 +1,7 @@
 <?php
 
+namespace Rcms\Core;
+
 /**
  * Represents a single article. All data is raw HTML, handle with extreme
  * caution (read: htmlSpecialChars)
