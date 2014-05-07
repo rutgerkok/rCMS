@@ -136,40 +136,45 @@ DAY;
         $dayNumber = (int) $date->format('j');
 
         // Tooltip
-        $tooltip = $this->getTooltip($date);
-        $tooltipId = "tooltip_" . $date->format("Ymd");
-        $onMouseOver = 'onmouseover="tooltip(this, document.getElementById(\'' . $tooltipId . '\').innerHTML)"';
-        if ($inOtherMonth) {
-            $onMouseOver = '';
+        $onMouseOverAttr = "";
+        $tooltip = "";
+        $tooltipIdAttr = "";
+        if (!$inOtherMonth) {
+            $tooltip = $this->getTooltip($date);
+            $tooltipId = "tooltip_" . $date->format("Ymd");
+            $tooltipIdAttr = 'id="' . $tooltipId . '"';
+            $onMouseOverAttr = 'onmouseover="tooltip(this, document.getElementById(\'' . $tooltipId . '\').innerHTML)"';
         }
 
         return <<<CELL
-            <td class="{$this->getCellClasses($date, $calendarMonth)}" {$onMouseOver}>
+            <td class="{$this->getCellClasses($date, $calendarMonth)}" {$onMouseOverAttr}>
                 {$dayNumber}
  
-                <div class="tooltip_contents" id="{$tooltipId}">
+                <div class="tooltip_contents" {$tooltipIdAttr}>
                     {$tooltip}
                 </div>
             </td>
 CELL;
     }
-    
+
     /**
      * Gets the CSS class(es) for the given day in the month.
+     * Note: may be called for dates outside the current month, the "gray"
+     * dates.
      * @param DateTime $date The day.
      * @param DateTime $calendarMonth The month the calendar is displaying.
      * @return string The class(es). Multiple classes are separated with a space.
      */
     protected function getCellClasses(DateTime $date, DateTime $calendarMonth) {
         $inOtherMonth = $date->format('n') !== $calendarMonth->format('n');
-        $cellClass = $inOtherMonth? 'calendar_other_month' : 'calendar_current_month';
+        $cellClass = $inOtherMonth ? 'calendar_other_month' : 'calendar_current_month';
         $dayNumber = (int) $date->format('j');
-        
+
         // Highlight cells with articles
-        if (isSet($this->articlesByDay[$dayNumber])) {
+        if (!$inOtherMonth && isSet($this->articlesByDay[$dayNumber])) {
             $cellClass .= " calendar_active_date";
         }
-        
+
         return $cellClass;
     }
 
@@ -182,7 +187,9 @@ CELL;
     }
 
     /**
-     * Gets the code for inside the tooltip displayed for a cell.
+     * Gets the code for inside the tooltip displayed for a cell. This method
+     * will never be called for dates outside the current month, the "gray"
+     * dates.
      * @param DateTime $date The date.
      * @return string The code.
      */
@@ -210,6 +217,13 @@ TOOLTIP_END;
         return $tooltip;
     }
 
+    /**
+     * Gets the HTML list of the articles on the given day. This method
+     * will never be called for dates outside the current month, the "gray"
+     * dates.
+     * @param DateTime $date The day.
+     * @return string The HTML list, or a message if there are none.
+     */
     protected function getTooltipArticleList(DateTime $date) {
         $oWebsite = $this->oWebsite;
         $dayNumber = (int) $date->format('j');
