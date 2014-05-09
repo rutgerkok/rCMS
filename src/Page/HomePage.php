@@ -17,7 +17,7 @@ class HomePage extends Page {
     }
 
     public function getView(Website $oWebsite) {
-        return new WidgetsView($oWebsite, 1);
+        return new WidgetsView($oWebsite, $oWebsite->getWidgets(), 1);
     }
 
     public function getPageType() {

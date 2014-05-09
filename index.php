@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use Rcms\Page\Renderer\PageRenderer;
+
 // Report all errors
 error_reporting(E_ALL);
 
@@ -23,4 +25,5 @@ spl_autoload_register(function($fullClassName) {
 
 // Display site
 $oWebsite = new Website();
-$oWebsite->echoPage();
+$pageRenderer = new PageRenderer($oWebsite, PageRenderer::getPagePath());
+$pageRenderer->render();

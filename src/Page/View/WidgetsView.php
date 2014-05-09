@@ -3,6 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Website;
+use Rcms\Core\Widgets;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -12,14 +13,17 @@ if (!defined("WEBSITE")) {
 class WidgetsView extends View {
 
     protected $area;
+    /** @var Widgets The widgets manager. */
+    protected $widgets;
 
-    public function __construct(Website $oWebsite, $area) {
-        parent::__construct($oWebsite);
+    public function __construct(Website $website,  Widgets $widgets, $area) {
+        parent::__construct($website);
         $this->area = $area;
+        $this->widgets = $widgets;
     }
 
     public function getText() {
-        return $this->oWebsite->getThemeManager()->getWidgetsHTML($this->area);
+        return $this->widgets->getWidgetsHTML($this->area);
     }
 
 }

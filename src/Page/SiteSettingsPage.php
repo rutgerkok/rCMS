@@ -117,7 +117,7 @@ EOT;
                     <em>{$oWebsite->t("site_settings.user_account_creation.explained")}</em>
                 </p>
                 <p>
-                    <input type="hidden" name="p" value="{$oWebsite->getPageId()}" />
+                    <input type="hidden" name="p" value="site_settings" />
                     <input type="submit" name="submit" class="button primary_button" value="{$oWebsite->t("editor.save")}" />
                 </p>
             </form>

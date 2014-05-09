@@ -2,7 +2,7 @@
 
 namespace Rcms\Core;
 
-use Rcms\Page\View\LoginView; // Login view logic should be moved out of Website
+use Exception;
 
 class Website {
 
@@ -12,29 +12,29 @@ class Website {
 
     protected $errors = array();
     protected $debug = true;
-    protected $errorsDisplayed = false;
     protected $databaseObject;
 
-    /** @var Config $config Settings of the site. */
+    /** @var Themes Themes object */
+    protected $themesObject;
+
+    /** @var Config Settings of the site. */
     protected $config;
 
-    /** @var Themes $themes_object */
-    protected $themesObject;
-    protected $currentPageId;
-    protected $siteTitle;
-    protected $currentPageTitle; // Title of the page
-    protected $currentPageType; // HOME, NORMAL or BACKSTAGE
-    /** @var Authentication $authentication_object */
+    /** @var Widgets Widgets object. */
+    protected $widgets;
+
+    /** @var Authentication Handles authentication */
     protected $authenticationObject;
-    // The following two fields are only available when using the new page system
-    /** @var Page $current_page */
-    protected $currentPage; // Available during/after echo_page
-    protected $authenticationFailedRank = -1; // Number of required rank which the user didn't have, or -1 if the user's rank is already high enough
+
+    /**
+     * @deprecated For old page system. Errors are now always echoed after the
+     * page is rendered, so old pages shouldn't try to display them themselves 
+     */
+    public $errorsDisplayed = true;
 
     /**
      * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
      */
-
     function __construct() {
         // We're loaded (included files test for the existance this constant)
         define("WEBSITE", "Loaded");
@@ -46,7 +46,6 @@ class Website {
 
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
-
 
         // Workarounds for older PHP versions (5.2, 5.3 and 5.4)
         $this->requireFunctions("lcfirst", "http_response_code");
@@ -71,39 +70,7 @@ class Website {
      * @return string The title.
      */
     public function getSiteTitle() {
-        return $this->siteTitle;
-    }
-
-    /**
-     * Returns the current page id, like "article" or "account_management". Can
-     * be converted to an url/uri using the get_ur*_page methods.
-     */
-    public function getPageId() {
-        return $this->currentPageId;
-    }
-
-    /**
-     * Returns the current page. Only works with the new page system.
-     * @return Page The current page.
-     */
-    public function getPage() {
-        return $this->currentPage;
-    }
-
-    /**
-     * Returns a shorter title of this page that can be used in breadcrumbs.
-     * @return string The shorter title.
-     */
-    public function getPageTitle() {
-        return $this->currentPageTitle;
-    }
-
-    /**
-     * Returns the current page type: HOME, NORMAL or BACKSTAGE.
-     * @return string The current page type.
-     */
-    public function getPageType() {
-        return $this->currentPageType;
+        return $this->getConfig()->get("title");
     }
 
     // GETTING OTHER OBJECTS
@@ -114,19 +81,6 @@ class Website {
      */
     public function getDatabase() {
         return $this->databaseObject;
-    }
-
-    /**
-     * Loads and sets the page being displayed. Causes a fatal error for pages still
-     * using the old .inc page system.
-     * @param string $pageId The page id.
-     */
-    protected function loadPage($pageId) {
-        // Convert page id to class name
-        $pageClassName = self::BASE_NAMESPACE . "Page\\" . $this->getPageClassName($pageId);
-
-        // Load that class
-        $this->currentPage = new $pageClassName();
     }
 
     /**
@@ -148,10 +102,22 @@ class Website {
 
     /**
      * Gets all settings manager of the site.
-     * SiteConfign Config The settings manager.
+     * @return Config The settings manager.
      */
     public function getConfig() {
         return $this->config;
+    }
+
+    /**
+     * Gets the widgets manager of the site.
+     * @return Widgets The widgets manager.
+     */
+    public function getWidgets() {
+        if (!$this->widgets) {
+            // Not every page needs them, so use lazy initialization
+            $this->widgets = new Widgets($this);
+        }
+        return $this->widgets;
     }
 
     // Paths
@@ -207,36 +173,6 @@ class Website {
         }
     }
 
-    /**
-     * Gets the simple class name of the given page id. Doesn't check if the
-     * page actually exists. For example, "delete_article" would turn into
-     * "DeleteArticlePage", even if no such page would exist.
-     * @param string $pageId The page id.
-     * @return string The simple class name.
-     */
-    private function getPageClassName($pageId) {
-        $pageParts = explode("_", $pageId);
-        $pageClassName = "";
-        foreach ($pageParts as $part) {
-            $pageClassName .= ucFirst($part);
-        }
-        $pageClassName .= "Page";
-        return $pageClassName;
-    }
-
-    /** Returns the internal uri of a page */
-    public function getUriPage($name) {
-        // Has to account for both the old .inc pages and the newer .php pages
-        // Because file_exists lookups are cached, this shouldn't really affect
-        // performance.
-        $uri_old = $this->getUriPages() . $name . ".inc";
-        if (file_exists($uri_old)) {
-            return $uri_old;
-        } else {
-            return $this->getUriPages() . $this->getPageClassName($name) . ".php";
-        }
-    }
-
     //Geeft de map van alle thema's terug als url
     public function getUrlThemes() {
         return $this->getUrlContent() . "themes/";
@@ -263,13 +199,11 @@ class Website {
 //Einde paden
 
     public function addError($message, $public_message = false) {
+        throw new Exception($message);
         if ($this->debug || !$public_message) { //foutmelding alleen weergeven als melding ongevaarlijk is of als debuggen aan is gezet
             $this->errors[count($this->errors)] = $message;
         } else {
             $this->errors[count($this->errors)] = $public_message;
-        }
-        if ($this->errorsDisplayed) {//geef ook nieuwe foutmeldingen weer, als normale al weergegeven zijn
-            $this->echoErrors();
         }
     }
 
@@ -277,32 +211,12 @@ class Website {
         return count($this->errors);
     }
 
-    public function echoErrors() { //geeft alle foutmeldingen weer
-        $this->errorsDisplayed = true;
-
-        $errorCount = count($this->errors); //totaal aantal foutmeldingen
-        if ($errorCount == 0) {
-            return true;
-        } elseif ($errorCount == 1) {
-            echo '<div class="error"><h3>' . $this->t("errors.error_occured") . '</h3>';
-            echo $this->errors[0];
-            echo '</div>';
-        } else {
-            echo '<div class="error">';
-            echo "   <h3>" . str_replace("#", $errorCount, $this->t('errors.errors_occured')) . "</h3>";
-            echo '   <p>';
-            echo '      <ul>';
-            foreach ($this->errors as $nr => $error) {
-                echo '<li>' . $error . '</li>';
-            }
-            echo '      </ul>';
-            echo '	 </p>';
-            echo '</div>';
-        }
-        // Clear displayed errors
-        unset($this->errors);
-        $this->errors = array();
-        return true;
+    /**
+     * Gets a list of all errors that occured loading this page.
+     * @return string[] All errors.
+     */
+    public function getErrors() {
+        return $this->errors;
     }
 
     function hasAccess() { //kijkt of site mag worden geladen
@@ -318,136 +232,6 @@ class Website {
         }
 
         return $access;
-    }
-
-    /**
-     * Echoes the whole page.
-     */
-    public function echoPage() {
-        // Rewrite view_url to p and id
-        if (isset($_GET["view_url"])) {
-            $split = explode("/", $_GET["view_url"], 2);
-            $_REQUEST["p"] = $_POST["p"] = $_GET["p"] = $split[0];
-            if (count($split) == 2) {
-                $_REQUEST["id"] = $_POST["id"] = $_GET["id"] = $split[1];
-            }
-        }
-
-        // Check for site password
-        if (!$this->hasAccess()) {
-            // Echo site code page
-            require($this->getUriLibraries() . 'login_page.php');
-            return;
-        }
-
-        // Site title
-        $this->siteTitle = $this->getConfig()->get('title');
-
-        // Get id of page to display
-        $givenPageId = $this->getRequestString("p", "home");
-        if ($givenPageId != 'home') {
-            // Get current page title and id 
-            if (!preg_match('/^[a-z0-9_]+$/i', $givenPageId) || !file_exists($this->getUriPage($givenPageId))) {
-                // Page doesn't exist, show error and redirect
-                http_response_code(404);
-                $this->addError($this->t("main.page") . " '" . htmlSpecialChars($givenPageId) . "' " . $this->t('errors.not_found'));
-                $this->currentPageId = 'home';
-            } else {
-                $this->currentPageId = $givenPageId;
-            }
-        } else {
-            // No page id given
-            $this->currentPageId = 'home';
-        }
-
-        // Set password cookie
-        if (strLen($this->getConfig()->get('password')) != 0) {
-            setCookie("key", $this->getConfig()->get('password'), time() + 3600 * 24 * 365, "/");
-        }
-
-        // Perform page logic (supporting both the old .inc and the new .php pages)
-        $uri = $this->getUriPage($this->currentPageId);
-        if (substr($uri, -4) == ".php") {
-            // We're on the new page system
-            $this->loadPage($this->currentPageId);
-
-            // Page title
-            $this->currentPageTitle = $this->currentPage->getPageTitle($this);
-            if ($this->getConfig()->get('append_page_title')) {
-                $this->siteTitle.= ' - ' . $this->currentPage->getShortPageTitle($this);
-            }
-
-            // Page type
-            $this->currentPageType = $this->currentPage->getPageType();
-
-            // Authentication stuff
-            $rank = (int) $this->currentPage->getMinimumRank($this);
-            if ($rank == Authentication::$LOGGED_OUT_RANK || $this->getAuth()->check($rank, false)) {
-                // Call init methord
-                $this->currentPage->init($this);
-            } else {
-                $this->authenticationFailedRank = $rank;
-            }
-        } else {
-            // Old page system
-            // Page title
-            $this->currentPageTitle = ucfirst(str_replace('_', ' ', $this->currentPageId));
-            if ($this->getConfig()->get('append_page_title')) {
-                $this->siteTitle.= ' - ' . $this->currentPageTitle;
-            }
-
-            // Page type
-            switch ($this->currentPageId) {
-                case "search":
-                case "archive":
-                case "calendar":
-                    $this->currentPageType = "NORMAL";
-                    break;
-                default:
-                    $this->currentPageType = "BACKSTAGE";
-                    break;
-            }
-        }
-
-        // Output page
-        $this->themesObject->output();
-    }
-
-    /**
-     * Echoes only the main content of the page, without any clutter.
-     */
-    public function echoPageContent() { //geeft de hoofdpagina weer
-        // Locales
-        setLocale(LC_ALL, explode("|", $this->t("main.locales")));
-
-        if ($this->currentPage) {
-            // New page system
-            // Title
-            $title = $this->currentPage->getPageTitle($this);
-            if (!empty($title)) {
-                echo "<h2>" . $title . "</h2>\n";
-            }
-
-            // Get page content (based on permissions)
-            $textToDisplay = "";
-            if ($this->authenticationFailedRank >= 0) {
-                $loginView = new LoginView($this, $this->authenticationFailedRank);
-                $textToDisplay = $loginView->getText();
-            } else {
-                $textToDisplay = $this->currentPage->getPageContent($this);
-            }
-
-            // Echo errors
-            if (!$this->errorsDisplayed) {
-                $this->echoErrors();
-            }
-
-            // Display page content
-            echo $textToDisplay;
-        } else {
-            // Old page system
-            require($this->getUriPage($this->currentPageId));
-        }
     }
 
     /**
@@ -584,6 +368,21 @@ class Website {
             }
         }
         return (int) $default;
+    }
+
+    /**
+     * @deprecated Used to give old .inc pages the Website context
+     */
+    public function execute($file) {
+        require $file;
+    }
+
+    /**
+     * @deprecated Keeps old page system from breaking. Errors are now printed
+     * by the page renderer.
+     */
+    public function echoErrors() {
+        // Empty!
     }
 
 }
