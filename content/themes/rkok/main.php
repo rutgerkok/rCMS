@@ -48,6 +48,7 @@ if (!defined("WEBSITE")) {
             ?>>
 
                 <?php $this->echoPageContent(); ?>
+                <div style="clear:both"></div>
             </div>
 
             <?php if ($this->getPageType() != "BACKSTAGE") { ?>
