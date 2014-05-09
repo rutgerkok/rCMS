@@ -10,18 +10,18 @@ if (!defined("WEBSITE")) {
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" >
 
-        <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-        <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
-        <!--[if lte IE 8]>
-            <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
-        <![endif]-->
-        <title><?php echo $this->getSiteTitle(); ?></title>
+            <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
+            <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+            <!--[if lte IE 8]>
+                <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
+            <![endif]-->
+            <title><?php echo $this->getSiteTitle(); ?></title>
     </head>
     <body <?php
-if ($this->isLoggedIn()) {
-    echo 'class="logged_in"';
-}
-?>>
+    if ($this->isLoggedIn()) {
+        echo 'class="logged_in"';
+    }
+    ?>>
         <div id="container">
             <div id="header">
                 <h1> <?php echo $this->getSiteTitle(); ?> </h1>
@@ -40,23 +40,24 @@ if ($this->isLoggedIn()) {
                 </div>
             </div>
             <div <?php
-                        if ($this->getPageType() == "BACKSTAGE") {
-                            echo 'id="contentadmin"';
-                        } else {
-                            echo 'id="content"';
-                        }
-                        ?>>
-            <?php $this->echoPageContent(); ?>
+            if ($this->getPageType() == "BACKSTAGE") {
+                echo 'id="contentadmin"';
+            } else {
+                echo 'id="content"';
+            }
+            ?>>
+
+                <?php $this->echoPageContent(); ?>
             </div>
 
-                <?php if ($this->getPageType() != "BACKSTAGE") { ?>
+            <?php if ($this->getPageType() != "BACKSTAGE") { ?>
                 <div id="sidebar">
-    <?php $this->echoWidgets(2); ?>
+                    <?php $this->echoWidgets(2); ?>
                 </div>
             <?php } ?>
 
             <div id="footer">
-            <?php $this->echoCopyright(); ?>
+                <?php $this->echoCopyright(); ?>
             </div>
         </div>
     </body>
