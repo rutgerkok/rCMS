@@ -9,11 +9,6 @@ use Rcms\Core\Website;
 use Rcms\Page\View\ArticleSearchView;
 use Rcms\Page\View\LinkSearchView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class SearchPage extends Page {
 
     const ARTICLES_PER_PAGE = 6;

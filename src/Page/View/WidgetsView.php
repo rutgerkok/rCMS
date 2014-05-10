@@ -5,11 +5,6 @@ namespace Rcms\Page\View;
 use Rcms\Core\Website;
 use Rcms\Core\Widgets;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class WidgetsView extends View {
 
     protected $area;

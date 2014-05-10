@@ -8,24 +8,18 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\YearCalendarView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class CalendarPage extends Page {
-    
+
     const MIN_YEAR = 1500;
     const MAX_YEAR = 2800;
 
     /** @var Article[] Articles in a year. */
     protected $articlesInYear;
-    
+
     /** @var DateTime The year of the articles. */
     protected $year;
-    
     private $yearNumber;
-    
+
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
         $oArticles = new Articles($oWebsite);

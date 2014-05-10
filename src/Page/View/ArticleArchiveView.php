@@ -5,11 +5,6 @@ namespace Rcms\Page\View;
 use Rcms\Core\Article;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * A view that displays the article titles grouped by month and year
  */

@@ -6,11 +6,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\WidgetsView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class HomePage extends Page {
 
     public function getPageTitle(Request $request) {

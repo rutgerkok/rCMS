@@ -5,11 +5,6 @@ namespace Rcms\Page\View;
 use DateTime;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Shows all calendars for a given year
  */

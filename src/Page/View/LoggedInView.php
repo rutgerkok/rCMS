@@ -2,11 +2,6 @@
 
 namespace Rcms\Page\View;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Used on the login page when an user has successfully logged in.
  */

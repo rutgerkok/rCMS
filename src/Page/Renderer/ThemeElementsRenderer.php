@@ -8,11 +8,6 @@ use Rcms\Core\Theme;
 use Rcms\Core\Website;
 use Rcms\Page\View\WidgetsView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Context in which a theme operates. All methods that a theme can use for
  * outputting things are located here.

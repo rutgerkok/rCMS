@@ -7,11 +7,6 @@ use Rcms\Core\Comment;
 use Rcms\Core\Website;
 use Rcms\Core\User;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Renders a list of comments and all of its subcomments.
  */

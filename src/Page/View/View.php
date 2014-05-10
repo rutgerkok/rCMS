@@ -4,11 +4,6 @@ namespace Rcms\Page\View;
 
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Represents a view. This class produces just an empty page.
  */

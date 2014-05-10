@@ -5,11 +5,6 @@ namespace Rcms\Page;
 use Rcms\Core\Validate;
 use Rcms\Core\Request;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class EditEmailPage extends EditPasswordPage {
 
     public function getPageTitle(Request $request) {

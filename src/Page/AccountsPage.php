@@ -10,11 +10,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleListView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * The code for the profile page of an user.
  */

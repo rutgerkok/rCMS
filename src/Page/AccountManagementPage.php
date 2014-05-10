@@ -6,11 +6,6 @@ use Rcms\Core\Authentication;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class AccountManagementPage extends Page {
 
     const USERS_PER_PAGE = 50;

@@ -8,11 +8,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\Page;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Used to render a webpage on the site.
  */
@@ -47,18 +42,22 @@ class PageRenderer {
      * @var Website The website class.
      */
     protected $website;
+
     /**
      * @var Request The request.
      */
     protected $request;
+
     /**
      * @var string Internal name of the page, like "edit_article".
      */
     protected $pageName;
+
     /**
      * @var Page Page the user is visiting 
      */
     protected $page;
+
     /**
      * @var int Number of required rank which the user didn't have, or -1 if the user's rank is already high enough.
      */
@@ -238,7 +237,7 @@ class PageRenderer {
         }
         return $title;
     }
-    
+
     /**
      * Gets the short title of the current page. Must not be called before
      * render() is called, so that pages are properly initialized.

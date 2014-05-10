@@ -7,11 +7,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class EditAccountStatusPage extends EditPasswordPage {
 
     const MAXIMUM_STATUS_TEXT_LENGTH = 255;

@@ -5,11 +5,6 @@ namespace Rcms\Page\Renderer;
 use Rcms\Core\Request;
 use Rcms\Page\Page;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Class intented to wrap legacy pages.
  */

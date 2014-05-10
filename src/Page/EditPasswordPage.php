@@ -8,11 +8,6 @@ use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class EditPasswordPage extends Page {
 
     /** @var User $user_to_edit */

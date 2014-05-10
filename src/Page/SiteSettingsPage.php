@@ -6,11 +6,6 @@ use Rcms\Core\Authentication;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class SiteSettingsPage extends Page {
 
     protected $title;
@@ -135,7 +130,7 @@ EOT;
     protected function save_values(Website $oWebsite) {
         $config = $oWebsite->getConfig();
         $database = $oWebsite->getDatabase();
-        
+
         // Title, copyright, password
         $this->save_string($oWebsite, "title", false);
         $this->save_string($oWebsite, "copyright", true);
@@ -218,7 +213,8 @@ EOT;
      * are a one-dimensional array.
      * @return string The selection box.
      */
-    protected function get_dropdown_list($name, $options, $selected, $options_one_dimensional) {
+    protected function get_dropdown_list($name, $options, $selected,
+            $options_one_dimensional) {
         $returnValue = '<select id="' . $name . '" name="' . $name . '">' . "\n";
         foreach ($options as $id => $value) {
             if ($options_one_dimensional) {

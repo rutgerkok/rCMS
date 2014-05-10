@@ -8,11 +8,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class ArticlePage extends Page {
 
     /** @var Article $article The article object, or null if not found */

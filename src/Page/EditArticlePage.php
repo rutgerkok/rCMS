@@ -10,11 +10,6 @@ use Rcms\Core\Categories;
 use Rcms\Core\Editor;
 use Rcms\Core\Request;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class EditArticlePage extends Page {
 
     /** @var ArticleEditor $article_editor */

@@ -10,11 +10,6 @@ use Rcms\Page\View\ArticleListView;
 use Rcms\Page\View\CategoriesView;
 use Rcms\Page\View\EmptyView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class CategoryPage extends Page {
 
     /** @var Article $article The article object, or null if not found */

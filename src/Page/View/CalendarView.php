@@ -6,11 +6,6 @@ use DateTime;
 use DateInterval;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Renders a list of articles with buttons to go the next or previous page
  */

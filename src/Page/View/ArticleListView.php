@@ -5,11 +5,6 @@ namespace Rcms\Page\View;
 use Rcms\Core\Website;
 use Rcms\Core\Article;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Renders a list of articles.
  */

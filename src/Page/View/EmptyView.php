@@ -2,11 +2,6 @@
 
 namespace Rcms\Page\View;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Used on empty pages. There should be an error on the top, created using
  * Website->addError(..).

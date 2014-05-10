@@ -6,11 +6,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\LoggedOutView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class LogoutPage extends Page {
 
     public function init(Request $request) {

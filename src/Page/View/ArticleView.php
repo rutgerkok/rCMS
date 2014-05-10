@@ -6,11 +6,6 @@ use Rcms\Core\Article;
 use Rcms\Core\Comments;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Displays a single article.
  */

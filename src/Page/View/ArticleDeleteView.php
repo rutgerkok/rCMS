@@ -5,11 +5,6 @@ namespace Rcms\Page\View;
 use Rcms\Core\Article;
 use Rcms\Core\Website;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Used on the logout page.
  */

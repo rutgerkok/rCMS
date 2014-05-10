@@ -8,11 +8,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\CommentsTreeView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 /**
  * Page with the latest comments on the site.
  */

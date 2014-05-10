@@ -8,11 +8,6 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleDeleteView;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 class DeleteArticlePage extends Page {
 
     /** @var View The view to be displayed on this page. */
