@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Rcms\Core\Authentication;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
+use Rcms\Page\Page;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -216,17 +217,35 @@ class PageRenderer {
         } else {
             $this->authenticationFailedRank = $rank;
         }
-        
-        // Site title
-        $this->siteTitle = $website->getSiteTitle();
-        if ($website->getConfig()->get("append_page_title", false)) {
-            $this->siteTitle.= ' ' . $this->page->getShortPageTitle($this->request);
-        }
 
         // Output page
         $themes = $website->getThemeManager();
         $outputContext = new ThemeElementsRenderer($website, $themes->getCurrentTheme(), $this);
         $outputContext->render();
+    }
+
+    /**
+     * Gets the title for in headers on the page. Must not be called before
+     * render() is called, so that pages are properly initialized.
+     * @return string The title.
+     */
+    public function getHeaderTitle() {
+        $title = $this->website->getSiteTitle();
+        if ($this->website->getConfig()->get("append_page_title", false)) {
+            if ($this->pageName !== self::HOME_PAGE_NAME) {
+                $title.= " - " . $this->getShortPageTitle();
+            }
+        }
+        return $title;
+    }
+    
+    /**
+     * Gets the short title of the current page. Must not be called before
+     * render() is called, so that pages are properly initialized.
+     * @return string The title.
+     */
+    public function getShortPageTitle() {
+        return $this->page->getShortPageTitle($this->request);
     }
 
     /**

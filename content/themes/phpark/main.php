@@ -15,13 +15,13 @@ if (!defined("WEBSITE")) {
         <!--[if lte IE 8]>
             <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
         <![endif]-->
-        <title><?php echo $this->getSiteTitle(); ?></title>
+        <title><?php echo $this->getHeaderTitle(); ?></title>
     </head>
     <body>
         <div id="container">
             <div id="header">
                 <h1>
-<?php echo $this->getSiteTitle(); ?>
+<?php echo $this->getHeaderTitle(); ?>
                 </h1>
                 <div id="search">
 <?php $this->echoSearchForm(); ?>

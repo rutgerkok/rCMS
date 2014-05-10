@@ -15,7 +15,7 @@ if (!defined("WEBSITE")) {
             <!--[if lte IE 8]>
                 <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
             <![endif]-->
-            <title><?php echo $this->getSiteTitle(); ?></title>
+            <title><?php echo $this->getHeaderTitle(); ?></title>
     </head>
     <body <?php
     if ($this->isLoggedIn()) {
@@ -24,7 +24,7 @@ if (!defined("WEBSITE")) {
     ?>>
         <div id="container">
             <div id="header">
-                <h1> <?php echo $this->getSiteTitle(); ?> </h1>
+                <h1> <?php echo $this->getHeaderTitle(); ?> </h1>
                 <ul id="main_menu">
                     <?php $this->echoTopMenu(); ?>
                 </ul>

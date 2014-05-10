@@ -2,7 +2,7 @@
 
 namespace Rcms\Page\Renderer;
 
-use Rcms\Core\Website;
+use Rcms\Core\Request;
 use Rcms\Page\Page;
 
 // Protect against calling this script directly
@@ -31,18 +31,18 @@ class OldPageWrapper extends Page {
         $this->file = $file;
     }
 
-    public function getPageTitle(Website $website) {
+    public function getPageTitle(Request $request) {
         // Empty, as old pages already output their name as part of getPageContent
         return "";
     }
 
-    public function getShortPageTitle(Website $website) {
+    public function getShortPageTitle(Request $request) {
         return $this->title;
     }
 
-    public function getPageContent(Website $website) {
+    public function getPageContent(Request $request) {
         ob_start();
-        $website->execute($this->file);
+        $request->getWebsite()->execute($this->file);
         return ob_get_clean();
     }
 

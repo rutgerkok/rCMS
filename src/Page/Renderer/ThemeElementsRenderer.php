@@ -60,11 +60,11 @@ class ThemeElementsRenderer {
     }
 
     /**
-     * Gets the title of the site.
-     * @return 
+     * Gets the title for in headers.
+     * @return string The title.
      */
-    public function getSiteTitle() {
-        return $this->website->getSiteTitle();
+    public function getHeaderTitle() {
+        return $this->pageRenderer->getHeaderTitle();
     }
 
     /**
@@ -205,12 +205,9 @@ EOT;
 			<a href="{$website->getUrlMain()}">Datascience</a>
 EOT;
         // Nog de laatste link?
-        if ($website->getPageId() != 'home') {
-            if ($website->getPage() != null) {
-                echo ' <a href="#">' . $website->getPage()->getShortPageTitle($website) . '</a>';
-            } else {
-                echo ' <a href="#">' . $website->getPageTitle() . '</a>';
-            }
+        if ($this->pageRenderer->getPageName() !== PageRenderer::HOME_PAGE_NAME) {
+            $title = $this->pageRenderer->getShortPageTitle();
+            echo '<a href="#">' . $title . '</a>';
         }
     }
 
