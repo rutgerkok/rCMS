@@ -26,7 +26,7 @@ if (!$display_page) {
     if ($loggedIn) {
         // Logged in, but not as an admin
         $textToDisplay = "<p>" . $this->t("errors.must_be_logged_out") . "</p>\n\n";
-        $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("log_out") . '">' . $this->t("main.log_out") . "</a></p>\n\n";
+        $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("logout") . '">' . $this->t("main.log_out") . "</a></p>\n\n";
     } else {
         $creating_username = isSet($_POST["creating_username"])? $_POST["creating_username"] : "";
         $creating_display_name = isSet($_POST["creating_display_name"])? $_POST["creating_display_name"] : "";
@@ -78,7 +78,7 @@ if (!$display_page) {
                 $user->setPassword($creating_password1);
                 if($user->save()) {
                     $textToDisplay .= "<p>" . $this->t("users.account") . " " . $this->t("editor.is_created") . "</p>";
-                    $textToDisplay .= '<p><a class="arrow" href="' . $this->getUrlPage("log_in") . '">' . $this->t("main.log_in") . "</a></p>";
+                    $textToDisplay .= '<p><a class="arrow" href="' . $this->getUrlPage("login") . '">' . $this->t("main.log_in") . "</a></p>";
                 } else {
                     // Internal error occured
                     $textToDisplay .= "<p><strong>" . $this->tReplacedKey("errors.your_input_has_not_been_created", "users.account", true) . "</strong></p>";
