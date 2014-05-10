@@ -16,7 +16,7 @@ if ($loggedIn) {
     $textToDisplay.= '<div id="sidebar_page_sidebar">' . "\n";
     foreach ($widget_areas as $i => $name) {
         $textToDisplay.= '<h3 class="notable">';
-        $textToDisplay.= $this->tReplaced("widgets.placed_on", $name, true);
+        $textToDisplay.= $this->tReplaced("widgets.placed_on", strToLower($name));
         $textToDisplay.= "</h3>\n";
         $widgets_in_sidebar = $oWidgets->getPlacedWidgetsFromSidebar($i);
         foreach ($widgets_in_sidebar as $widget_in_sidebar) {
@@ -64,7 +64,7 @@ if ($loggedIn) {
                     "directory_name" => $widget->getDirectoryName(),
                     "sidebar_id" => $i)
                 );
-                $textToDisplay.= '">' . $this->tReplaced("widgets.add_to", $name, true);
+                $textToDisplay.= '">' . $this->tReplaced("widgets.add_to", strToLower($name));
                 $textToDisplay.= "</a><br />\n";
             }
             $textToDisplay.= "</p>\n";

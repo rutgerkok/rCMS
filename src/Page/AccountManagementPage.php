@@ -80,7 +80,7 @@ class AccountManagementPage extends Page {
             $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("account_management", $page - 1);
             $returnValue.= '">' . $oWebsite->t("articles.page.previous") . '</a> ';
         }
-        $returnValue.= str_replace("\$", $pages, $oWebsite->tReplaced('articles.page.current', $page + 1));
+        $returnValue.= $oWebsite->tReplaced('articles.page.current', $page + 1, $pages);
         // Link to next page
         if (($page + 1) < $pages) {
             $returnValue.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("account_management", $page + 1);

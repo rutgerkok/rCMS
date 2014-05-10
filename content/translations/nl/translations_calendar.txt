@@ -1,5 +1,5 @@
 calendar_for=Agenda voor
-calendar_for_year=Jaaroverzicht van #
+calendar_for_year=Jaaroverzicht van {0}
 pick_a_date=Kies een datum
 no_activities_today=Niets gepland.
 weekday.mon=ma

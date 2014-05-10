@@ -2,16 +2,12 @@
 
 namespace Rcms\Core;
 
-use Exception;
-
 class Website {
 
     const MAX_SITE_OPTION_LENGTH = 200;
     const CONFIG_FILE = "config.php";
     const BASE_NAMESPACE = "Rcms\\";
 
-    protected $errors = array();
-    protected $debug = false;
     protected $databaseObject;
 
     /** @var Themes Themes object */
@@ -25,6 +21,9 @@ class Website {
 
     /** @var Authentication Handles authentication */
     protected $authenticationObject;
+
+    /** @var Messages Handles errors, messages and translations. */
+    protected $messageSystem;
 
     /**
      * @deprecated For old page system. Errors are now always echoed after the
@@ -46,6 +45,7 @@ class Website {
 
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
+        $this->messageSystem = new Messages($this->getUriTranslations() . '/' . $this->config->get("language"));
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");
@@ -120,6 +120,15 @@ class Website {
         return $this->widgets;
     }
 
+    /**
+     * Gets access to the message system of the page. This is uses to translate
+     * messages and notify users.
+     * @return Messages The message system.
+     */
+    public function getMessages() {
+        return $this->messageSystem;
+    }
+
     // Paths
 
     /** Returns the path of the library directory */
@@ -155,6 +164,11 @@ class Website {
     /** Returns the internal uri of the public content directory */
     public function getUriContent() {
         return $this->getConfig()->get('uri') . "content/";
+    }
+
+    /** @deprecated Only accounts for old page system. */
+    public function getUriPage($name) {
+        return $this->getUriPages() . $name . ".inc";
     }
 
     /**
@@ -212,25 +226,16 @@ class Website {
 
 //Einde paden
 
-    public function addError($message, $public_message = false) {
-
-        if ($this->debug || !$public_message) { //foutmelding alleen weergeven als melding ongevaarlijk is of als debuggen aan is gezet
-            $this->errors[count($this->errors)] = $message;
-        } else {
-            $this->errors[count($this->errors)] = $public_message;
-        }
-    }
-
-    public function getErrorCount() {
-        return count($this->errors);
+    public function addError($error) {
+        $this->messageSystem->addError($error);
     }
 
     /**
-     * Gets a list of all errors that occured loading this page.
-     * @return string[] All errors.
+     * @deprecated Misused as a way to check if it is safe to save something.
+     * If you need to error count for display purposes, count them yourselves.
      */
-    public function getErrors() {
-        return $this->errors;
+    public function getErrorCount() {
+        return count($this->messageSystem->getErrors());
     }
 
     function hasAccess() { //kijkt of site mag worden geladen
@@ -305,45 +310,21 @@ class Website {
         return count($this->getThemeManager()->getCurrentTheme()->getWidgetAreas($this)) + 1;
     }
 
-    // TRANSLATIONS
-
+    // Translations, see documentation is Messages class.
     public function t($key) {
-        $keys = explode(".", $key, 2);
-        if (isSet($this->translations[$keys[0]])) { //al geladen
-            return $this->translations[$keys[0]][$keys[1]];
-        } else { //moet nog geladen worden
-            $translationsFile = $this->getUriTranslations() . $this->getConfig()->get("language") . "/translations_" . $keys[0] . ".txt";
-            if (file_exists($translationsFile)) { //laad
-                $fileContents = file($translationsFile);
-                foreach ($fileContents as $line) {
-                    $translation = explode("=", $line, 2);
-                    $this->translations[$keys[0]][$translation[0]] = trim($translation[1]);
-                }
-                unset($fileContents);
-
-                //en geef juiste waarde terug
-                return $this->translations[$keys[0]][$keys[1]];
-            } else { //foutmelding
-                echo "<br /><br /><code>$translationsFile</code> was not found!";
-                die();
-            }
-        }
+        return $this->messageSystem->t($key);
     }
 
-    public function tReplacedKey($key, $replaceInKey, $lowercase = false) {
-        if ($lowercase) {
-            return str_replace("#", strToLower($this->t($replaceInKey)), $this->t($key));
-        } else {
-            return str_replace("#", $this->t($replaceInKey), $this->t($key));
-        }
+    public function tReplacedKey($key, $replacementKey, $lowercase = false) {
+        return $this->messageSystem->tReplacedKey($key, $replacementKey, $lowercase);
     }
 
-    public function tReplaced($key, $replaceInKey, $lowercase = false) {
-        if ($lowercase) {
-            return str_replace("#", strtolower($replaceInKey), $this->t($key));
-        } else {
-            return str_replace("#", $replaceInKey, $this->t($key));
+    public function tReplaced($key, $replacements) {
+        // Varargs support
+        if (!is_array($replacements)) {
+            $replacements = array_slice(func_get_args(), 1);
         }
+        return $this->messageSystem->tReplaced($key, $replacements);
     }
 
     // Input from $_REQUEST

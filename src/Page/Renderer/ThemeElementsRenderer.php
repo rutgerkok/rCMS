@@ -100,7 +100,7 @@ class ThemeElementsRenderer {
 
     protected function echoErrors() {
         $website = $this->website;
-        $errors = $website->getErrors();
+        $errors = $website->getMessages()->getErrors();
         $errorCount = count($errors); //totaal aantal foutmeldingen
         if ($errorCount == 0) {
             return;
@@ -113,7 +113,7 @@ class ThemeElementsRenderer {
 ERROR;
         } else {
             echo '<div class="error">';
-            echo "   <h3>" . str_replace("#", $errorCount, $website->t('errors.errors_occured')) . "</h3>";
+            echo "   <h3>" . $website->tReplaced('errors.errors_occured', $errorCount) . "</h3>";
             echo '   <p>';
             echo '      <ul>';
             foreach ($errors as $nr => $error) {

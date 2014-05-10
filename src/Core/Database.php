@@ -222,12 +222,15 @@ SQL;
 
         if (!$result && $errorreport) {
             //toon foutmelding
-            $websiteObject = $this->websiteObject;
+            $website = $this->websiteObject;
             if ($this->isUpToDate()) {
-                $websiteObject->addError('Query failed: <br /><strong>Query:</strong><br />' . $sql . '<br /><strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error(), 'A database error occured.');
+                $website->addError('A database error occured.');
+                $website->getMessages()->logError('Query failed: <br />'
+                        . '<strong>Query:</strong><br />' . $sql . '<br />'
+                        . '<strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error());
                 //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding
             } else {
-                $websiteObject->addError('Database is outdated! Please upgrade using the link in the menu bar.');
+                $website->addError('Database is outdated! Please upgrade using the link in the menu bar.');
             }
         }
         return $result;

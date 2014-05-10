@@ -90,7 +90,7 @@ class ArticleEditor {
                 $noErrors = false;
             }
             if (strLen($body) > 65535) {
-                $oWebsite->addError($oWebsite->t("articles.body") . " " . $oWebsite->tReplacedKey("errors.is_too_long_num", 65535));
+                $oWebsite->addError($oWebsite->t("articles.body") . " " . $oWebsite->tReplaced("errors.is_too_long_num", 65535));
                 $noErrors = false;
             }
             $article->body = $body;

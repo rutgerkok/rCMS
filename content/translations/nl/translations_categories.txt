@@ -1,5 +1,5 @@
 all=Alle categorie&euml;n
-search.all_in_year=Doorzoek alle categorie&euml;n in #
+search.all_in_year=Doorzoek alle categorie&euml;n in {0}
 create=Maak nieuwe categorie
 rename=Geef een categorie een andere naam
 delete=Verwijder een categorie

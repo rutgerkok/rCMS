@@ -63,7 +63,7 @@ class ArticleSearchView extends ArticleListView {
         }
 
         // Current page (converting from zero-indexed to one-indexed)
-        $returnValue.= str_replace("\$", $this->highestPageNumber + 1, $oWebsite->tReplaced('articles.page.current', $page + 1));
+        $returnValue.= $oWebsite->tReplaced('articles.page.current', $page + 1, $this->highestPageNumber + 1);
 
         // Next page
         if ($page < $this->highestPageNumber) {
