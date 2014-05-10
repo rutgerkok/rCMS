@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Validate;
-use Rcms\Core\Website;
+use Rcms\Core\Request;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -12,21 +12,22 @@ if (!defined("WEBSITE")) {
 
 class EditEmailPage extends EditPasswordPage {
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.email.edit");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.email.edit");
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         // Check selected user
         if ($this->user == null) {
             return "";
         }
 
+        $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
-        if (isSet($_REQUEST["email"])) {
+        if ($request->hasRequestValue("email")) {
             // Sent
-            $email = $oWebsite->getRequestString("email");
+            $email = $request->getRequestString("email");
             if (Validate::email($email)) {
                 // Valid email
                 $this->user->setEmail($email);
@@ -54,7 +55,7 @@ class EditEmailPage extends EditPasswordPage {
             }
 
             // Form itself
-            $email = isSet($_POST['email']) ? htmlSpecialChars($_POST['email']) : $this->user->getEmail();
+            $email = htmlSpecialChars($request->getRequestString("email", $this->user->getEmail()));
             $textToDisplay.=<<<EOT
                 <form action="{$oWebsite->getUrlMain()}" method="post">
                     <p>

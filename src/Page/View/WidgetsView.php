@@ -13,10 +13,11 @@ if (!defined("WEBSITE")) {
 class WidgetsView extends View {
 
     protected $area;
+
     /** @var Widgets The widgets manager. */
     protected $widgets;
 
-    public function __construct(Website $website,  Widgets $widgets, $area) {
+    public function __construct(Website $website, Widgets $widgets, $area) {
         parent::__construct($website);
         $this->area = $area;
         $this->widgets = $widgets;

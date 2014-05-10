@@ -3,6 +3,7 @@
 namespace Rcms\Core;
 
 use DateTime;
+use InvalidArgumentException;
 
 /**
  * Provides all method needed to build an article editor.
@@ -167,5 +168,3 @@ class ArticleEditor {
     }
 
 }
-
-?>

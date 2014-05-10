@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Articles;
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleDeleteView;
 
@@ -20,8 +21,9 @@ class DeleteArticlePage extends Page {
     /** @var Article The article to delete */
     protected $article;
 
-    public function init(Website $oWebsite) {
-        $articleId = $oWebsite->getRequestInt("id");
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $articleId = $request->getParamInt(0);
 
         $oArticles = new Articles($oWebsite);
         $article = $oArticles->getArticleData($articleId);
@@ -33,7 +35,7 @@ class DeleteArticlePage extends Page {
             return;
         }
 
-        $action = $oWebsite->getRequestString("action");
+        $action = $request->getRequestString("action");
         if ($action == "delete") {
             // Bye bye article
             if ($article->delete($oWebsite->getDatabase())) {
@@ -57,7 +59,8 @@ class DeleteArticlePage extends Page {
         }
     }
 
-    public function getPageTitle(Website $oWebsite) {
+    public function getPageTitle(Request $request) {
+        $oWebsite = $request->getWebsite();
         if ($this->article) {
             return $oWebsite->t("main.delete") . ' "' . htmlSpecialChars($this->article->title) . '"';
         } else {
@@ -65,7 +68,7 @@ class DeleteArticlePage extends Page {
         }
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$MODERATOR_RANK;
     }
 
@@ -73,8 +76,8 @@ class DeleteArticlePage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.article.delete");
+    public function getShortPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.article.delete");
     }
 
     public function getView(Website $oWebsite) {

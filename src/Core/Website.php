@@ -11,7 +11,7 @@ class Website {
     const BASE_NAMESPACE = "Rcms\\";
 
     protected $errors = array();
-    protected $debug = true;
+    protected $debug = false;
     protected $databaseObject;
 
     /** @var Themes Themes object */
@@ -199,7 +199,7 @@ class Website {
 //Einde paden
 
     public function addError($message, $public_message = false) {
-        throw new Exception($message);
+
         if ($this->debug || !$public_message) { //foutmelding alleen weergeven als melding ongevaarlijk is of als debuggen aan is gezet
             $this->errors[count($this->errors)] = $message;
         } else {
@@ -332,12 +332,16 @@ class Website {
         }
     }
 
-    // INPUT FROM $_REQUEST
+    // Input from $_REQUEST
 
     /**
      * Gets a string from the $_REQUEST array, without extra "magic quotes"
      * and with a default option if the $_REQUEST array doesn't contain the
      * variable.
+     *
+     * Note: this method will eventually be moved to the Request class. For now,
+     * it remains here for the widgets, as they don't have access to Request yet.
+     *
      * @param string $name Key in the $_REQUEST array.
      * @param string $default Default option, if value is not found.
      * @return string The value in the $_REQUEST array, or the default value.
@@ -357,6 +361,10 @@ class Website {
     /**
      * Gets an int from the $_REQUEST array. Returns the default value if there
      * was no valid integer provided.
+     *
+     * Note: this method will eventually be moved to the Request class. For now,
+     * it remains here for the widgets, as they don't have access to Request yet.
+     *
      * @param string $name Key in the $_REQUEST array.
      * @param int $default Default option.
      * @return int The int.
@@ -369,6 +377,8 @@ class Website {
         }
         return (int) $default;
     }
+
+    // For old page system
 
     /**
      * @deprecated Used to give old .inc pages the Website context

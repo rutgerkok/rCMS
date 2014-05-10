@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use DateTime;
 use Rcms\Core\Articles;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\YearCalendarView;
 
@@ -13,6 +14,9 @@ if (!defined("WEBSITE")) {
 }
 
 class CalendarPage extends Page {
+    
+    const MIN_YEAR = 1500;
+    const MAX_YEAR = 2800;
 
     /** @var Article[] Articles in a year. */
     protected $articlesInYear;
@@ -22,10 +26,11 @@ class CalendarPage extends Page {
     
     private $yearNumber;
     
-    public function init(Website $oWebsite) {
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
         $oArticles = new Articles($oWebsite);
-        $yearNumber = $oWebsite->getRequestInt("id", date('Y'));
-        if ($yearNumber < 1500 || $yearNumber > 2800) {
+        $yearNumber = $request->getParamInt(0, date('Y'));
+        if ($yearNumber < self::MIN_YEAR || $yearNumber > self::MAX_YEAR) {
             $yearNumber = date('Y');
         }
         $this->year = DateTime::createFromFormat('Y', $yearNumber);
@@ -34,12 +39,12 @@ class CalendarPage extends Page {
         $this->articlesInYear = $oArticles->getArticlesDataCalendarYear($this->year);
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->tReplaced("calendar.calendar_for_year", $this->yearNumber);
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->tReplaced("calendar.calendar_for_year", $this->yearNumber);
     }
 
-    public function getView(Website $oWebsite) {
-        return new YearCalendarView($oWebsite, $this->year, $this->articlesInYear);
+    public function getView(Website $website) {
+        return new YearCalendarView($website, $this->year, $this->articlesInYear);
     }
 
 }

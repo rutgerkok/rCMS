@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Articles;
 use Rcms\Core\Categories;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleArchiveView;
 
@@ -18,9 +19,10 @@ class ArchivePage extends Page {
     private $selectedYear;
     private $foundArticles;
 
-    public function init(Website $oWebsite) {
-        $this->selectedYear = $oWebsite->getRequestInt("year", 0);
-        $this->selectedCategory = $oWebsite->getRequestInt("id", 0);
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $this->selectedYear = $request->getRequestInt("year", 0);
+        $this->selectedCategory = $request->getParamInt(0);
 
         // Fetch all categories
         $categories = new Categories($oWebsite);
@@ -38,12 +40,12 @@ class ArchivePage extends Page {
         $this->foundArticles = $articles->getArticlesDataArchive($this->selectedYear, $this->selectedCategory);
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("articles.archive");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("articles.archive");
     }
 
-    public function getView(Website $oWebsite) {
-        return new ArticleArchiveView($oWebsite, $this->foundArticles, $this->allCategories, $this->articleCountInYears, $this->selectedCategory, $this->selectedYear);
+    public function getView(Website $website) {
+        return new ArticleArchiveView($website, $this->foundArticles, $this->allCategories, $this->articleCountInYears, $this->selectedCategory, $this->selectedYear);
     }
 
 }

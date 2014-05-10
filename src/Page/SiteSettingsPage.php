@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 
 // Protect against calling this script directly
@@ -20,7 +21,8 @@ class SiteSettingsPage extends Page {
     protected $user_account_creation;
     protected $saved = false;
 
-    public function init(Website $oWebsite) {
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
         $this->title = $oWebsite->getConfig()->get("title");
         $this->copyright = $oWebsite->getConfig()->get("copyright");
         $this->password = $oWebsite->getConfig()->get("password");
@@ -38,19 +40,20 @@ class SiteSettingsPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("site_settings.editing_site_settings");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("site_settings.editing_site_settings");
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.site_settings");
+    public function getShortPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.site_settings");
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
+        $oWebsite = $request->getWebsite();
         $themes = $this->get_sub_directory_names($oWebsite->getUriThemes());
         $languages = $this->get_sub_directory_names($oWebsite->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';

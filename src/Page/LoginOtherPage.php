@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\User;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\LoggedInOtherView;
 
@@ -19,8 +20,9 @@ class LoginOtherPage extends Page {
      */
     private $newUser = null;
 
-    public function init(Website $oWebsite) {
-        $userId = $oWebsite->getRequestInt("id");
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $userId = $request->getParamInt(0);
 
         // Fetch user
         $user = User::getById($oWebsite, $userId);
@@ -38,8 +40,8 @@ class LoginOtherPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.log_in");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.log_in");
     }
 
     public function getView(Website $oWebsite) {
@@ -50,7 +52,7 @@ class LoginOtherPage extends Page {
         return new LoggedInOtherView($oWebsite, $this->newUser);
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$ADMIN_RANK;
     }
 

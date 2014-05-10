@@ -4,6 +4,7 @@ namespace Rcms\Page\Renderer;
 
 use BadMethodCallException;
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 
 // Protect against calling this script directly
@@ -45,34 +46,46 @@ class PageRenderer {
      * @var Website The website class.
      */
     protected $website;
+    /**
+     * @var Request The request.
+     */
+    protected $request;
+    /**
+     * @var string Internal name of the page, like "edit_article".
+     */
     protected $pageName;
-    protected $pageVar;
-
-    /** @var Page Page the user is visiting */
-    protected $page; // Available during/after echo_page
-    protected $authenticationFailedRank = -1; // Number of required rank which the user didn't have, or -1 if the user's rank is already high enough
+    /**
+     * @var Page Page the user is visiting 
+     */
+    protected $page;
+    /**
+     * @var int Number of required rank which the user didn't have, or -1 if the user's rank is already high enough.
+     */
+    protected $authenticationFailedRank = -1;
 
     public function __construct(Website $website, array $pagePath) {
         $this->website = $website;
 
         // Get from array
         $pageName = self::HOME_PAGE_NAME;
-        $pageVar = "";
+        $params = array();
         if (count($pagePath) > 0) {
             $pageName = $pagePath[0];
         }
         if (count($pagePath) > 1) {
-            $pageVar = $pagePath[1];
+            $params = array_slice($pagePath, 1);
         }
 
         // Populate fiels
         $this->page = $this->loadPage($pageName);
         $this->pageName = $pageName;
-        $this->pageVar = $pageVar;
+        $this->request = new Request($website, $params);
 
-        // Many scripts rely on those variables
+        // Some scripts still rely on those variables
         $_GET["p"] = $_POST["p"] = $_REQUEST["p"] = $pageName;
-        $_GET["id"] = $_POST["id"] = $_REQUEST["id"] = $pageVar;
+        if (count($params) >= 1) {
+            $_GET["id"] = $_POST["id"] = $_REQUEST["id"] = $params[0];
+        }
     }
 
     /**
@@ -189,9 +202,6 @@ class PageRenderer {
             return;
         }
 
-        // Site title
-        $this->siteTitle = $website->getSiteTitle();
-
         // Set password cookie
         $sitePassword = $website->getConfig()->get("password");
         if (!empty($sitePassword)) {
@@ -199,12 +209,18 @@ class PageRenderer {
         }
 
         // Authentication stuff
-        $rank = (int) $this->page->getMinimumRank($website);
+        $rank = (int) $this->page->getMinimumRank($this->request);
         if ($rank == Authentication::$LOGGED_OUT_RANK || $website->getAuth()->check($rank, false)) {
             // Call init method
-            $this->page->init($website);
+            $this->page->init($this->request);
         } else {
             $this->authenticationFailedRank = $rank;
+        }
+        
+        // Site title
+        $this->siteTitle = $website->getSiteTitle();
+        if ($website->getConfig()->get("append_page_title", false)) {
+            $this->siteTitle.= ' ' . $this->page->getShortPageTitle($this->request);
         }
 
         // Output page
@@ -223,7 +239,7 @@ class PageRenderer {
         setLocale(LC_ALL, explode("|", $website->t("main.locales")));
 
         // Title
-        $title = $this->page->getPageTitle($website);
+        $title = $this->page->getPageTitle($this->request);
         if (!empty($title)) {
             echo "<h2>" . $title . "</h2>\n";
         }
@@ -234,7 +250,7 @@ class PageRenderer {
             $loginView = new LoginView($website, $this->authenticationFailedRank);
             $textToDisplay = $loginView->getText();
         } else {
-            $textToDisplay = $this->page->getPageContent($website);
+            $textToDisplay = $this->page->getPageContent($this->request);
         }
 
         // Display page content

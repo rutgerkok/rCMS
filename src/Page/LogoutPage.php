@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\LoggedOutView;
 
@@ -12,16 +13,16 @@ if (!defined("WEBSITE")) {
 
 class LogoutPage extends Page {
 
-    public function init(Website $oWebsite) {
-        $oWebsite->getAuth()->logOut();
+    public function init(Request $request) {
+        $request->getWebsite()->getAuth()->logOut();
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.log_out") . '...';
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.log_out") . '...';
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.log_out");
+    public function getShortPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.log_out");
     }
 
     public function getView(Website $oWebsite) {

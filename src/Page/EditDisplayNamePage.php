@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Validate;
-use Rcms\Core\Website;
+use Rcms\Core\Request;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -12,21 +12,22 @@ if (!defined("WEBSITE")) {
 
 class EditDisplayNamePage extends EditPasswordPage {
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.display_name.edit");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.display_name.edit");
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         // Check selected user
         if ($this->user == null) {
             return "";
         }
 
+        $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
         if (isSet($_REQUEST["display_name"])) {
             // Sent
-            $display_name = $oWebsite->getRequestString("display_name");
+            $display_name = $request->getRequestString("display_name");
             if (Validate::displayName($display_name)) {
                 // Valid display_name
                 $this->user->setDisplayName($display_name);

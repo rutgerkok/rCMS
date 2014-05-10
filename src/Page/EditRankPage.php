@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Website;
+use Rcms\Core\Request;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -12,20 +12,21 @@ if (!defined("WEBSITE")) {
 
 class EditRankPage extends EditPasswordPage {
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.rank.edit");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.rank.edit");
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         // Check selected user
         if ($this->user == null) {
             return "";
         }
 
+        $oWebsite = $request->getWebsite();
         // Don't allow to edit your own rank (why would admins want to downgrade
         // themselves?)
         if (!$this->editing_someone_else) {
@@ -35,9 +36,9 @@ class EditRankPage extends EditPasswordPage {
 
         $show_form = true;
         $textToDisplay = "";
-        if (isSet($_REQUEST["rank"])) {
+        if ($request->hasRequestValue("rank")) {
             // Sent
-            $rank = $oWebsite->getRequestInt("rank");
+            $rank = $request->getRequestInt("rank");
             $oAuth = $oWebsite->getAuth();
             if ($oAuth->isValidRankForAccounts($rank)) {
                 // Valid rank id
@@ -61,7 +62,7 @@ class EditRankPage extends EditPasswordPage {
         // Show form
         if ($show_form) {
             // Variables
-            $rank = $oWebsite->getRequestInt("rank", $this->user->getRank());
+            $rank = $request->getRequestInt("rank", $this->user->getRank());
             $ranks = array(Authentication::$USER_RANK, Authentication::$MODERATOR_RANK, Authentication::$ADMIN_RANK);
 
             // Form itself

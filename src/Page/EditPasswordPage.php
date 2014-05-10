@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
@@ -19,9 +20,10 @@ class EditPasswordPage extends Page {
     protected $editing_someone_else = false;
 
     /** Fills the class variables, adds errors if needed. */
-    public function init(Website $oWebsite) {
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
         $this->user = $oWebsite->getAuth()->getCurrentUser();
-        $user_id = $oWebsite->getRequestInt("id", 0);
+        $user_id = $request->getParamInt(0);
         // Id given to edit someone else, check for permissions
         if ($user_id > 0 && $user_id != $this->user->getId()) {
             $this->editing_someone_else = true;
@@ -52,11 +54,11 @@ class EditPasswordPage extends Page {
         return $oWebsite->isLoggedInAsStaff(true);
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.password.edit");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.password.edit");
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$USER_RANK;
     }
 
@@ -64,21 +66,22 @@ class EditPasswordPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         // Check selected user
         if ($this->user == null) {
             return "";
         }
 
+        $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
-        if (isSet($_REQUEST["password"])) {
+        if ($request->hasRequestValue("password")) {
             // Sent
-            $old_password = $oWebsite->getRequestString("old_password");
+            $old_password = $request->getRequestString("old_password");
             if ($this->editing_someone_else || $this->user->verifyPassword($old_password)) {
                 // Old password entered correctly
-                $password = $oWebsite->getRequestString("password");
-                $password2 = $oWebsite->getRequestString("password2");
+                $password = $request->getRequestString("password");
+                $password2 = $request->getRequestString("password2");
                 if (Validate::password($password, $password2)) {
                     // Valid password
                     $this->user->setPassword($password);

@@ -19,8 +19,9 @@ class ArticleSearchView extends ArticleListView {
     protected $pageNumber;
     protected $highestPageNumber;
 
-    public function __construct(Website $oWebsite, $keyword, array $displayedArticles,
-            $pageNumber, $totalNumberOfArticles, $highestPageNumber) {
+    public function __construct(Website $oWebsite, $keyword,
+            array $displayedArticles, $pageNumber, $totalNumberOfArticles,
+            $highestPageNumber) {
         parent::__construct($oWebsite, $displayedArticles, 0, true, false);
         $this->keyword = $keyword;
         $this->totalNumberOfArticles = (int) $totalNumberOfArticles;

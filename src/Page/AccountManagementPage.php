@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 
 // Protect against calling this script directly
@@ -14,12 +15,12 @@ class AccountManagementPage extends Page {
 
     const USERS_PER_PAGE = 50;
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("users.account_management");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("users.account_management");
     }
 
     public function getPageType() {
@@ -43,7 +44,8 @@ class AccountManagementPage extends Page {
         return true;
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
+        $oWebsite = $request->getWebsite();
         $page = max(0, $oWebsite->getRequestInt("id", 0));
         $usersCount = $oWebsite->getAuth()->getRegisteredUsersCount();
 

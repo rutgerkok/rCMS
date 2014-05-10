@@ -6,6 +6,7 @@ use Rcms\Core\Articles;
 use Rcms\Core\Authentication;
 use Rcms\Core\Comments;
 use Rcms\Core\User;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleListView;
 
@@ -23,8 +24,9 @@ class AccountPage extends Page {
     protected $user;
     protected $can_edit_user;
 
-    public function init(Website $oWebsite) {
-        $user_id = $oWebsite->getRequestInt("id", 0);
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $user_id = $request->getRequestInt("id", 0);
         if ($user_id == 0) {
             // Use current user
             $this->user = $oWebsite->getAuth()->getCurrentUser();
@@ -45,19 +47,20 @@ class AccountPage extends Page {
         }
     }
 
-    public function getMinimumRank(Website $oWebsite) {
-        if ($oWebsite->getRequestInt("id", 0) == 0) {
+    public function getMinimumRank(Request $request) {
+        if ($request->getParamInt(0) == 0) {
             // Need to be logged in to view your own account
             return Authentication::$USER_RANK;
         } else {
-            return parent::getMinimumRank($oWebsite);
+            return parent::getMinimumRank($request);
         }
     }
 
-    public function getPageTitle(Website $oWebsite) {
+    public function getPageTitle(Request $request) {
+        $oWebsite = $request->getWebsite();
         // Get selected user
         $user = $oWebsite->getAuth()->getCurrentUser();
-        $given_user_id = $oWebsite->getRequestInt("id", 0);
+        $given_user_id = $request->getParamInt(0);
         if ($given_user_id > 0) {
             $user = User::getById($oWebsite, $given_user_id);
         }
@@ -69,11 +72,13 @@ class AccountPage extends Page {
         }
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("users.profile_page");
+    public function getShortPageTitle(Request $request) {
+        $website = $request->getWebsite();
+        return $website->t("users.profile_page");
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
+        $oWebsite = $request->getWebsite();
         if ($this->user == null) {
             // Error - user not found
             $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));

@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
@@ -15,11 +16,11 @@ class EditAccountStatusPage extends EditPasswordPage {
 
     const MAXIMUM_STATUS_TEXT_LENGTH = 255;
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("editor.status.edit");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("editor.status.edit");
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$MODERATOR_RANK;
     }
 
@@ -28,7 +29,8 @@ class EditAccountStatusPage extends EditPasswordPage {
         return $oWebsite->isLoggedInAsStaff(false);
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
+        $oWebsite = $request->getWebsite();
         // Check selected user
         if ($this->user == null) {
             return "";
@@ -43,10 +45,10 @@ class EditAccountStatusPage extends EditPasswordPage {
 
         $show_form = true;
         $textToDisplay = "";
-        if (isSet($_REQUEST["status"])) {
+        if ($request->hasRequestValue("status")) {
             // Sent
-            $status = $oWebsite->getRequestInt("status");
-            $status_text = $oWebsite->getRequestString("status_text");
+            $status = $request->getRequestInt("status");
+            $status_text = $request->getRequestString("status_text");
             $oAuth = $oWebsite->getAuth();
 
             $valid = true;
@@ -87,7 +89,7 @@ class EditAccountStatusPage extends EditPasswordPage {
             // Variables
             $status = $oWebsite->getRequestInt("status", $this->user->getStatus());
             $statuses = array(Authentication::NORMAL_STATUS, Authentication::BANNED_STATUS, Authentication::DELETED_STATUS);
-            $status_text = htmlSpecialChars($oWebsite->getRequestString("status_text", $this->user->getStatusText()));
+            $status_text = htmlSpecialChars($request->getRequestString("status_text", $this->user->getStatusText()));
 
             // Form itself
             $textToDisplay.=<<<EOT

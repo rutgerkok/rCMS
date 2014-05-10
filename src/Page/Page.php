@@ -2,16 +2,17 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Website;
 use Rcms\Core\Authentication;
+use Rcms\Core\Request;
+use Rcms\Core\Website;
 
 abstract class Page {
 
     /**
      * Called before any output is done. Can be used to set cookies, for example
-     * @param Website $oWebsite The website object.
+     * @param Request $request Request that caused this page to load.
      */
-    public function init(Website $oWebsite) {
+    public function init(Request $request) {
         
     }
 
@@ -25,47 +26,50 @@ abstract class Page {
 
     /**
      * Gets the minimum rank required to view this page, like Authentication::$USER_RANK.
+     * @param Request $request Request that caused this page to load.
      * @return int The minimum rank required to view this page.
      */
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$LOGGED_OUT_RANK;
     }
 
     /**
      * Gets the title of this page. Empty titles are allowed.
+     * @param Request $request Request that caused this page to load.
      * @return string The title of this page.
      */
-    public abstract function getPageTitle(Website $oWebsite);
+    public abstract function getPageTitle(Request $request);
 
     /**
      * Gets a shorter title for this page, for example for in the breadcrumbs.
      * Empty titles are highly discouraged.
-     * @param Website $oWebsite The website object.
+     * @param Request $request Request that caused this page to load.
      * @return string The short title of this page.
      */
-    public function getShortPageTitle(Website $oWebsite) {
-        return $this->getPageTitle($oWebsite);
+    public function getShortPageTitle(Request $request) {
+        return $this->getPageTitle($request);
     }
 
     /**
-     * Returns the view of this page. Not overriding this method is deprecated.
+     * Returns the view of this page.
+     * @param Website $website The website instance.
      * @return View|null A view, or null if not using a view (deprecated).
      */
-    protected function getView(Website $oWebsite) {
+    protected function getView(Website $website) {
         return null;
     }
 
     /**
-     * Gets all views on this page.
-     * @param Website $oWebsite The website object.
+     * Gets all views on this page. 
+     * @param Website $website The website instance.
      * @return View[] Array of views. May be empty if this page is not using
      * views (deprecated).
      */
-    public function getViews(Website $oWebsite) {
+    public function getViews(Website $website) {
         // Fall back on method to get a single view
-        $view = $this->getView($oWebsite);
+        $view = $this->getView($website);
 
-        if (!$view) {
+        if ($view === null) {
             // No view found, return empty array
             return array();
         }
@@ -75,12 +79,12 @@ abstract class Page {
 
     /**
      * Gets the HTML content of this page. Overriding this method is deprecated,
-     * you should provide a view instead using {@link #getView(Website)}.
+     * you should provide a view instead using {@link #getView(Request)}.
      * @return string The HTML content of this page.
      */
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         $returnValue = "";
-        $views = $this->getViews($oWebsite);
+        $views = $this->getViews($request->getWebsite());
         foreach ($views as $view) {
             $returnValue.= $view->getText();
         }

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\WidgetsView;
 
@@ -12,8 +13,8 @@ if (!defined("WEBSITE")) {
 
 class HomePage extends Page {
 
-    public function getPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.home");
+    public function getPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.home");
     }
 
     public function getView(Website $oWebsite) {

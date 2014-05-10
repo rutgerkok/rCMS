@@ -2,12 +2,13 @@
 
 namespace Rcms\Page;
 
+use InvalidArgumentException;
 use Rcms\Core\Article;
 use Rcms\Core\ArticleEditor;
 use Rcms\Core\Authentication;
 use Rcms\Core\Categories;
 use Rcms\Core\Editor;
-use Rcms\Core\Website;
+use Rcms\Core\Request;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -24,12 +25,9 @@ class EditArticlePage extends Page {
     protected $message; // Message at the top of the page
     protected $redirect; // Redirect link, page will redirect to this link
 
-    public function init(Website $oWebsite) {
-        if (isSet($_REQUEST["id"])) {
-            $article_id = $_REQUEST["id"];
-        } else {
-            $article_id = 0;
-        }
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $article_id = $request->getParamInt(0);
 
         try {
             $article_editor = new ArticleEditor($oWebsite, $article_id);
@@ -38,7 +36,7 @@ class EditArticlePage extends Page {
 
             // Now check input
             if ($article_editor->processInput($_REQUEST, $this->categories_object)) {
-                if (isSet($_REQUEST["submit"])) {
+                if ($request->hasRequestValue("submit")) {
                     // Try to save
                     $article = $article_editor->getArticle();
                     if ($article->save($oWebsite->getDatabase())) {
@@ -53,7 +51,7 @@ class EditArticlePage extends Page {
                         $this->message.= $oWebsite->t("articles.view") . "</a>";
 
                         // Check for redirect
-                        if ($_REQUEST["submit"] == $oWebsite->t("editor.save_and_quit")) {
+                        if ($request->getRequestString("submit") == $oWebsite->t("editor.save_and_quit")) {
                             $this->redirect = $oWebsite->getUrlPage("article", $article->id);
                         }
                     } else {
@@ -66,11 +64,12 @@ class EditArticlePage extends Page {
         }
     }
 
-    public function getMinimumRank(Website $oWebsite) {
+    public function getMinimumRank(Request $request) {
         return Authentication::$MODERATOR_RANK;
     }
 
-    public function getPageTitle(Website $oWebsite) {
+    public function getPageTitle(Request $request) {
+        $oWebsite = $request->getWebsite();
         $page_title = $oWebsite->t("articles.edit");
         if ($this->article_editor != null) {
             $article_title = $this->article_editor->getArticle()->title;
@@ -85,14 +84,15 @@ class EditArticlePage extends Page {
         return $page_title;
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("articles.edit");
+    public function getShortPageTitle(Request $request) {
+        return $request->getWebsite()->t("articles.edit");
     }
 
-    public function getPageContent(Website $oWebsite) {
+    public function getPageContent(Request $request) {
         if ($this->article_editor == null) {
             return "";
         }
+        $oWebsite = $request->getWebsite();
         $article_editor = $this->article_editor;
         $article = $article_editor->getArticle();
 

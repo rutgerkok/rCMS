@@ -14,6 +14,7 @@ if (!defined("WEBSITE")) {
  * Shows all calendars for a given year
  */
 class YearCalendarView extends View {
+
     const LOOK_BACK_YEARS = 2;
     const LOOK_AHEAD_YEARS = 2;
 
@@ -39,18 +40,18 @@ class YearCalendarView extends View {
             </div>
 CALENDAR_PAGE;
     }
-    
+
     protected function getYearSelector() {
         $oWebsite = $this->oWebsite;
         $startYear = $this->year->format('Y') - self::LOOK_BACK_YEARS;
         $endYear = $this->year->format('Y') + self::LOOK_AHEAD_YEARS;
-        
-        
+
+
         $text = <<<START
              <p class="lijn">  
 START;
-        
-        
+
+
         for ($i = $startYear; $i <= $endYear; $i++) {
             if ($i == $this->year->format("Y")) {
                 $text.= <<<YEAR
@@ -67,19 +68,19 @@ YEAR;
 END;
         return $text;
     }
-    
+
     protected function getCalendars() {
         $oWebsite = $this->oWebsite;
-        
+
         $text = "";
         for ($i = 1; $i <= 12; $i++) {
             $month = DateTime::createFromFormat("Y n", $this->year->format("Y") . ' ' . $i);
             $calendarView = new CalendarView($oWebsite, $month, $this->articlesInYear);
             $table = $calendarView->getText();
-            
+
             $monthName = ucFirst($calendarView->getMonthName($month));
             $yearNumber = $month->format("Y");
-            
+
             $text.= <<<MONTH
                 <div class="calender_month_wrapper">
                     <h3>$monthName $yearNumber</h3>

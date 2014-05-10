@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use InvalidArgumentException;
+
 /**
  * Represents a single article. All data is raw HTML, handle with extreme
  * caution (read: htmlSpecialChars)

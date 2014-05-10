@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Articles;
 use Rcms\Core\Menus;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleSearchView;
 use Rcms\Page\View\LinkSearchView;
@@ -24,9 +25,10 @@ class SearchPage extends Page {
     protected $highestPageNumber;
     protected $links;
 
-    public function init(Website $oWebsite) {
-        $this->keyword = trim($oWebsite->getRequestString("searchbox"));
-        $this->pageNumber = $oWebsite->getRequestInt("page", 0);
+    public function init(Request $request) {
+        $oWebsite = $request->getWebsite();
+        $this->keyword = trim($request->getRequestString("searchbox"));
+        $this->pageNumber = $request->getRequestInt("page", 0);
 
         // Fetch article count
         $articles = new Articles($oWebsite);
@@ -44,16 +46,16 @@ class SearchPage extends Page {
         $this->links = $menus->getLinksBySearch($this->keyword);
     }
 
-    public function getPageTitle(Website $oWebsite) {
+    public function getPageTitle(Request $request) {
         if ($this->keyword) {
-            return $oWebsite->tReplaced("articles.search_for", htmlSpecialChars($this->keyword));
+            return $request->getWebsite()->tReplaced("articles.search_for", htmlSpecialChars($this->keyword));
         } else {
-            return $this->getShortPageTitle($oWebsite);
+            return $this->getShortPageTitle($request);
         }
     }
 
-    public function getShortPageTitle(Website $oWebsite) {
-        return $oWebsite->t("main.search");
+    public function getShortPageTitle(Request $request) {
+        return $request->getWebsite()->t("main.search");
     }
 
     public function getViews(Website $oWebsite) {
