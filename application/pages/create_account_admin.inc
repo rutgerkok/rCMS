@@ -39,9 +39,9 @@ if ($loggedIn) {
             $valid = false;
             $this->addError($this->t("users.the_email") . " " . Validate::getLastError($this));
         }
-        if ($oAuth->isValidRankForAccounts($rank)) {
+        if (!$oAuth->isValidRankForAccounts($rank)) {
             $valid = false;
-            $this->addError("Invalid rank!", "Invalid rank (" . $rank . ") posted by " . $oAuth->getCurrentUser()->getUsername());
+            $this->addError("Invalid rank");
         }
         if (User::getByName($this, $user) != null) {
             // User with that name already exists
