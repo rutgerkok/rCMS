@@ -9,6 +9,10 @@ use Rcms\Page\View\WidgetsView;
 class HomePage extends Page {
 
     public function getPageTitle(Request $request) {
+        return ""; // The widgets will already provide a title
+    }
+    
+    public function getShortPageTitle(Request $request) {
         return $request->getWebsite()->t("main.home");
     }
 
