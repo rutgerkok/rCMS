@@ -81,6 +81,9 @@ class PageRenderer {
         $this->pageName = $pageName;
         $this->request = new Request($website, $params);
 
+        // Locales
+        setLocale(LC_ALL, explode("|", $website->t("main.locales")));
+
         // Some scripts still rely on those variables
         $_GET["p"] = $_POST["p"] = $_REQUEST["p"] = $pageName;
         if (count($params) >= 1) {
@@ -99,7 +102,7 @@ class PageRenderer {
             if (!preg_match('/^[a-z0-9_]+$/i', $pageName) || !file_exists($this->getUriPage($pageName))) {
                 // Page doesn't exist, show error and redirect
                 http_response_code(404);
-                $website->addError($website->t("main.page") . " '" . htmlSpecialChars($pageName) . "' " . $website->t('errors.not_found'));
+                $website->addError($website->t("main.page") . " '/" . htmlSpecialChars($pageName) . "'  " . $website->t('errors.not_found'));
                 $pageName = self::HOME_PAGE_NAME;
             }
         }
@@ -167,7 +170,16 @@ class PageRenderer {
      * @return string The shorter title.
      */
     public function getPageTitle() {
-        return $this->page->getShortPageTitle($this->website);
+        return $this->page->getPageTitle($this->request);
+    }
+
+    /**
+     * Gets the short title of the current page. Must not be called before
+     * render() is called, so that pages are properly initialized.
+     * @return string The title.
+     */
+    public function getShortPageTitle() {
+        return $this->page->getShortPageTitle($this->request);
     }
 
     /**
@@ -176,6 +188,21 @@ class PageRenderer {
      */
     public function getPageType() {
         return $this->page->getPageType();
+    }
+
+    /**
+     * Gets the title for in headers on the page. Must not be called before
+     * render() is called, so that pages are properly initialized.
+     * @return string The title.
+     */
+    public function getHeaderTitle() {
+        $title = $this->website->getSiteTitle();
+        if ($this->website->getConfig()->get("append_page_title", false)) {
+            if ($this->pageName !== self::HOME_PAGE_NAME) {
+                $title.= " - " . $this->getShortPageTitle();
+            }
+        }
+        return $title;
     }
 
     /** Returns the internal uri of a page */
@@ -224,55 +251,17 @@ class PageRenderer {
     }
 
     /**
-     * Gets the title for in headers on the page. Must not be called before
-     * render() is called, so that pages are properly initialized.
-     * @return string The title.
+     * Gets the main content of the page. If the user is logged out, an login
+     * form is returned.
+     * @return string The main content.
      */
-    public function getHeaderTitle() {
-        $title = $this->website->getSiteTitle();
-        if ($this->website->getConfig()->get("append_page_title", false)) {
-            if ($this->pageName !== self::HOME_PAGE_NAME) {
-                $title.= " - " . $this->getShortPageTitle();
-            }
-        }
-        return $title;
-    }
-
-    /**
-     * Gets the short title of the current page. Must not be called before
-     * render() is called, so that pages are properly initialized.
-     * @return string The title.
-     */
-    public function getShortPageTitle() {
-        return $this->page->getShortPageTitle($this->request);
-    }
-
-    /**
-     * Echoes only the main content of the page, without any clutter.
-     */
-    public function echoPageContent() { //geeft de hoofdpagina weer
-        $website = $this->website;
-
-        // Locales
-        setLocale(LC_ALL, explode("|", $website->t("main.locales")));
-
-        // Title
-        $title = $this->page->getPageTitle($this->request);
-        if (!empty($title)) {
-            echo "<h2>" . $title . "</h2>\n";
-        }
-
-        // Get page content (based on permissions)
-        $textToDisplay = "";
+    public function getMainContent() {
         if ($this->authenticationFailedRank >= 0) {
-            $loginView = new LoginView($website, $this->authenticationFailedRank);
-            $textToDisplay = $loginView->getText();
+            $loginView = new LoginView($this->website, $this->authenticationFailedRank);
+            return $loginView->getText();
         } else {
-            $textToDisplay = $this->page->getPageContent($this->request);
+            return $this->page->getPageContent($this->request);
         }
-
-        // Display page content
-        echo $textToDisplay;
     }
 
 }

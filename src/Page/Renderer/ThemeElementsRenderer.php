@@ -66,9 +66,20 @@ class ThemeElementsRenderer {
      * Echoes only the main content of the page, without any clutter.
      */
     public function echoPageContent() {
-        $this->pageRenderer->echoPageContent();
+        // Title
+        $title = $this->pageRenderer->getPageTitle();
+        if (!empty($title)) {
+            echo "<h2>" . $title . "</h2>\n";
+        }
 
+        // Fetch content first
+        $content = $this->pageRenderer->getMainContent();
+
+        // Errors
         $this->echoErrors();
+
+        // Display page content
+        echo $content;
     }
 
     /**
@@ -87,7 +98,7 @@ class ThemeElementsRenderer {
         return $this->pageRenderer->getPageType();
     }
 
-    public function echoErrors() {
+    protected function echoErrors() {
         $website = $this->website;
         $errors = $website->getErrors();
         $errorCount = count($errors); //totaal aantal foutmeldingen
