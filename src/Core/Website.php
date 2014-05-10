@@ -157,20 +157,34 @@ class Website {
         return $this->getConfig()->get('uri') . "content/";
     }
 
-    /** Returns the url of a page, ready for links */
-    public function getUrlPage($name, $id = -1337, $args = array()) {
-        if ($id == -1337 && count($args) == 0) { // just the page name
-            return $this->getUrlMain() . $name;
-        } else { // also the other arguments
-            if (count($args) == 0) {
-                return $this->getUrlMain() . $name . "/" . $id; //geen andere variabelen, geef weer als example.com/naam/id
-            } else { //wel andere variabelen
-                $url = $this->getUrlMain() . "index.php?p=" . $name . "&amp;id=" . $id;
-                foreach ($args as $key => $value)
-                    $url.="&amp;$key=" . urlencode($value);
-                return $url;
+    /**
+     * Creates an URL to the given page.
+     * @param string $name Name of the page, like "edit_article".
+     * @param string|string[]|null $params Parameters of the page, appear in URL
+     * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
+     * `foo/this/that`. You can pass one string, or an array of strings. You can
+     * also pass null to skip this parameter.
+     * @param array $args Array of key/value pairs that should be used as the
+     * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
+     * @return string The url.
+     */
+    public function getUrlPage($name, $params = null, $args = array()) {
+        $url = $this->getUrlMain() . $name;
+        if ($params !== null) {
+            if (is_array($params)) {
+                $url.= '/' . implode('/', $params);
+            } else {
+                $url.= '/' . $params;
             }
         }
+        if (count($args) > 0) {
+            $separator = '?';
+            foreach ($args as $key => $value) {
+                $url.= $separator . urlEncode($key) . '=' . urlEncode($value);
+                $separator = "&amp;";
+            }
+        }
+        return $url;
     }
 
     //Geeft de map van alle thema's terug als url

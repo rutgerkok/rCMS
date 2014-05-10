@@ -46,7 +46,7 @@ class ArticleListView extends View {
 
         // Link to creat new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
         }
 
         // All articles
@@ -60,7 +60,7 @@ class ArticleListView extends View {
 
         // Another link to create new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
         }
 
         // Archive link

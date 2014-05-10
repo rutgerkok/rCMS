@@ -214,7 +214,7 @@ CELL;
         if ($oWebsite->isLoggedInAsStaff()) {
             $tooltip.= <<<TOOLTIP_END
                 <p>
-                    <a class="arrow" href="{$oWebsite->getUrlPage("edit_article", 0, array(
+                    <a class="arrow" href="{$oWebsite->getUrlPage("edit_article", null, array(
                         "article_eventdate" => $date->format("Y-m-d"),
                         "article_eventtime" => "12:00"))}">
                         {$oWebsite->t("articles.create")}
