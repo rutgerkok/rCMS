@@ -3,6 +3,7 @@
 namespace Rcms\Core;
 
 use DateTime;
+use InvalidArgumentException;
 
 class Articles {
 
