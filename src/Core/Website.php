@@ -47,8 +47,8 @@ class Website {
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
 
-        // Workarounds for older PHP versions (5.2, 5.3 and 5.4)
-        $this->requireFunctions("lcfirst", "http_response_code");
+        // Workarounds for older PHP versions (5.3)
+        $this->requireFunctions("http_response_code");
     }
 
     /**
