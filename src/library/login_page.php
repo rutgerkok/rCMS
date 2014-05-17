@@ -1,5 +1,5 @@
 <?php
-$themeManager = $this->getThemeManager();
+$themeManager = $this->website->getThemeManager();
 $theme = $themeManager->getCurrentTheme();
 $stylesheet = $themeManager->getUrlTheme($theme) . $theme->getErrorPageStylesheet();
 ?>
@@ -11,10 +11,10 @@ $stylesheet = $themeManager->getUrlTheme($theme) . $theme->getErrorPageStyleshee
     </head>
     <body style="background-image:none;text-align:center">
         <div id="login">
-            <h1><?php echo $this->getConfig()->get('hometitle') ?></h1>
+            <h1><?php echo $this->website->getConfig()->get('hometitle') ?></h1>
             <form action="" method="post">
                 <p>
-                    <?php echo $this->t("main.code_request") ?>
+                    <?php echo $this->website->t("main.code_request") ?>
                 </p>
                 <p>
                     <input type="password" name="key" id="key" style="width:10em;" />
@@ -23,7 +23,7 @@ $stylesheet = $themeManager->getUrlTheme($theme) . $theme->getErrorPageStyleshee
                     </script>
                 </p>
                 <p>
-                    <input type="submit" class="button" style="width:11em;" value="<?php echo $this->t("main.log_in") ?>" />
+                    <input type="submit" class="button" style="width:11em;" value="<?php echo $this->website->t("main.log_in") ?>" />
                 </p>
             </form>
         </div>
