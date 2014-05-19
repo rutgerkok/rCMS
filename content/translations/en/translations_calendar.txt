@@ -1,7 +1,7 @@
 calendar_for=Calendar for
 calendar_for_year=Calendar for #
 pick_a_date=Pick a date
-no_activites_today=No activities today.
+no_activities_today=No activities today.
 weekday.mon=Mon
 weekday.tue=Tue
 weekday.wed=Wed
