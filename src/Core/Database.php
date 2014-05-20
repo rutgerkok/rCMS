@@ -236,13 +236,13 @@ SQL;
         if (!$result && $errorreport) {
             //toon foutmelding
             $website = $this->websiteObject;
-            if ($this->isUpToDate()) {
+            if ($this->isUpToDate() && $this->isInstalled()) {
                 $website->addError('A database error occured.');
                 $website->getMessages()->logError('Query failed: <br />'
                         . '<strong>Query:</strong><br />' . $sql . '<br />'
                         . '<strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error());
                 //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding
-            } else {
+            } else if ($this->isInstalled()) {
                 $website->addError('Database is outdated! Please upgrade using the link in the menu bar.');
             }
         }
