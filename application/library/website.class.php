@@ -6,7 +6,7 @@ class Website {
     const CONFIG_FILE = "config.php";
 
     protected $errors = array();
-    protected $debug = true;
+    protected $debug = false;
     protected $errorsDisplayed = false;
     protected $databaseObject;
 

@@ -1,7 +1,7 @@
 <?php
 
 $oDB = $this->getDatabase();
-$installed_and_up_to_date = $oDB->isUpToDate();
+$installed_and_up_to_date = $oDB->isUpToDate() && $oDB->isInstalled();
 $loggedInStaff = $this->isLoggedInAsStaff(true);
 $confirmed = isSet($_REQUEST['confirm']);
 if (!$installed_and_up_to_date) {

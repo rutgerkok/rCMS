@@ -80,7 +80,7 @@ class Menus {
         // Add link to homepage
         $links[0] = array("url" => $oWebsite->getUrlMain(), "text" => $oWebsite->t("main.home"));
 
-        if ($oWebsite->getDatabase()->isUpToDate()) {
+        if ($oWebsite->getDatabase()->isUpToDate() && $oWebsite->getDatabase()->isInstalled()) {
             foreach ($categories as $id => $cat_name) {
                 if ($id == 1) {
                     continue; // Don't display "No categories"
