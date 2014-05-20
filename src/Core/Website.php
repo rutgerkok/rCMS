@@ -39,13 +39,14 @@ class Website {
         define("WEBSITE", "Loaded");
 
         // Site settings and database connection
+        $this->messageSystem = new Messages();
         $this->config = new Config(self::CONFIG_FILE);
+        $this->messageSystem->setTranslationsDirectory($this->getUriTranslations() . '/' . $this->config->get("language"));
         $this->databaseObject = new Database($this);
         $this->config->readFromDatabase($this->databaseObject);
 
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
-        $this->messageSystem = new Messages($this->getUriTranslations() . '/' . $this->config->get("language"));
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");

@@ -16,11 +16,20 @@ class Messages {
     private $errors;
     private $messages;
 
-    public function __construct($translationsDir) {
+    public function __construct() {
         $this->translations = array();
-        $this->translationsDir = $translationsDir;
         $this->errors = array();
         $this->messages = array();
+    }
+    
+    /**
+     * Updates the translations directory. Must be called prior to calling any
+     * of the translation methods.
+     * @param string $translationsDir The translations directory, trailing slash
+     * must be included.
+     */
+    public function setTranslationsDirectory($translationsDir) {
+        $this->translationsDir = $translationsDir;
     }
 
     // Messages and errors
