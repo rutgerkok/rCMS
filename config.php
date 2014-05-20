@@ -15,8 +15,8 @@ $this->config['database_password'] = ''; // Your database password, for example 
 $this->config['database_table_prefix'] = ''; // A prefix, if you are having table-name-conflicts
 
 //PATHS
-$this->config['uri'] = 'C:/xampp/htdocs/';
-$this->config['url'] = 'http://localhost/';
+$this->config['uri'] = dirname(__FILE__) . '/'; // Should be fine
+$this->config['url'] = '/'; // Change this to the URL of your site
 // CKEditor path. Leave blank to disable CKEditor, leaving you with a simple textfield.
 $this->config['ckeditor_url'] = $this->config['url'] . 'ckeditor/';
 // CKFinder path. Leave blank to disable CKFinder.
