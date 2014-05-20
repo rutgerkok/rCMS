@@ -37,11 +37,24 @@ class Database {
     }
 
     /**
-     * Returns whether the database is installed and up to date.
+     * Returns whether the database is up to date with the current database
+     * schema. If the database is not installed yet, it is considered up to
+     * date.
      * @return boolean True if the database is installed and up to date, false otherwise.
      */
     public function isUpToDate() {
-        return $this->websiteObject->getConfig()->get("database_version") == self::CURRENT_DATABASE_VERSION;
+        $version = $this->websiteObject->getConfig()->get("database_version");
+        return $version == self::CURRENT_DATABASE_VERSION || $version == 0;
+    }
+
+    /**
+     * Gets whether the database is installed. Outdated databases are still
+     * considered as installed.
+     * @return boolean True if the database is installed, false otherwise.
+     */
+    public function isInstalled() {
+        $version = $this->websiteObject->getConfig()->get("database_version");
+        return $version > 0;
     }
 
     //Geeft aan hoeveel rows er bij de laatste query aangepast zijn
@@ -197,7 +210,7 @@ SQL;
      * @return string[]
      */
     public function fetchNumeric($result) {
-        return mysqli_fetch_array($result, MYSQLI_NUM);
+        return @mysqli_fetch_array($result, MYSQLI_NUM);
     }
 
     public function fetchAssoc($result) {
