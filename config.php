@@ -18,6 +18,8 @@ $this->config['database_table_prefix'] = ''; // A prefix, if you are having tabl
 $this->config['uri'] = dirname(__FILE__) . '/'; // Should be fine
 $this->config['url'] = '/'; // Change this to the URL of your site
 // CKEditor path. Leave blank to disable CKEditor, leaving you with a simple textfield.
+$this->config["url_rewrite"] = true; // Set this to false if the URL rewrites
+// don't work, for example when host doesn't allow .htaccess files
 $this->config['ckeditor_url'] = $this->config['url'] . 'ckeditor/';
 // CKFinder path. Leave blank to disable CKFinder.
 $this->config['ckfinder_url'] = $this->config['url'] . 'ckfinder/';

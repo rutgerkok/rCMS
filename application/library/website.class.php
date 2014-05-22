@@ -192,8 +192,19 @@ class Website {
     }
 
     /** Returns the url of a page, ready for links */
-    public function getUrlPage($name, $id = -1337, $args = array()) {
-        if ($id == -1337 && count($args) == 0) { // just the page name
+    public function getUrlPage($name, $id = null, $args = array()) {
+        if (!$this->getConfig()->get("url_rewrite")) {
+            // In the format /?p=this&id=that
+            $url = $this->getUrlMain() . "?p=" . $name;
+            if ($id !== null) {
+                $url.= "&amp;id=" . $id;
+            }
+            foreach ($args as $key => $value) {
+                $url.="&amp;$key=" . urlencode($value);
+            }
+            return $url;
+        }
+        if ($id === null && count($args) == 0) { // just the page name
             return $this->getUrlMain() . $name;
         } else { // also the other arguments
             if (count($args) == 0) {
