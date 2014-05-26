@@ -45,7 +45,7 @@ class EditArticlePage extends Page {
 
                         // Check for redirect
                         if ($_REQUEST["submit"] == $oWebsite->t("editor.save_and_quit")) {
-                            $this->redirect = $oWebsite->getUrlPage("article", $article->id);
+                            $this->redirect = htmlspecialchars_decode($oWebsite->getUrlPage("article", $article->id));
                         }
                     } else {
                         $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_saved") . "</em>";
