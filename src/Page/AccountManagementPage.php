@@ -74,7 +74,7 @@ class AccountManagementPage extends Page {
             return "";
         }
 
-        $returnValue = '<p class="lijn">';
+        $returnValue = '<p class="result_selector_menu">';
         // Link to previous page
         if ($page > 0) {
             $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("account_management", $page - 1);

@@ -70,7 +70,7 @@ CELL;
             </script>
         
             <form action="datepicker.php" method="post" onchange="this.submit()">
-                <p class="lijn">
+                <p class="result_selector_menu">
                     {$this->getMonthSelector()}
                     {$this->getYearSelector()}
                 </p>

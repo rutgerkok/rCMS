@@ -43,7 +43,7 @@ CALENDAR_PAGE;
 
 
         $text = <<<START
-             <p class="lijn">  
+             <p class="result_selector_menu">  
 START;
 
 

@@ -108,7 +108,7 @@ class ArticleArchiveView extends View {
      */
     protected function getMenubar() {
         return <<<MENUBAR
-            <p class="lijn">
+            <p class="result_selector_menu">
                 {$this->getCategoriesMenu()}
                 {$this->getYearsMenu()}
             </p>
