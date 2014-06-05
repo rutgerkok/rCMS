@@ -36,6 +36,12 @@ $this->config['uri'] = __DIR__ . '/';
 // the home page of the website. If
 $this->config['url'] = '/';
 
+// When set to true the index.php part of the links on the site is removed, so
+// http://www.example.com/index.php/article/10 turns into
+// http://www.example.com/article/10 .
+// Requires the .htaccess file with mod_rewrite support enabled.
+$this->config['url_rewrite'] = true;
+
 // CKEditor path. Leave blank to disable CKEditor, leaving you with a simple
 // textfield.
 $this->config['ckeditor_url'] = $this->config['url'] . 'ckeditor/';

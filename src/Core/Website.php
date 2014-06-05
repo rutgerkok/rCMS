@@ -174,7 +174,7 @@ class Website {
 
     /**
      * Creates an URL to the given page.
-     * @param string $name Name of the page, like "edit_article".
+     * @param string $pageName Name of the page, like "edit_article".
      * @param string|string[]|null $params Parameters of the page, appear in URL
      * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
      * `foo/this/that`. You can pass one string, or an array of strings. You can
@@ -183,8 +183,12 @@ class Website {
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return string The url.
      */
-    public function getUrlPage($name, $params = null, $args = array()) {
-        $url = $this->getUrlMain() . $name;
+    public function getUrlPage($pageName, $params = null, $args = array()) {
+        $url = $this->getUrlMain();
+        if (!$this->config->get("url_rewrite")) {
+            $url.= "index.php/";
+        }
+        $url.= $pageName;
         if ($params !== null) {
             if (is_array($params)) {
                 $url.= '/' . implode('/', $params);
