@@ -39,12 +39,15 @@ class Website {
         define("WEBSITE", "Loaded");
 
         // Site settings and database connection
-        $this->messageSystem = new Messages();
         $this->config = new Config(self::CONFIG_FILE);
-        $this->messageSystem->setTranslationsDirectory($this->getUriTranslations() . '/' . $this->config->get("language"));
+        $this->messageSystem = new Messages($this->getUriTranslations(Config::DEFAULT_LANGUAGE));
         $this->databaseObject = new Database($this);
-        $this->config->readFromDatabase($this->databaseObject);
 
+        // Update now that we're connected to the database
+        $this->config->readFromDatabase($this->databaseObject);
+        $this->messageSystem->setTranslationsDirectory($this->getUriTranslations($this->config->get("language")));
+
+        // Init other objects
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
 
@@ -221,8 +224,12 @@ class Website {
         return $this->getUriContent() . "widgets/";
     }
 
-    public function getUriTranslations() {
-        return $this->getUriContent() . "translations/";
+    public function getUriTranslations($languageCode = null) {
+        if ($languageCode !== null) {
+            return $this->getUriContent() . "translations/" . $languageCode . '/';
+        } else {
+            return $this->getUriContent() . "translations/";
+        }
     }
 
     public function getUrlJavaScripts() {

@@ -16,15 +16,22 @@ class Messages {
     private $errors;
     private $messages;
 
-    public function __construct() {
+    /**
+     * Creates a new messages object.
+     * @param string $translationsDir Directory with all the translations of the
+     * chosen language.
+     */
+    public function __construct($translationsDir) {
         $this->translations = array();
         $this->errors = array();
         $this->messages = array();
+
+        $this->setTranslationsDirectory($translationsDir);
     }
     
     /**
-     * Updates the translations directory. Must be called prior to calling any
-     * of the translation methods.
+     * Updates the translations directory. Used to switch languages later on,
+     * for example when the page has connected to the database.
      * @param string $translationsDir The translations directory, trailing slash
      * must be included.
      */
