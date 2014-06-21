@@ -22,8 +22,10 @@ class PageRenderer {
      */
     public static function getPagePath() {
         // Path given
-        if (isSet($_GET["view_url"])) {
-            return explode('/', $_GET["view_url"]);
+        if (isSet($_SERVER["PATH_INFO"])) {
+            // Paths can be in the form "/this/that/", change that to "this/that"
+            $pathInfo = trim($_SERVER["PATH_INFO"], '/');
+            return explode('/', $pathInfo);
         }
 
         // Construct from request variables

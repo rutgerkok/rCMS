@@ -74,7 +74,7 @@ if ($loggedIn) {
 	<p>
 		You can create a new account here. 
 		Fields with a <span class="required">*</span> are required.
-		Please note that the username must be at least 4 characters long and the that the username must be at least 5 characters long.
+		Please note that the username must be at least 4 characters long and the that the password must be at least 5 characters long.
 	</p>
 	
 	<form action="{$this->getUrlMain()}" method="post">

@@ -1,0 +1,11 @@
+# Make sure directory is not visible
+
+<IfModule mod_rewrite.c>
+# Redirect to index.php to let the website handle this
+RewriteRule ^(.*)$ ../index.php/src/$1 [PT,L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+# Redirect unavailable, so just deny the request
+Deny from all
+</IfModule>

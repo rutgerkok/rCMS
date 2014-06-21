@@ -19,6 +19,7 @@ class Text {
     private $translationsDir;
     private $errors;
     private $messages;
+    private $rewriteUrls;
 
     /**
      * Creates a new Text instance.
@@ -30,9 +31,30 @@ class Text {
     public function __construct($siteUrl, $translationsDir) {
         $this->siteUrl = $siteUrl;
         $this->translations = array();
-        $this->translationsDir = $translationsDir;
         $this->errors = array();
         $this->messages = array();
+        $this->rewriteUrls = false;
+
+        $this->setTranslationsDirectory($translationsDir);
+    }
+    
+    /**
+     * Updates the translations directory. Used to switch languages later on,
+     * for example when the page has connected to the database.
+     * @param string $translationsDir The translations directory, trailing slash
+     * must be included.
+     */
+    public function setTranslationsDirectory($translationsDir) {
+        $this->translationsDir = $translationsDir;
+    }
+    
+    /**
+     * Sets whether URL rewriting is enabled. If false, links to index.php will be
+     * used in getUrlPage, if true, fancier links will be used.
+     * @param boolean $value Whether url rewriting is enabled.
+     */
+    public function setUrlRewrite($value) {
+        $this->rewriteUrls = (boolean) $value;
     }
 
     // Messages and errors
@@ -180,7 +202,7 @@ class Text {
 
     /**
      * Creates an URL to the given page.
-     * @param string $name Name of the page, like "edit_article".
+     * @param string $pageName Name of the page, like "edit_article".
      * @param string|string[]|null $params Parameters of the page, appear in URL
      * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
      * `foo/this/that`. You can pass one string, or an array of strings. You can
@@ -189,8 +211,12 @@ class Text {
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return string The url.
      */
-    public function getUrlPage($name, $params = null, $args = array()) {
-        $url = $this->getUrlMain() . $name;
+    public function getUrlPage($pageName, $params = null, $args = array()) {
+        $url = $this->getUrlMain();
+        if (!$this->rewriteUrls) {
+            $url.= "index.php/";
+        }
+        $url.= $pageName;
         if ($params !== null) {
             if (is_array($params)) {
                 $url.= '/' . implode('/', $params);

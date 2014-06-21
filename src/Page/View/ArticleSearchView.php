@@ -53,7 +53,7 @@ class ArticleSearchView extends ArticleListView {
         $keywordHtml = htmlSpecialChars($this->keyword);
         $page = $this->pageNumber;
 
-        $returnValue = '<p class="lijn">';
+        $returnValue = '<p class="result_selector_menu">';
 
         // Link to previous page
         if ($page > 0) {

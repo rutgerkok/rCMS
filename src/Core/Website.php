@@ -40,12 +40,21 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(self::CONFIG_FILE);
+        $this->text = new Text($this->getConfig()->get('url'),
+                $this->getUriTranslations(Config::DEFAULT_LANGUAGE));
+        
+        // Connect to database, read settings
         $this->databaseObject = new Database($this);
         $this->config->readFromDatabase($this->databaseObject);
+        
+        // Set updated properties of Text object, now that settings are read
+        // from the database
+        $this->text->setTranslationsDirectory($this->getUriTranslations($this->config->get("language")));
+        $this->text->setUrlRewrite($this->config->get("url_rewrite"));
 
+        // Init other objects
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
-        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations() . '/' . $this->config->get("language"));
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");
@@ -173,7 +182,7 @@ class Website {
 
     /**
      * Creates an URL to the given page.
-     * @param string $name Name of the page, like "edit_article".
+     * @param string $pageName Name of the page, like "edit_article".
      * @param string|string[]|null $params Parameters of the page, appear in URL
      * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
      * `foo/this/that`. You can pass one string, or an array of strings. You can
@@ -182,8 +191,8 @@ class Website {
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return string The url.
      */
-    public function getUrlPage($name, $params = null, $args = array()) {
-       return $this->text->getUrlPage($name, $params, $args);
+    public function getUrlPage($pageName, $params = null, $args = array()) {
+       return $this->text->getUrlPage($pageName, $params, $args);
     }
 
     //Geeft de map van alle thema's terug als url
@@ -201,8 +210,12 @@ class Website {
         return $this->getUriContent() . "widgets/";
     }
 
-    public function getUriTranslations() {
-        return $this->getUriContent() . "translations/";
+    public function getUriTranslations($languageCode = null) {
+        if ($languageCode !== null) {
+            return $this->getUriContent() . "translations/" . $languageCode . '/';
+        } else {
+            return $this->getUriContent() . "translations/";
+        }
     }
 
     public function getUrlJavaScripts() {

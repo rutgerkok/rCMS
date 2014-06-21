@@ -37,11 +37,24 @@ class Database {
     }
 
     /**
-     * Returns whether the database is installed and up to date.
+     * Returns whether the database is up to date with the current database
+     * schema. If the database is not installed yet, it is considered up to
+     * date.
      * @return boolean True if the database is installed and up to date, false otherwise.
      */
     public function isUpToDate() {
-        return $this->websiteObject->getConfig()->get("database_version") == self::CURRENT_DATABASE_VERSION;
+        $version = $this->websiteObject->getConfig()->get("database_version");
+        return $version == self::CURRENT_DATABASE_VERSION || $version == 0;
+    }
+
+    /**
+     * Gets whether the database is installed. Outdated databases are still
+     * considered as installed.
+     * @return boolean True if the database is installed, false otherwise.
+     */
+    public function isInstalled() {
+        $version = $this->websiteObject->getConfig()->get("database_version");
+        return $version > 0;
     }
 
     //Geeft aan hoeveel rows er bij de laatste query aangepast zijn
@@ -197,7 +210,7 @@ SQL;
      * @return string[]
      */
     public function fetchNumeric($result) {
-        return mysqli_fetch_array($result, MYSQLI_NUM);
+        return @mysqli_fetch_array($result, MYSQLI_NUM);
     }
 
     public function fetchAssoc($result) {
@@ -223,13 +236,13 @@ SQL;
         if (!$result && $errorreport) {
             //toon foutmelding
             $website = $this->websiteObject;
-            if ($this->isUpToDate()) {
+            if ($this->isUpToDate() && $this->isInstalled()) {
                 $website->addError('A database error occured.');
                 $website->getText()->logError('Query failed: <br />'
                         . '<strong>Query:</strong><br />' . $sql . '<br />'
                         . '<strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error());
                 //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding
-            } else {
+            } else if ($this->isInstalled()) {
                 $website->addError('Database is outdated! Please upgrade using the link in the menu bar.');
             }
         }

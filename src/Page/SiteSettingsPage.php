@@ -154,7 +154,7 @@ EOT;
 
         // Language
         $language = $oWebsite->getRequestString("option_language", $this->language);
-        if (is_dir($oWebsite->getUriTranslations() . $language . '/')) {
+        if (is_dir($oWebsite->getUriTranslations($language))) {
             $this->language = $language;
             $config->set($database, "language", $language);
         } else {

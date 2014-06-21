@@ -6,7 +6,10 @@ namespace Rcms\Core;
  * Holds all settings of the site, both from options.php and the database.
  */
 class Config {
-
+    const DEFAULT_LANGUAGE = "en";
+    const DEFAULT_THEME = "rkok";
+    const DEFAULT_TITLE = "Welcome!";
+    
     private $config = array();
 
     /**
@@ -23,9 +26,9 @@ class Config {
     protected function readFromFile($file) {
         // Apply some standard settings to get the site running (in case those
         // cannot be loaded from the database)
-        $this->config["language"] = "en";
-        $this->config["theme"] = "rkok";
-        $this->config["title"] = "Welcome!";
+        $this->config["language"] = self::DEFAULT_LANGUAGE;
+        $this->config["theme"] = self::DEFAULT_THEME;
+        $this->config["title"] = self::DEFAULT_TITLE;
 
         // Load other settings from config.php (required)
         if (file_exists($file)) {
