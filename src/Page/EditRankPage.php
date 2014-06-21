@@ -3,12 +3,13 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 
 class EditRankPage extends EditPasswordPage {
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("editor.rank.edit");
+    public function getPageTitle(Text $text) {
+        return $text->t("editor.rank.edit");
     }
 
     public function getMinimumRank(Request $request) {

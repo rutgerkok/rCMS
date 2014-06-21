@@ -3,9 +3,9 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
-use Rcms\Core\Website;
 use Rcms\Page\View\LoggedInOtherView;
 
 class LoginOtherPage extends Page {
@@ -35,16 +35,16 @@ class LoginOtherPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("main.log_in");
+    public function getPageTitle(Text $text) {
+        return $text->t("main.log_in");
     }
 
-    public function getView(Website $oWebsite) {
+    public function getView(Text $text) {
         if ($this->newUser === null) {
             // Just display the error
-            return new LoggedInOtherView($oWebsite);
+            return new LoggedInOtherView($text);
         }
-        return new LoggedInOtherView($oWebsite, $this->newUser);
+        return new LoggedInOtherView($text, $this->newUser);
     }
 
     public function getMinimumRank(Request $request) {

@@ -100,7 +100,7 @@ class ThemeElementsRenderer {
 
     protected function echoErrors() {
         $website = $this->website;
-        $errors = $website->getMessages()->getErrors();
+        $errors = $website->getText()->getErrors();
         $errorCount = count($errors); //totaal aantal foutmeldingen
         if ($errorCount == 0) {
             return;
@@ -123,16 +123,6 @@ ERROR;
             echo '</p>';
             echo '</div>';
         }
-    }
-
-    /**
-     * Gets the HTML of all widgets in the given widget area.
-     * @param int $area The widget area, starting at 2. 1 is used for the
-     *  widgets on the home page.
-     * @return string The widgets.
-     */
-    public function getWidgetsHTML($area) {
-        return $this->widgetsObject->getWidgetsHTML($area);
     }
 
     /**
@@ -245,7 +235,7 @@ SEARCH;
     }
 
     public function echoWidgets($area) {
-        $widgetsView = new WidgetsView($this->website, $this->website->getWidgets(), $area);
+        $widgetsView = new WidgetsView($this->website->getText(), $this->website->getWidgets(), $area);
         echo $widgetsView->getText();
     }
 

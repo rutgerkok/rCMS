@@ -30,7 +30,7 @@ class WidgetCalendar extends WidgetDefinition {
         $now = new DateTime();
         $oArticles = new Articles($oWebsite);
         $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
-        $calendar = new CalendarView($oWebsite, $now, $articlesInMonth);
+        $calendar = new CalendarView($oWebsite->getText(), $now, $articlesInMonth, $oWebsite->isLoggedInAsStaff());
 
         $monthName = ucFirst($calendar->getMonthName($now));
         $year = $now->format('Y');

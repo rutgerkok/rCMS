@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Articles;
 use Rcms\Core\Authentication;
 use Rcms\Core\Comments;
+use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -51,25 +52,17 @@ class AccountPage extends Page {
         }
     }
 
-    public function getPageTitle(Request $request) {
-        $oWebsite = $request->getWebsite();
-        // Get selected user
-        $user = $oWebsite->getAuth()->getCurrentUser();
-        $given_user_id = $request->getParamInt(0);
-        if ($given_user_id > 0) {
-            $user = User::getById($oWebsite, $given_user_id);
-        }
+    public function getPageTitle(Text $text) {
         // If found, use name in page title
-        if ($user == null) {
-            return $oWebsite->t("users.profile_page");
+        if ($this->user === null) {
+            return $text->t("users.profile_page");
         } else {
-            return $oWebsite->tReplaced("users.profile_page_of", $user->getDisplayName());
+            return $text->tReplaced("users.profile_page_of", $this->user->getDisplayName());
         }
     }
 
-    public function getShortPageTitle(Request $request) {
-        $website = $request->getWebsite();
-        return $website->t("users.profile_page");
+    public function getShortPageTitle(Text $text) {
+        return $text->t("users.profile_page");
     }
 
     public function getPageContent(Request $request) {
@@ -101,8 +94,8 @@ EOT;
     public function get_articles_html(Website $oWebsite) {
         $oArticles = new Articles($oWebsite);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
-        $oArticleView = new ArticleListView($oWebsite, $articles, 0, true, false);
         $loggedInStaff = $oWebsite->isLoggedInAsStaff();
+        $oArticleView = new ArticleListView($oWebsite->getText(), $articles, 0, true, false, $loggedInStaff);
         if (count($articles) > 0) {
             $returnValue = '<h3 class="notable">' . $oWebsite->t("main.articles") . "</h3>\n";
             $returnValue.= $oArticleView->getText();

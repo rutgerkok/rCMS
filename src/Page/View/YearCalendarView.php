@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use DateTime;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Shows all calendars for a given year
@@ -18,12 +18,16 @@ class YearCalendarView extends View {
 
     /** @var Article[] All articles in that year. */
     protected $articlesInYear;
+    
+    /** @var boolean True to show edit links, false otherwise. */
+    private $createLinks;
 
-    public function __construct(Website $oWebsite, DateTime $year,
-            array $articlesInYear) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, DateTime $year,
+            array $articlesInYear, $createLinks) {
+        parent::__construct($text);
         $this->year = $year;
         $this->articlesInYear = $articlesInYear;
+        $this->createLinks = (boolean) $createLinks;
     }
 
     public function getText() {
@@ -37,53 +41,52 @@ CALENDAR_PAGE;
     }
 
     protected function getYearSelector() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $startYear = $this->year->format('Y') - self::LOOK_BACK_YEARS;
         $endYear = $this->year->format('Y') + self::LOOK_AHEAD_YEARS;
 
 
-        $text = <<<START
+        $returnValue = <<<START
              <p class="lijn">  
 START;
 
-
         for ($i = $startYear; $i <= $endYear; $i++) {
             if ($i == $this->year->format("Y")) {
-                $text.= <<<YEAR
+                $returnValue.= <<<YEAR
                      <strong>$i</strong> 
 YEAR;
             } else {
-                $text.= <<<YEAR
-                     <a href="{$oWebsite->getUrlPage("calendar", $i)}">$i</a> 
+                $returnValue.= <<<YEAR
+                     <a href="{$text->getUrlPage("calendar", $i)}">$i</a> 
 YEAR;
             }
         }
-        $text.= <<<END
+        $returnValue.= <<<END
              </p>
 END;
-        return $text;
+        return $returnValue;
     }
 
     protected function getCalendars() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
 
-        $text = "";
+        $returnValue = "";
         for ($i = 1; $i <= 12; $i++) {
             $month = DateTime::createFromFormat("Y n", $this->year->format("Y") . ' ' . $i);
-            $calendarView = new CalendarView($oWebsite, $month, $this->articlesInYear);
+            $calendarView = new CalendarView($text, $month, $this->articlesInYear, $this->createLinks);
             $table = $calendarView->getText();
 
             $monthName = ucFirst($calendarView->getMonthName($month));
             $yearNumber = $month->format("Y");
 
-            $text.= <<<MONTH
+            $returnValue.= <<<MONTH
                 <div class="calender_month_wrapper">
                     <h3>$monthName $yearNumber</h3>
                     $table
                 </div>
 MONTH;
         }
-        return $text;
+        return $returnValue;
     }
 
 }

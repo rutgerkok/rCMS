@@ -46,7 +46,7 @@ class PageRenderer {
     /**
      * @var Request The request.
      */
-    protected $request;
+    private $request;
 
     /**
      * @var string Internal name of the page, like "edit_article".
@@ -170,7 +170,7 @@ class PageRenderer {
      * @return string The shorter title.
      */
     public function getPageTitle() {
-        return $this->page->getPageTitle($this->request);
+        return $this->page->getPageTitle($this->website->getText());
     }
 
     /**
@@ -179,7 +179,7 @@ class PageRenderer {
      * @return string The title.
      */
     public function getShortPageTitle() {
-        return $this->page->getShortPageTitle($this->request);
+        return $this->page->getShortPageTitle($this->website->getText());
     }
 
     /**
@@ -257,7 +257,9 @@ class PageRenderer {
      */
     public function getMainContent() {
         if ($this->authenticationFailedRank >= 0) {
-            $loginView = new LoginView($this->website, $this->authenticationFailedRank);
+            $auth = $this->website->getAuth();
+            $errorMessage = $auth->getLoginError($this->authenticationFailedRank);
+            $loginView = new LoginView($this->website, $errorMessage);
             return $loginView->getText();
         } else {
             return $this->page->getPageContent($this->request);

@@ -2,7 +2,7 @@
 
 namespace Rcms\Page\View;
 
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 use Rcms\Core\Article;
 
 /**
@@ -15,33 +15,35 @@ class ArticleListView extends View {
     protected $mainCategoryId;
     protected $metainfo;
     protected $archive;
+    protected $editLinks;
 
     /**
      * Creates a new view for a list of articles.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param Article[] $articles List of articles.
      * @param int $mainCategoryId The category id for archive and create article links.
      * @param boolean $metainfo Whether author, date and category are shown.
      * @param boolean $archive Whether a link to the archive is shown.
      */
-    public function __construct(Website $oWebsite, $articles, $mainCategoryId,
-            $metainfo, $archive) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, $articles, $mainCategoryId,
+            $metainfo, $archive, $editLinks) {
+        parent::__construct($text);
         $this->articles = $articles;
         $this->mainCategoryId = (int) $mainCategoryId;
         $this->metainfo = (boolean) $metainfo;
         $this->archive = (boolean) $archive;
+        $this->editLinks = (boolean) $editLinks;
     }
 
     public function getText() {
         $output = '';
-        $oWebsite = $this->oWebsite;
-        $loggedInStaff = $oWebsite->isLoggedInAsStaff();
+        $text = $this->text;
+        $loggedInStaff = $this->editLinks;
         $mainCategoryId = $this->mainCategoryId;
 
         // Link to creat new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
         }
 
         // All articles
@@ -50,17 +52,17 @@ class ArticleListView extends View {
                 $output.= $this->getArticleTextSmall($article, $this->metainfo, $loggedInStaff);
             }
         } else {
-            $output.= "<p>" . $oWebsite->t("errors.nothing_found") . "</p>";
+            $output.= "<p>" . $text->t("errors.nothing_found") . "</p>";
         }
 
         // Another link to create new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $oWebsite->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $oWebsite->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
         }
 
         // Archive link
         if ($this->archive) {
-            $output.= '<p><a href="' . $oWebsite->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
+            $output.= '<p><a href="' . $text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
         }
 
         return $output;
@@ -68,31 +70,31 @@ class ArticleListView extends View {
 
     public function getArticleTextSmall(Article $article, $show_metainfo,
             $show_edit_delete_links) {
-        $oWebsite = $this->oWebsite;
-        $returnValue = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $oWebsite->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
+        $text = $this->text;
+        $returnValue = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $text->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
             // Created and last edited
-            $returnValue.= $oWebsite->t('articles.created') . " " . $article->created . ' - ';
+            $returnValue.= $text->t('articles.created') . " " . $article->created . ' - ';
             if ($article->lastEdited) {
-                $returnValue.= lcFirst($oWebsite->t('articles.last_edited')) . " " . $article->lastEdited . '<br />';
+                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $article->lastEdited . '<br />';
             }
             // Category
-            $returnValue.= $oWebsite->t('main.category') . ": ";
-            $returnValue.= '<a href="' . $oWebsite->getUrlPage("category", $article->categoryId) . '">';
+            $returnValue.= $text->t('main.category') . ": ";
+            $returnValue.= '<a href="' . $text->getUrlPage("category", $article->categoryId) . '">';
             $returnValue.= htmlSpecialChars($article->category) . '</a>';
             // Author
-            $returnValue.= " - " . $oWebsite->t('articles.author') . ": ";
-            $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">';
+            $returnValue.= " - " . $text->t('articles.author') . ": ";
+            $returnValue.= '<a href="' . $text->getUrlPage("account", $article->authorId) . '">';
             $returnValue.= htmlSpecialChars($article->author) . "</a>";
             // Pinned
             if ($article->pinned) {
-                $returnValue.= " - " . $oWebsite->t('articles.pinned');
+                $returnValue.= " - " . $text->t('articles.pinned');
             }
             // Hidden
             if ($article->hidden) {
-                $returnValue.= " - " . $oWebsite->t('articles.hidden');
+                $returnValue.= " - " . $text->t('articles.hidden');
             }
             $returnValue.= '</p>';
         }
@@ -107,10 +109,10 @@ class ArticleListView extends View {
         $returnValue.= htmlSpecialChars($article->intro);
         $returnValue.= '</p> <p class="article_teaser_links">';
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
+        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                    '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_article", $article->id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
+            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id) . '">' . $text->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
 

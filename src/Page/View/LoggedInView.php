@@ -2,30 +2,45 @@
 
 namespace Rcms\Page\View;
 
+use Rcms\Core\Text;
+
 /**
  * Used on the login page when an user has successfully logged in.
  */
 class LoggedInView extends View {
+    
+    private $showAdminLinks;
+    
+    /**
+     * Creates the view.
+     * @param Text $text The Text instance.
+     * @param boolean $showAdminLinks True if the links to the admin pages
+     * must be shown.
+     */
+    public function __construct(Text $text, $showAdminLinks) {
+        parent::__construct($text);
+        $this->showAdminLinks = (boolean) $showAdminLinks;
+    }
 
     public function getText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $adminLinks = "";
-        if ($oWebsite->isLoggedInAsStaff(true)) {
+        if ($this->showAdminLinks) {
             $adminLinks = <<<EOT
                     <br />
-                    <a href="{$oWebsite->getUrlPage("account_management")}" class="arrow">{$oWebsite->t("main.account_management")}</a>
+                    <a href="{$text->getUrlPage("account_management")}" class="arrow">{$text->t("main.account_management")}</a>
                     <br />
-                    <a href="{$oWebsite->getUrlPage("admin")}" class="arrow">{$oWebsite->t("main.admin")}</a>
+                    <a href="{$text->getUrlPage("admin")}" class="arrow">{$text->t("main.admin")}</a>
 EOT;
         }
 
         return <<<EOT
-                <h3>{$oWebsite->t('users.loggedIn')}</h3>
-                <p>{$oWebsite->t('users.succesfully_loggedIn')}</p>
+                <h3>{$text->t('users.loggedIn')}</h3>
+                <p>{$text->t('users.succesfully_loggedIn')}</p>
                 <p>
-                    <a href="{$oWebsite->getUrlMain()}" class="arrow">{$oWebsite->t("main.home")}</a>
+                    <a href="{$text->getUrlMain()}" class="arrow">{$text->t("main.home")}</a>
                     <br />
-                    <a href="{$oWebsite->getUrlPage("account")}" class="arrow">{$oWebsite->t("main.my_account")}</a>
+                    <a href="{$text->getUrlPage("account")}" class="arrow">{$text->t("main.my_account")}</a>
                     $adminLinks
                 </p>
 EOT;

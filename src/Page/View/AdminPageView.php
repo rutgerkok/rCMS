@@ -8,40 +8,40 @@ namespace Rcms\Page\View;
 class AdminPageView extends View {
 
     public function getText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         return <<<EOT
                 
             <p>
-                <a href="{$oWebsite->getUrlPage("site_settings")}" class="arrow">{$oWebsite->t("main.site_settings")}</a><br />
-                <a href="{$oWebsite->getUrlPage("widgets")}" class="arrow">{$oWebsite->t("main.edit")} {$oWebsite->t("main.widgets")}</a>
+                <a href="{$text->getUrlPage("site_settings")}" class="arrow">{$text->t("main.site_settings")}</a><br />
+                <a href="{$text->getUrlPage("widgets")}" class="arrow">{$text->t("main.edit")} {$text->t("main.widgets")}</a>
             </p>
 
-            <h3>{$oWebsite->t("main.articles")}</h3>
+            <h3>{$text->t("main.articles")}</h3>
             <p>
-                <a href="{$oWebsite->getUrlPage("edit_article")}" class="arrow">{$oWebsite->t("articles.create")}</a><br />
-                <a href="{$oWebsite->getUrlPage("comments")}" class="arrow">{$oWebsite->t("comments.comments")}</a>
+                <a href="{$text->getUrlPage("edit_article")}" class="arrow">{$text->t("articles.create")}</a><br />
+                <a href="{$text->getUrlPage("comments")}" class="arrow">{$text->t("comments.comments")}</a>
             </p>
 
-            <h3>{$oWebsite->t("users.account_management")}</h3>
+            <h3>{$text->t("users.account_management")}</h3>
             <p>
-                <a href="{$oWebsite->getUrlPage("create_account")}" class="arrow">{$oWebsite->t("users.create")}</a><br /> 
-                <a class="arrow" href="{$oWebsite->getUrlPage("edit_password")}">{$oWebsite->t("editor.password.edit")}</a><br />
-                <a class="arrow" href="{$oWebsite->getUrlPage("edit_email")}">{$oWebsite->t("editor.email.edit")}</a><br />
-                <a class="arrow" href="{$oWebsite->getUrlPage("edit_display_name")}">{$oWebsite->t("editor.display_name.edit")}</a><br />
-                <a class="arrow" href="{$oWebsite->getUrlPage("account_management")}">{$oWebsite->t("users.account_management")}</a><br />
+                <a href="{$text->getUrlPage("create_account")}" class="arrow">{$text->t("users.create")}</a><br /> 
+                <a class="arrow" href="{$text->getUrlPage("edit_password")}">{$text->t("editor.password.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("edit_email")}">{$text->t("editor.email.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("edit_display_name")}">{$text->t("editor.display_name.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("account_management")}">{$text->t("users.account_management")}</a><br />
             </p>
 
-            <h3>{$oWebsite->t("main.links")}</h3>
+            <h3>{$text->t("main.links")}</h3>
             <p>
-                <a href="{$oWebsite->getUrlPage("create_link")}" class="arrow">{$oWebsite->t("links.create")}</a><br />
-                <a href="{$oWebsite->getUrlPage("links")}" class="arrow">{$oWebsite->t("links.edit_or_delete")}</a><br />
+                <a href="{$text->getUrlPage("create_link")}" class="arrow">{$text->t("links.create")}</a><br />
+                <a href="{$text->getUrlPage("links")}" class="arrow">{$text->t("links.edit_or_delete")}</a><br />
             </p>
 
-            <h3>{$oWebsite->t("main.categories")}</h3>
+            <h3>{$text->t("main.categories")}</h3>
             <p>
-                <a href="{$oWebsite->getUrlPage("create_category")}" class="arrow">{$oWebsite->t("categories.create")}</a><br />
-                <a href="{$oWebsite->getUrlPage("rename_category")}" class="arrow">{$oWebsite->t("categories.rename")}</a><br />
-                <a href="{$oWebsite->getUrlPage("delete_category")}" class="arrow">{$oWebsite->t("categories.delete")}</a>
+                <a href="{$text->getUrlPage("create_category")}" class="arrow">{$text->t("categories.create")}</a><br />
+                <a href="{$text->getUrlPage("rename_category")}" class="arrow">{$text->t("categories.rename")}</a><br />
+                <a href="{$text->getUrlPage("delete_category")}" class="arrow">{$text->t("categories.delete")}</a>
             </p>   
 EOT;
     }

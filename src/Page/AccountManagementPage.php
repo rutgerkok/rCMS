@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
@@ -14,8 +15,8 @@ class AccountManagementPage extends Page {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("users.account_management");
+    public function getPageTitle(Text $text) {
+        return $text->t("users.account_management");
     }
 
     public function getPageType() {

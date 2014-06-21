@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
@@ -35,12 +36,12 @@ class SiteSettingsPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("site_settings.editing_site_settings");
+    public function getPageTitle(Text $text) {
+        return $text->t("site_settings.editing_site_settings");
     }
 
-    public function getShortPageTitle(Request $request) {
-        return $request->getWebsite()->t("main.site_settings");
+    public function getShortPageTitle(Text $text) {
+        return $text->t("main.site_settings");
     }
 
     public function getMinimumRank(Request $request) {

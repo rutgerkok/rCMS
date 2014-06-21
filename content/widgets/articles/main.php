@@ -63,10 +63,10 @@ class WidgetArticles extends WidgetDefinition {
 
         if ($displayType >= self::TYPE_LIST) {
             // Small <ul> list
-            $oArticlesView = new ArticleSmallListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
+            $oArticlesView = new ArticleSmallListView($oWebsite->getText(), $articles, $oWebsite->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
         } else {
             // Real paragraphs
-            $oArticlesView = new ArticleListView($oWebsite, $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink);
+            $oArticlesView = new ArticleListView($oWebsite->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $oWebsite->isLoggedInAsStaff());
         }
 
         return $titleHTML . $oArticlesView->getText();

@@ -7,16 +7,28 @@ use BadMethodCallException;
 /**
  * Translations, error messages and success messages.
  */
-class Messages {
-    
+class Text {
+
     const DEBUG_MODE = false;
 
+    /**
+     * @var string URL of the site, like http://www.example.com/ .
+     */
+    private $siteUrl;
     protected $translations;
     private $translationsDir;
     private $errors;
     private $messages;
 
-    public function __construct($translationsDir) {
+    /**
+     * Creates a new Text instance.
+     * @param string $siteUrl URL of the site, like "http://www.example.com/".
+     * Trailing slash must be included.
+     * @param string $translationsDir Path to the directory with the
+     * translation files for the language of the site.
+     */
+    public function __construct($siteUrl, $translationsDir) {
+        $this->siteUrl = $siteUrl;
         $this->translations = array();
         $this->translationsDir = $translationsDir;
         $this->errors = array();
@@ -34,7 +46,7 @@ class Messages {
     public function addError($error) {
         $this->errors[] = $error;
     }
-    
+
     /**
      * Logs a new error, along with the current stacktrace and other important
      * information. The error is not displayed on the site, unless debug mode is
@@ -159,13 +171,49 @@ class Messages {
         $i = 0;
         foreach ($replacements as $replacement) {
             $translated = str_replace(
-                    '{' . $i . '}', 
-                    $replacement,
-                    $translated);
+                    '{' . $i . '}', $replacement, $translated);
             $i++;
         }
 
         return $translated;
+    }
+
+    /**
+     * Creates an URL to the given page.
+     * @param string $name Name of the page, like "edit_article".
+     * @param string|string[]|null $params Parameters of the page, appear in URL
+     * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
+     * `foo/this/that`. You can pass one string, or an array of strings. You can
+     * also pass null to skip this parameter.
+     * @param array $args Array of key/value pairs that should be used as the
+     * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
+     * @return string The url.
+     */
+    public function getUrlPage($name, $params = null, $args = array()) {
+        $url = $this->getUrlMain() . $name;
+        if ($params !== null) {
+            if (is_array($params)) {
+                $url.= '/' . implode('/', $params);
+            } else {
+                $url.= '/' . $params;
+            }
+        }
+        if (count($args) > 0) {
+            $separator = '?';
+            foreach ($args as $key => $value) {
+                $url.= $separator . urlEncode($key) . '=' . urlEncode($value);
+                $separator = "&amp;";
+            }
+        }
+        return $url;
+    }
+
+    /**
+     * Gets the main site URL, like "http://www.example.com/".
+     * @return string The main site url.
+     */
+    public function getUrlMain() {
+        return $this->siteUrl;
     }
 
 }

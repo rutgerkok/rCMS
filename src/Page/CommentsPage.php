@@ -4,8 +4,8 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Comments;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
-use Rcms\Core\Website;
 use Rcms\Page\View\CommentsTreeView;
 
 /**
@@ -25,12 +25,12 @@ class CommentsPage extends Page {
         return Authentication::$MODERATOR_RANK;
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("comments.comments");
+    public function getPageTitle(Text $text) {
+        return $text->t("comments.comments");
     }
 
-    public function getView(Website $website) {
-        return new CommentsTreeView($website, $this->comments, true);
+    public function getView(Text $text) {
+        return new CommentsTreeView($text, $this->comments, true);
     }
 
 }

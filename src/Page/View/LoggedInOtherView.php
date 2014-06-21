@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\User;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Shows that the user is now logged in as someone else.
@@ -15,8 +15,8 @@ class LoggedInOtherView extends View {
      */
     private $newUser;
 
-    public function __construct(Website $oWebsite, User $newUser = null) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, User $newUser = null) {
+        parent::__construct($text);
 
         $this->newUser = $newUser;
     }
@@ -30,28 +30,28 @@ class LoggedInOtherView extends View {
     }
 
     protected function getErrorText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
 
         return <<<MESSAGE
             <p>
-                {$oWebsite->t('users.account')} {$oWebsite->t('errors.not_found')}
+                {$text->t('users.account')} {$text->t('errors.not_found')}
             </p>
             <p>
-                <a class="arrow" href="{$oWebsite->getUrlMain()}">{$oWebsite->t("main.home")}</a>
+                <a class="arrow" href="{$text->getUrlMain()}">{$text->t("main.home")}</a>
             </p>
 MESSAGE;
     }
 
     protected function getSuccessText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $user = $this->newUser;
 
         return <<<MESSAGE
             <p>
-                {$oWebsite->tReplaced('users.succesfully_loggedIn.other', htmlSpecialChars($user->getDisplayName()))}
+                {$text->tReplaced('users.succesfully_loggedIn.other', htmlSpecialChars($user->getDisplayName()))}
             </p>
             <p>
-                <a class="arrow" href="{$oWebsite->getUrlMain()}">{$oWebsite->t("main.home")}</a>
+                <a class="arrow" href="{$text->getUrlMain()}">{$text->t("main.home")}</a>
             </p>
 MESSAGE;
     }

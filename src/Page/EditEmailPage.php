@@ -2,13 +2,14 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Request;
 
 class EditEmailPage extends EditPasswordPage {
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("editor.email.edit");
+    public function getPageTitle(Text $text) {
+        return $text->t("editor.email.edit");
     }
 
     public function getPageContent(Request $request) {

@@ -4,7 +4,7 @@ namespace Rcms\Page\View;
 
 use DateTime;
 use DateInterval;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Renders a list of articles with buttons to go the next or previous page
@@ -24,15 +24,22 @@ class CalendarView extends View {
     protected $articlesByDay;
 
     /**
+     * @var boolean True to show edit links, false otherwise.
+     */
+    private $editLinks;
+
+    /**
      * Constructs a new calendar view.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param DateTime $month The month to display.
      * @param Article[] $articlesInMonth All articles in the month, doesn't have to be in any order.
+     * @param boolean $editLinks True to show edit links, false otherwise.
      */
-    public function __construct(Website $oWebsite, DateTime $month,
-            array $articlesInMonth) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, DateTime $month,
+            array $articlesInMonth, $editLinks) {
+        parent::__construct($text);
         $this->month = $month;
+        $this->editLinks = (boolean) $editLinks;
 
         // Index by day in month (but only for articles actually in this month)
         $monthNumber = $month->format('n');
@@ -70,11 +77,11 @@ class CalendarView extends View {
      * @return string[] The names of all days in the week.
      */
     protected function getWeekDayNames() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $weekDayCodes = array("mon", "tue", "wed", "thu", "fri", "sat", "sun");
         $weekDayNames = array();
         foreach ($weekDayCodes as $weekDayCode) {
-            $weekDayNames[] = $oWebsite->t("calendar.weekday." . $weekDayCode);
+            $weekDayNames[] = $text->t("calendar.weekday." . $weekDayCode);
         }
         return $weekDayNames;
     }
@@ -186,7 +193,7 @@ CELL;
      * @param DateTime $month The month to look up.
      */
     public function getMonthName(DateTime $month) {
-        return $this->oWebsite->t("calendar.month." . strToLower($month->format("F")));
+        return $this->text->t("calendar.month." . strToLower($month->format("F")));
     }
 
     /**
@@ -197,7 +204,7 @@ CELL;
      * @return string The code.
      */
     protected function getTooltip(DateTime $date) {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $dayNumber = (int) $date->format('j');
 
         $tooltip = "<h3>{$dayNumber} {$this->getMonthName($date)} {$date->format('Y')}</h3>";
@@ -206,13 +213,13 @@ CELL;
         $tooltip.= $this->getTooltipArticleList($date);
 
         // End of tooltip
-        if ($oWebsite->isLoggedInAsStaff()) {
+        if ($this->editLinks) {
             $tooltip.= <<<TOOLTIP_END
                 <p>
-                    <a class="arrow" href="{$oWebsite->getUrlPage("edit_article", null, array(
+                    <a class="arrow" href="{$text->getUrlPage("edit_article", null, array(
                         "article_eventdate" => $date->format("Y-m-d"),
                         "article_eventtime" => "12:00"))}">
-                        {$oWebsite->t("articles.create")}
+                        {$text->t("articles.create")}
                     </a>
                 </p>
 TOOLTIP_END;
@@ -228,11 +235,11 @@ TOOLTIP_END;
      * @return string The HTML list, or a message if there are none.
      */
     protected function getTooltipArticleList(DateTime $date) {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $dayNumber = (int) $date->format('j');
 
         if (!isSet($this->articlesByDay[$dayNumber])) {
-            return "<p><em>" . $oWebsite->t("calendar.no_activities_today") . "</em></p>";
+            return "<p><em>" . $text->t("calendar.no_activities_today") . "</em></p>";
         }
 
         $articles = $this->articlesByDay[$dayNumber];
@@ -242,7 +249,7 @@ TOOLTIP_END;
             $intro = htmlSpecialChars($article->intro);
             $tooltip.= <<<TOOLTIP_ELEMENT
                 <li title="{$intro}">
-                    <a href="{$oWebsite->getUrlPage("article", $article->id)}">
+                    <a href="{$text->getUrlPage("article", $article->id)}">
                         {$title}
                     </a>
                 </li>

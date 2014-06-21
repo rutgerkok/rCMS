@@ -8,6 +8,7 @@ use Rcms\Core\ArticleEditor;
 use Rcms\Core\Authentication;
 use Rcms\Core\Categories;
 use Rcms\Core\Editor;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 
 class EditArticlePage extends Page {
@@ -63,24 +64,30 @@ class EditArticlePage extends Page {
         return Authentication::$MODERATOR_RANK;
     }
 
-    public function getPageTitle(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $page_title = $oWebsite->t("articles.edit");
+    public function getPageTitle(Text $text) {
+        $pageTitle = $text->t("articles.edit");
         if ($this->article_editor != null) {
-            $article_title = $this->article_editor->getArticle()->title;
-            if ($article_title) {
+            $articleTitle = $this->article_editor->getArticle()->title;
+            if (!empty($articleTitle)) {
                 // Editing existing article
-                $page_title.= ' "' . htmlSpecialChars($article_title) . '"';
+                $pageTitle.= ' "' . htmlSpecialChars($articleTitle) . '"';
             } else {
                 // New article
-                $page_title = $oWebsite->t('articles.create');
+                $pageTitle = $text->t('articles.create');
             }
         }
-        return $page_title;
+        return $pageTitle;
     }
 
-    public function getShortPageTitle(Request $request) {
-        return $request->getWebsite()->t("articles.edit");
+    public function getShortPageTitle(Text $text) {
+        if ($this->article_editor != null) {
+            $articleTitle = $this->article_editor->getArticle()->title;
+            if (empty($articleTitle)) {
+                // New article
+                return $text->t("articles.create");
+            }
+        }
+        return $text->t("articles.edit");
     }
 
     public function getPageContent(Request $request) {

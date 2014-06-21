@@ -8,12 +8,12 @@ namespace Rcms\Page\View;
 class LoggedOutView extends View {
 
     public function getText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         return <<<EOT
-            <h3>{$oWebsite->t('users.logged_out')}</h3>
-            <p>{$oWebsite->t('users.succesfully_logged_out')}</p>
+            <h3>{$text->t('users.logged_out')}</h3>
+            <p>{$text->t('users.succesfully_logged_out')}</p>
             <p>
-                <a href="{$oWebsite->getUrlMain()}" class="arrow">{$oWebsite->t("main.home")}</a>
+                <a href="{$text->getUrlMain()}" class="arrow">{$text->t("main.home")}</a>
             </p>
 EOT;
     }

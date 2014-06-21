@@ -2,7 +2,7 @@
 
 namespace Rcms\Page\View;
 
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 use Rcms\Core\Comment;
 
 /**
@@ -15,8 +15,8 @@ class CommentsSmallView extends View {
     /** @var Comment[] Comments to display. */
     protected $comments;
 
-    public function __construct(Website $oWebsite, $comments) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, $comments) {
+        parent::__construct($text);
         $this->comments = $comments;
     }
 
@@ -28,16 +28,16 @@ class CommentsSmallView extends View {
         }
 
         if (count($this->comments) == 0) {
-            $returnValue.= "<p><em>" . $this->oWebsite->t("errors.nothing_found") . "</em></p>\n";
+            $returnValue.= "<p><em>" . $this->text->t("errors.nothing_found") . "</em></p>\n";
         }
 
         return $returnValue;
     }
 
     protected function getSingleComment(Comment $comment) {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $id = $comment->getId();
-        $contextUrl = $oWebsite->getUrlPage("article", $comment->getArticleId()) . '#comment_' . $id;
+        $contextUrl = $text->getUrlPage("article", $comment->getArticleId()) . '#comment_' . $id;
         $returnValue = '<article class="comment_preview">';
 
         // Get author name (and link) and use it as the title
@@ -45,7 +45,7 @@ class CommentsSmallView extends View {
         $authorId = $comment->getUserId();
         if ($authorId > 0) {
             // Add link to author profile
-            $authorName = '<a href="' . $oWebsite->getUrlPage("account", $authorId) . '">' . $authorName . "</a>";
+            $authorName = '<a href="' . $text->getUrlPage("account", $authorId) . '">' . $authorName . "</a>";
         }
         $returnValue.= '<header><h3 class="comment_title">' . $authorName . "</h3></header>\n";
 
@@ -69,7 +69,7 @@ EOT;
             <footer>
                 <p>
                     <a class="arrow" href="$contextUrl">
-                        {$oWebsite->t("comments.view_context")}
+                        {$text->t("comments.view_context")}
                     </a>
                 </p>
             </footer>

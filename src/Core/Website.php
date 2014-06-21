@@ -22,8 +22,8 @@ class Website {
     /** @var Authentication Handles authentication */
     protected $authenticationObject;
 
-    /** @var Messages Handles errors, messages and translations. */
-    protected $messageSystem;
+    /** @var Text Handles errors, messages and translations. */
+    protected $text;
 
     /**
      * @deprecated For old page system. Errors are now always echoed after the
@@ -45,7 +45,7 @@ class Website {
 
         $this->authenticationObject = new Authentication($this);
         $this->themesObject = new Themes($this);
-        $this->messageSystem = new Messages($this->getUriTranslations() . '/' . $this->config->get("language"));
+        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations() . '/' . $this->config->get("language"));
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");
@@ -123,10 +123,10 @@ class Website {
     /**
      * Gets access to the message system of the page. This is uses to translate
      * messages and notify users.
-     * @return Messages The message system.
+     * @return Text The message system.
      */
-    public function getMessages() {
-        return $this->messageSystem;
+    public function getText() {
+        return $this->text;
     }
 
     // Paths
@@ -183,22 +183,7 @@ class Website {
      * @return string The url.
      */
     public function getUrlPage($name, $params = null, $args = array()) {
-        $url = $this->getUrlMain() . $name;
-        if ($params !== null) {
-            if (is_array($params)) {
-                $url.= '/' . implode('/', $params);
-            } else {
-                $url.= '/' . $params;
-            }
-        }
-        if (count($args) > 0) {
-            $separator = '?';
-            foreach ($args as $key => $value) {
-                $url.= $separator . urlEncode($key) . '=' . urlEncode($value);
-                $separator = "&amp;";
-            }
-        }
-        return $url;
+       return $this->text->getUrlPage($name, $params, $args);
     }
 
     //Geeft de map van alle thema's terug als url
@@ -227,7 +212,7 @@ class Website {
 //Einde paden
 
     public function addError($error) {
-        $this->messageSystem->addError($error);
+        $this->text->addError($error);
     }
 
     /**
@@ -235,7 +220,7 @@ class Website {
      * If you need to error count for display purposes, count them yourselves.
      */
     public function getErrorCount() {
-        return count($this->messageSystem->getErrors());
+        return count($this->text->getErrors());
     }
 
     function hasAccess() { //kijkt of site mag worden geladen
@@ -312,11 +297,11 @@ class Website {
 
     // Translations, see documentation is Messages class.
     public function t($key) {
-        return $this->messageSystem->t($key);
+        return $this->text->t($key);
     }
 
     public function tReplacedKey($key, $replacementKey, $lowercase = false) {
-        return $this->messageSystem->tReplacedKey($key, $replacementKey, $lowercase);
+        return $this->text->tReplacedKey($key, $replacementKey, $lowercase);
     }
 
     public function tReplaced($key, $replacements) {
@@ -324,7 +309,7 @@ class Website {
         if (!is_array($replacements)) {
             $replacements = array_slice(func_get_args(), 1);
         }
-        return $this->messageSystem->tReplaced($key, $replacements);
+        return $this->text->tReplaced($key, $replacements);
     }
 
     // Input from $_REQUEST

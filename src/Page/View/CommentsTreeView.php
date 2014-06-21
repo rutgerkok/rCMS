@@ -4,7 +4,7 @@ namespace Rcms\Page\View;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 use Rcms\Core\User;
 
 /**
@@ -20,15 +20,14 @@ class CommentsTreeView extends View {
 
     /**
      * Creates the commment renderer.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param Comment[] $comments List of comments.
      * @param boolean $viewedOutOfContext Whether there should be a link to the article.
      * @param User|null $viewer The user viewing the comments.
      */
-    public function __construct(Website $oWebsite, $comments,
-            $viewedOutOfContext) {
-        parent::__construct($oWebsite);
-        $viewer = $oWebsite->getAuth()->getCurrentUser();
+    public function __construct(Text $text, $comments,
+            $viewedOutOfContext, User $viewer = null) {
+        parent::__construct($text);
         $this->comments = $comments;
         $this->viewedByStaff = $viewer ? $viewer->isStaff() : false;
         $this->viewedOutOfContext = $viewedOutOfContext;
@@ -39,7 +38,7 @@ class CommentsTreeView extends View {
         return $this->getCommentTree($this->comments, $this->viewedByStaff, $this->viewedOutOfContext);
     }
 
-    public static function getSingleComment(Website $oWebsite, Comment $comment,
+    public static function getSingleComment(Text $text, Comment $comment,
             $editDeleteLinks, $viewedOutOfContext) {
         $id = $comment->getId();
         $author = htmlSpecialChars($comment->getUserDisplayName());
@@ -49,8 +48,8 @@ class CommentsTreeView extends View {
 
         // Add link and rank to author when linked to account
         if ($comment->getUserId() > 0) {
-            $author = '<a href="' . $oWebsite->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
-            $oAuth = $oWebsite->getAuth();
+            $author = '<a href="' . $text->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
+            $oAuth = $text->getAuth();
             $rank = $comment->getUserRank();
             if ($oAuth->isHigherOrEqualRank($rank, Authentication::$MODERATOR_RANK)) {
                 $rankName = $oAuth->getRankName($rank);
@@ -59,13 +58,13 @@ class CommentsTreeView extends View {
         }
 
         // Edit and delete links
-        $actionLinksHtml = $editDeleteLinks ? self::getActionLinks($oWebsite, $comment) : "";
+        $actionLinksHtml = $editDeleteLinks ? self::getActionLinks($text, $comment) : "";
 
         // Reply and context links
         if ($viewedOutOfContext) {
             $replyOrContextLink = <<<EOT
-                <a class="arrow" href="{$oWebsite->getUrlPage("article", $comment->getArticleId())}#comment_$id">
-                    {$oWebsite->t("comments.view_context")}
+                <a class="arrow" href="{$text->getUrlPage("article", $comment->getArticleId())}#comment_$id">
+                    {$text->t("comments.view_context")}
                 </a>
 EOT;
         } else {
@@ -92,7 +91,7 @@ COMMENT;
         return $output;
     }
 
-    private static function getActionLinks(Website $oWebsite, Comment $comment) {
+    private static function getActionLinks(Text $text, Comment $comment) {
         $id = $comment->getId();
         $email = htmlSpecialChars($comment->getUserEmail());
         $returnValue = "";
@@ -100,11 +99,11 @@ COMMENT;
             $returnValue.= '<a class="comment_email" href="mailto:' . $email . '">' . $email . '</a>';
         }
         $returnValue.= <<<EOT
-            <a class="arrow" href="{$oWebsite->getUrlPage("edit_comment", $id)}">
-                {$oWebsite->t("main.edit")}
+            <a class="arrow" href="{$text->getUrlPage("edit_comment", $id)}">
+                {$text->t("main.edit")}
             </a>
-            <a class="arrow" href="{$oWebsite->getUrlPage("delete_comment", $id)}">
-                {$oWebsite->t("main.delete")}
+            <a class="arrow" href="{$text->getUrlPage("delete_comment", $id)}">
+                {$text->t("main.delete")}
             </a>
 EOT;
         return $returnValue;
@@ -124,7 +123,7 @@ EOT;
             }
 
             // Display the comment
-            $output.= self::getSingleComment($this->oWebsite, $comment, $canEditDelete, $this->viewedOutOfContext);
+            $output.= self::getSingleComment($this->text, $comment, $canEditDelete, $this->viewedOutOfContext);
 
             // Display the child comments, if any
             $childs = $comment->getChildComments();

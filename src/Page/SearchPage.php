@@ -4,8 +4,8 @@ namespace Rcms\Page;
 
 use Rcms\Core\Articles;
 use Rcms\Core\Menus;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
-use Rcms\Core\Website;
 use Rcms\Page\View\ArticleSearchView;
 use Rcms\Page\View\LinkSearchView;
 
@@ -41,22 +41,22 @@ class SearchPage extends Page {
         $this->links = $menus->getLinksBySearch($this->keyword);
     }
 
-    public function getPageTitle(Request $request) {
+    public function getPageTitle(Text $text) {
         if ($this->keyword) {
-            return $request->getWebsite()->tReplaced("articles.search_for", htmlSpecialChars($this->keyword));
+            return $text->tReplaced("articles.search_for", htmlSpecialChars($this->keyword));
         } else {
-            return $this->getShortPageTitle($request);
+            return $this->getShortPageTitle($text);
         }
     }
 
-    public function getShortPageTitle(Request $request) {
-        return $request->getWebsite()->t("main.search");
+    public function getShortPageTitle(Text $text) {
+        return $text->t("main.search");
     }
 
-    public function getViews(Website $oWebsite) {
+    public function getViews(Text $text) {
         return array(
-            new ArticleSearchView($oWebsite, $this->keyword, $this->displayedArticles, $this->pageNumber, $this->totalResults, $this->highestPageNumber),
-            new LinkSearchView($oWebsite, $this->links)
+            new ArticleSearchView($text, $this->keyword, $this->displayedArticles, $this->pageNumber, $this->totalResults, $this->highestPageNumber),
+            new LinkSearchView($text, $this->links)
         );
     }
 

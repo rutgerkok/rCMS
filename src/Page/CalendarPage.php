@@ -4,8 +4,8 @@ namespace Rcms\Page;
 
 use DateTime;
 use Rcms\Core\Articles;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
-use Rcms\Core\Website;
 use Rcms\Page\View\YearCalendarView;
 
 class CalendarPage extends Page {
@@ -17,8 +17,10 @@ class CalendarPage extends Page {
     protected $articlesInYear;
 
     /** @var DateTime The year of the articles. */
-    protected $year;
+    private $year;
     private $yearNumber;
+
+    private $showCreateLinks;
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
@@ -31,14 +33,15 @@ class CalendarPage extends Page {
         $this->yearNumber = $yearNumber;
 
         $this->articlesInYear = $oArticles->getArticlesDataCalendarYear($this->year);
+        $this->showCreateLinks = $oWebsite->isLoggedInAsStaff();
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->tReplaced("calendar.calendar_for_year", $this->yearNumber);
+    public function getPageTitle(Text $text) {
+        return $text->tReplaced("calendar.calendar_for_year", $this->yearNumber);
     }
 
-    public function getView(Website $website) {
-        return new YearCalendarView($website, $this->year, $this->articlesInYear);
+    public function getView(Text $text) {
+        return new YearCalendarView($text, $this->year, $this->articlesInYear, $this->showCreateLinks);
     }
 
 }

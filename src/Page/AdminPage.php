@@ -4,7 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Request;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 use Rcms\Page\View\AdminPageView;
 
 /**
@@ -16,12 +16,12 @@ class AdminPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("main.admin");
+    public function getPageTitle(Text $text) {
+        return $text->t("main.admin");
     }
 
-    public function getView(Website $website) {
-        return new AdminPageView($website);
+    public function getView(Text $text) {
+        return new AdminPageView($text);
     }
 
     public function getMinimumRank(Request $request) {

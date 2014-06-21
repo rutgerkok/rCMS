@@ -3,6 +3,8 @@
 namespace Rcms\Page\View;
 
 use DateTime;
+use Rcms\Core\Article;
+use Rcms\Core\Text;
 
 /**
  * Like CalendarView, but without tooltips and with clickable dates. This
@@ -14,6 +16,13 @@ class DatePickerView extends CalendarView {
 
     const LOOKBACK_YEARS = 4;
     const LOOKAHEAD_YEARS = 8;
+
+    public function __construct(Text $text, DateTime $month,
+            Article $articlesInMonth) {
+        // Edit links are never displayed, as the tooltips are not rendered at
+        // all
+        parent::__construct($text, $month, $articlesInMonth, false);
+    }
 
     protected function getDayCell(DateTime $date, DateTime $calendarMonth) {
         $dayNumber = (int) $date->format('j');

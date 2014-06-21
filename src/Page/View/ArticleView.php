@@ -4,7 +4,7 @@ namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
 use Rcms\Core\Comments;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Displays a single article.
@@ -14,29 +14,34 @@ class ArticleView extends View {
     /** @var Article $article */
     protected $article;
 
-    /** @var Comments $oComments */
-    protected $oComments;
+    /** @var Comment[] The comments */
+    protected $comments;
+    
+    /** @var boolean True to display a link to edit this article. */
+    private $editLink;
 
     /**
      * Creates a new article viewer.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param Article $article The article, or null if not found.
-     * @param Comments $oComments The comments model, or null to disable comments.
+     * @param boolean $editLink True to display a link to edit this article.
+     * @param Comment[] $comments The comments for this article.
      */
-    public function __construct(Website $oWebsite, $article,
-            Comments $oComments = null) {
-        parent::__construct($oWebsite);
+    public function __construct(Text $text, $article, $editLink,
+            array $comments = array()) {
+        parent::__construct($text);
         $this->article = $article;
-        $this->oComments = $oComments;
+        $this->comments = $comments;
+        $this->editLink = (boolean) $editLink;
 
         // Check if article exists
         if (!$this->article) {
-            $oWebsite->addError($oWebsite->t('main.article') . ' ' . $oWebsite->t('errors.not_found'));
+            $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_found'));
         } else {
 
             // Check if article is public
-            if ($this->article->hidden && !$oWebsite->isLoggedInAsStaff()) {
-                $oWebsite->addError($oWebsite->t('main.article') . ' ' . $oWebsite->t('errors.not_public'));
+            if ($this->article->hidden && !$text->isLoggedInAsStaff()) {
+                $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_public'));
                 $this->article = null;
             }
         }
@@ -44,20 +49,20 @@ class ArticleView extends View {
 
     public function getText() {
         if ($this->article) {
-            return $this->getArticleTextFull($this->article, $this->oComments);
+            return $this->getArticleTextFull($this->article, $this->comments);
         } else {
             return "";
         }
     }
 
     public function getArticleTextFull(Article $article,
-            Comments $oComments = null) {
+            array $comments = array()) {
         // Store some variables for later use
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $id = (int) $article->id;
 
         $returnValue = '';
-        $loggedIn = $oWebsite->isLoggedInAsStaff();
+        $loggedIn = $this->editLink;
 
         // Echo the sidebar
         $returnValue.= '<div id="sidebar_page_sidebar">';
@@ -69,38 +74,38 @@ class ArticleView extends View {
         $returnValue.= '<p class="meta">';
 
         // Created and last edited
-        $returnValue.= $oWebsite->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
+        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
         if ($article->lastEdited) {
-            $returnValue.= " <br />  " . $oWebsite->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
+            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
         }
 
         // Category
-        $returnValue.= " <br /> " . $oWebsite->t('main.category') . ': ';
-        $returnValue.= '<a href="' . $oWebsite->getUrlPage("category", $article->categoryId) . '">';
+        $returnValue.= " <br /> " . $text->t('main.category') . ': ';
+        $returnValue.= '<a href="' . $text->getUrlPage("category", $article->categoryId) . '">';
         $returnValue.= htmlSpecialChars($article->category) . '</a>';
 
         // Author
-        $returnValue.= " <br /> " . $oWebsite->t('articles.author') . ': ';
-        $returnValue.= '<a href="' . $oWebsite->getUrlPage("account", $article->authorId) . '">';
+        $returnValue.= " <br /> " . $text->t('articles.author') . ': ';
+        $returnValue.= '<a href="' . $text->getUrlPage("account", $article->authorId) . '">';
         $returnValue.= htmlSpecialChars($article->author) . '</a>';
 
         // Pinned, hidden, comments
         if ($article->pinned) {
-            $returnValue.= "<br />" . $oWebsite->t('articles.pinned') . " ";
+            $returnValue.= "<br />" . $text->t('articles.pinned') . " ";
         }
         if ($article->hidden) {
-            $returnValue.= "<br />" . $oWebsite->t('articles.hidden');
+            $returnValue.= "<br />" . $text->t('articles.hidden');
         }
         if ($loggedIn && $article->showComments) {
-            $returnValue.= "<br />" . $oWebsite->t('comments.allowed');
+            $returnValue.= "<br />" . $text->t('comments.allowed');
         }
 
         // Edit, delete
         $returnValue.= '</p>';
         if ($loggedIn) {
             $returnValue.= "<p style=\"clear:both\">";
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                    '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_article", $id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
+            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->getUrlPage("edit_article", $id) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $id) . '">' . $text->t('main.delete') . '</a>'; //delete
             $returnValue.= "</p>";
         }
         $returnValue.= '</div>';
@@ -108,18 +113,17 @@ class ArticleView extends View {
         // Article
         $returnValue.= '<div id="sidebar_page_content">';
         if ($loggedIn && $article->hidden) {
-            $returnValue.= '<p class="meta">' . $oWebsite->t('articles.is_hidden') . "<br /> \n" . $oWebsite->t('articles.hidden.explained') . '</p>';
+            $returnValue.= '<p class="meta">' . $text->t('articles.is_hidden') . "<br /> \n" . $text->t('articles.hidden.explained') . '</p>';
         }
         $returnValue.= '<p class="intro">' . htmlSpecialChars($article->intro) . '</p>';
         $returnValue.= $article->body;
 
         // Comments
-        if ($article->showComments && $oComments != null) {
-            $comments = $oComments->getCommentsArticle($id);
+        if ($article->showComments) {
             $commentCount = count($comments);
 
             // Title
-            $returnValue.= '<h3 class="notable">' . $oWebsite->t("comments.comments");
+            $returnValue.= '<h3 class="notable">' . $text->t("comments.comments");
             if ($commentCount > 0) {
                 $returnValue.= ' (' . $commentCount . ')';
             }
@@ -127,14 +131,14 @@ class ArticleView extends View {
 
             // "No comments found" if needed
             if ($commentCount == 0) {
-                $returnValue.= '<p><em>' . $oWebsite->t("comments.no_comments_found") . '</em></p>';
+                $returnValue.= '<p><em>' . $text->t("comments.no_comments_found") . '</em></p>';
             }
 
             // Comment add link
-            $returnValue.= '<p><a class="button primary_button" href="' . $oWebsite->getUrlPage("add_comment", $id) . '">' . $oWebsite->t("comments.add") . "</a></p>";
+            $returnValue.= '<p><a class="button primary_button" href="' . $text->getUrlPage("add_comment", $id) . '">' . $text->t("comments.add") . "</a></p>";
 
             // Show comments
-            $commentTreeView = new CommentsTreeView($oWebsite, $comments, false);
+            $commentTreeView = new CommentsTreeView($text, $comments, false);
             $returnValue .= $commentTreeView->getText();
         }
         $returnValue.= '</div>';

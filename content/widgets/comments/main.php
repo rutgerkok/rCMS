@@ -25,7 +25,7 @@ class WidgetComments extends WidgetDefinition {
         
         $commentLookup = new Comments($oWebsite);
         $latestComments = $commentLookup->getCommentsLatest($amount);
-        $view = new CommentsSmallView($oWebsite, $latestComments);
+        $view = new CommentsSmallView($oWebsite->getText(), $latestComments);
 
         $textToDisplay = '<h2>' . $title . "</h2>\n";
         $textToDisplay.= $view->getText();

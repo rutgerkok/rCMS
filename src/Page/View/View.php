@@ -2,18 +2,21 @@
 
 namespace Rcms\Page\View;
 
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Represents a view. This class produces just an empty page.
  */
 abstract class View {
 
-    /** @var Website $oWebsite The website object. */
-    protected $oWebsite;
+    /** 
+     * @var Text $oMessages Used for translations and
+     * error/success messages. 
+     */
+    protected $text;
 
-    public function __construct(Website $oWebsite) {
-        $this->oWebsite = $oWebsite;
+    public function __construct(Text $text) {
+        $this->text = $text;
     }
 
     /**

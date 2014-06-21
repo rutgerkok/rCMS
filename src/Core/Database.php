@@ -225,7 +225,7 @@ SQL;
             $website = $this->websiteObject;
             if ($this->isUpToDate()) {
                 $website->addError('A database error occured.');
-                $website->getMessages()->logError('Query failed: <br />'
+                $website->getText()->logError('Query failed: <br />'
                         . '<strong>Query:</strong><br />' . $sql . '<br />'
                         . '<strong>MySQL error:</strong><br />' . @mysqli_error($this->dbc) . @mysqli_connect_error());
                 //een van beide functies(mysqli_error of mysqli_connect_error) geeft een duidelijke foutmelding

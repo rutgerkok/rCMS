@@ -2,7 +2,7 @@
 
 namespace Rcms\Page\View;
 
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 use Rcms\Core\Article;
 
 /**
@@ -15,25 +15,33 @@ use Rcms\Core\Article;
  */
 class ArticleSmallListView extends View {
 
-    /** @var Article[] $articles List of articles */
+    /** 
+     * @var Article[] List of articles.
+     */
     protected $articles;
+    /**
+     * @var boolean True to show edit links, false otherwise.
+     */
+    protected $editLinks;
     protected $images;
     protected $archive;
     protected $mainCategoryId;
 
     /**
      * Creates a new view of a list of articles.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param Article[] $articles List of articles to display.
+     * @param boolean $editLinks True to show edit links, false otherwise.
      * @param int $mainCategoryId The id of the category of the archive and the
      *     Add-article link. Use 0 if the articles are of multiple categories.
      * @param boolean $images Whether images should be shown.
      * @param boolean $archive Whether a link to the archive should be shown.
      */
-    public function __construct(Website $oWebsite, $articles,
+    public function __construct(Text $text, $articles, $editLinks,
             $mainCategoryId = 0, $images = false, $archive = false) {
-        parent::__construct($oWebsite);
+        parent::__construct($text);
         $this->articles = $articles;
+        $this->editLinks = (boolean) $editLinks;
         $this->mainCategoryId = (int) $mainCategoryId;
         $this->images = (boolean) $images;
         $this->archive = (boolean) $archive;
@@ -45,7 +53,7 @@ class ArticleSmallListView extends View {
 
     public function getArticlesList($articles, $mainCategoryId, $images = false,
             $archive = false) {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
 
         // Build article list
         $returnValue = '';
@@ -58,14 +66,14 @@ class ArticleSmallListView extends View {
         }
 
         // Add article link
-        if ($oWebsite->isLoggedInAsStaff()) {
-            $returnValue .= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId));
-            $returnValue .= '">' . $oWebsite->t("articles.create") . "</a></p>\n";
+        if ($this->editLinks) {
+            $returnValue .= '<p><a class="arrow" href="' . $text->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId));
+            $returnValue .= '">' . $text->t("articles.create") . "</a></p>\n";
         }
 
         // Archive link
         if ($archive) {
-            $returnValue.= '<p><a href="' . $oWebsite->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $oWebsite->t('articles.archive') . '</a></p>';
+            $returnValue.= '<p><a href="' . $text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
         }
 
         return $returnValue;
@@ -74,7 +82,7 @@ class ArticleSmallListView extends View {
     /** Returns a single article enclosed in li tags */
     public function getArticleTextListEntry(Article $article,
             $displayImage = false) {
-        $returnValue = '<li><a href="' . $this->oWebsite->getUrlPage("article", $article->id) . '"';
+        $returnValue = '<li><a href="' . $this->text->getUrlPage("article", $article->id) . '"';
         $returnValue.= 'title="' . $article->intro . '">';
         if ($displayImage && !empty($article->featuredImage)) {
             $returnValue.= '<div class="linklist_icon_image"><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></div>';

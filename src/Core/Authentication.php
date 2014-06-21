@@ -139,11 +139,29 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                $loginView = new LoginView($this->websiteObject, $minimumRank);
+                $loginView = new LoginView($this->websiteObject, $this->getLoginError($minimumRank));
                 echo $loginView->getText();
             }
             return false;
         }
+    }
+
+    /**
+     * Gets the error message to display on the login form, like "Wrong
+     * password" or "You need to be logged in to view this page". The message
+     * "Wrong password" can only be returned when {@link check(int, boolean)}
+     * has been called before.
+     * @return string The error message, or empty if there is no message.
+     */
+    public function getLoginError($minimumRank) {
+        $oWebsite = $this->websiteObject;
+        if ($this->hasLoginFailed()) {
+            return $oWebsite->t("errors.invalid_login_credentials");
+        }
+        if ($this->isHigherOrEqualRank($minimumRank, Authentication::$MODERATOR_RANK)) {
+            return $oWebsite->t("users.must_be_logged_in_as_administrator");
+        }
+        return $oWebsite->t("users.must_be_logged_in");
     }
 
     /**

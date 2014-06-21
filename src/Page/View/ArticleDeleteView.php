@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * Used on the logout page.
@@ -19,9 +19,9 @@ class ArticleDeleteView extends View {
     protected $article;
     protected $state;
 
-    public function __construct(Website $oWebsite, Article $articleToDelete,
+    public function __construct(Text $text, Article $articleToDelete,
             $state) {
-        parent::__construct($oWebsite);
+        parent::__construct($text);
         $this->article = $articleToDelete;
         $this->state = (int) $state;
     }
@@ -41,67 +41,67 @@ class ArticleDeleteView extends View {
     }
 
     protected function getErrorText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $errorMessage = "<p><em>";
-        $errorMessage.= $oWebsite->t("main.article") . ' ' . $oWebsite->t("errors.is_not_removed");
+        $errorMessage.= $text->t("main.article") . ' ' . $text->t("errors.is_not_removed");
         $errorMessage.= "</em></p>\n";
         $errorMessage.= $this->getConfirmationText();
         return $errorMessage;
     }
 
     protected function getDeletedText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $returnValue = "<p>";
-        $returnValue.= $oWebsite->t("editor.article.delete.done");
+        $returnValue.= $text->t("editor.article.delete.done");
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
-        $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlMain() . '">' . $oWebsite->t("main.home") . '</a> ';
-        if ($oWebsite->isLoggedInAsStaff(true)) {
-            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlMain() . '">' . $oWebsite->t("main.admin") . '</a> ';
+        $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.home") . '</a> ';
+        if ($text->isLoggedInAsStaff(true)) {
+            $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";
         return $returnValue;
     }
 
     protected function getMadeHiddenText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $article = $this->article;
         $returnValue = "<p>";
-        $returnValue.= $oWebsite->t("editor.article.hidden.done");
+        $returnValue.= $text->t("editor.article.hidden.done");
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
-        $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t("articles.view") . '</a> ';
-        if ($oWebsite->isLoggedInAsStaff(true)) {
-            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlMain() . '">' . $oWebsite->t("main.admin") . '</a> ';
+        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t("articles.view") . '</a> ';
+        if ($text->isLoggedInAsStaff(true)) {
+            $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";
         return $returnValue;
     }
 
     protected function getConfirmationText() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $article = $this->article;
         $returnValue = <<<EOT
-            <p>{$oWebsite->t('editor.article.delete.confirm')}</p>
+            <p>{$text->t('editor.article.delete.confirm')}</p>
             <p>
-                <a class="button primary_button" href="{$oWebsite->getUrlPage("delete_article", $article->id, array("action" => "delete"))}">
-                    {$oWebsite->t("main.yes")}
+                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->id, array("action" => "delete"))}">
+                    {$text->t("main.yes")}
                 </a>
 EOT;
         if (!$article->hidden) {
             // Option to hide article is only relevant when the article
             // isn't already hidden
             $returnValue.= <<<EOT
-                <a class="button" href="{$oWebsite->getUrlPage("delete_article", $article->id, array("action" => "make_private"))}">
-                    {$oWebsite->t("editor.article.delete.make_hidden_instead")}
+                <a class="button" href="{$text->getUrlPage("delete_article", $article->id, array("action" => "make_private"))}">
+                    {$text->t("editor.article.delete.make_hidden_instead")}
                 </a>
 EOT;
         }
         $returnValue.= <<<EOT
-                <a class="button" href="{$oWebsite->getUrlPage("article", $article->id)}">
-                    {$oWebsite->t("main.no")}
+                <a class="button" href="{$text->getUrlPage("article", $article->id)}">
+                    {$text->t("main.no")}
                 </a>
             </p>
 EOT;

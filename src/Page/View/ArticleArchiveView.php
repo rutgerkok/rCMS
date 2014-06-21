@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
-use Rcms\Core\Website;
+use Rcms\Core\Text;
 
 /**
  * A view that displays the article titles grouped by month and year
@@ -27,24 +27,31 @@ class ArticleArchiveView extends View {
      * @var int[] Number of articles in each year, $year => $count
      */
     protected $articleCountInYears;
+    
+    /**
+     * @var boolean True to show edit links, false otherwise.
+     */
+    protected $editLinks;
 
     /**
      * Creates a new view for displaying the article archive.
-     * @param Website $oWebsite The website object.
+     * @param Text $text The website object.
      * @param Article[] $articles Articles to display.
      * @param int[] $categories Ids of the categories included in the menu bar.
      * @param int[] $articleCountInYears $year => $articlesInThatYear
      * @param int $selectedCategory Id of the currently selected category.
      * @param int $selectedYear Id of the currently selected year.
+     * @param boolean $editLinks True to show edit links, false otherwise.
      */
-    public function __construct(Website $oWebsite, $articles, $categories,
-            $articleCountInYears, $selectedCategory, $selectedYear) {
+    public function __construct(Text $text, $articles, $categories,
+            $articleCountInYears, $selectedCategory, $selectedYear, $editLinks) {
+        parent::__construct($text);
         $this->articles = $articles;
         $this->categories = $categories;
         $this->articleCountInYears = $articleCountInYears;
         $this->selectedCategory = (int) $selectedCategory;
         $this->selectedYear = (int) $selectedYear;
-        parent::__construct($oWebsite);
+        $this->editLinks = (boolean) $editLinks;
     }
 
     /**
@@ -52,22 +59,22 @@ class ArticleArchiveView extends View {
      * @return string The markup for the category selector.
      */
     protected function getCategoriesMenu() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
         $textToDisplay = '';
 
         // Any category
         if ($this->selectedCategory == 0) {
-            $textToDisplay.= '<strong>' . $oWebsite->t("categories.all") . "</strong>&nbsp;&nbsp;\n";
+            $textToDisplay.= '<strong>' . $text->t("categories.all") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay.= '<a href="' . $oWebsite->getUrlPage("archive", 0, array("year" => $this->selectedYear)) . '">';
-            $textToDisplay.= $oWebsite->t("categories.all") . "</a>&nbsp;&nbsp;\n";
+            $textToDisplay.= '<a href="' . $text->getUrlPage("archive", 0, array("year" => $this->selectedYear)) . '">';
+            $textToDisplay.= $text->t("categories.all") . "</a>&nbsp;&nbsp;\n";
         }
         // Other categories
         foreach ($this->categories as $id => $categoryName) {
             if ($id == $this->selectedCategory) {
                 $textToDisplay.= '<strong>' . $categoryName . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $oWebsite->getUrlPage("archive", $id, array("year" => $this->selectedYear)) . '">';
+                $textToDisplay.= '<a href="' . $text->getUrlPage("archive", $id, array("year" => $this->selectedYear)) . '">';
                 $textToDisplay.= $categoryName . "</a>&nbsp;&nbsp;\n";
             }
         }
@@ -79,14 +86,14 @@ class ArticleArchiveView extends View {
      * @return string The markup for the year selector.
      */
     protected function getYearsMenu() {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
 
         // Any year
         if ($this->selectedYear == 0) {
-            $textToDisplay = '<br /><strong>' . $oWebsite->t("articles.archive.any_year") . "</strong>&nbsp;&nbsp;\n";
+            $textToDisplay = '<br /><strong>' . $text->t("articles.archive.any_year") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay = '<br /><a href="' . $oWebsite->getUrlPage("archive", $this->selectedCategory, array("year" => 0)) . '">';
-            $textToDisplay.= $oWebsite->t("articles.archive.any_year") . "</a>&nbsp;&nbsp;\n";
+            $textToDisplay = '<br /><a href="' . $text->getUrlPage("archive", $this->selectedCategory, array("year" => 0)) . '">';
+            $textToDisplay.= $text->t("articles.archive.any_year") . "</a>&nbsp;&nbsp;\n";
         }
 
         // Other years
@@ -94,7 +101,7 @@ class ArticleArchiveView extends View {
             if ($year == $this->selectedYear) {
                 $textToDisplay.= '<strong>' . $year . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $oWebsite->getUrlPage("archive", $this->selectedCategory, array("year" => $year)) . '">';
+                $textToDisplay.= '<a href="' . $text->getUrlPage("archive", $this->selectedCategory, array("year" => $year)) . '">';
                 $textToDisplay.= $year . "</a>&nbsp;&nbsp;\n";
             }
         }
@@ -124,17 +131,17 @@ MENUBAR;
      * @return string The markup for the row.
      */
     protected function getTableRow(Article $article, $loggedIn) {
-        $oWebsite = $this->oWebsite;
+        $text = $this->text;
 
-        $textToDisplay = '<tr><td><a href="' . $oWebsite->getUrlPage("article", $article->id);
+        $textToDisplay = '<tr><td><a href="' . $text->getUrlPage("article", $article->id);
         $textToDisplay.= '">' . $article->title . "</a>";
         if ($loggedIn) {
             // Display edit links in new cell
             $textToDisplay.= '</td><td style="width:20%">';
-            $textToDisplay.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $article->id);
-            $textToDisplay.= '">' . $oWebsite->t("main.edit") . "</a>";
-            $textToDisplay.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("delete_article", $article->id);
-            $textToDisplay.= '">' . $oWebsite->t("main.delete") . "</a>";
+            $textToDisplay.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id);
+            $textToDisplay.= '">' . $text->t("main.edit") . "</a>";
+            $textToDisplay.= ' <a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id);
+            $textToDisplay.= '">' . $text->t("main.delete") . "</a>";
         }
         $textToDisplay.= "</td></tr>\n";
         return $textToDisplay;
@@ -147,13 +154,12 @@ MENUBAR;
      */
     protected function getArticlesTable() {
         $textToDisplay = "";
-        $loggedIn = $this->oWebsite->isLoggedInAsStaff();
         $previousMonth = -1;
         $previousYear = -1;
         $tableStarted = false;
 
         // Account for extra edit/delete column when logged in as staff
-        $colspan = $loggedIn ? ' colspan="2"' : "";
+        $colspan = $this->editLinks ? ' colspan="2"' : "";
 
         // Start the loop, grouping articles by month
         foreach ($this->articles as $article) {
@@ -176,7 +182,7 @@ MENUBAR;
                 $previousYear = $currentYear;
             }
 
-            $textToDisplay.= $this->getTableRow($article, $loggedIn);
+            $textToDisplay.= $this->getTableRow($article, $this->editLinks);
         }
 
         // Close off tables
@@ -186,7 +192,7 @@ MENUBAR;
             // No articles found
             $textToDisplay.= <<<NOT_FOUND
                 <p>
-                    <em>{$this->oWebsite->t("articles.archive.not_found")}</em>
+                    <em>{$this->text->t("articles.archive.not_found")}</em>
                 </p>
 NOT_FOUND;
         }
@@ -196,7 +202,7 @@ NOT_FOUND;
 
     public function getText() {
         // Archive description
-        $textToDisplay = "<p>{$this->oWebsite->t("articles.archive.explained")}</p>";
+        $textToDisplay = "<p>{$this->text->t("articles.archive.explained")}</p>";
 
         // Menu bar
         $textToDisplay.= $this->getMenubar();

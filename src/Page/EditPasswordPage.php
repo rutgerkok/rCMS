@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\User;
 use Rcms\Core\Validate;
@@ -49,8 +50,8 @@ class EditPasswordPage extends Page {
         return $oWebsite->isLoggedInAsStaff(true);
     }
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("editor.password.edit");
+    public function getPageTitle(Text $text) {
+        return $text->t("editor.password.edit");
     }
 
     public function getMinimumRank(Request $request) {

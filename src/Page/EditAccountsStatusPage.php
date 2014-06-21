@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
@@ -11,8 +12,8 @@ class EditAccountStatusPage extends EditPasswordPage {
 
     const MAXIMUM_STATUS_TEXT_LENGTH = 255;
 
-    public function getPageTitle(Request $request) {
-        return $request->getWebsite()->t("editor.status.edit");
+    public function getPageTitle(Text $text) {
+        return $text->t("editor.status.edit");
     }
 
     public function getMinimumRank(Request $request) {
