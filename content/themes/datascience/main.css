@@ -500,8 +500,7 @@ td.calendar_active_date {
 
 /* Other classes */
 p.meta {
-    color: #bbb;
-    font-style: italic;
+    display: none;
 }
 p.intro {
     color: #666666;
