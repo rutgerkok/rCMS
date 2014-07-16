@@ -89,8 +89,7 @@ div#search input.button {
 
 /* content 	*/
 div#content {
-    background: white;
-    width: 36%;
+    width: 40%;
     clear: left;
     float: left;
     min-height: 600px;
@@ -121,15 +120,15 @@ div#contentadmin {
 
 /* Sidebars for homepage */
 div#homepage_sidebar_1 {
-    width: 30%;
+    width: 26%;
+    margin: 0 1%;
     float: left;
-    background: #f8f9fb;
     height: 100%;
 }
 div#homepage_sidebar_2 {
-    width: 30%;
+    width: 25%;
+    margin: 0 1%;
     float: left;
-    background: #f8eea9;
 }
 div#homepage_sidebar_2 ul {
     margin: 0;
