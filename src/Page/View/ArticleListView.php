@@ -112,7 +112,7 @@ class ArticleListView extends View {
         // Edit and delete links
         $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+            $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id) . '">' . $text->t('main.edit') . '</a>' . //edit
                     '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id) . '">' . $text->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
