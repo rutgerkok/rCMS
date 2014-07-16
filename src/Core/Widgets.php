@@ -143,6 +143,7 @@ class Widgets {
 
             // Check if load was succesfull. Display widget or display error.
             if (isSet(Widgets::$loadedWidgets[$directory_name])) {
+                $output.= '<div class="widget">';
                 $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JsonHelper::stringToArray($data));
                 if ($loggedInAsAdmin) {
                     // Links for editing and deleting
@@ -151,6 +152,7 @@ class Widgets {
                     $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
                     $output.= "</p>\n";
                 }
+                $output.= '</div>';
             } else {
                 $oWebsite->addError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.", "A widget was missing.");
             }
