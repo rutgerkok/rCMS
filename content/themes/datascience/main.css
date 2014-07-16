@@ -231,6 +231,7 @@ div#breadcrumbs a {
     font-size: 0.65em;
     padding: 0 0 0 5px;
     background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
+    text-decoration: none;
 }
 div#breadcrumbs a.first {
     padding: 0;
@@ -348,33 +349,31 @@ legend {
 
 /* Links */
 a {
-    color: #990000;
-    text-decoration: none;
+    color: #4a7184;
+    text-decoration: underline;
 }
 a.arrow {
     padding-left: 5px;
     background: transparent url(images/arrow.gif) center left no-repeat;
-    text-transform: uppercase;
+    text-decoration: none;
 }
 a.arrow-disabled {
     padding-left: 5px;
     text-transform: uppercase;
     color: gray;
 }
-a:link {
-    text-decoration: none;
-}
 a:hover {
     text-decoration: none;
-    border-bottom: 1px solid;
+}
+a:hover.arrow {
+    text-decoration: underline;
 }
 a:active {
     text-decoration: underline;
-    border-bottom: 1px solid #990000;
 }
 a.disguised_link {
     color: inherit;
-    border-bottom: none;
+    text-decoration: none;
 }
 
 /* Images */
@@ -428,6 +427,12 @@ ul.linklist li div.linklist_icon_image {
     min-width: 32px;
     margin: -5px 0 0 0;
     padding: 0;
+}
+ul.linklist li a {
+    text-decoration: none;
+}
+ul.linklist li a:hover {
+    text-decoration: underline;
 }
 
 /* Comments */
