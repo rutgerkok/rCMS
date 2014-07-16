@@ -105,6 +105,7 @@ class ArticleListView extends View {
         }
 
         // Intro
+        $returnValue.= '<div class="article_teaser_text">';
         $returnValue.= '<p>';
         $returnValue.= htmlSpecialChars($article->intro);
         $returnValue.= '</p> <p class="article_teaser_links">';
@@ -115,6 +116,7 @@ class ArticleListView extends View {
                     '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id) . '">' . $text->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
+        $returnValue.= "</div>";
 
         $returnValue.= '<p style="clear:both"></p>';
         $returnValue.= "</div>";
