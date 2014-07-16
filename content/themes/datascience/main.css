@@ -11,13 +11,12 @@ p, h1, h2, h3, h4 {
     padding: 1px;
 }
 h2 {
-    color: #4a7184;
-    text-transform: uppercase;
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 1em;
+    color: #990000;
+    font-family: Georgia, Times, serif;
+    font-size: 1.5em;
+    font-weight: normal;
     margin: 15px 15px 10px 3px;
     padding: 0 0 5px 0;
-    border-bottom: 1px dotted #ccd5d3;
 }
 h3 {
     color: #9d8a0a;
@@ -497,6 +496,15 @@ td.calendar_active_date {
     }
 }
 
+/* Widgets */
+.widget h2 {
+    color: #4a7184;
+    text-transform: uppercase;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 0.8em;
+    font-weight: bold;
+    border-bottom: 1px dotted #ccd5d3;
+}
 
 /* Other classes */
 p.meta {
