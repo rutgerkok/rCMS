@@ -71,7 +71,11 @@ class ArticleListView extends View {
     public function getArticleTextSmall(Article $article, $show_metainfo,
             $show_edit_delete_links) {
         $text = $this->text;
-        $returnValue = "\n\n<div class=\"article_teaser\" onclick=\"location.href='" . $text->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
+        $returnValue = "\n\n" . '<div class="article_teaser ';
+        if (!empty($article->featuredImage)) {
+            $returnValue.= "with_featured_image";
+        }
+        $returnValue.= '"onclick\"location.href=\'' . $text->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
         $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
