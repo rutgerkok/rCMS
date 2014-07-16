@@ -147,8 +147,10 @@ div#sidebar_page_sidebar {
     padding-right: 2px;
 }
 div#sidebar_page_sidebar img {
-    max-width: 100%;
-    margin: 1px;
+    max-width: 95%;
+    margin: 2%;
+    padding: 2px;
+    border: 1px solid #ccc;
 }
 div#sidebar_page_content {
     /*gebruikt bij de artikelpagina*/
@@ -395,11 +397,19 @@ div.error {
 
 /* Article lists */
 div.article_teaser img {
-    max-width: 140px;
-    float: left;	
+    width: 26%;
+    float: left;
+    padding: 2px;
+    margin: 2%;
+    border: 1px solid #ccc;
 }
 div.article_teaser p.article_teaser_links {
     clear: both;
+}
+
+div.article_teaser_text {
+    width: 66%;
+    float: left;
 }
 
 /* Link lists */
