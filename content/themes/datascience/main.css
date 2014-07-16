@@ -510,9 +510,6 @@ td.calendar_active_date {
 p.meta {
     display: none;
 }
-p.intro {
-    color: #666666;
-}
 p.result_selector_menu {
     border-top: 1px #999999 dotted;
     border-bottom: 1px #999999 dotted;
