@@ -108,9 +108,9 @@ class ArticleListView extends View {
         $returnValue.= htmlSpecialChars($article->intro);
         $returnValue.= '</p> <p class="article_teaser_links">';
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a>';
+        $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">' . $oWebsite->t('main.read') . '</a> ';
         if ($show_edit_delete_links) {
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_article", $article->id) . '">' . $oWebsite->t('main.edit') . '</a> ' . //edit
                     '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_article", $article->id) . '">' . $oWebsite->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
