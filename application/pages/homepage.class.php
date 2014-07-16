@@ -8,6 +8,10 @@ if (!defined("WEBSITE")) {
 class HomePage extends Page {
 
     public function getPageTitle(Website $oWebsite) {
+        return ""; // The widgets will already provide a title
+    }
+
+    public function getShortPageTitle(Website $oWebsite) {
         return $oWebsite->t("main.home");
     }
 
