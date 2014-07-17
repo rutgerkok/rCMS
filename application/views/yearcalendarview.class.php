@@ -63,7 +63,7 @@ END;
         
         $text = "";
         for ($i = 1; $i <= 12; $i++) {
-            $month = DateTime::createFromFormat("Y n", $this->year->format("Y") . ' ' . $i);
+            $month = new DateTime($this->year->format("Y") . '-' . $i);
             $calendarView = new CalendarView($oWebsite, $month, $this->articlesInYear);
             $table = $calendarView->getText();
             

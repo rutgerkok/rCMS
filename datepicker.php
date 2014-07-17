@@ -31,7 +31,7 @@ $oWebsite = new Website();
 //JAAR- EN MAANDLIJST
 $selectedMonth= $oWebsite->getRequestInt("month", date('n'));//geselecteerd of huidig
 $selectedYear = $oWebsite->getRequestInt("year", date('Y'));//geselecteerd of huidig
-$dateTime = DateTime::createFromFormat("n Y", $selectedMonth . " " .$selectedYear);
+$dateTime = new DateTime($selectedYear . "-" . $selectedMonth);
 
 //OBJECTEN
 $oArticles = new Articles($oWebsite);

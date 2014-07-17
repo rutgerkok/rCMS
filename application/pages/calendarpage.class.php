@@ -21,7 +21,7 @@ class CalendarPage extends Page {
         if ($yearNumber < 1500 || $yearNumber > 2800) {
             $yearNumber = date('Y');
         }
-        $this->year = DateTime::createFromFormat('Y', $yearNumber);
+        $this->year = new DateTime($yearNumber);
         $this->yearNumber = $yearNumber;
 
         $this->articlesInYear = $oArticles->getArticlesDataCalendarYear($this->year);

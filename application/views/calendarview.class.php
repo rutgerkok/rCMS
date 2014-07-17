@@ -50,17 +50,35 @@ class CalendarView extends View {
      * @return DateTime The start date.
      */
     protected function getStartDate() {
-        $dayInterval = new DateInterval("P1D");
-
         // Get first day of the month
-        $startDate = DateTime::createFromFormat("Y-m-d", $this->month->format("Y-m") . "-1");
+        $startDate = new DateTime($this->month->format("Y/m") . "/1");
 
         // Get first day for table
         while ($startDate->format('w') != self::MONDAY) {
-            $startDate->sub($dayInterval);
+            $this->subtractDays($startDate, 1);
         }
 
         return $startDate;
+    }
+
+    /**
+     * Modifies the given date/time to add the specified number of days.
+     * @param DateTime $dateTime The data/time to modify.
+     * @param int $days The amount of days.
+     */
+    protected function addDays(DateTime $dateTime, $days) {
+        $days = (int) $days;
+        $dateTime->modify("+$days day");
+    }
+
+    /**
+     * Modifies the given date/time to subtract the specified number of days.
+     * @param DateTime $dateTime The data/time to modify.
+     * @param int $days The amount of days.
+     */
+    protected function subtractDays(DateTime $dateTime, $days) {
+        $days = (int) $days;
+        $dateTime->modify("-$days day");
     }
 
     /**
@@ -107,7 +125,6 @@ DAY;
      * @return string The body of the table.
      */
     protected function getTableBody() {
-        $dayInterval = new DateInterval("P1D");
         $date = $this->getStartDate();
         $returnValue = '';
         // Always use six rows for consistency with other calendars that may be
@@ -120,7 +137,7 @@ DAY;
                 $returnValue.= $this->getDayCell($date, $this->month);
 
                 // Increment day
-                $date->add($dayInterval);
+                $this->addDays($date, 1);
             }
             $returnValue.= '</tr>';
         }

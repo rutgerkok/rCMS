@@ -46,7 +46,7 @@ CELL;
 
         $monthList = '<select id="month" name="month">';
         for ($i = 1; $i <= 12; $i++) {
-            $month = DateTime::createFromFormat("n", $i);
+            $month = new DateTime("2000-" . $i);
             $selected = $selectedMonth === $i ? 'selected="selected"' : '';
             $monthList.= '<option ' . $selected . ' value="' . $i . '">' . $this->getMonthName($month) . '</option>';
         }

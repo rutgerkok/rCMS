@@ -279,7 +279,7 @@ SQL;
         if (empty($string) || $string === "0000-00-00 00:00:00") {
             return null;
         }
-        return DateTime::createFromFormat("Y-m-d H:i:s", $string);
+        return new DateTime($string);
     }
     
     /**
