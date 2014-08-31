@@ -2,8 +2,8 @@
 
 namespace Rcms\Core\Repository;
 
+use PDO;
 use InvalidArgumentException;
-use Rcms\Core\Database;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 
@@ -13,12 +13,12 @@ use Rcms\Core\Repository\Entity;
 abstract class Repository {
 
     /**
-     * @var Database The database.
+     * @var PDO The database.
      */
-    protected $database;
+    protected $pdo;
 
-    protected function __construct(Database $database) {
-        $this->database = $database;
+    protected function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class Repository {
      * @return Query The query.
      */
     protected function whereRaw($sql, $params) {
-        return new Query($this->database, $this, $sql, $params);
+        return new Query($this->pdo, $this, $sql, $params);
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class Repository {
         $sql.= " WHERE `{$primaryKey->getNameInDatabase()}` = :primaryKey";
         $params[":primaryKey"] = $entity->getField($primaryKey);
 
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
         if ($statement->rowCount() === 0) {
             throw new NotFoundException();
@@ -182,9 +182,9 @@ abstract class Repository {
         $sql = "INSERT INTO `{$this->getTableName()}` (" . join(", ", $fieldNames) . ") ";
         $sql.= "VALUES(" . join(", ", $fieldMarkers) . ")";
 
-        $this->database->prepareQuery($sql)->execute($fieldValues);
+        $this->pdo->prepare($sql)->execute($fieldValues);
 
-        $id = $this->database->getLastInsertedId();
+        $id = $this->pdo->lastInsertId();
         $entity->setField($primaryKey, $id);
     }
 

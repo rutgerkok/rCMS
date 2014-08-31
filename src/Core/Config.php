@@ -52,7 +52,7 @@ class Config {
     public function readFromDatabase(Database $database) {
         // Load settings from the database
         try {
-            $result = $database->resultQuery("SELECT `setting_name`, `setting_value` FROM `settings`", false);
+            $result = $database->query("SELECT `setting_name`, `setting_value` FROM `settings`");
             while (list($key, $value) = $result->fetch(PDO::FETCH_NUM)) {
                 $this->config[$key] = $value;
             }
@@ -103,12 +103,12 @@ class Config {
             $sql = "UPDATE `settings` SET ";
             $sql.= "`setting_value` = :value ";
             $sql.= "WHERE `setting_name` = :name";
-            $database->prepareQuery($sql)->execute(array(":name" => $name, ":value" => $value));
+            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
         } else {
             // New setting
             $sql = "INSERT INTO `settings` (`setting_name`, `setting_value`) ";
             $sql.= " VALUES (:name, :value)";
-            $database->prepareQuery($sql)->execute(array(":name" => $name, ":value" => $value));
+            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
         }
     }
 

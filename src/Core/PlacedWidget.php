@@ -121,7 +121,7 @@ class PlacedWidget extends Entity {
             $sql.= $this->sidebarId . ', ';
             $sql.= $this->priority . ')';
             if ($oDatabase->query($sql)) {
-                $this->id = $oDatabase->getLastInsertedId();
+                $this->id = $oDatabase->lastInsertId();
                 return true;
             } else {
                 return false;

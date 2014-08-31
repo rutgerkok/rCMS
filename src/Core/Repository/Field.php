@@ -2,7 +2,8 @@
 
 namespace Rcms\Core\Repository;
 
-use Rcms\Core\Database;
+use DateTime;
+
 use Rcms\Core\JsonHelper;
 
 /**
@@ -95,7 +96,7 @@ class Field {
             case self::TYPE_STRING_LOWERCASE:
                 return $string;
             case self::TYPE_DATE:
-                return Database::toDateTime($string);
+                return DateTime::createFromFormat("Y-m-d H:i:s", $string);
             case self::TYPE_BOOLEAN:
                 return (boolean) $string;
             case self::TYPE_JSON:
@@ -124,7 +125,7 @@ class Field {
             case self::TYPE_JSON:
                 return JsonHelper::arrayToString($value);
             case self::TYPE_DATE:
-                return Database::dateTimeToString($value);
+                return $value->format("Y-m-d H:i:s");
             case self::TYPE_STRING_LOWERCASE:
                 return strToLower($value);
             default:

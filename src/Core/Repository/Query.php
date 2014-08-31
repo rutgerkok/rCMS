@@ -6,7 +6,6 @@ use BadMethodCallException;
 use PDO;
 use PDOException;
 use PDOStatement;
-use Rcms\Core\Database;
 use Rcms\Core\Exception\NotFoundException;
 
 /**
@@ -15,9 +14,9 @@ use Rcms\Core\Exception\NotFoundException;
 class Query {
 
     /**
-     * @var Database The database instance.
+     * @var PDO The pdo instance.
      */
-    private $database;
+    private $pdo;
 
     /**
      * @var Repository The repository.
@@ -54,9 +53,9 @@ class Query {
      */
     private $orderByStrings = array();
 
-    function __construct(Database $database, Repository $repository, $whereRaw,
+    function __construct(PDO $pdo, Repository $repository, $whereRaw,
             array $params) {
-        $this->database = $database;
+        $this->pdo = $pdo;
         $this->repository = $repository;
         $this->whereRaw = $whereRaw;
         $this->params = $params;
@@ -73,7 +72,7 @@ class Query {
         if (!empty($this->whereRaw)) {
             $sql.= " WHERE " . $this->whereRaw;
         }
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         return $statement->execute($this->params);
     }
 
@@ -90,7 +89,7 @@ class Query {
         if (!empty($this->whereRaw)) {
             $sql.= " WHERE " . $this->whereRaw;
         }
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         $statement->execute($this->params);
         $rowCount = $statement->rowCount();
         if ($rowCount == 0) {
@@ -120,7 +119,7 @@ class Query {
     public function select() {
         $sql = $this->getSelectQuery();
 
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         $statement->execute($this->params);
 
         return $this->toObjects($statement, $this->fieldMap);
@@ -147,7 +146,7 @@ class Query {
     public function count() {
         $sql = $this->getCountQuery();
 
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         $statement->execute($this->params);
         $result = (int) $statement->fetchColumn();
         $statement->closeCursor();

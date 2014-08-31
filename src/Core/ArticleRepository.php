@@ -157,7 +157,7 @@ class ArticleRepository extends Repository {
              SET `{$this->categoryIdField->getNameInDatabase()}` = :newId
              WHERE `{$this->categoryIdField->getNameInDatabase()}` = :oldId
 SQL;
-        $statement = $this->database->prepareQuery($sql);
+        $statement = $this->pdo->prepare($sql);
         $statement->bindParam(":newId", $newId, PDO::PARAM_INT);
         $statement->bindParam(":oldId", $oldId, PDO::PARAM_INT);
         $statement->execute();
@@ -304,7 +304,7 @@ SQL;
             $sql.= "WHERE `categorie_id` = $category_id ";
         }
         $sql.= "GROUP BY YEAR(`artikel_gemaakt`)";
-        $result = $this->database->resultQuery($sql);
+        $result = $this->pdo->query($sql);
         $byYear = array();
         while (list($year, $count) = $result->fetch(PDO::FETCH_NUM)) {
             $byYear[$year] = $count;
