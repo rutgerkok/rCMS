@@ -2,8 +2,8 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Articles;
-use Rcms\Core\Categories;
+use Rcms\Core\ArticleRepository;
+use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\ArticleListView;
@@ -24,13 +24,13 @@ class CategoryPage extends Page {
         $this->showEditLinks = $oWebsite->isLoggedInAsStaff();
 
         $categoryId = $request->getParamInt(0);
-        $oArticles = new Articles($oWebsite);
-        $oCategories = new Categories($oWebsite);
+        $oArticles = new ArticleRepository($oWebsite);
+        $oCategories = new CategoryRepository($oWebsite);
 
         if ($categoryId == 0) {
             // Display a list of categories
             $this->pageTitle = $text->t("categories.all");
-            $this->view = new CategoriesView($text, $oCategories->getCategories());
+            $this->view = new CategoriesView($text, $oCategories->getCategoriesArray());
         } else {
             // Display articles in a catgory
             $this->pageTitle = $oCategories->getCategoryName($categoryId);

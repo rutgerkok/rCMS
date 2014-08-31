@@ -25,6 +25,7 @@ page.next=Volgende pagina
 page.current=Pagina {0} van de {1}
 search_term=Zoekterm
 search_for=Zoekresultaten voor "{0}"
+search.explained=Er wordt gezocht in alle artikelen en links op de website.
 search.results_in_articles=Resultaten in artikelen
 search.results_in_links=Resultaten in links
 search.result_found=Een resultaat gevonden.

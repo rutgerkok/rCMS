@@ -7,7 +7,7 @@ $oAuth = new Authentication($this);
 $loggedIn = $oAuth->check(Authentication::$ADMIN_RANK, true);
 
 // CONTENTS
-$oWidgets = new Widgets($this);
+$oWidgets = new WidgetRepository($this);
 $textToDisplay = '';
 
 if ($loggedIn) {

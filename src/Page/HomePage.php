@@ -4,13 +4,13 @@ namespace Rcms\Page;
 
 use Rcms\Core\Text;
 use Rcms\Core\Request;
-use Rcms\Core\Widgets;
+use Rcms\Core\WidgetRepository;
 use Rcms\Page\View\WidgetsView;
 
 class HomePage extends Page {
     
     /**
-     * @var Widgets The widgets instance. 
+     * @var WidgetRepository The widgets instance. 
      */
     private $widgets;
     

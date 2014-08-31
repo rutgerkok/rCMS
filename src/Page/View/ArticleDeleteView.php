@@ -18,12 +18,14 @@ class ArticleDeleteView extends View {
     /** @var Article $article The article being deleted. */
     protected $article;
     protected $state;
+    protected $showAdminPageLink;
 
     public function __construct(Text $text, Article $articleToDelete,
-            $state) {
+            $showAdminPageLink, $state) {
         parent::__construct($text);
         $this->article = $articleToDelete;
         $this->state = (int) $state;
+        $this->showAdminPageLink = (boolean) $showAdminPageLink;
     }
 
     public function getText() {
@@ -57,7 +59,7 @@ class ArticleDeleteView extends View {
 
         $returnValue.= "<p>";
         $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.home") . '</a> ';
-        if ($text->isLoggedInAsStaff(true)) {
+        if ($this->showAdminPageLink) {
             $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";
@@ -73,7 +75,7 @@ class ArticleDeleteView extends View {
 
         $returnValue.= "<p>";
         $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t("articles.view") . '</a> ';
-        if ($text->isLoggedInAsStaff(true)) {
+        if ($this->showAdminPageLink) {
             $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";

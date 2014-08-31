@@ -2,7 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
-use Rcms\Core\Comments;
+use Rcms\Core\CommentRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
@@ -19,11 +19,11 @@ class WidgetComments extends WidgetDefinition {
     const MAX_COMMENTS = 30;
     const DEFAULT_COMMENTS = 4;
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         $title = htmlSpecialChars($data["title"]);
         $amount = (int) $data["amount"];
         
-        $commentLookup = new Comments($oWebsite);
+        $commentLookup = new CommentRepository($oWebsite);
         $latestComments = $commentLookup->getCommentsLatest($amount);
         $view = new CommentsSmallView($oWebsite->getText(), $latestComments);
 

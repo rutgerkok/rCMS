@@ -65,7 +65,7 @@ class Request {
         }
         return count($this->params) > $paramNr;
     }
-    
+
     /**
      * Gets whether a request parameter with the given name exists.
      * @param string $key The key in the $_REQUEST array.

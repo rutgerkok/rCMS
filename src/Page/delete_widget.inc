@@ -14,7 +14,7 @@ if ($loggedIn) {
     $widget_id = isSet($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
     $widget = null;
     if ($widget_id > 0) {
-        $oWidgets = new Widgets($this);
+        $oWidgets = new WidgetRepository($this);
         $widget = $oWidgets->getPlacedWidget($widget_id);
         unset($oWidgets);
     }

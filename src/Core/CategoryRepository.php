@@ -2,30 +2,77 @@
 
 namespace Rcms\Core;
 
-class Categories {
+use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Field;
+use Rcms\Core\Repository\Repository;
+
+class CategoryRepository extends Repository {
+
+    const TABLE_NAME = "categorie";
 
     protected $databaseObject;
     protected $websiteObject;
+    protected $idField;
+    protected $nameField;
 
-    function __construct(Website $oWebsite, Database $oDatabase = null) {
+    public function __construct(Website $oWebsite, Database $oDatabase = null) {
+        parent::__construct($oDatabase? : $oWebsite->getDatabase());
+
         $this->websiteObject = $oWebsite;
         $this->databaseObject = $oDatabase;
         if (!$this->databaseObject) {
             $this->databaseObject = $oWebsite->getDatabase();
         }
+
+        $this->idField = new Field(Field::TYPE_PRIMARY_KEY, "id", "categorie_id");
+        $this->nameField = new Field(Field::TYPE_STRING, "name", "categorie_naam");
     }
 
-    function getCategories() { //retourneert de categorieeen als array id=>naam
-        $oDB = $this->databaseObject;
+    /**
+     * Gets all categories.
+     * @return Category[] All categories.
+     */
+    public function getCategories() {
+        return $this->all()->select();
+    }
 
-        $return_array = array();
-
-        $result = $oDB->query("SELECT categorie_id,categorie_naam FROM `categorie` ORDER BY categorie_id DESC");
-        while (list($id, $name) = $oDB->fetchNumeric($result)) {
-            $return_array[$id] = $name;
+    /**
+     * Gets all catgories in an array, category id => category name.
+     * @return array The array.
+     */
+    public function getCategoriesArray() {
+        $categoryArray = $this->getCategories();
+        $returnArray = array();
+        foreach ($categoryArray as $category) {
+            $returnArray[$category->getId()] = $category->getName();
         }
-        unset($result);
-        return $return_array;
+        return $returnArray;
+    }
+
+    public function getAllFields() {
+        return array($this->idField, $this->nameField);
+    }
+
+    public function getTableName() {
+        return self::TABLE_NAME;
+    }
+
+    public function getPrimaryKey() {
+        return $this->idField;
+    }
+
+    public function createEmptyObject() {
+        return new Category();
+    }
+
+    /**
+     * Gets the category.
+     * @param int $id Id of the category.
+     * @return Category The category.
+     * @throws NotFoundException If the category is not found.
+     */
+    public function getCategory($id) {
+        return $this->where($this->idField, '=', $id)->selectOneOrFail();
     }
 
     /**
@@ -35,16 +82,10 @@ class Categories {
      * @return string Name of the category, emtpy if not found.
      */
     function getCategoryName($id) {
-        $oDB = $this->databaseObject;
-
-        $id = (int) $id;
-
-        $result = $oDB->query("SELECT categorie_naam FROM `categorie` WHERE categorie_id = $id");
-        if ($oDB->rows($result) == 1) {
-            $result = $oDB->fetchNumeric($result);
-            return($result[0]);
-        } else {
-            return '';
+        try {
+            return $this->where($this->getPrimaryKey(), '=', $id)->selectOneOrFail()->getName();
+        } catch (NotFoundException $e) {
+            return "";
         }
     }
 
@@ -52,25 +93,17 @@ class Categories {
 
     function createCategory() {
         $oWebsite = $this->websiteObject;
-        $oDB = $this->databaseObject;
-        $sql = "INSERT INTO `categorie` (`categorie_naam`) VALUES ('New category');";
-        if ($oDB->query($sql)) {
-            $id = $oDB->getLastInsertedId(); //haal id op van net ingevoegde rij
-            //geef melding weer
-            return <<<EOT
-			
-			<p>A new category has been created named 'New category'.</p>
-			<p>
-				<a href="{$oWebsite->getUrlPage('rename_category', $id)}">Rename</a>|
-				<a href="{$oWebsite->getUrlPage('delete_category', $id, array('confirm' => 1))}">Undo</a>
-			</p>
-			
-			
+        $category = new Category(0, "New category");
+        $this->saveEntity($category);
+        $id = $category->getId();
+        //geef melding weer
+        return <<<EOT
+            <p>A new category has been created named 'New category'.</p>
+            <p>
+                    <a href="{$oWebsite->getUrlPage('rename_category', $id)}">Rename</a>|
+                    <a href="{$oWebsite->getUrlPage('delete_category', $id, array('confirm' => 1))}">Undo</a>
+            </p>	
 EOT;
-        } else {
-            $oWebsite->addError('Category could not be created. Please try again later.');
-            return '';
-        }
     }
 
     function renameCategory() { //gebruikt id en naam uit $_REQUEST
@@ -91,7 +124,7 @@ EOT;
 
 
         if (isSet($_REQUEST['name'])) { //kijk of de naam goed is
-            $name = $oDB->escapeData($_REQUEST['name']);
+            $name = $_REQUEST['name'];
 
             if ($id == 0) {
                 $oWebsite->addError('Category was not found.');
@@ -107,16 +140,14 @@ EOT;
             }
 
             if ($oWebsite->getErrorCount() == 0) { //het is veilig om te hernoemen
-                $sql = "UPDATE `categorie` SET categorie_naam = '$name' WHERE categorie_id = $id";
-                if ($oDB->query($sql)) {
-                    if ($oDB->affectedRows() == 1) {
-                        return '<p>Category is succesfully renamed.</p>';
-                    } else { //categorie niet gevonden
-                        $oWebsite->addError('Category was not found.');
-                        return ''; //breek onmiddelijk af
-                    }
-                } else {
-                    $oWebsite->addError("Cannot rename category!");
+                try {
+                    $category = $this->getCategory($id);
+                    $category->setName($name);
+                    $this->saveEntity($category);
+                    return '<p>Category is succesfully renamed.</p>';
+                } catch (NotFoundException $e) {
+                    $oWebsite->addError('Category was not found.');
+                    return ''; //breek onmiddelijk af
                 }
             }
         }
@@ -167,18 +198,13 @@ EOT;
 
         //verwijder categorie, maar laat eerst bevestigingsvraag zien
         if (isSet($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1) { //verwijder categorie
-            $sql = "DELETE FROM `categorie` WHERE `categorie_id` = $id";
-            if ($oDB->query($sql) && $oDB->affectedRows() == 1) {
-                //zorg dat artikelen met de net verwijderder categorie ongecategoriseerd worden
-                $sql = "UPDATE `artikel` SET `categorie_id` = '1' WHERE `categorie_id` = $id";
-                $oDB->query($sql);
+            $this->where($this->idField, '=', $id)->deleteOneOrFail();
+            $articles = new ArticleRepository($oWebsite);
+            //zorg dat artikelen met de net verwijderder categorie ongecategoriseerd worden
+            $articles->changeCategories($id, 1);
 
-                //geef melding
-                return '<p>Category is removed.</p>';
-            } else {
-                $oWebsite->addError('Category could not be removed.');
-                return '<p>Category is NOT removed.</p>';
-            }
+            //geef melding
+            return '<p>Category is removed.</p>';
         } else { //laat bevestingingsvraag zien
             $cat_name = $this->getCategoryName($id);
 
@@ -195,5 +221,3 @@ EOT;
     }
 
 }
-
-?>

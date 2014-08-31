@@ -16,7 +16,7 @@ class WidgetRkokText extends WidgetDefinition {
      * (HTML) tags are saved unfiltered in the database, but filtered when displayed.
      */
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         if (!isSet($data["text"]) || !isSet($data["title"])) {
             return "";
         }

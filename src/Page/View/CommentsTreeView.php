@@ -12,7 +12,7 @@ use Rcms\Core\User;
  */
 class CommentsTreeView extends View {
 
-    /** @var Comment[] $comments The comment list */
+    /** @var Comment[] The comment list */
     private $comments;
     private $viewedByStaff;
     private $viewedOutOfContext;
@@ -25,8 +25,8 @@ class CommentsTreeView extends View {
      * @param boolean $viewedOutOfContext Whether there should be a link to the article.
      * @param User|null $viewer The user viewing the comments.
      */
-    public function __construct(Text $text, $comments,
-            $viewedOutOfContext, User $viewer = null) {
+    public function __construct(Text $text, $comments, $viewedOutOfContext,
+            User $viewer = null) {
         parent::__construct($text);
         $this->comments = $comments;
         $this->viewedByStaff = $viewer ? $viewer->isStaff() : false;
@@ -42,19 +42,16 @@ class CommentsTreeView extends View {
             $editDeleteLinks, $viewedOutOfContext) {
         $id = $comment->getId();
         $author = htmlSpecialChars($comment->getUserDisplayName());
-        $postDate = strFTime('%a %d %b %Y %X', $comment->getDateCreated());
+        $postDate = "";
+        if ($comment->getDateCreated() !== null) {
+            $postDate = strFTime('%a %d %b %Y %X', $comment->getDateCreated()->getTimestamp());
+        }
         $body = nl2br(htmlSpecialChars($comment->getBodyRaw()));
         $avatarUrl = User::getAvatarUrlFromEmail($comment->getUserEmail(), 40);
 
         // Add link and rank to author when linked to account
         if ($comment->getUserId() > 0) {
             $author = '<a href="' . $text->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
-            $oAuth = $text->getAuth();
-            $rank = $comment->getUserRank();
-            if ($oAuth->isHigherOrEqualRank($rank, Authentication::$MODERATOR_RANK)) {
-                $rankName = $oAuth->getRankName($rank);
-                $author .= ' <span class="comment_author_rank">' . $rankName . '</span>';
-            }
         }
 
         // Edit and delete links
@@ -76,7 +73,7 @@ EOT;
             <article class="comment" id="comment_$id">
                 <header>
                     <img src="$avatarUrl" alt="" />
-                    <h3 class="comment_title">$author </h3>
+                    <h3 class="comment_title">$author</h3>
                     <p class="comment_actions">
                         $actionLinksHtml
                     </p>

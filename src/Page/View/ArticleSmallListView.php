@@ -15,10 +15,11 @@ use Rcms\Core\Article;
  */
 class ArticleSmallListView extends View {
 
-    /** 
+    /**
      * @var Article[] List of articles.
      */
     protected $articles;
+
     /**
      * @var boolean True to show edit links, false otherwise.
      */

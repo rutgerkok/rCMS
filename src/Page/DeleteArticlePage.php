@@ -2,11 +2,12 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Articles;
+use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\ArticleDeleteView;
+use Rcms\Page\View\EmptyView;
 
 class DeleteArticlePage extends Page {
 
@@ -20,38 +21,33 @@ class DeleteArticlePage extends Page {
         $oWebsite = $request->getWebsite();
         $text = $oWebsite->getText();
         $articleId = $request->getParamInt(0);
+        $showAdminPageLink = $oWebsite->isLoggedInAsStaff(true);
 
-        $oArticles = new Articles($oWebsite);
+        $oArticles = new ArticleRepository($oWebsite);
         $article = $oArticles->getArticleData($articleId);
         $this->article = $article;
-        if (!$article) {
-            // Article not found
-            $oWebsite->addError($oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_found"));
-            $this->view = new EmptyView($text);
-            return;
-        }
 
         $action = $request->getRequestString("action");
         if ($action == "delete") {
             // Bye bye article
-            if ($article->delete($oWebsite->getDatabase())) {
-                $this->view = new ArticleDeleteView($text, $article, ArticleDeleteView::STATE_DELETED);
+            if ($oArticles->delete($article)) {
+                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_DELETED);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
             }
             return;
         } elseif ($action == "make_private") {
             // Hide article for visitors
             $article->hidden = true;
-            if ($article->save($oWebsite->getDatabase())) {
-                $this->view = new ArticleDeleteView($text, $article, ArticleDeleteView::STATE_HIDDEN);
+            if ($oArticles->save($article)) {
+                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_HIDDEN);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
             }
             return;
         } else {
             // Ask what to do
-            $this->view = new ArticleDeleteView($text, $article, ArticleDeleteView::STATE_CONFIRMATION);
+            $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_CONFIRMATION);
         }
     }
 

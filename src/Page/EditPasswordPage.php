@@ -3,9 +3,10 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Text;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\User;
+use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
@@ -13,29 +14,43 @@ class EditPasswordPage extends Page {
 
     /** @var User $user_to_edit */
     protected $user;
-    protected $editing_someone_else = false;
+ 
+    /** @var boolean True if the user is editing his/her own account. */
+    protected $editing_someone_else;
 
     /** Fills the class variables, adds errors if needed. */
     public function init(Request $request) {
+        $this->user = $this->getEditingUser($request);
+        $viewingUser = $request->getWebsite()->getAuth()->getCurrentUser();
+        $this->editing_someone_else = ($viewingUser->getId() !== $this->user->getId());
+    }
+
+    /**
+     * Gets the user that will be edited.
+     * @param Request $request The request.
+     * @return User The user to edit.
+     * @throws NotFoundException If the id in the request is invalid or if the user can only edit him/herself.
+     */
+    private function getEditingUser(Request $request) {
         $oWebsite = $request->getWebsite();
-        $this->user = $oWebsite->getAuth()->getCurrentUser();
-        $user_id = $request->getParamInt(0);
-        // Id given to edit someone else, check for permissions
-        if ($user_id > 0 && $user_id != $this->user->getId()) {
-            $this->editing_someone_else = true;
-            if ($this->can_user_edit_someone_else($oWebsite)) {
-                // Editing someone else
-                $this->user = User::getById($oWebsite, $user_id);
-                if ($this->user == null) {
-                    // User not found
-                    $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
-                }
-            } else {
-                // No permissions to edit someone else
-                // Set user to null to trigger an error later on
-                $this->user = null;
-                $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_editable"));
-            }
+        // Will always have a value - minimum rank of this page is user rank
+        $loggedInUser = $oWebsite->getAuth()->getCurrentUser();
+
+        // Check if editing another user
+        if (!$request->hasParameter(0)) {
+            return $loggedInUser;
+        }
+        $userId = $request->getParamInt(0);
+        if ($userId === 0 || $userId === $loggedInUser->getId()) {
+            return $loggedInUser;
+        }
+
+        if ($this->can_user_edit_someone_else($oWebsite)) {
+            $userRepo = $oWebsite->getAuth()->getUserRepository();
+            return $userRepo->getById($userId);
+        } else {
+            $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_editable"));
+            throw new NotFoundException();
         }
     }
 
@@ -63,11 +78,6 @@ class EditPasswordPage extends Page {
     }
 
     public function getPageContent(Request $request) {
-        // Check selected user
-        if ($this->user == null) {
-            return "";
-        }
-
         $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
@@ -81,19 +91,16 @@ class EditPasswordPage extends Page {
                 if (Validate::password($password, $password2)) {
                     // Valid password
                     $this->user->setPassword($password);
-                    if ($this->user->save()) {
-                        // Saved
-                        $textToDisplay.='<p>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                        // Update login cookie (only when changing your own password)
-                        if (!$this->editing_someone_else) {
-                            $oWebsite->getAuth()->setLoginCookie();
-                        }
-                        // Don't show form
-                        $show_form = false;
-                    } else {
-                        // Database error
-                        $textToDisplay.='<p><em>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
+                    $userRepo = $oWebsite->getAuth()->getUserRepository();
+                    $userRepo->save($this->user);
+                    // Saved
+                    $textToDisplay.='<p>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                    // Update login cookie (only when changing your own password)
+                    if (!$this->editing_someone_else) {
+                        $oWebsite->getAuth()->setLoginCookie();
                     }
+                    // Don't show form
+                    $show_form = false;
                 } else {
                     // Invalid new password
                     $oWebsite->addError($oWebsite->t("users.password") . ' ' . Validate::getLastError($oWebsite));

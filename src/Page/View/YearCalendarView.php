@@ -18,7 +18,7 @@ class YearCalendarView extends View {
 
     /** @var Article[] All articles in that year. */
     protected $articlesInYear;
-    
+
     /** @var boolean True to show edit links, false otherwise. */
     private $createLinks;
 

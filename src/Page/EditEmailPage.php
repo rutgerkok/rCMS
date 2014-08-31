@@ -13,11 +13,6 @@ class EditEmailPage extends EditPasswordPage {
     }
 
     public function getPageContent(Request $request) {
-        // Check selected user
-        if ($this->user == null) {
-            return "";
-        }
-
         $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
@@ -27,15 +22,12 @@ class EditEmailPage extends EditPasswordPage {
             if (Validate::email($email)) {
                 // Valid email
                 $this->user->setEmail($email);
-                if ($this->user->save()) {
-                    // Saved
-                    $textToDisplay.='<p>' . $oWebsite->t("users.email") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                    // Don't show form
-                    $show_form = false;
-                } else {
-                    // Database error
-                    $textToDisplay.='<p><em>' . $oWebsite->t("users.email") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
-                }
+                $userRepo = $oWebsite->getAuth()->getUserRepository();
+                $userRepo->save($this->user);
+                // Saved
+                $textToDisplay.='<p>' . $oWebsite->t("users.email") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                // Don't show form
+                $show_form = false;
             } else {
                 // Invalid email
                 $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::getLastError($oWebsite));

@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
@@ -20,10 +21,11 @@ class LoginOtherPage extends Page {
         $userId = $request->getParamInt(0);
 
         // Fetch user
-        $user = User::getById($oWebsite, $userId);
-        if ($user === null || !$user->canLogIn()) {
-            $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
-            return;
+        $userRepo = $oWebsite->getAuth()->getUserRepository();
+        $user = $userRepo->getById($userId);
+        if (!$user->canLogIn()) {
+            // Can't log in to deleted or banned users
+            throw new NotFoundException();
         }
 
         // Set user

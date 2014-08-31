@@ -2,52 +2,39 @@
 
 namespace Rcms\Core;
 
-class PlacedWidget {
+use Rcms\Core\Repository\Entity;
 
-    private $id;
-    private $sidebarId;
-    private $dataString;
-    private $priority;
-    private $directoryName;
-    private $pathToDirectory;
+class PlacedWidget extends Entity {
+
+    protected $id;
+    protected $sidebarId;
+    protected $widgetData;
+    protected $priority;
+    protected $widgetName;
+    protected $baseDirectory;
 
     /**
      * Represents a widget. You'll need to fill out all parameters. The easiest
      * way to get this object is by calling {@link Widgets#get_placed_widget(int)}.
-     * 
-     * @param int $id The id of the widget. Set it to 0 to place a new widget.
-     * @param int $sidebarId The id of the sidebar of the widget.
-     * @param string $directoryName The name of the directory of the widget. 
-     *    Do not include the path.
-     * @param string $dataString JSON representation of the data of this widget. Can be null.
-     * @param int $priority Priority of the widget.
-     * @param string $directory The full directory of where this widget is
-     *    installed in.
+     *
+     * @param string $baseDirectory The base directory where all widgets are
+     * installed in.
      */
-    public function __construct($id, $sidebarId, $directoryName, $dataString,
-            $priority, $directory) {
-        $this->id = (int) $id;
-        $this->sidebarId = (int) $sidebarId;
-        $this->directoryName = $directoryName;
-        $this->dataString = $dataString;
-        if (!$this->dataString) {
-            $this->dataString = "{}";
-        }
-        $this->priority = (int) $priority;
-        $this->pathToDirectory = $directory;
+    public function __construct($baseDirectory) {
+        $this->baseDirectory = $baseDirectory;
     }
 
-    public function getWidgetDefinition(Widgets $widget_loader) {
-        return $widget_loader->getWidgetDefinition($this->directoryName);
+    public function getWidgetDefinition(WidgetRepository $widget_loader) {
+        return $widget_loader->getWidgetDefinition($this->baseDirectory . $this->widgetName . '/');
     }
 
     /**
      * Returns an array with key=>value pairs of data. Will never be null, but
      * can be empty.
-     * @return mixed The array.
+     * @return array The array.
      */
     public function getData() {
-        return JsonHelper::stringToArray($this->dataString);
+        return $this->widgetData;
     }
 
     /**
@@ -57,10 +44,10 @@ class PlacedWidget {
      */
     public function setData($data) {
         if ($data == null) {
-            $this->dataString = "{}";
+            $this->widgetData = array();
         } else {
             if (!isSet($data["valid"]) || $data["valid"]) {
-                $this->dataString = JsonHelper::arrayToString($data);
+                $this->widgetData = $data;
             }
         }
     }
@@ -95,7 +82,7 @@ class PlacedWidget {
      * @return WidgetInfoFile Info about the widget.
      */
     public function getWidgetInfo() {
-        return new WidgetInfoFile($this->directoryName, $this->pathToDirectory . "/info.txt");
+        return new WidgetInfoFile($this->widgetName, $this->baseDirectory . '/' . $this->widgetName . "/info.txt");
     }
 
     /**
@@ -103,7 +90,7 @@ class PlacedWidget {
      * @return string The name of the directory this widget is in.
      */
     public function getDirectoryName() {
-        return $this->directoryName;
+        return $this->widgetName;
     }
 
     /**

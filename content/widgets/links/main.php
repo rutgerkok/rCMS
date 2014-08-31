@@ -2,7 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
-use Rcms\Core\Menus;
+use Rcms\Core\LinkRepository;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 
@@ -15,7 +15,7 @@ class WidgetRkokLinks extends WidgetDefinition {
 
     const TITLE_MAX_LENGTH = 40;
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         if (!isSet($data["menu_id"]) || !isSet($data["title"])) {
             return;
         }
@@ -30,7 +30,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         }
 
         // Links
-        $oMenu = new Menus($oWebsite);
+        $oMenu = new LinkRepository($oWebsite);
         $returnValue.= '<ul class="linklist">';
         $returnValue.= $oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff);
         $returnValue.= "</ul>";
@@ -50,7 +50,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         $returnValue = "";
         $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doesn't support constants
         // Build menu options
-        $oMenu = new Menus($oWebsite);
+        $oMenu = new LinkRepository($oWebsite);
         $menus = $oMenu->getMenus();
         $menu_options = "";
         if (count($menus) > 0) {
@@ -95,8 +95,8 @@ EOT;
             $data["valid"] = false;
         }
         $data["menu_id"] = isSet($_REQUEST["menu_id_" . $id]) ? (int) $_REQUEST["menu_id_" . $id] : 0;
-        $oMenu = new Menus($oWebsite);
-        if ($oMenu->getMenuByName($data["menu_id"]) == null) {
+        $oMenu = new LinkRepository($oWebsite);
+        if ($oMenu->getMenuName($data["menu_id"]) == null) {
             $oWebsite->addError($oWebsite->t("widgets.menu") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }

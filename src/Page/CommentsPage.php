@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Comments;
+use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\CommentsTreeView;
@@ -17,7 +17,7 @@ class CommentsPage extends Page {
     private $comments;
 
     public function init(Request $request) {
-        $oComments = new Comments($request->getWebsite());
+        $oComments = new CommentRepository($request->getWebsite());
         $this->comments = $oComments->getCommentsLatest();
     }
 

@@ -12,13 +12,13 @@ unset($oAuth);
 // LOGIC
 if ($loggedIn) {
     $link_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $oMenu = new Menus($this);
-    $link = $oMenu->getLink($link_id);
+    $oMenus = new LinkRepository($this);
+    $link = $oMenus->getLink($link_id);
 
     if ($link) {
         // Valid link id
-        $link_url = $link["url"];
-        $link_text = $link["text"];
+        $link_url = $link->getUrl();
+        $link_text = $link->getText();
 
         if (isSet($_REQUEST["link_url"]) && isSet($_REQUEST["link_text"])) {
             // Sent, validate
@@ -37,7 +37,7 @@ if ($loggedIn) {
             }
             if ($valid) {
                 // Validated, update
-                if ($oMenu->updateLink($link_id, $link_url, $link_text)) {
+                if ($oMenus->updateLink($link_id, $link_url, $link_text)) {
                     $textToDisplay.="<p><em>" . $this->t("main.link") . " " . $this->t("editor.is_edited") . "</em></p>";
                 } else {
                     // System error
@@ -49,8 +49,8 @@ if ($loggedIn) {
             }
         }
         // Put constants in variables (required for heredoc)
-        $max_url_length = Menus::MAX_URL_LENGTH;
-        $max_link_text_length = Menus::MAX_LINK_TEXT_LENGTH;
+        $max_url_length = LinkRepository::MAX_URL_LENGTH;
+        $max_link_text_length = LinkRepository::MAX_LINK_TEXT_LENGTH;
         // Show a form
         $textToDisplay.= <<<EOT
                         <p>

@@ -4,7 +4,7 @@
 <?php
 //OBJECTEN
 $oAuth = new Authentication($this);
-$oComments = new Comments($this, $oAuth);
+$oComments = new CommentRepository($this, $oAuth);
 $loggedIn = $this->isLoggedIn();
 
 $display_page = true;

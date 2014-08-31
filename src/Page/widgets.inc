@@ -8,7 +8,7 @@ $textToDisplay = "";
 $loggedIn = $oAuth->check(Authentication::$ADMIN_RANK);
 
 if ($loggedIn) {
-    $oWidgets = new Widgets($this);
+    $oWidgets = new WidgetRepository($this);
     $widget_areas = $oWidgets->getWidgetAreas();
     $sidebarCount = $this->getThemeWidgetAreaCount();
 

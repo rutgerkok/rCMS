@@ -43,7 +43,7 @@ class AccountManagementPage extends Page {
     public function getPageContent(Request $request) {
         $oWebsite = $request->getWebsite();
         $page = max(0, $oWebsite->getRequestInt("id", 0));
-        $usersCount = $oWebsite->getAuth()->getRegisteredUsersCount();
+        $usersCount = $oWebsite->getAuth()->getUserRepository()->getRegisteredUsersCount();
 
         // Check page id
         if (!$this->check_valid_page_id($oWebsite, $page, $usersCount)) {
@@ -96,7 +96,7 @@ class AccountManagementPage extends Page {
         $start = (int) $start;
 
         $oAuth = $oWebsite->getAuth();
-        $users = $oAuth->getRegisteredUsers($start, self::USERS_PER_PAGE);
+        $users = $oAuth->getUserRepository()->getRegisteredUsers($start, self::USERS_PER_PAGE);
         $current_user_id = $oAuth->getCurrentUser()->getId();
 
         // Start table

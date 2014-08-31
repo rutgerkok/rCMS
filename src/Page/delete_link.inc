@@ -11,13 +11,13 @@ $loggedIn = $oAuth->check(Authentication::$ADMIN_RANK, true);
 unset($oAuth);
 
 if ($loggedIn) {
-    $oMenu = new Menus($this);
+    $oMenus = new LinkRepository($this);
     $id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $link = $oMenu->getLink($id);
+    $link = $oMenus->getLink($id);
     if ($link != null) {
         if (isSet($_REQUEST["confirm"])) {
             // Deletion confirmed
-            if ($oMenu->deleteLink($id)) {
+            if ($oMenus->deleteLink($id)) {
                 // Deleted
                 $textToDisplay.= "<p>" . $this->t("main.link") . " " . $this->t("editor.is_deleted") . "</p>\n";
             } else {
@@ -26,14 +26,12 @@ if ($loggedIn) {
             }
         } else {
             // Confirm deletion
-            $textToDisplay.= "<p>" . $this->tReplaced("links.delete.confirm", $link["text"]) . "</p>";
+            $textToDisplay.= "<p>" . $this->tReplaced("links.delete.confirm", htmlSpecialChars($link->getText())) . "</p>";
 
             $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("delete_link", $id, array("confirm" => 1)) . '">';
             $textToDisplay.= $this->t("main.yes") . "</a>\n";
             $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("links") . '">';
             $textToDisplay.= $this->t("main.no") . "</a></p>\n";
-
-            $links = $oMenu->getLinksByMenu($id);
         }
     } else {
         // Menu doens't exist

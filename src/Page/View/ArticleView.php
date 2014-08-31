@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
-use Rcms\Core\Comments;
+use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 
 /**
@@ -16,35 +16,23 @@ class ArticleView extends View {
 
     /** @var Comment[] The comments */
     protected $comments;
-    
+
     /** @var boolean True to display a link to edit this article. */
     private $editLink;
 
     /**
      * Creates a new article viewer.
      * @param Text $text The website object.
-     * @param Article $article The article, or null if not found.
+     * @param Article $article The article.
      * @param boolean $editLink True to display a link to edit this article.
      * @param Comment[] $comments The comments for this article.
      */
-    public function __construct(Text $text, $article, $editLink,
+    public function __construct(Text $text, Article $article, $editLink,
             array $comments = array()) {
         parent::__construct($text);
         $this->article = $article;
         $this->comments = $comments;
         $this->editLink = (boolean) $editLink;
-
-        // Check if article exists
-        if (!$this->article) {
-            $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_found'));
-        } else {
-
-            // Check if article is public
-            if ($this->article->hidden && !$text->isLoggedInAsStaff()) {
-                $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_public'));
-                $this->article = null;
-            }
-        }
     }
 
     public function getText() {
@@ -74,9 +62,9 @@ class ArticleView extends View {
         $returnValue.= '<p class="meta">';
 
         // Created and last edited
-        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
+        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->created);
         if ($article->lastEdited) {
-            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
+            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->lastEdited);
         }
 
         // Category

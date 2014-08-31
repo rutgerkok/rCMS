@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use DateTime;
+
 // Correct header
 header("Content-type: application/rss+xml");
 
@@ -23,7 +25,7 @@ spl_autoload_register(function($fullClassName) {
 
 // Objects
 $oWebsite = new Website();
-$oArticles = new Articles($oWebsite);
+$oArticles = new ArticleRepository($oWebsite);
 
 // Get category
 $category_id = $oWebsite->getRequestInt("category");
@@ -35,7 +37,7 @@ $articles = $oArticles->getArticlesData($category_id, 15);
 $textToDisplay = '';
 if ($articles) {
     foreach ($articles as $article) {
-        $pubdate = date('r', strtotime($article->created));
+        $pubdate = $article->created->format(DateTime::RSS);
         $textToDisplay.="<item>\n";
         $textToDisplay.="  <title>" . htmlSpecialChars($article->title) . "</title>\n";
         $textToDisplay.="  <link>" . $oWebsite->getUrlPage('article', $article->id) . "</link>\n";
