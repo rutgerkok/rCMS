@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use PDOException;
+
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
@@ -115,7 +117,7 @@ class WidgetRepository extends Repository {
     }
 
     /**
-     * Returns the widget the give directory.
+     * Returns the widget in the given directory.
      * @param string $widgetDirectoryName Directory name. Do not include the full path.
      * @return WidgetDefinition The widget, or null if not found.
      */
@@ -221,6 +223,26 @@ ERROR;
      */
     public function registerWidget(WidgetDefinition $widget) {
         $this->loadedWidgets[$this->widgetDirectoryName] = $widget;
+    }
+
+    /**
+     * Saves the given placed widget to the database.
+     * @param PlacedWidget $placedWidget The placed widget.
+     * @throws PDOException If saving fails.
+     */
+    public function savePlacedWidget(PlacedWidget $placedWidget) {
+        $this->saveEntity($placedWidget);
+    }
+    
+    /**
+     * Deletes the placed widget from the database.
+     * @param PlacedWidget $placedWidget The placed widget.
+     * @throws NotFoundException If the placed widget doesn't appear in the
+     * database.
+     * @throws PDOException If a database error occurs.
+     */
+    public function deletePlacedWidget(PlacedWidget $placedWidget) {
+        $this->where($this->widgetIdField, '=', $placedWidget->getId())->deleteOneOrFail();
     }
 
 }

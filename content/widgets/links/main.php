@@ -3,6 +3,7 @@
 namespace Rcms\Extend\Widget;
 
 use Rcms\Core\LinkRepository;
+use Rcms\Core\MenuRepository;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 
@@ -50,17 +51,17 @@ class WidgetRkokLinks extends WidgetDefinition {
         $returnValue = "";
         $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doesn't support constants
         // Build menu options
-        $oMenu = new LinkRepository($oWebsite);
-        $menus = $oMenu->getMenus();
+        $oMenu = new MenuRepository($oWebsite->getDatabase());
+        $menus = $oMenu->getAllMenus();
         $menu_options = "";
         if (count($menus) > 0) {
             $menu_options.= "<select name=\"menu_id_$id\" id=\"menu_id_$id\">\n";
-            foreach ($menus as $available_menu_id => $menu_name) {
-                $menu_options.= '<option value="' . $available_menu_id . '"';
-                if ($available_menu_id == $menu_id) {
+            foreach ($menus as $menu) {
+                $menu_options.= '<option value="' . $menu->getId() . '"';
+                if ($menu->getId() == $menu_id) {
                     $menu_options.= ' selected="selected"';
                 }
-                $menu_options.= '>' . $menu_name . "</option>\n";
+                $menu_options.= '>' . htmlSpecialChars($menu->getName()) . "</option>\n";
             }
             $menu_options.="</select>\n";
         } else {

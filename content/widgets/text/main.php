@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Rcms\Core\Editor;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 

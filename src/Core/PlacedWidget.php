@@ -2,14 +2,21 @@
 
 namespace Rcms\Core;
 
+use InvalidArgumentException;
+
 use Rcms\Core\Repository\Entity;
 
+/**
+ * Represents a widget that has been placed somewhere. It consists of the
+ * {@link WidgetDefinition} that is used, as well as the settings for the widget.
+ * Together this information can be used to render the widget.
+ */
 class PlacedWidget extends Entity {
 
     protected $id;
     protected $sidebarId;
-    protected $widgetData;
-    protected $priority;
+    protected $widgetData = array();
+    protected $priority = 0;
     protected $widgetName;
     protected $baseDirectory;
 
@@ -24,8 +31,23 @@ class PlacedWidget extends Entity {
         $this->baseDirectory = $baseDirectory;
     }
 
+    /**
+     * Creates a new placed widget. Won't be saved automatically, save it to a
+     * widget repository.
+     * @param string $baseDirectory Base directory of all widgets.
+     * @param string $widgetName Name of the widget.
+     * @param int $sidebarId Id of the sidebar the widget is placed in.
+     * @return PlacedWidget The placed widget.
+     */
+    public static function newPlacedWidget($baseDirectory, $widgetName, $sidebarId) {
+        $placedWidget = new PlacedWidget($baseDirectory);
+        $placedWidget->setSidebarId($sidebarId);
+        $placedWidget->widgetName = (string) $widgetName;
+        return $placedWidget;
+    }
+
     public function getWidgetDefinition(WidgetRepository $widget_loader) {
-        return $widget_loader->getWidgetDefinition($this->baseDirectory . $this->widgetName . '/');
+        return $widget_loader->getWidgetDefinition($this->widgetName);
     }
 
     /**
@@ -40,15 +62,17 @@ class PlacedWidget extends Entity {
     /**
      * Sets the internal data array to the new value. Can be null. Silently
      * fails if the data is invalidated by setting $data["valid"] to false.
-     * @param mixed $data The new data.
+     * @param array|null $data The new data.
      */
     public function setData($data) {
         if ($data == null) {
             $this->widgetData = array();
-        } else {
+        } else if (is_array($data)) {
             if (!isSet($data["valid"]) || $data["valid"]) {
                 $this->widgetData = $data;
             }
+        } else {
+            throw new InvalidArgumentException("data must be array or null, $data given");
         }
     }
 
@@ -91,56 +115,6 @@ class PlacedWidget extends Entity {
      */
     public function getDirectoryName() {
         return $this->widgetName;
-    }
-
-    /**
-     * Saves all changes.
-     * @param Database $oDatabase The database to save to.
-     * @return boolean Whether the save was successfull. On failure, an error
-     *     message is printed automatically.
-     */
-    public function save(Database $oDatabase) {
-        if ($this->id > 0) {
-            // Update
-            $sql = "UPDATE `widgets` SET ";
-            $sql.= '`widget_data` = "' . $oDatabase->escapeData($this->dataString) . '", ';
-            $sql.= '`sidebar_id` = ' . $this->sidebarId . ', ';
-            $sql.= '`widget_priority` = ' . $this->priority . ' ';
-            $sql.= "WHERE `widget_id` = " . $this->id;
-            if ($oDatabase->query($sql)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // Add
-            $sql = "INSERT INTO `widgets` (`widget_naam`, `widget_data`, ";
-            $sql.= "`sidebar_id`, `widget_priority`) VALUES (";
-            $sql.= '"' . $oDatabase->escapeData($this->directoryName) . '", ';
-            $sql.= '"' . $oDatabase->escapeData($this->dataString) . '", ';
-            $sql.= $this->sidebarId . ', ';
-            $sql.= $this->priority . ')';
-            if ($oDatabase->query($sql)) {
-                $this->id = $oDatabase->lastInsertId();
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Deletes this widget from the database.
-     * @param Database $oDatabase The database to delete from.
-     * @return boolean Whether the deletion was successfull.
-     */
-    public function delete(Database $oDatabase) {
-        if ($oDatabase->query("DELETE FROM `widgets` WHERE `widget_id`= " . $this->id)) {
-            $this->id = 0; // Reset
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }
