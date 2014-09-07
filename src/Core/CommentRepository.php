@@ -286,13 +286,6 @@ EOT;
     }
 
     /**
-     * @deprecated Use the new comment view
-     */
-    function getCommentHTML(Comment $comment, $show_actions) {
-        return CommentsTreeView::getSingleComment($this->websiteObject->getText(), $comment, $show_actions, false);
-    }
-
-    /**
      * Gets the comment with the given id.
      * @param $commentId Id of the comment.
      * @return Comment|null The comment, or null if not found.

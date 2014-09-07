@@ -3,8 +3,8 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
-use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
+use Rcms\Core\User;
 
 /**
  * Displays a single article.
@@ -19,20 +19,28 @@ class ArticleView extends View {
 
     /** @var boolean True to display a link to edit this article. */
     private $editLink;
+    
+    /** @var User The user that is viewing the comments, may be null. */
+    private $userViewingComments;
 
     /**
      * Creates a new article viewer.
      * @param Text $text The website object.
      * @param Article $article The article.
-     * @param boolean $editLink True to display a link to edit this article.
+     * @param boolean $editLink True to display a link to edit/delete this article.
+     * Which comments are editable depends on the $viewingComments parameter.
      * @param Comment[] $comments The comments for this article.
+     * @param User|null $viewingComments User viewing the comments, may be null.
+     * Edit/delete links for comments appear if this user matches the the author
+     * of the comment, or if the user is a moderator.
      */
     public function __construct(Text $text, Article $article, $editLink,
-            array $comments = array()) {
+            array $comments = array(), User $viewingComments = null) {
         parent::__construct($text);
         $this->article = $article;
         $this->comments = $comments;
         $this->editLink = (boolean) $editLink;
+        $this->userViewingComments = $viewingComments;
     }
 
     public function getText() {
@@ -126,7 +134,7 @@ class ArticleView extends View {
             $returnValue.= '<p><a class="button primary_button" href="' . $text->getUrlPage("add_comment", $id) . '">' . $text->t("comments.add") . "</a></p>";
 
             // Show comments
-            $commentTreeView = new CommentsTreeView($text, $comments, false);
+            $commentTreeView = new CommentsTreeView($text, $comments, false, $this->userViewingComments);
             $returnValue .= $commentTreeView->getText();
         }
         $returnValue.= '</div>';

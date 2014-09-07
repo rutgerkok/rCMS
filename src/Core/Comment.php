@@ -50,7 +50,7 @@ class Comment extends Entity {
         $comment->userDisplayName = isSet($commentArray["user_display_name"]) ? $commentArray["user_display_name"] : $commentArray["comment_name"];
         $comment->userEmail = isSet($commentArray["user_email"]) ? $commentArray["user_email"] : $commentArray["comment_email"];
         $comment->userRank = isSet($commentArray["user_rank"]) ? (int) $commentArray["user_rank"] : Authentication::$LOGGED_OUT_RANK;
-        $comment->created = isSet($commentArray["comment_created"]) ? $commentArray["comment_created"] : new DateTime();
+        $comment->created = isSet($commentArray["comment_created"]) ? new DateTime($commentArray["comment_created"]) : new DateTime();
         $comment->lastEdited = isSet($commentArray["comment_last_edited"]) ? new DateTime($commentArray["comment_last_edited"]) : null;
         $comment->body = $commentArray["comment_body"];
         $comment->status = (int) $commentArray["comment_status"];
@@ -118,14 +118,14 @@ class Comment extends Entity {
         $this->userRank = $user->getRank();
 
         // Update last edited date
-        $this->lastEdited = time();
+        $this->lastEdited = new DateTime();
     }
 
     public function setBodyRaw($text) {
         $this->body = $text;
 
         // Update last edited date
-        $this->lastEdited = time();
+        $this->lastEdited = new DateTime();
     }
 
     /**
