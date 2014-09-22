@@ -340,11 +340,11 @@ class Website {
      * @return string The value in the $_REQUEST array, or the default value.
      */
     public function getRequestString($name, $default = "") {
-        if (isSet($_REQUEST[$name])) {
+        if (isSet($_REQUEST[$name]) && is_scalar($_REQUEST[$name])) {
             if (ini_get("magic_quotes_gpc")) {
-                return stripSlashes($_REQUEST[$name]);
+                return stripSlashes((string) $_REQUEST[$name]);
             } else {
-                return $_REQUEST[$name];
+                return (string) $_REQUEST[$name];
             }
         } else {
             return $default;
