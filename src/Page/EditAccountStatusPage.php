@@ -27,10 +27,6 @@ class EditAccountStatusPage extends EditPasswordPage {
 
     public function getPageContent(Request $request) {
         $oWebsite = $request->getWebsite();
-        // Check selected user
-        if ($this->user == null) {
-            return "";
-        }
 
         // Don't allow to edit your own status (why would admins want to downgrade
         // themselves?)
@@ -65,15 +61,11 @@ class EditAccountStatusPage extends EditPasswordPage {
                 // Valid status
                 $this->user->setStatus($status);
                 $this->user->setStatusText($status_text);
-                if ($this->user->save()) {
-                    // Saved
-                    $textToDisplay.='<p>' . $oWebsite->t("users.status") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                    // Don't show form
-                    $show_form = false;
-                } else {
-                    // Database error
-                    $textToDisplay.='<p><em>' . $oWebsite->t("users.status") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
-                }
+                $oAuth->getUserRepository()->save($this->user);
+                // Saved
+                $textToDisplay.='<p>' . $oWebsite->t("users.status") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                // Don't show form
+                $show_form = false;
             } else {
                 // Invalid status
                 $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.status", true) . '</em></p>';

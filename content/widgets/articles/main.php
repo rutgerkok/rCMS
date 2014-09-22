@@ -2,8 +2,8 @@
 
 namespace Rcms\Extend\Widget;
 
-use Rcms\Core\Articles;
-use Rcms\Core\Categories;
+use Rcms\Core\ArticleRepository;
+use Rcms\Core\CategoryRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
@@ -24,7 +24,7 @@ class WidgetArticles extends WidgetDefinition {
     const SORT_NEWEST_TOP = 1;
     const SORT_OLDEST_TOP = 0;
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         // Check variables
         if (!isSet($data["title"]) || !isSet($data["count"])
                 || !isSet($data["display_type"]) || !isSet($data["categories"])) {
@@ -58,7 +58,7 @@ class WidgetArticles extends WidgetDefinition {
             $showArchiveLink = true;
         }
 
-        $oArticles = new Articles($oWebsite);
+        $oArticles = new ArticleRepository($oWebsite);
         $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);
 
         if ($displayType >= self::TYPE_LIST) {
@@ -89,18 +89,18 @@ class WidgetArticles extends WidgetDefinition {
         $textToDisplay.= "</p>\n";
 
         // Categories
-        $oCategories = new Categories($oWebsite, $oWebsite->getDatabase());
+        $oCategories = new CategoryRepository($oWebsite, $oWebsite->getDatabase());
         $textToDisplay.= "<p>" . $oWebsite->t("main.categories") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
-        foreach ($oCategories->getCategories() as $category_id => $name) {
-            $checkbox_id = 'categories_' . $category_id . "_" . $widget_id;
+        foreach ($oCategories->getCategories() as $category) {
+            $checkbox_id = 'categories_' . $category->getId() . "_" . $widget_id;
             $textToDisplay.= '<input type="checkbox" class="checkbox" ';
             $textToDisplay.= 'name="categories_' . $widget_id . '[]" ';
-            if (array_search($category_id, $categories) !== false) {
+            if (array_search($category->getId(), $categories) !== false) {
                 $textToDisplay.= 'checked="checked" ';
             }
-            $textToDisplay.= 'id="' . $checkbox_id . '" value="' . $category_id . '" />';
-            $textToDisplay.= '<label for="' . $checkbox_id . '">' . $name . "</label><br />" . "\n";
+            $textToDisplay.= 'id="' . $checkbox_id . '" value="' . $category->getId() . '" />';
+            $textToDisplay.= '<label for="' . $checkbox_id . '">' . htmlSpecialChars($category->getName()) . "</label><br />" . "\n";
         }
         $textToDisplay.= "</p>\n";
 

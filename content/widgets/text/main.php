@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Rcms\Core\Editor;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 
@@ -16,7 +17,7 @@ class WidgetRkokText extends WidgetDefinition {
      * (HTML) tags are saved unfiltered in the database, but filtered when displayed.
      */
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         if (!isSet($data["text"]) || !isSet($data["title"])) {
             return "";
         }

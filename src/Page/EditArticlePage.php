@@ -2,12 +2,13 @@
 
 namespace Rcms\Page;
 
-use InvalidArgumentException;
 use Rcms\Core\Article;
 use Rcms\Core\ArticleEditor;
+use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
-use Rcms\Core\Categories;
+use Rcms\Core\CategoryRepository;
 use Rcms\Core\Editor;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 
@@ -16,7 +17,7 @@ class EditArticlePage extends Page {
     /** @var ArticleEditor $article_editor */
     protected $article_editor;
 
-    /** @var Categories $categories_object */
+    /** @var CategoryRepository $categories_object */
     protected $categories_object;
     protected $message; // Message at the top of the page
     protected $redirect; // Redirect link, page will redirect to this link
@@ -26,16 +27,18 @@ class EditArticlePage extends Page {
         $article_id = $request->getParamInt(0);
 
         try {
-            $article_editor = new ArticleEditor($oWebsite, $article_id);
+            $articleRepository = new ArticleRepository($oWebsite);
+            $article = $this->getArticle($articleRepository, $article_id);
+            $article_editor = new ArticleEditor($oWebsite, $article);
             $this->article_editor = $article_editor;
-            $this->categories_object = new Categories($oWebsite);
+            $this->categories_object = new CategoryRepository($oWebsite);
 
             // Now check input
             if ($article_editor->processInput($_REQUEST, $this->categories_object)) {
                 if ($request->hasRequestValue("submit")) {
                     // Try to save
                     $article = $article_editor->getArticle();
-                    if ($article->save($oWebsite->getDatabase())) {
+                    if ($articleRepository->save($article)) {
                         if ($article_id == 0) {
                             // New article created
                             $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("editor.is_created") . "</em>";
@@ -55,8 +58,24 @@ class EditArticlePage extends Page {
                     }
                 }
             }
-        } catch (InvalidArgumentException $e) {
+        } catch (NotFoundException $e) {
             $oWebsite->addError($oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_found"));
+        }
+    }
+    
+    /**
+     * Gets the article with the given id. If the id is 0, a new article is
+     * created.
+     * @param ArticleRepository $repository Repository to fetch articles from.
+     * @param int $id Id of the article. Use 0 to create a new article.
+     * @return Article The article.
+     * @throws NotFoundException If no article exists with the given id.
+     */
+    protected function getArticle(ArticleRepository $repository, $id) {
+        if ($id === 0) {
+            return new Article();
+        } else {
+            return $repository->getArticleOrFail($id);
         }
     }
 
@@ -239,7 +258,7 @@ ARTICLE_FORM;
 
     protected function get_category_list(Article $article) {
         $article_category = $article->categoryId;
-        $categories = $this->categories_object->getCategories();
+        $categories = $this->categories_object->getCategoriesArray();
         $cat_list = '<select name="article_category" id="article_category" class="button" style="width:100%">';
         foreach ($categories as $cat_id => $cat_name) {
             $cat_list.="<option value=\"$cat_id\" ";

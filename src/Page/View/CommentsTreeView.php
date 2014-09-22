@@ -2,7 +2,6 @@
 
 namespace Rcms\Page\View;
 
-use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
 use Rcms\Core\Text;
 use Rcms\Core\User;
@@ -12,7 +11,7 @@ use Rcms\Core\User;
  */
 class CommentsTreeView extends View {
 
-    /** @var Comment[] $comments The comment list */
+    /** @var Comment[] The comment list */
     private $comments;
     private $viewedByStaff;
     private $viewedOutOfContext;
@@ -20,48 +19,60 @@ class CommentsTreeView extends View {
 
     /**
      * Creates the commment renderer.
-     * @param Text $text The website object.
+     * @param Text $text The website text object.
      * @param Comment[] $comments List of comments.
      * @param boolean $viewedOutOfContext Whether there should be a link to the article.
-     * @param User|null $viewer The user viewing the comments.
+     * @param User|null $viewer The user viewing the comments, null if logged out.
      */
-    public function __construct(Text $text, $comments,
-            $viewedOutOfContext, User $viewer = null) {
+    public function __construct(Text $text, $comments, $viewedOutOfContext,
+            User $viewer = null) {
         parent::__construct($text);
         $this->comments = $comments;
-        $this->viewedByStaff = $viewer ? $viewer->isStaff() : false;
+        $this->viewedByStaff = $viewer === null?  false : $viewer->isStaff();
         $this->viewedOutOfContext = $viewedOutOfContext;
         $this->viewerId = $viewer ? $viewer->getId() : 0;
     }
 
     public function getText() {
-        return $this->getCommentTree($this->comments, $this->viewedByStaff, $this->viewedOutOfContext);
+        return $this->getCommentTree($this->comments);
     }
 
-    public static function getSingleComment(Text $text, Comment $comment,
-            $editDeleteLinks, $viewedOutOfContext) {
+    /**
+     * Gets whether the given comment can be edited by the current viewer.
+     * @param omment $comment The comment.
+     * @return boolean True if it can be edited, false otherwise.
+     */
+    private function canEditComment(Comment $comment) {
+        if ($this->viewedByStaff) {
+            return true;
+        }
+        if ($this->viewerId > 0) {
+            return $this->viewerId === $comment->getUserId();
+        }
+        return false;
+    }
+
+    protected function getSingleComment(Comment $comment) {
+        $text = $this->text;
         $id = $comment->getId();
         $author = htmlSpecialChars($comment->getUserDisplayName());
-        $postDate = strFTime('%a %d %b %Y %X', $comment->getDateCreated());
+        $postDate = "";
+        if ($comment->getDateCreated() !== null) {
+            $postDate = strFTime('%a %d %b %Y %X', $comment->getDateCreated()->getTimestamp());
+        }
         $body = nl2br(htmlSpecialChars($comment->getBodyRaw()));
         $avatarUrl = User::getAvatarUrlFromEmail($comment->getUserEmail(), 40);
 
         // Add link and rank to author when linked to account
         if ($comment->getUserId() > 0) {
             $author = '<a href="' . $text->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
-            $oAuth = $text->getAuth();
-            $rank = $comment->getUserRank();
-            if ($oAuth->isHigherOrEqualRank($rank, Authentication::$MODERATOR_RANK)) {
-                $rankName = $oAuth->getRankName($rank);
-                $author .= ' <span class="comment_author_rank">' . $rankName . '</span>';
-            }
         }
 
         // Edit and delete links
-        $actionLinksHtml = $editDeleteLinks ? self::getActionLinks($text, $comment) : "";
+        $actionLinksHtml = $this->getActionLinks($comment);
 
         // Reply and context links
-        if ($viewedOutOfContext) {
+        if ($this->viewedOutOfContext) {
             $replyOrContextLink = <<<EOT
                 <a class="arrow" href="{$text->getUrlPage("article", $comment->getArticleId())}#comment_$id">
                     {$text->t("comments.view_context")}
@@ -76,7 +87,7 @@ EOT;
             <article class="comment" id="comment_$id">
                 <header>
                     <img src="$avatarUrl" alt="" />
-                    <h3 class="comment_title">$author </h3>
+                    <h3 class="comment_title">$author</h3>
                     <p class="comment_actions">
                         $actionLinksHtml
                     </p>
@@ -91,7 +102,11 @@ COMMENT;
         return $output;
     }
 
-    private static function getActionLinks(Text $text, Comment $comment) {
+    protected function getActionLinks(Comment $comment) {
+        if (!$this->canEditComment($comment)) {
+            return "";
+        }
+        $text = $this->text;
         $id = $comment->getId();
         $email = htmlSpecialChars($comment->getUserEmail());
         $returnValue = "";
@@ -111,24 +126,19 @@ EOT;
 
     /**
      * Recursive function to display a comment tree.
+     * @param Comment[] The comments.
      * @return string The HTML.
      */
-    protected function getCommentTree() {
+    protected function getCommentTree(array $comments) {
         $output = "";
-        foreach ($this->comments as $comment) {
-            // Can user edit/delete
-            $canEditDelete = false;
-            if ($this->viewedByStaff || ($this->viewerId > 0 && $this->viewerId == $comment->getUserId())) {
-                $canEditDelete = true;
-            }
-
+        foreach ($comments as $comment) {
             // Display the comment
-            $output.= self::getSingleComment($this->text, $comment, $canEditDelete, $this->viewedOutOfContext);
+            $output.= $this->getSingleComment($comment);
 
             // Display the child comments, if any
             $childs = $comment->getChildComments();
             if (count($childs) > 0) {
-                $output.= $this->getCommentTree();
+                $output.= $this->getCommentTree($childs);
             }
         }
 
@@ -137,4 +147,3 @@ EOT;
 
 }
 
-?>

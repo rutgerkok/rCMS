@@ -4,7 +4,7 @@ namespace Rkok\Extend\Widget;
 
 use DateTime;
 
-use Rcms\Core\Articles;
+use Rcms\Core\ArticleRepository;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 use Rcms\Page\View\CalendarView;
@@ -18,7 +18,7 @@ class WidgetCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
 
 
         // Title
@@ -28,7 +28,7 @@ class WidgetCalendar extends WidgetDefinition {
         }
 
         $now = new DateTime();
-        $oArticles = new Articles($oWebsite);
+        $oArticles = new ArticleRepository($oWebsite);
         $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
         $calendar = new CalendarView($oWebsite->getText(), $now, $articlesInMonth, $oWebsite->isLoggedInAsStaff());
 

@@ -1,10 +1,14 @@
-<?php namespace Rcms\Core; ?>
+<?php
+namespace Rcms\Core;
+
+use Rcms\Page\View\CommentsTreeView;
+?>
 
 <h2><?php echo $this->t("editor.comment.delete") ?></h2>
 <?php
 //OBJECTEN
 $oAuth = new Authentication($this);
-$oComments = new Comments($this, $oAuth);
+$oComments = new CommentRepository($this, $oAuth);
 $loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
 $is_moderator = $this->isLoggedInAsStaff();
 
@@ -35,7 +39,8 @@ if ($loggedIn) {
                 $textToDisplay.= '<p>' . $this->t("editor.comment.delete.confirm") . '</p>';
 
                 //en laat daarbij de comment zien
-                $comment_html = $oComments->getCommentHTML($comment, false);
+                $commentView = new CommentsTreeView($this->getText(), array($comment), true);
+                $comment_html = $commentView->getText();
                 $textToDisplay.= $comment_html;
                 $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("delete_comment", $comment_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . "</a> | \n";
                 $textToDisplay.= '<a class="arrow" href="' . $this->getUrlMain() . '" onclick="history.back();return false">' . $this->t("main.no") . '</a></p>';

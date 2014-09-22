@@ -13,21 +13,16 @@ $textToDisplay = '';
 if ($loggedIn) {
     $widget_id = isSet($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
     $widget = null;
+    $oWidgets = new WidgetRepository($this);
     if ($widget_id > 0) {
-        $oWidgets = new Widgets($this);
         $widget = $oWidgets->getPlacedWidget($widget_id);
-        unset($oWidgets);
     }
-    if ($widget) {
+    if ($widget !== null) {
         if (isSet($_REQUEST['confirm'])) {
             // Confirmed
-            if ($widget->delete($this->getDatabase())) {
-                $textToDisplay.= '<p>' . $this->t("main.widget") . ' ' . $this->t("editor.is_deleted") . '</p>';
-                $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.ok") . '</a></p>';
-            } else {
-                $textToDisplay.= '<p>' . $this->t("main.widget") . ' ' . $this->t("errors.is_not_removed") . '</p>';
-                $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.ok") . '</a></p>';
-            }
+            $oWidgets->deletePlacedWidget($widget);
+            $textToDisplay.= '<p>' . $this->t("main.widget") . ' ' . $this->t("editor.is_deleted") . '</p>';
+            $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.ok") . '</a></p>';
         } else {
             // Show confirmation message
             $textToDisplay.= '<p>' . $this->t("editor.widget.delete.confirm") . '</p>';

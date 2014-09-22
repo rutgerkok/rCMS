@@ -80,9 +80,9 @@ class ArticleListView extends View {
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
             // Created and last edited
-            $returnValue.= $text->t('articles.created') . " " . $article->created . ' - ';
+            $returnValue.= $text->t('articles.created') . " " . $text->formatDateTime($article->created) . ' - ';
             if ($article->lastEdited) {
-                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $article->lastEdited . '<br />';
+                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $text->formatDateTime($article->lastEdited) . '<br />';
             }
             // Category
             $returnValue.= $text->t('main.category') . ": ";

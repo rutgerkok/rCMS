@@ -9,7 +9,7 @@ use Rcms\Core\Text;
  */
 abstract class View {
 
-    /** 
+    /**
      * @var Text $oMessages Used for translations and
      * error/success messages. 
      */

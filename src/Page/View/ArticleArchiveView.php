@@ -27,7 +27,7 @@ class ArticleArchiveView extends View {
      * @var int[] Number of articles in each year, $year => $count
      */
     protected $articleCountInYears;
-    
+
     /**
      * @var boolean True to show edit links, false otherwise.
      */
@@ -163,9 +163,9 @@ MENUBAR;
 
         // Start the loop, grouping articles by month
         foreach ($this->articles as $article) {
-            $date = strToTime($article->created);
-            $currentMonth = date('n', $date);
-            $currentYear = date('Y', $date);
+            $date = $article->created;
+            $currentMonth = $date->format('n');
+            $currentYear = $date->format('Y');
             if ($currentMonth != $previousMonth || $currentYear != $previousYear) {
                 if ($tableStarted) {
                     // Close off existing table
@@ -174,7 +174,7 @@ MENUBAR;
 
                 // Start new table
                 $textToDisplay.= '<table style="width:90%">';
-                $textToDisplay.= '<tr><th ' . $colspan . '>' . ucfirst(strftime("%B %Y", $date)) . '</th></tr>';
+                $textToDisplay.= '<tr><th ' . $colspan . '>' . ucfirst(strftime("%B %Y", $date->format('U'))) . '</th></tr>';
                 $tableStarted = true;
 
                 // Set new previous values

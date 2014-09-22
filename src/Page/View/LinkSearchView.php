@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Rcms\Core\Link;
 use Rcms\Core\Text;
 
 /**
@@ -9,13 +10,13 @@ use Rcms\Core\Text;
  */
 class LinkSearchView extends View {
 
+    /** @var Link[] Array of links. */
     protected $links;
 
     /**
      * Constructs a new menu search view.
      * @param Text $text The website object.
-     * @param array $links Array of links. id=>link, with link being an array
-     * with the keys "url" and "text".
+     * @param Link[] $links Array of links.
      */
     public function __construct(Text $text, array $links) {
         parent::__construct($text);
@@ -33,10 +34,10 @@ class LinkSearchView extends View {
         $result.= '<ul class="linklist">';
 
         // Add each link
-        foreach ($this->links as $id => $value) {
+        foreach ($this->links as $link) {
             $result.= "<li>";
-            $result.= '<a href="' . htmlSpecialChars($value["url"]) . '">';
-            $result.= htmlSpecialChars($value["text"]);
+            $result.= '<a href="' . htmlSpecialChars($link->getUrl()) . '">';
+            $result.= htmlSpecialChars($link->getText());
             $result.= "</a></li>\n";
         }
 

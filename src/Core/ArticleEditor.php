@@ -3,7 +3,6 @@
 namespace Rcms\Core;
 
 use DateTime;
-use InvalidArgumentException;
 
 /**
  * Provides all method needed to build an article editor.
@@ -16,39 +15,17 @@ class ArticleEditor {
     /** @var Article $articleObject The article being edited */
     private $articleObject;
 
-    /** @var Database $databaseObject The database to fetch the article from */
-    private $databaseObject;
-
     /**
      * Creates a new editor for the article.
      * @param Website $website The website object.
-     * @param Article|int $article The article object or the article id. Use id
-     * 0 or leave out this argument to create a new article.
-     * @throws InvalidArgumentException If the article is not a number or
-     * article object, or if the id is not 0 and no article with that id exists.
+     * @param Article $article The article object.
      */
-    public function __construct(Website $website, $article = 0) {
+    public function __construct(Website $website, Article $article) {
         $this->websiteObject = $website;
-        $this->databaseObject = $website->getDatabase();
-
-        if ($article instanceof Article) {
-            $this->articleObject = $article;
-        } elseif (is_numeric($article)) {
-            if ($article == 0) {
-                // Creating a new article
-                $user = $website->getAuth()->getCurrentUser();
-                $data = array("", time(), 0, "", "", 0, "", $user->getId(), $user->getDisplayName(), false, false);
-                $this->articleObject = new Article(0, $data);
-            } else {
-                // Loading existing article, may throw exception
-                $this->articleObject = new Article($article, $website->getDatabase());
-            }
-        } else {
-            throw new InvalidArgumentException('$article must be an Article object or an article id');
-        }
+        $this->articleObject = $article;
     }
 
-    public function processInput($inputArray, Categories $oCategories) {
+    public function processInput($inputArray, CategoryRepository $oCategories) {
         $oWebsite = $this->websiteObject;
         $article = $this->articleObject;
         $sent = isSet($inputArray["submit"]);

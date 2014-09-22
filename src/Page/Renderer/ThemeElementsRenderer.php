@@ -2,10 +2,11 @@
 
 namespace Rcms\Page\Renderer;
 
-use Rcms\Core\Categories;
-use Rcms\Core\Menus;
+use Rcms\Core\CategoryRepository;
+use Rcms\Core\LinkRepository;
 use Rcms\Core\Theme;
 use Rcms\Core\Website;
+use Rcms\Page\HomePage;
 use Rcms\Page\View\WidgetsView;
 
 /**
@@ -201,7 +202,7 @@ EOT;
 			<a href="{$website->getUrlMain()}">Datascience</a>
 EOT;
         // Nog de laatste link?
-        if ($this->pageRenderer->getPageName() !== PageRenderer::HOME_PAGE_NAME) {
+        if (!($this->pageRenderer->getPage() instanceof HomePage)) {
             $title = $this->pageRenderer->getShortPageTitle();
             echo '<a href="#">' . $title . '</a>';
         }
@@ -213,8 +214,8 @@ EOT;
 
     public function echoTopMenu() {
         $website = $this->website;
-        $oMenu = new Menus($website);
-        echo $oMenu->getAsHtml($oMenu->getMenuTop(new Categories($website)));
+        $oMenu = new LinkRepository($website);
+        echo $oMenu->getAsHtml($oMenu->getMenuTop(new CategoryRepository($website)));
     }
 
     //Geeft een zoekformulier weer

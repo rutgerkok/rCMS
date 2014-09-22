@@ -2,9 +2,10 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Articles;
+use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
-use Rcms\Core\Comments;
+use Rcms\Core\CommentRepository;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
@@ -22,17 +23,16 @@ class AccountPage extends Page {
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
-        $user_id = $request->getRequestInt("id", 0);
-        if ($user_id == 0) {
+        $userId = $request->getRequestInt("id", 0);
+        if ($userId === 0) {
             // Use current user
             $this->user = $oWebsite->getAuth()->getCurrentUser();
         } else {
             // Use provided user
-            $this->user = User::getById($oWebsite, $user_id);
+            $this->user = $oWebsite->getAuth()->getUserRepository()->getById($userId);
         }
 
-
-        if ($this->user != null) {
+        if ($this->user !== null) {
             // Don't display banned/deleted users
             if (!$this->user->canLogIn()) {
                 if (!$oWebsite->isLoggedInAsStaff()) {
@@ -40,6 +40,11 @@ class AccountPage extends Page {
                     $this->user = null;
                 }
             }
+        }
+
+        if ($this->user === null) {
+            // Trigger 404
+            throw new NotFoundException();
         }
     }
 
@@ -53,12 +58,7 @@ class AccountPage extends Page {
     }
 
     public function getPageTitle(Text $text) {
-        // If found, use name in page title
-        if ($this->user === null) {
-            return $text->t("users.profile_page");
-        } else {
-            return $text->tReplaced("users.profile_page_of", $this->user->getDisplayName());
-        }
+        return $text->tReplaced("users.profile_page_of", $this->user->getDisplayName());
     }
 
     public function getShortPageTitle(Text $text) {
@@ -67,11 +67,6 @@ class AccountPage extends Page {
 
     public function getPageContent(Request $request) {
         $oWebsite = $request->getWebsite();
-        if ($this->user == null) {
-            // Error - user not found
-            $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_found"));
-            return "";
-        }
 
         // Display
         $textToDisplay = <<<EOT
@@ -92,7 +87,7 @@ EOT;
 
     /** Returns the HTML of the articles of the user, including the header */
     public function get_articles_html(Website $oWebsite) {
-        $oArticles = new Articles($oWebsite);
+        $oArticles = new ArticleRepository($oWebsite);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
         $loggedInStaff = $oWebsite->isLoggedInAsStaff();
         $oArticleView = new ArticleListView($oWebsite->getText(), $articles, 0, true, false, $loggedInStaff);
@@ -228,7 +223,7 @@ EOT;
 
     /** Returns the HTML of the comments of the user, including the header */
     public function get_comments_html(Website $oWebsite) {
-        $oComments = new Comments($oWebsite);
+        $oComments = new CommentRepository($oWebsite);
         $comments = $oComments->getCommentsUser($this->user->getId());
         $returnValue = '<h3 class="notable">' . $oWebsite->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {

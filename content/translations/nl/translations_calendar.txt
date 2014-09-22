@@ -2,6 +2,7 @@ calendar_for=Agenda voor
 calendar_for_year=Jaaroverzicht van {0}
 pick_a_date=Kies een datum
 no_activities_today=Niets gepland.
+format.date_time=%c
 weekday.mon=ma
 weekday.tue=di
 weekday.wed=wo

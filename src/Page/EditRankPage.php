@@ -17,11 +17,6 @@ class EditRankPage extends EditPasswordPage {
     }
 
     public function getPageContent(Request $request) {
-        // Check selected user
-        if ($this->user == null) {
-            return "";
-        }
-
         $oWebsite = $request->getWebsite();
         // Don't allow to edit your own rank (why would admins want to downgrade
         // themselves?)
@@ -39,15 +34,12 @@ class EditRankPage extends EditPasswordPage {
             if ($oAuth->isValidRankForAccounts($rank)) {
                 // Valid rank id
                 $this->user->setRank($rank);
-                if ($this->user->save()) {
-                    // Saved
-                    $textToDisplay.='<p>' . $oWebsite->t("users.rank") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                    // Don't show form
-                    $show_form = false;
-                } else {
-                    // Database error
-                    $textToDisplay.='<p><em>' . $oWebsite->t("users.rank") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
-                }
+                $userRepo = $oWebsite->getAuth()->getUserRepository();
+                $userRepo->save($this->user);
+                // Saved
+                $textToDisplay.='<p>' . $oWebsite->t("users.rank") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                // Don't show form
+                $show_form = false;
             } else {
                 // Invalid rank
                 $oWebsite->addError($oWebsite->t("users.rank") . ' ' . $oWebsite->t("errors.not_found"));

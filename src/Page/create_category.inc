@@ -6,7 +6,7 @@ $textToDisplay='';
 
 //OBJECTEN
 $oAuth = new Authentication($this);
-$oCat = new Categories($this);
+$oCat = new CategoryRepository($this);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 
 //INLOGGEN

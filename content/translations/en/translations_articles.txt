@@ -25,6 +25,7 @@ page.next=Next page
 page.current=Page {0} of {1}
 search_term=Search term
 search_for=Search for "{0}"
+search.explained=Searching in all articles and links on the website.
 search.results_in_articles=Results in articles
 search.results_in_links=Results in links
 search.result_found=Found one result.

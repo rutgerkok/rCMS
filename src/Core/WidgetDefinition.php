@@ -14,7 +14,7 @@ abstract class WidgetDefinition {
      * @param array $data All data attached to the widget, key->value pairs.
      * @return string The text.
      */
-    public abstract function getWidget(Website $oWebsite, $id, $data);
+    public abstract function getText(Website $oWebsite, $id, $data);
 
     /**
      * Gets the widget's editor. The data is either the saved data, or the data

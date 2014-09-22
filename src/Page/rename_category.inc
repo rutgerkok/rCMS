@@ -6,7 +6,7 @@ $textToDisplay='';
 
 //OBJECTEN
 $oAuth = new Authentication($this);
-$oCat = new Categories($this);
+$oCat = new CategoryRepository($this);
 
 //INLOGGEN
 $loggedIn = $oAuth->check(true,true);
@@ -21,7 +21,7 @@ if($loggedIn)
 	}
 	
 	//OVERZICHT CATEGORIEEN
-	$cat_array = $oCat->getCategories();
+	$cat_array = $oCat->getCategoriesArray();
 	unset($oCat);//niet meer nodig
 	$textToDisplay.='<p>';
 	

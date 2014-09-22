@@ -163,11 +163,11 @@ class Validate {
     }
 
     public static function url($linkUrl) {
-        return self::stringLength($linkUrl, 1, Menus::MAX_URL_LENGTH);
+        return self::stringLength($linkUrl, 1, LinkRepository::MAX_URL_LENGTH);
     }
 
     public static function nameOfLink($linkText) {
-        return self::stringLength($linkText, 1, Menus::MAX_LINK_TEXT_LENGTH);
+        return self::stringLength($linkText, 1, LinkRepository::MAX_LINK_TEXT_LENGTH);
     }
 
 }

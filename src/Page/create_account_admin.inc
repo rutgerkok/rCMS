@@ -8,7 +8,8 @@ $textToDisplay = '';
 echo '<h2>Create a new account</h2>';
 
 //ACCOUNTGEGEVENS CONTROLEREN
-$oAuth = new Authentication($this);
+$oAuth = $this->getAuth();
+$userRepo = $oAuth->getUserRepository();
 $loggedIn = $oAuth->check(true, true); //admin verplicht
 
 if ($loggedIn) {
@@ -45,12 +46,12 @@ if ($loggedIn) {
             $valid = false;
             $this->addError("Invalid rank");
         }
-        if (User::getByName($this, $user) != null) {
+        if ($userRepo->isUsernameInUse($user)) {
             // User with that name already exists
             $valid = false;
             $this->addError($this->t("users.the_username") . " " . $this->t("errors.already_in_use_on_this_site"));
         }
-        if (!empty($email) && User::getByEmail($this, $email) != null) {
+        if (!empty($email) && $userRepo->isEmailInUse($email)) {
             // User with that email already exists
             $valid = false;
             $this->addError($this->t("users.the_email") . " " . $this->t("errors.already_in_use_on_this_site"));
@@ -59,11 +60,12 @@ if ($loggedIn) {
         if ($valid) { //maak gebruiker aan
             $display_form = false;
 
-            $user = new User($this, 0, $user, $name, '', $email, $rank, 0, 0, Authentication::NORMAL_STATUS, "");
-            $user->setPassword($pass);
-            $user->save();
+            $userObj = User::createNewUser($user, $name, $pass);
+            $userObj->setEmail($email);
+            $userObj->setRank($rank);
+            $userRepo->save($userObj);
 
-            $textToDisplay .= "<p>User with the name " . $user->getUsername() . " is created!</p>";
+            $textToDisplay .= "<p>User with the name " . $userObj->getUsername() . " is created!</p>";
         } else { //fout opgetreden
             $display_form = true;
         }

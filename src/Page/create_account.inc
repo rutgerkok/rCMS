@@ -3,7 +3,8 @@
 namespace Rcms\Core;
 
 // Get user object
-$oAuth = new Authentication($this);
+$oAuth = $this->getAuth();
+$userRepo = $oAuth->getUserRepository();
 $loggedIn = $this->isLoggedIn();
 
 $display_page = $this->getConfig()->get("user_account_creation") && !$oAuth->check(true, false);
@@ -55,12 +56,12 @@ if (!$display_page) {
                 $valid = false;
                 $this->addError($this->t("users.the_email") . " " . Validate::getLastError($this));
             }
-            if (User::getByName($this, $creating_username) != null) {
+            if ($userRepo->isUsernameInUse($creating_username)) {
                 // User with that name already exists
                 $valid = false;
                 $this->addError($this->t("users.the_username") . " " . $this->t("errors.already_in_use_on_this_site"));
             }
-            if (!empty($creating_email) && User::getByEmail($this, $creating_email) != null) {
+            if (!empty($creating_email) && $userRepo->isEmailInUse($creating_email)) {
                 // User with that email already exists
                 $valid = false;
                 $this->addError($this->t("users.the_email") . " " . $this->t("errors.already_in_use_on_this_site"));
@@ -70,20 +71,11 @@ if (!$display_page) {
                 // Create user
                 $display_form = false;
 
-                $user = new User(
-                            $this, 0, $creating_username, $creating_display_name, 
-                            '', $creating_email, $oAuth->getDefaultRankForAccounts(),
-                            0, 0, Authentication::NORMAL_STATUS, ""
-                        );
-                $user->setPassword($creating_password1);
-                if($user->save()) {
-                    $textToDisplay .= "<p>" . $this->t("users.account") . " " . $this->t("editor.is_created") . "</p>";
-                    $textToDisplay .= '<p><a class="arrow" href="' . $this->getUrlPage("login") . '">' . $this->t("main.log_in") . "</a></p>";
-                } else {
-                    // Internal error occured
-                    $textToDisplay .= "<p><strong>" . $this->tReplacedKey("errors.your_input_has_not_been_created", "users.account", true) . "</strong></p>";
-                    $display_form = true;
-                }
+                $user = User::createNewUser($creating_username, $creating_display_name, $creating_password1);
+                $user->setEmail($creating_email);
+                $userRepo->save($user);
+                $textToDisplay .= "<p>" . $this->t("users.account") . " " . $this->t("editor.is_created") . "</p>";
+                $textToDisplay .= '<p><a class="arrow" href="' . $this->getUrlPage("login") . '">' . $this->t("main.log_in") . "</a></p>";
             } else {
                 // User error occured
                 $display_form = true;

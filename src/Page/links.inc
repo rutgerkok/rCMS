@@ -11,16 +11,17 @@ unset($oAuth);
 
 // LOGIC
 if ($loggedIn) {
-    $oMenu = new Menus($this);
+    $oLinks = new LinkRepository($this);
+    $oMenus = new MenuRepository($this->getDatabase());
 
     // Handle new menus
     if (isSet($_REQUEST["new_menu_name"]) && !empty($_REQUEST["new_menu_name"])) {
         $name = trim($_REQUEST["new_menu_name"]);
-        if (strLen($name) > Menus::MAX_MENU_NAME_LENGTH) {
-            $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", Menus::MAX_MENU_NAME_LENGTH));
+        if (strLen($name) > LinkRepository::MAX_MENU_NAME_LENGTH) {
+            $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", LinkRepository::MAX_MENU_NAME_LENGTH));
             $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
         } else {
-            if ($oMenu->addMenu($name)) {
+            if ($oMenus->addMenu($name)) {
                 $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("editor.is_created") . "</em></p>";
             } else {
                 $textToDisplay.="<p><em>" . $this->t("links.menu") . " " . $this->t("errors.is_not_created") . "</em></p>";
@@ -29,24 +30,25 @@ if ($loggedIn) {
     }
 
     // Echo all menus
-    $menus = $oMenu->getMenus();
-    foreach ($menus as $menu_id => $menu_name) {
-        $links = $oMenu->getLinksByMenu($menu_id);
-        if (count($links) > 0) {
-            $links_html = $oMenu->getAsHtml($links, false, true);
+    $menus = $oMenus->getAllMenus();
+    foreach ($menus as $menu) {
+        $linksInMenu = $oLinks->getLinksByMenu($menu->getId());
+        if (count($linksInMenu) > 0) {
+            $links_html = $oLinks->getAsHtml($linksInMenu, false, true);
         } else {
             $links_html = "<li><em>" . $this->t("errors.nothing_found") . "</em></li>";
         }
+        $menuName = htmlSpecialChars($menu->getName());
         $textToDisplay.= <<<EOT
-        <h3 class="notable">$menu_name</h3>
+        <h3 class="notable">$menuName</h3>
         <p>
-            <a class="arrow" href="{$this->getUrlPage("create_link", $menu_id)}">
+            <a class="arrow" href="{$this->getUrlPage("create_link", $menu->getId())}">
                 {$this->t("links.create")}
             </a>
-            <a class="arrow" href="{$this->getUrlPage("rename_menu", $menu_id)}">
+            <a class="arrow" href="{$this->getUrlPage("rename_menu", $menu->getId())}">
                 {$this->t("links.menu.rename")}
             </a>
-            <a class="arrow" href="{$this->getUrlPage("delete_menu", $menu_id)}">
+            <a class="arrow" href="{$this->getUrlPage("delete_menu", $menu->getId())}">
                 {$this->t("links.menu.delete")}
             </a>
         </p>
@@ -59,9 +61,8 @@ EOT;
         $textToDisplay.= "<p><em>" . $this->t("errors.nothing_found") . "</em></p>\n";
     }
 
-    unset($oMenu, $menus);
     // Add box for new menu
-    $menu_name_maxlength = Menus::MAX_MENU_NAME_LENGTH;
+    $menu_name_maxlength = LinkRepository::MAX_MENU_NAME_LENGTH;
     $textToDisplay.= <<<EOT
         <form method="post" action="{$this->getUrlMain()}">
             <h3 class="notable">{$this->t("links.menu.add")}</h3>

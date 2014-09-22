@@ -7,16 +7,16 @@ namespace Rcms\Core;
  */
 class WidgetInfoFile extends InfoFile {
 
-    private $directoryName;
+    private $widgetName;
 
-    public function __construct($directoryName, $infoFile) {
+    public function __construct($widgetName, $infoFile) {
         parent::__construct($infoFile);
-        $this->directoryName = $directoryName;
+        $this->widgetName = $widgetName;
         $this->infoFile = $infoFile;
     }
 
     public function getName() {
-        return $this->getString("name", $this->directoryName);
+        return $this->getString("name", $this->widgetName);
     }
 
     public function getDescription() {
@@ -24,7 +24,7 @@ class WidgetInfoFile extends InfoFile {
     }
 
     public function getDirectoryName() {
-        return $this->directoryName;
+        return $this->widgetName;
     }
 
     public function getVersion() {

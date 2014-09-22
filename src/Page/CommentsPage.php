@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Comments;
+use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\CommentsTreeView;
@@ -15,10 +15,13 @@ class CommentsPage extends Page {
 
     /** @var Comment[] The latest comments on the site. */
     private $comments;
+    /** @var User|null The user viewing the comments, null if logged out. */
+    private $viewingUser;
 
     public function init(Request $request) {
-        $oComments = new Comments($request->getWebsite());
+        $oComments = new CommentRepository($request->getWebsite());
         $this->comments = $oComments->getCommentsLatest();
+        $this->viewingUser = $request->getWebsite()->getAuth()->getCurrentUser();
     }
 
     public function getMinimumRank(Request $request) {
@@ -30,7 +33,7 @@ class CommentsPage extends Page {
     }
 
     public function getView(Text $text) {
-        return new CommentsTreeView($text, $this->comments, true);
+        return new CommentsTreeView($text, $this->comments, true, $this->viewingUser);
     }
 
 }

@@ -3,8 +3,8 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
-use Rcms\Core\Comments;
 use Rcms\Core\Text;
+use Rcms\Core\User;
 
 /**
  * Displays a single article.
@@ -16,35 +16,31 @@ class ArticleView extends View {
 
     /** @var Comment[] The comments */
     protected $comments;
-    
+
     /** @var boolean True to display a link to edit this article. */
     private $editLink;
+    
+    /** @var User The user that is viewing the comments, may be null. */
+    private $userViewingComments;
 
     /**
      * Creates a new article viewer.
      * @param Text $text The website object.
-     * @param Article $article The article, or null if not found.
-     * @param boolean $editLink True to display a link to edit this article.
+     * @param Article $article The article.
+     * @param boolean $editLink True to display a link to edit/delete this article.
+     * Which comments are editable depends on the $viewingComments parameter.
      * @param Comment[] $comments The comments for this article.
+     * @param User|null $viewingComments User viewing the comments, may be null.
+     * Edit/delete links for comments appear if this user matches the the author
+     * of the comment, or if the user is a moderator.
      */
-    public function __construct(Text $text, $article, $editLink,
-            array $comments = array()) {
+    public function __construct(Text $text, Article $article, $editLink,
+            array $comments = array(), User $viewingComments = null) {
         parent::__construct($text);
         $this->article = $article;
         $this->comments = $comments;
         $this->editLink = (boolean) $editLink;
-
-        // Check if article exists
-        if (!$this->article) {
-            $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_found'));
-        } else {
-
-            // Check if article is public
-            if ($this->article->hidden && !$text->isLoggedInAsStaff()) {
-                $text->addError($text->t('main.article') . ' ' . $text->t('errors.not_public'));
-                $this->article = null;
-            }
-        }
+        $this->userViewingComments = $viewingComments;
     }
 
     public function getText() {
@@ -74,9 +70,9 @@ class ArticleView extends View {
         $returnValue.= '<p class="meta">';
 
         // Created and last edited
-        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $article->created;
+        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->created);
         if ($article->lastEdited) {
-            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $article->lastEdited;
+            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->lastEdited);
         }
 
         // Category
@@ -138,7 +134,7 @@ class ArticleView extends View {
             $returnValue.= '<p><a class="button primary_button" href="' . $text->getUrlPage("add_comment", $id) . '">' . $text->t("comments.add") . "</a></p>";
 
             // Show comments
-            $commentTreeView = new CommentsTreeView($text, $comments, false);
+            $commentTreeView = new CommentsTreeView($text, $comments, false, $this->userViewingComments);
             $returnValue .= $commentTreeView->getText();
         }
         $returnValue.= '</div>';

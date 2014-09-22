@@ -8,6 +8,7 @@ class Website {
     const CONFIG_FILE = "config.php";
     const BASE_NAMESPACE = "Rcms\\";
 
+    /** @var Database The main database */
     protected $databaseObject;
 
     /** @var Themes Themes object */
@@ -16,7 +17,7 @@ class Website {
     /** @var Config Settings of the site. */
     protected $config;
 
-    /** @var Widgets Widgets object. */
+    /** @var WidgetRepository Widgets object. */
     protected $widgets;
 
     /** @var Authentication Handles authentication */
@@ -40,20 +41,19 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(self::CONFIG_FILE);
-        $this->text = new Text($this->getConfig()->get('url'),
-                $this->getUriTranslations(Config::DEFAULT_LANGUAGE));
-        
+        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations(Config::DEFAULT_LANGUAGE));
+
         // Connect to database, read settings
         $this->databaseObject = new Database($this);
         $this->config->readFromDatabase($this->databaseObject);
-        
+
         // Set updated properties of Text object, now that settings are read
         // from the database
         $this->text->setTranslationsDirectory($this->getUriTranslations($this->config->get("language")));
         $this->text->setUrlRewrite($this->config->get("url_rewrite"));
 
         // Init other objects
-        $this->authenticationObject = new Authentication($this);
+        $this->authenticationObject = new Authentication($this, new UserRepository($this->databaseObject));
         $this->themesObject = new Themes($this);
 
         // Workarounds for older PHP versions (5.3)
@@ -119,12 +119,12 @@ class Website {
 
     /**
      * Gets the widgets manager of the site.
-     * @return Widgets The widgets manager.
+     * @return WidgetRepository The widgets manager.
      */
     public function getWidgets() {
         if (!$this->widgets) {
             // Not every page needs them, so use lazy initialization
-            $this->widgets = new Widgets($this);
+            $this->widgets = new WidgetRepository($this);
         }
         return $this->widgets;
     }
@@ -192,7 +192,7 @@ class Website {
      * @return string The url.
      */
     public function getUrlPage($pageName, $params = null, $args = array()) {
-       return $this->text->getUrlPage($pageName, $params, $args);
+        return $this->text->getUrlPage($pageName, $params, $args);
     }
 
     //Geeft de map van alle thema's terug als url

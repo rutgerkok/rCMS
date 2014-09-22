@@ -12,8 +12,8 @@ unset($oAuth);
 // LOGIC
 if ($loggedIn) {
     $menu_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $oMenu = new Menus($this);
-    $menu_name = $oMenu->getMenuByName($menu_id);
+    $oMenus = new MenuRepository($this->getDatabase());
+    $menu_name = $oMenus->getMenuName($menu_id);
     if ($menu_name !== null) {
         $show_form = true;
         if (isSet($_REQUEST["menu_name"])) {
@@ -23,12 +23,12 @@ if ($loggedIn) {
             if (strLen($menu_name) < 1) {
                 $this->addError($this->t("links.menu.name") . " " . $this->t("errors.not_entered"));
                 $valid = false;
-            } elseif (strLen($menu_name) > Menus::MAX_MENU_NAME_LENGTH) {
-                $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", Menus::MAX_MENU_NAME_LENGTH));
+            } elseif (strLen($menu_name) > LinkRepository::MAX_MENU_NAME_LENGTH) {
+                $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", LinkRepository::MAX_MENU_NAME_LENGTH));
                 $valid = false;
             }
             if ($valid) {
-                if ($oMenu->renameMenu($menu_id, $menu_name)) {
+                if ($oMenus->renameMenu($menu_id, $menu_name)) {
                     // Great success!
                     $show_form = false;
                     $textToDisplay.="<p>" . $this->t("links.menu") . " " . $this->t("editor.is_changed") . "</p>";
@@ -43,7 +43,7 @@ if ($loggedIn) {
         }
 
         if ($show_form) {
-            $menu_name_maxlength = Menus::MAX_MENU_NAME_LENGTH;
+            $menu_name_maxlength = LinkRepository::MAX_MENU_NAME_LENGTH;
             $textToDisplay.=<<<EOT
                 <form method="post" action="{$this->getUrlMain()}">
                     <p>

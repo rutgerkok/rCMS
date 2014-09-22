@@ -12,10 +12,11 @@ unset($oAuth);
 // LOGIC
 if ($loggedIn) {
     $show_form = true;
-    $max_link_text_length = Menus::MAX_LINK_TEXT_LENGTH;
-    $max_url_length = Menus::MAX_URL_LENGTH;
+    $max_link_text_length = LinkRepository::MAX_LINK_TEXT_LENGTH;
+    $max_url_length = LinkRepository::MAX_URL_LENGTH;
 
-    $oMenu = new Menus($this);
+    $oMenus = new LinkRepository($this);
+    $menus = new MenuRepository($this->getDatabase());
     $link_url = isSet($_REQUEST["link_url"]) ? $_REQUEST["link_url"] : "http://";
     $menu_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
     $link_text = isSet($_REQUEST["link_text"]) ? $_REQUEST["link_text"] : "";
@@ -29,13 +30,13 @@ if ($loggedIn) {
             $valid = false;
             $this->addError($this->t("links.text") . " " . Validate::getLastError($this));
         }
-        if (!$oMenu->getMenuByName($menu_id)) {
+        if (!$menus->exists($menu_id)) {
             $valid = false;
             $this->addError($this->t("links.menu") . " " . $this->t("errors.not_found"));
         }
         if ($valid) {
             // Save
-            if ($oMenu->addLink($menu_id, $link_url, $link_text)) {
+            if ($oMenus->addLink($menu_id, $link_url, $link_text)) {
                 $show_form = false; // Don't show form on success
 
                 $textToDisplay.= "<p>" . $this->t("main.link") . " " . $this->t("editor.is_created") . "</p>";
@@ -79,13 +80,13 @@ if ($loggedIn) {
                     </label><br />
                     <select name="id" id="menu_id">
 EOT;
-        foreach ($oMenu->getMenus() as $id=>$name) {
-            $textToDisplay.= '<option value="'.$id.'"';
-            if($id == $menu_id) {
+        foreach ($menus->getAllMenus() as $menu) {
+            $textToDisplay.= '<option value="'.$menu->getId().'"';
+            if($menu->getId() == $menu_id) {
                 // Currently selected menu
                 $textToDisplay.= ' selected="selected"';
             }
-            $textToDisplay.= '>'. $name . "</option>\n";
+            $textToDisplay.= '>'. htmlSpecialChars($menu->getName()) . "</option>\n";
         }
         $textToDisplay .= <<<EOT
                     </select>

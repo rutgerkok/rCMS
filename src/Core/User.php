@@ -2,11 +2,14 @@
 
 namespace Rcms\Core;
 
-class User {
+use DateTime;
+use InvalidArgumentException;
+use Rcms\Core\Repository\Entity;
+
+class User extends Entity {
 
     const GRAVATAR_URL_BASE = "http://www.gravatar.com/avatar/";
 
-    protected $websiteObject;
     protected $username;
     protected $displayName;
     protected $passwordHashed;
@@ -15,44 +18,30 @@ class User {
     protected $rank;
     protected $joined;
     protected $lastLogin;
-    protected $status;
-    protected $statusText;
-    protected $extraData;
+    protected $status = Authentication::NORMAL_STATUS;
+    protected $statusText = "";
+    protected $extraData = array();
 
     /**
-     * Creates a new User object
-     * @param Website $oWebsite The Website object
-     * @param int $id The id of the user. Use 0 for new users.
-     * @param string $username The name the user logs in with.
-     * @param string $display_name The name that is displayed.
-     * @param string $password_hashed Hashed password.
-     * @param string $email The email, or empty if no email.
-     * @param int $joined When the user joined the site. Use 0 for the current time.
-     * @param int $last_login Date of the lastest visit to the site. Use 0 for the current time.
-     * @param int $status Whether the user is banned, deleted, etc.
-     * @param string $status_text The status text of the user. Can be set by the user.
-     * @param string $extra_data Stringified extra data in JSON format.
-     * @param int $rank The rank of the account.
-     * @throws InvalidArgumentException If the id is 0, but one of the other arguments is omitted.
+     * Creates a new user with the given username, display name and password.
+     * @param string $username The username.
+     * @param string $displayName The display name.
+     * @param stirng $password The password (plaintext).
+     * @return User The newly created user. Needs to be saved to a
+     * {@link UserRepository}.
      */
-    public function __construct(Website $oWebsite, $id, $username,
-            $display_name, $password_hashed, $email, $rank, $joined,
-            $last_login, $status, $status_text, $extra_data = null) {
-        $this->websiteObject = $oWebsite;
-        $this->id = (int) $id;
-        $this->setUsername($username);
-        $this->setDisplayName($display_name);
-        $this->setPasswordHashed($password_hashed);
-        $this->setEmail($email);
-        $this->setRank($rank);
-        $this->joined = (int) $joined;
-        if ($this->joined == 0) {
-            $this->joined = time();
-        }
-        $this->setLastLogin($last_login);
-        $this->setStatus($status);
-        $this->setStatusText($status_text);
-        $this->setExtraData($extra_data);
+    public static function createNewUser($username, $displayName, $password) {
+        $user = new User();
+        $user->setUsername($username);
+        $user->setDisplayName($displayName);
+        $user->setPassword($password);
+        $user->rank = Authentication::$USER_RANK;
+
+        $now = new DateTime();
+        $user->setLastLogin($now);
+        $user->joined = $now;
+
+        return $user;
     }
 
     /**
@@ -68,65 +57,6 @@ class User {
             return false;
         }
         return true;
-    }
-
-    // Vulnerable to SQL injection attacks, so it must be private. Safe, public
-    // method are available below.
-    private static function getByCondition(Website $oWebsite, $sqlCondition) {
-        $oDB = $oWebsite->getDatabase();
-
-
-
-        $sql = 'SELECT `user_id`, `user_login`, `user_display_name`, `user_password`, ';
-        $sql.= '`user_email`, `user_rank`, `user_joined`, `user_last_login`, ';
-        $sql.= '`user_status`, `user_status_text`, `user_extra_data` ';
-        $sql.= 'FROM `users` WHERE ' . $sqlCondition;
-        $result = $oDB->query($sql);
-
-        // Create user object and return
-        if ($oDB->rows($result) > 0) {
-            list($id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData) = $oDB->fetchNumeric($result);
-            return new User($oWebsite, $id, $username, $displayName, $passwordHashed, $email, $rank, $joined, $lastLogin, $status, $statusText, $extraData);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Get the user by name. Returns null if the user isn't found.
-     * @param Website $oWebsite The Website object.
-     * @param string $username The username. Case insensitive.
-     * @return User|null The User, or null if it isn't found.
-     */
-    public static function getByName(Website $oWebsite, $username) {
-        $escapedUsername = $oWebsite->getDatabase()->escapeData(strToLower($username));
-        $sqlCondition = '`user_login` = "' . $escapedUsername . '"';
-        return self::getByCondition($oWebsite, $sqlCondition);
-    }
-
-    /**
-     * Get the user by email. Returns null if the user isn't found.
-     * @param Website $oWebsite The Website object.
-     * @param string $email The email address. Case sensitive.
-     * @return User|null The User, or null if it isn't found.
-     */
-    public static function getByEmail(Website $oWebsite, $email) {
-        $escapedEmail = $oWebsite->getDatabase()->escapeData($email);
-        $sqlCondition = '`user_email` = "' . $escapedEmail . '"';
-        return self::getByCondition($oWebsite, $sqlCondition);
-    }
-
-    /**
-     * Safe way of getting the user object when you know the id. Returns null if
-     * the user doesn't exist.
-     * @param Website $oWebsite The Website object.
-     * @param int $id The user id.
-     * @return User|null The User, or null if it isn't found.
-     */
-    public static function getById(Website $oWebsite, $userId) {
-        $userId = (int) $userId;
-        $sqlCondition = '`user_id` = "' . $userId . '"';
-        return self::getByCondition($oWebsite, $sqlCondition);
     }
 
     /**
@@ -208,51 +138,6 @@ class User {
     }
 
     /**
-     * Call this when logging in an user. If password is correct, the last
-     * login date is updated. If the password storage method was outdated, the
-     * password is rehashed.
-     * 
-     * @param Website $oWebsite The website object.
-     * @param string $password_unhashed The password entered by the user.
-     */
-    public function loginCheck(Website $oWebsite, $password_unhashed) {
-        $password_hashed = $this->getPasswordHashed();
-        $loggedIn = false;
-        if (strLen($password_hashed) == 32 && $password_hashed[0] != '$') {
-            // Still md5(sha1($pass)), update
-            if (md5(sha1($password_unhashed)) == $password_hashed) {
-                // Gets saved later on, when updating the last login
-                $this->setPassword($password_unhashed);
-                $loggedIn = true;
-            }
-        }
-
-        // Try to use modern password verification
-        if (!$loggedIn) {
-            $loggedIn = (crypt($password_unhashed, $password_hashed) === $password_hashed);
-        }
-
-        if ($loggedIn) {
-            // Check whether the account is deleted
-            if ($this->status == Authentication::DELETED_STATUS) {
-                // Act like the account doesn't exist
-                return false;
-            }
-
-            // Check whether the account is banned
-            if ($this->status == Authentication::BANNED_STATUS) {
-                $oWebsite->addError($oWebsite->tReplaced("users.status.banned.your_account", $this->statusText));
-                return false;
-            }
-
-            // Update last login date (and possibly password hash see above) if successfull
-            $this->setLastLogin(0);
-            $this->save();
-        }
-        return $loggedIn;
-    }
-
-    /**
      * Hashes the password using blowfish, or something weaker if blowfish is
      * not available. Using <code>crypt($pass,$hash)==$hash)</code> (or the
      * method verify_password) you can check if the given password matches the
@@ -310,23 +195,11 @@ class User {
     }
 
     /**
-     * Returns the extra data of this user in an associative array.
+     * Returns the extra data of this user in an associative array. The array
+     * is passed by value, so changing it has no effect.
      * @return array The extra data as an array.
      */
     public function getExtraData() {
-        if (!empty($this->extraData)) {
-            return JsonHelper::stringToArray($this->extraData);
-        } else {
-            return array();
-        }
-    }
-
-    /**
-     * Returns the extra data of the user as a string. The string may be empty,
-     * but it won't be null.
-     * @return string The extra data of the user.
-     */
-    public function getExtraDataString() {
         return $this->extraData;
     }
 
@@ -381,13 +254,9 @@ class User {
     /**
      * Sets the date of the last login of the user. When set to 0, the current
      * date will be used.
-     * @param int $last_login The date.
+     * @param DateTime|null $last_login The date.
      */
-    public function setLastLogin($last_login) {
-        $last_login = (int) $last_login;
-        if ($last_login == 0) {
-            $last_login = time();
-        }
+    public function setLastLogin(DateTime $last_login = null) {
         $this->lastLogin = $last_login;
     }
 
@@ -412,79 +281,26 @@ class User {
      * Sets the extra data of the user.
      * @param mixed $extra_data The extra data, either empty, as an array of as
      * a json string.
+     * @throws InvalidArgumentException If the extra data is not a string, array or null.
      */
     public function setExtraData($extra_data) {
-        if (!$extra_data) {
-            $this->extraData = "";
-        } else if (is_array($extra_data)) {
-            $this->extraData = JsonHelper::arrayToString($extra_data);
-        } else {
+        if ($extra_data === null) {
+            $this->extraData = array();
+            return;
+        }
+        if (is_string($extra_data)) {
+            if (empty($extra_data)) {
+                $this->extraData = array();
+                return;
+            }
+            $this->extraData = JsonHelper::stringToArray($extra_data);
+            return;
+        }
+        if (is_array($extra_data)) {
             $this->extraData = $extra_data;
+            return;
         }
-    }
-
-    /**
-     * Saves everything to the database
-     */
-    public function save() {
-        $oDB = $this->websiteObject->getDatabase();
-
-        if ($this->id === 0) {
-            // New user
-            $sql = "INSERT INTO `users` ( ";
-            $sql.= "`user_rank`, ";
-            $sql.= "`user_login`, ";
-            $sql.= "`user_display_name`, ";
-            $sql.= "`user_password`, ";
-            $sql.= "`user_email`, ";
-            $sql.= "`user_joined`, ";
-            $sql.= "`user_last_login`, ";
-            $sql.= "`user_status`, ";
-            $sql.= "`user_status_text`, ";
-            $sql.= "`user_extra_data`";
-            $sql.= ")";
-            $sql.= "VALUES (";
-            $sql.= "'" . $this->rank . "',";
-            $sql.= "'" . $oDB->escapeData($this->username) . "',";
-            $sql.= "'" . $oDB->escapeData($this->displayName) . "',";
-            $sql.= "'" . $oDB->escapeData($this->passwordHashed) . "',";
-            $sql.= "'" . $oDB->escapeData($this->email) . "',";
-            $sql.= "NOW(),";
-            $sql.= "NOW(),";
-            $sql.= "'" . $this->status . "',";
-            $sql.= "'" . $oDB->escapeData($this->statusText) . "',";
-            $sql.= "'" . $oDB->escapeData($this->extraData) . "'";
-            $sql.= ")";
-            // Call query and update ID
-            if ($oDB->query($sql)) {
-                $this->id = $oDB->getLastInsertedId();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // Update existing user
-            $sql = "UPDATE `users` ";
-            $sql.= 'SET `user_rank` = "' . $this->rank . '", ';
-            $sql.= '`user_login` = "' . $oDB->escapeData($this->username) . '", ';
-            $sql.= '`user_display_name` = "' . $oDB->escapeData($this->displayName) . '", ';
-            $sql.= '`user_email` = "' . $oDB->escapeData($this->email) . '", ';
-            $sql.= '`user_password` = "' . $oDB->escapeData($this->passwordHashed) . '", ';
-            $sql.= '`user_last_login` = "' . date("Y-m-d H:i:s", $this->lastLogin) . '", ';
-            $sql.= '`user_status` = "' . $this->status . '", ';
-            $sql.= '`user_status_text` = "' . $oDB->escapeData($this->statusText) . '", ';
-            $sql.= '`user_extra_data` = "' . $oDB->escapeData($this->extraData) . '" ';
-            $sql.= 'WHERE `user_id` = "' . $this->id . '"';
-
-            // Execute the query
-            if ($oDB->query($sql)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        throw new InvalidArgumentException("Expected string, array or null, got " . $extra_data);
     }
 
 }
-
-?>

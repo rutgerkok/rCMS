@@ -7,7 +7,7 @@ $oAuth = new Authentication($this);
 $loggedIn = $oAuth->check(Authentication::$ADMIN_RANK, true);
 
 // CONTENTS
-$oWidgets = new Widgets($this);
+$oWidgets = new WidgetRepository($this);
 $textToDisplay = '';
 
 if ($loggedIn) {
@@ -21,14 +21,14 @@ if ($loggedIn) {
             $directory_name = isSet($_REQUEST['directory_name']) ? $_REQUEST['directory_name'] : "";
             $directory = $this->getUriWidgets() . '/' . $_REQUEST['directory_name'];
             if ($directory_name != "" && is_dir($directory)) {
-                $widget = new PlacedWidget(0, $sidebar_id, $directory_name, "", 0, $directory);
+                $widget = PlacedWidget::newPlacedWidget($directory, $directory_name, $sidebar_id);
             }
         }
     } elseif ($widget_id > 0) {
         // Existing widget
         $widget = $oWidgets->getPlacedWidget($widget_id);
     }
-    if ($widget == null) {
+    if ($widget === null) {
         // Tried to edit non-existing widget or tried to create invalid widget
         // Show meaningless error
         $this->addError($this->t("main.widget") . ' ' . $this->t("errors.not_found"));
@@ -67,21 +67,17 @@ if ($loggedIn) {
                 // Get whether this is a new widget (id will be changed to a real
                 // one after it has saved, so check has to come before that)
                 $is_new_widget = ($widget->getId() == 0);
-                if ($widget->save($this->getDatabase())) {
-                    if ($is_new_widget) {
-                        // Created
-                        $textToDisplay.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_created") . "</em>\n";
-                        $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
-                        $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("home") . '">' . $this->t("main.home") . "</a></p>\n";
-                    } else {
-                        // Updated
-                        $textToDisplay.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_edited") . "</em>\n";
-                        $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
-                        $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("home") . '">' . $this->t("main.home") . "</a></p>\n";
-                    }
+                $oWidgets->savePlacedWidget($widget);
+                if ($is_new_widget) {
+                    // Created
+                    $textToDisplay.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_created") . "</em>\n";
+                    $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
+                    $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("home") . '">' . $this->t("main.home") . "</a></p>\n";
                 } else {
-                    // Database error, not saved
-                    $textToDisplay.= "<p><em>" . $this->t("main.widget") . " " . $this->t("errors.not_saved") . "</em></p>\n";
+                    // Updated
+                    $textToDisplay.= "<p><em>" . $this->t("main.widget") . " " . $this->t("editor.is_edited") . "</em>\n";
+                    $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.widgets") . "</a>\n";
+                    $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("home") . '">' . $this->t("main.home") . "</a></p>\n";
                 }
             } else {
                 // User error, not saved

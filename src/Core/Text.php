@@ -3,13 +3,15 @@
 namespace Rcms\Core;
 
 use BadMethodCallException;
+use DateTime;
+use Exception;
 
 /**
  * Translations, error messages and success messages.
  */
 class Text {
 
-    const DEBUG_MODE = false;
+    const DEBUG_MODE = true;
 
     /**
      * @var string URL of the site, like http://www.example.com/ .
@@ -37,7 +39,7 @@ class Text {
 
         $this->setTranslationsDirectory($translationsDir);
     }
-    
+
     /**
      * Updates the translations directory. Used to switch languages later on,
      * for example when the page has connected to the database.
@@ -47,7 +49,7 @@ class Text {
     public function setTranslationsDirectory($translationsDir) {
         $this->translationsDir = $translationsDir;
     }
-    
+
     /**
      * Sets whether URL rewriting is enabled. If false, links to index.php will be
      * used in getUrlPage, if true, fancier links will be used.
@@ -67,6 +69,18 @@ class Text {
      */
     public function addError($error) {
         $this->errors[] = $error;
+    }
+
+    /**
+     * Logs the given exception. The error is not displayed on the site unless
+     * debug mode is activated.
+     * @param string $message Context information about what failed, like
+     * "error while saving article".
+     * @param Exception $e The exception.
+     */
+    public function logException($message, Exception $e) {
+        // Very simple error "handling" for now
+        $this->logError("Internal exception: " . $message . " <pre>" . $e . "</pre>");
     }
 
     /**
@@ -240,6 +254,15 @@ class Text {
      */
     public function getUrlMain() {
         return $this->siteUrl;
+    }
+
+    /**
+     * Gets a formatted date/time, ready for presenting to the user.
+     * @param DateTime $dateTime The date/time.
+     * @return string The formatted date/time.
+     */
+    public function formatDateTime(DateTime $dateTime) {
+        return strFTime($this->t("calendar.format.date_time"), $dateTime->format('U'));
     }
 
 }

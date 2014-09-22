@@ -2,66 +2,77 @@
 
 namespace Rcms\Core;
 
-class PlacedWidget {
+use InvalidArgumentException;
 
-    private $id;
-    private $sidebarId;
-    private $dataString;
-    private $priority;
-    private $directoryName;
-    private $pathToDirectory;
+use Rcms\Core\Repository\Entity;
+
+/**
+ * Represents a widget that has been placed somewhere. It consists of the
+ * {@link WidgetDefinition} that is used, as well as the settings for the widget.
+ * Together this information can be used to render the widget.
+ */
+class PlacedWidget extends Entity {
+
+    protected $id;
+    protected $sidebarId;
+    protected $widgetData = array();
+    protected $priority = 0;
+    protected $widgetName;
+    protected $baseDirectory;
 
     /**
      * Represents a widget. You'll need to fill out all parameters. The easiest
      * way to get this object is by calling {@link Widgets#get_placed_widget(int)}.
-     * 
-     * @param int $id The id of the widget. Set it to 0 to place a new widget.
-     * @param int $sidebarId The id of the sidebar of the widget.
-     * @param string $directoryName The name of the directory of the widget. 
-     *    Do not include the path.
-     * @param string $dataString JSON representation of the data of this widget. Can be null.
-     * @param int $priority Priority of the widget.
-     * @param string $directory The full directory of where this widget is
-     *    installed in.
+     *
+     * @param string $baseDirectory The base directory where all widgets are
+     * installed in.
      */
-    public function __construct($id, $sidebarId, $directoryName, $dataString,
-            $priority, $directory) {
-        $this->id = (int) $id;
-        $this->sidebarId = (int) $sidebarId;
-        $this->directoryName = $directoryName;
-        $this->dataString = $dataString;
-        if (!$this->dataString) {
-            $this->dataString = "{}";
-        }
-        $this->priority = (int) $priority;
-        $this->pathToDirectory = $directory;
+    public function __construct($baseDirectory) {
+        $this->baseDirectory = $baseDirectory;
     }
 
-    public function getWidgetDefinition(Widgets $widget_loader) {
-        return $widget_loader->getWidgetDefinition($this->directoryName);
+    /**
+     * Creates a new placed widget. Won't be saved automatically, save it to a
+     * widget repository.
+     * @param string $baseDirectory Base directory of all widgets.
+     * @param string $widgetName Name of the widget.
+     * @param int $sidebarId Id of the sidebar the widget is placed in.
+     * @return PlacedWidget The placed widget.
+     */
+    public static function newPlacedWidget($baseDirectory, $widgetName, $sidebarId) {
+        $placedWidget = new PlacedWidget($baseDirectory);
+        $placedWidget->setSidebarId($sidebarId);
+        $placedWidget->widgetName = (string) $widgetName;
+        return $placedWidget;
+    }
+
+    public function getWidgetDefinition(WidgetRepository $widget_loader) {
+        return $widget_loader->getWidgetDefinition($this->widgetName);
     }
 
     /**
      * Returns an array with key=>value pairs of data. Will never be null, but
      * can be empty.
-     * @return mixed The array.
+     * @return array The array.
      */
     public function getData() {
-        return JsonHelper::stringToArray($this->dataString);
+        return $this->widgetData;
     }
 
     /**
      * Sets the internal data array to the new value. Can be null. Silently
      * fails if the data is invalidated by setting $data["valid"] to false.
-     * @param mixed $data The new data.
+     * @param array|null $data The new data.
      */
     public function setData($data) {
         if ($data == null) {
-            $this->dataString = "{}";
-        } else {
+            $this->widgetData = array();
+        } else if (is_array($data)) {
             if (!isSet($data["valid"]) || $data["valid"]) {
-                $this->dataString = JsonHelper::arrayToString($data);
+                $this->widgetData = $data;
             }
+        } else {
+            throw new InvalidArgumentException("data must be array or null, $data given");
         }
     }
 
@@ -95,7 +106,7 @@ class PlacedWidget {
      * @return WidgetInfoFile Info about the widget.
      */
     public function getWidgetInfo() {
-        return new WidgetInfoFile($this->directoryName, $this->pathToDirectory . "/info.txt");
+        return new WidgetInfoFile($this->widgetName, $this->baseDirectory . '/' . $this->widgetName . "/info.txt");
     }
 
     /**
@@ -103,57 +114,7 @@ class PlacedWidget {
      * @return string The name of the directory this widget is in.
      */
     public function getDirectoryName() {
-        return $this->directoryName;
-    }
-
-    /**
-     * Saves all changes.
-     * @param Database $oDatabase The database to save to.
-     * @return boolean Whether the save was successfull. On failure, an error
-     *     message is printed automatically.
-     */
-    public function save(Database $oDatabase) {
-        if ($this->id > 0) {
-            // Update
-            $sql = "UPDATE `widgets` SET ";
-            $sql.= '`widget_data` = "' . $oDatabase->escapeData($this->dataString) . '", ';
-            $sql.= '`sidebar_id` = ' . $this->sidebarId . ', ';
-            $sql.= '`widget_priority` = ' . $this->priority . ' ';
-            $sql.= "WHERE `widget_id` = " . $this->id;
-            if ($oDatabase->query($sql)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // Add
-            $sql = "INSERT INTO `widgets` (`widget_naam`, `widget_data`, ";
-            $sql.= "`sidebar_id`, `widget_priority`) VALUES (";
-            $sql.= '"' . $oDatabase->escapeData($this->directoryName) . '", ';
-            $sql.= '"' . $oDatabase->escapeData($this->dataString) . '", ';
-            $sql.= $this->sidebarId . ', ';
-            $sql.= $this->priority . ')';
-            if ($oDatabase->query($sql)) {
-                $this->id = $oDatabase->getLastInsertedId();
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Deletes this widget from the database.
-     * @param Database $oDatabase The database to delete from.
-     * @return boolean Whether the deletion was successfull.
-     */
-    public function delete(Database $oDatabase) {
-        if ($oDatabase->query("DELETE FROM `widgets` WHERE `widget_id`= " . $this->id)) {
-            $this->id = 0; // Reset
-            return true;
-        } else {
-            return false;
-        }
+        return $this->widgetName;
     }
 
 }

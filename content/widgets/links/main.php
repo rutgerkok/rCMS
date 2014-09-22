@@ -2,7 +2,8 @@
 
 namespace Rcms\Extend\Widget;
 
-use Rcms\Core\Menus;
+use Rcms\Core\LinkRepository;
+use Rcms\Core\MenuRepository;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
 
@@ -15,7 +16,7 @@ class WidgetRkokLinks extends WidgetDefinition {
 
     const TITLE_MAX_LENGTH = 40;
 
-    public function getWidget(Website $oWebsite, $id, $data) {
+    public function getText(Website $oWebsite, $id, $data) {
         if (!isSet($data["menu_id"]) || !isSet($data["title"])) {
             return;
         }
@@ -30,7 +31,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         }
 
         // Links
-        $oMenu = new Menus($oWebsite);
+        $oMenu = new LinkRepository($oWebsite);
         $returnValue.= '<ul class="linklist">';
         $returnValue.= $oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff);
         $returnValue.= "</ul>";
@@ -50,17 +51,17 @@ class WidgetRkokLinks extends WidgetDefinition {
         $returnValue = "";
         $title_max_length = self::TITLE_MAX_LENGTH; // Herodoc doesn't support constants
         // Build menu options
-        $oMenu = new Menus($oWebsite);
-        $menus = $oMenu->getMenus();
+        $oMenu = new MenuRepository($oWebsite->getDatabase());
+        $menus = $oMenu->getAllMenus();
         $menu_options = "";
         if (count($menus) > 0) {
             $menu_options.= "<select name=\"menu_id_$id\" id=\"menu_id_$id\">\n";
-            foreach ($menus as $available_menu_id => $menu_name) {
-                $menu_options.= '<option value="' . $available_menu_id . '"';
-                if ($available_menu_id == $menu_id) {
+            foreach ($menus as $menu) {
+                $menu_options.= '<option value="' . $menu->getId() . '"';
+                if ($menu->getId() == $menu_id) {
                     $menu_options.= ' selected="selected"';
                 }
-                $menu_options.= '>' . $menu_name . "</option>\n";
+                $menu_options.= '>' . htmlSpecialChars($menu->getName()) . "</option>\n";
             }
             $menu_options.="</select>\n";
         } else {
@@ -95,8 +96,8 @@ EOT;
             $data["valid"] = false;
         }
         $data["menu_id"] = isSet($_REQUEST["menu_id_" . $id]) ? (int) $_REQUEST["menu_id_" . $id] : 0;
-        $oMenu = new Menus($oWebsite);
-        if ($oMenu->getMenuByName($data["menu_id"]) == null) {
+        $oMenu = new LinkRepository($oWebsite);
+        if ($oMenu->getMenuName($data["menu_id"]) == null) {
             $oWebsite->addError($oWebsite->t("widgets.menu") . " " . $oWebsite->t("errors.not_found"));
             $data["valid"] = false;
         }

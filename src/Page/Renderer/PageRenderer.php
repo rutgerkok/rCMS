@@ -4,9 +4,11 @@ namespace Rcms\Page\Renderer;
 
 use BadMethodCallException;
 use Rcms\Core\Authentication;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\Page;
+use Rcms\Page\View\LoginView;
 
 /**
  * Used to render a webpage on the site.
@@ -14,6 +16,7 @@ use Rcms\Page\Page;
 class PageRenderer {
 
     const HOME_PAGE_NAME = "home";
+    const ERROR_404_PAGE_NAME = "error404";
 
     /**
      * Uses the request variables to construct an array of the path the user
@@ -51,11 +54,6 @@ class PageRenderer {
     private $request;
 
     /**
-     * @var string Internal name of the page, like "edit_article".
-     */
-    protected $pageName;
-
-    /**
      * @var Page Page the user is visiting 
      */
     protected $page;
@@ -79,9 +77,8 @@ class PageRenderer {
         }
 
         // Populate fiels
-        $this->page = $this->loadPage($pageName);
-        $this->pageName = $pageName;
         $this->request = new Request($website, $params);
+        $this->page = $this->loadPage($pageName);
 
         // Locales
         setLocale(LC_ALL, explode("|", $website->t("main.locales")));
@@ -98,18 +95,16 @@ class PageRenderer {
      * @param string $pageName The page name.
      */
     protected function loadPage($pageName) {
-        $website = $this->website;
         if ($pageName != self::HOME_PAGE_NAME) {
             // Get current page title and id 
             if (!preg_match('/^[a-z0-9_]+$/i', $pageName) || !file_exists($this->getUriPage($pageName))) {
                 // Page doesn't exist, show error and redirect
                 http_response_code(404);
-                $website->addError($website->t("main.page") . " '/" . htmlSpecialChars($pageName) . "'  " . $website->t('errors.not_found'));
-                $pageName = self::HOME_PAGE_NAME;
+                $pageName = self::ERROR_404_PAGE_NAME;
             }
         }
 
-        return $this->createPageObject($pageName);
+        return $this->createPage($pageName);
     }
 
     /**
@@ -130,7 +125,42 @@ class PageRenderer {
         return $pageClassName;
     }
 
-    private function createPageObject($pageName) {
+    protected function createPage($pageName) {
+        $website = $this->website;
+        $page = $this->createPageObject($pageName);
+
+        // Check for site password
+        if (!$website->hasAccess()) {
+            // Echo site code page
+            require($website->getUriLibraries() . 'login_page.php');
+            exit;
+        }
+
+        // Set password cookie
+        $sitePassword = $website->getConfig()->get("password");
+        if (!empty($sitePassword)) {
+            setCookie("key", $sitePassword, time() + 3600 * 24 * 365, "/");
+        }
+
+        // Authentication stuff
+        $rank = (int) $page->getMinimumRank($this->request);
+
+        if ($rank == Authentication::$LOGGED_OUT_RANK || $website->getAuth()->check($rank, false)) {
+            // Call init method
+            try {
+                $page->init($this->request);
+            } catch (NotFoundException $e) {
+                $page = $this->loadPage(self::ERROR_404_PAGE_NAME);
+                $page->init($this->request);
+            }
+        } else {
+            $this->authenticationFailedRank = $rank;
+        }
+
+        return $page;
+    }
+
+    protected function createPageObject($pageName) {
         // Try new page system
         $className = $this->getPageClassName($pageName);
         $pageFile = $this->website->getUriPages() . $className . ".php";
@@ -152,14 +182,6 @@ class PageRenderer {
     }
 
     /**
-     * Returns the internal page name, like "article" or "account_management". Can
-     * be converted to an url/uri using the get_ur*_page methods.
-     */
-    public function getPageName() {
-        return $this->pageName;
-    }
-
-    /**
      * Returns the current page. Only works with the new page system.
      * @return Page The current page.
      */
@@ -172,6 +194,9 @@ class PageRenderer {
      * @return string The shorter title.
      */
     public function getPageTitle() {
+        if ($this->authenticationFailedRank >= 0) {
+            return $this->website->t("main.log_in");
+        }
         return $this->page->getPageTitle($this->website->getText());
     }
 
@@ -181,6 +206,9 @@ class PageRenderer {
      * @return string The title.
      */
     public function getShortPageTitle() {
+        if ($this->authenticationFailedRank >= 0) {
+            return $this->website->t("main.log_in");
+        }
         return $this->page->getShortPageTitle($this->website->getText());
     }
 
@@ -200,7 +228,7 @@ class PageRenderer {
     public function getHeaderTitle() {
         $title = $this->website->getSiteTitle();
         if ($this->website->getConfig()->get("append_page_title", false)) {
-            if ($this->pageName !== self::HOME_PAGE_NAME) {
+            if (!($this->page instanceof HomePage)) {
                 $title.= " - " . $this->getShortPageTitle();
             }
         }
@@ -224,28 +252,6 @@ class PageRenderer {
     public function render() {
         $website = $this->website;
 
-        // Check for site password
-        if (!$website->hasAccess()) {
-            // Echo site code page
-            require($website->getUriLibraries() . 'login_page.php');
-            return;
-        }
-
-        // Set password cookie
-        $sitePassword = $website->getConfig()->get("password");
-        if (!empty($sitePassword)) {
-            setCookie("key", $sitePassword, time() + 3600 * 24 * 365, "/");
-        }
-
-        // Authentication stuff
-        $rank = (int) $this->page->getMinimumRank($this->request);
-        if ($rank == Authentication::$LOGGED_OUT_RANK || $website->getAuth()->check($rank, false)) {
-            // Call init method
-            $this->page->init($this->request);
-        } else {
-            $this->authenticationFailedRank = $rank;
-        }
-
         // Output page
         $themes = $website->getThemeManager();
         $outputContext = new ThemeElementsRenderer($website, $themes->getCurrentTheme(), $this);
@@ -261,7 +267,7 @@ class PageRenderer {
         if ($this->authenticationFailedRank >= 0) {
             $auth = $this->website->getAuth();
             $errorMessage = $auth->getLoginError($this->authenticationFailedRank);
-            $loginView = new LoginView($this->website, $errorMessage);
+            $loginView = new LoginView($this->website->getText(), $errorMessage);
             return $loginView->getText();
         } else {
             return $this->page->getPageContent($this->request);

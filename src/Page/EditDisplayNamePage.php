@@ -13,11 +13,6 @@ class EditDisplayNamePage extends EditPasswordPage {
     }
 
     public function getPageContent(Request $request) {
-        // Check selected user
-        if ($this->user == null) {
-            return "";
-        }
-
         $oWebsite = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
@@ -27,15 +22,12 @@ class EditDisplayNamePage extends EditPasswordPage {
             if (Validate::displayName($display_name)) {
                 // Valid display_name
                 $this->user->setDisplayName($display_name);
-                if ($this->user->save()) {
-                    // Saved
-                    $textToDisplay.='<p>' . $oWebsite->t("users.display_name") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
-                    // Don't show form
-                    $show_form = false;
-                } else {
-                    // Database error
-                    $textToDisplay.='<p><em>' . $oWebsite->t("users.display_name") . ' ' . $oWebsite->t("errors.not_saved") . '</em></p>';
-                }
+                $userRepo = $oWebsite->getAuth()->getUserRepository();
+                $userRepo->save($this->user);
+                // Saved
+                $textToDisplay.='<p>' . $oWebsite->t("users.display_name") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                // Don't show form
+                $show_form = false;
             } else {
                 // Invalid display_name
                 $oWebsite->addError($oWebsite->t("users.display_name") . ' ' . Validate::getLastError($oWebsite));

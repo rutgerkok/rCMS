@@ -2,31 +2,48 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Articles;
-use Rcms\Core\Menus;
+use Rcms\Core\ArticleRepository;
+use Rcms\Core\LinkRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\ArticleSearchView;
 use Rcms\Page\View\LinkSearchView;
+use Rcms\Page\View\SearchFormView;
 
 class SearchPage extends Page {
 
     const ARTICLES_PER_PAGE = 6;
+    const MIN_SEARCH_LENGTH = 3;
 
     protected $keyword;
     protected $pageNumber;
     protected $displayedArticles;
     protected $totalResults;
     protected $highestPageNumber;
+
+    /** @var Link[] Links to display. */
     protected $links;
+
+    /** @var boolean Whether edit and delete links are shown. */
+    protected $showEditLinks;
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
         $this->keyword = trim($request->getRequestString("searchbox"));
         $this->pageNumber = $request->getRequestInt("page", 0);
+        $this->showEditLinks = $oWebsite->isLoggedInAsStaff();
+
+        if (strLen($this->keyword) < self::MIN_SEARCH_LENGTH) {
+            // Don't search for too short words
+            if (!empty($this->keyword)) {
+                $oWebsite->addError($oWebsite->t("articles.search_term") . " "
+                        . $oWebsite->tReplaced("errors.is_too_short_num", self::MIN_SEARCH_LENGTH));
+            }
+            return;
+        }
 
         // Fetch article count
-        $articles = new Articles($oWebsite);
+        $articles = new ArticleRepository($oWebsite);
         $this->totalResults = $articles->getMatchesFor($this->keyword);
         // Count total number of pages, limit current page number
         $this->highestPageNumber = floor($this->totalResults / self::ARTICLES_PER_PAGE);
@@ -37,7 +54,7 @@ class SearchPage extends Page {
         $this->displayedArticles = $articles->getArticlesDataMatch($this->keyword, self::ARTICLES_PER_PAGE, $this->pageNumber * self::ARTICLES_PER_PAGE);
 
         // Fetch links
-        $menus = new Menus($oWebsite);
+        $menus = new LinkRepository($oWebsite);
         $this->links = $menus->getLinksBySearch($this->keyword);
     }
 
@@ -54,10 +71,14 @@ class SearchPage extends Page {
     }
 
     public function getViews(Text $text) {
-        return array(
-            new ArticleSearchView($text, $this->keyword, $this->displayedArticles, $this->pageNumber, $this->totalResults, $this->highestPageNumber),
-            new LinkSearchView($text, $this->links)
-        );
+        $views = array();
+        if (isSet($this->displayedArticles)) {
+            $views[] = new ArticleSearchView($text, $this->keyword, $this->displayedArticles, 
+                    $this->pageNumber, $this->totalResults, $this->highestPageNumber, $this->showEditLinks);
+            $views[] = new LinkSearchView($text, $this->links);
+        }
+        $views[] = new SearchFormView($text, $this->keyword);
+        return $views;
     }
 
 }

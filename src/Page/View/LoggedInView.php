@@ -8,9 +8,9 @@ use Rcms\Core\Text;
  * Used on the login page when an user has successfully logged in.
  */
 class LoggedInView extends View {
-    
+
     private $showAdminLinks;
-    
+
     /**
      * Creates the view.
      * @param Text $text The Text instance.

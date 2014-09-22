@@ -2,14 +2,18 @@
 
 namespace Rcms\Core;
 
+use PDO;
+use PDOException;
+
 /**
  * Holds all settings of the site, both from options.php and the database.
  */
 class Config {
+
     const DEFAULT_LANGUAGE = "en";
     const DEFAULT_THEME = "rkok";
     const DEFAULT_TITLE = "Welcome!";
-    
+
     private $config = array();
 
     /**
@@ -47,11 +51,13 @@ class Config {
      */
     public function readFromDatabase(Database $database) {
         // Load settings from the database
-        $result = $database->query("SELECT `setting_name`, `setting_value` FROM `settings`", false);
-        if ($result) {
-            while (list($key, $value) = $database->fetchNumeric($result)) {
+        try {
+            $result = $database->query("SELECT `setting_name`, `setting_value` FROM `settings`");
+            while (list($key, $value) = $result->fetch(PDO::FETCH_NUM)) {
                 $this->config[$key] = $value;
             }
+        } catch (PDOException $e) {
+            // No, database is not up to date
         }
     }
 
@@ -95,15 +101,14 @@ class Config {
         if (isSet($this->config[$name])) {
             // Update setting
             $sql = "UPDATE `settings` SET ";
-            $sql.= "`setting_value` = '{$database->escapeData($value)}' ";
-            $sql.= "WHERE `setting_name` = '{$database->escapeData($name)}'";
-            $database->query($sql);
+            $sql.= "`setting_value` = :value ";
+            $sql.= "WHERE `setting_name` = :name";
+            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
         } else {
             // New setting
             $sql = "INSERT INTO `settings` (`setting_name`, `setting_value`) ";
-            $sql.= " VALUES ('{$database->escapeData($name)}', ";
-            $sql.= "'{$database->escapeData($value)}')";
-            $database->query($sql);
+            $sql.= " VALUES (:name, :value)";
+            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
         }
     }
 

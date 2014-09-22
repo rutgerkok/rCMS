@@ -2,30 +2,90 @@
 
 namespace Rcms\Core;
 
+use PDOException;
+use Rcms\Core\Repository\Field;
+use Rcms\Core\Repository\Repository;
+use Rcms\Core\Exception\NotFoundException;
 // Yeah, this should not be here
 use Rcms\Page\View\CommentsTreeView;
 
-class Comments {
+class CommentRepository extends Repository {
+
+    const TABLE_NAME = "comments";
+
     /* @var $websiteObject Website */
 
     protected $websiteObject;
     /* @var $databaseObject Database */
     protected $databaseObject;
-    /* @var $authentication_object Authentication */
-    protected $authentication_object;
+    /* @var $authenticationObject Authentication */
+    protected $authenticationObject;
+    protected $primaryField;
+    protected $articleIdField;
+    protected $userIdField;
+    protected $userDisplayNameField;
+    protected $userNameField;
+    protected $userEmailField;
+    protected $userRankField;
+    protected $commentUserNameField;
+    protected $commentEmailField;
+    protected $createdField;
+    protected $lastEditedField;
+    protected $bodyField;
+    protected $statusField;
 
     /**
      * Constructs a new comment object.
      * @param Website $oWebsite The website.
      * @param Authentication $oAuth Unneeded, provided for backwards compability.
      */
-    function __construct(Website $oWebsite, Authentication $oAuth = null) {
+    public function __construct(Website $oWebsite, Authentication $oAuth = null) {
+        parent::__construct($oWebsite->getDatabase());
         $this->databaseObject = $oWebsite->getDatabase();
         $this->websiteObject = $oWebsite;
-        $this->authentication_object = $oAuth;
-        if ($this->authentication_object == null) {
-            $this->authentication_object = $oWebsite->getAuth();
+        $this->authenticationObject = $oAuth;
+        if ($this->authenticationObject == null) {
+            $this->authenticationObject = $oWebsite->getAuth();
         }
+
+        $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "comment_id");
+        $this->articleIdField = new Field(Field::TYPE_INT, "articleId", "article_id");
+        $this->userIdField = new Field(Field::TYPE_INT, "userId", "user_id");
+        $this->userDisplayNameField = new Field(Field::TYPE_STRING, "userDisplayName", "user_display_name");
+        $this->userDisplayNameField->createLink(UserRepository::TABLE_NAME, $this->userIdField);
+        $this->userNameField = new Field(Field::TYPE_STRING, "userName", "user_login");
+        $this->userNameField->createLink(UserRepository::TABLE_NAME, $this->userIdField);
+        $this->userEmailField = new Field(Field::TYPE_STRING, "userEmail", "user_email");
+        $this->userEmailField->createLink(UserRepository::TABLE_NAME, $this->userIdField);
+        $this->userRankField = new Field(Field::TYPE_STRING, "userName", "user_rank");
+        $this->userRankField->createLink(UserRepository::TABLE_NAME, $this->userIdField);
+        $this->commentUserNameField = new Field(Field::TYPE_STRING, "commentName", "comment_name");
+        $this->commentEmailField = new Field(Field::TYPE_STRING, "commentEmail", "comment_email");
+        $this->createdField = new Field(Field::TYPE_DATE, "created", "comment_created");
+        $this->lastEditedField = new Field(Field::TYPE_DATE, "lastEdited", "comment_last_edited");
+        $this->bodyField = new Field(Field::TYPE_STRING, "body", "comment_body");
+        $this->statusField = new Field(Field::TYPE_INT, "status", "comment_status");
+    }
+
+    public function getTableName() {
+        return self::TABLE_NAME;
+    }
+
+    public function getPrimaryKey() {
+        return $this->primaryField;
+    }
+
+    public function getAllFields() {
+        return array($this->primaryField, $this->articleIdField,
+            $this->userIdField, $this->userDisplayNameField,
+            $this->userNameField, $this->userEmailField, $this->userRankField,
+            $this->commentUserNameField, $this->commentEmailField,
+            $this->createdField, $this->lastEditedField, $this->bodyField,
+            $this->statusField);
+    }
+
+    public function createEmptyObject() {
+        return new Comment();
     }
 
     /**
@@ -77,7 +137,15 @@ class Comments {
                 $valid = false;
             }
         }
-        return new Comment($comment_id, $article_id, $account_id, $author_name, $author_name, $author_email, 0, 0, 0, $comment_body, Comment::NORMAL_STATUS);
+
+        return Comment::getByArray($comment_id, array(
+                    "article_id" => $article_id,
+                    "user_id" => $account_id,
+                    "comment_name" => $author_name,
+                    "comment_email" => $author_email,
+                    "comment_body" => $comment_body,
+                    "comment_status" => Comment::NORMAL_STATUS
+        ));
     }
 
     /**
@@ -122,31 +190,24 @@ class Comments {
     }
 
     function save(Comment $comment) {
-        if ($comment->save($this->databaseObject)) {
+        try {
+            $this->saveEntity($comment);
             return true;
-        } else {
+        } catch (PDOException $e) {
             $oWebsite = $this->websiteObject;
             $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_saved")); //reactie is niet opgeslagen
+            $oWebsite->getText()->logException("Saving comment", $e);
             return false;
         }
     }
 
     function deleteComment($id) {
-        $oWebsite = $this->websiteObject;
-        $oDB = $this->databaseObject;
-
-        $id = (int) $id;
-        if ($id > 0) {
-            $sql = "DELETE FROM `comments` WHERE `comment_id` = $id";
-            if ($oDB->query($sql) && $oDB->affectedRows() > 0) {
-                return true;
-            } else {
-                $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
-                return false; //meldt dat het mislukt is
-            }
-        } else {
-            $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found")); //reactie niet gevonden
-            return false; //heeft geen zin om met id=0 of iets anders query uit te voeren
+        try {
+            $this->where($this->primaryField, '=', $id)->deleteOneOrFail();
+            return true;
+        } catch (PDOException $e) {
+            $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found"));
+            return false;
         }
     }
 
@@ -225,36 +286,34 @@ EOT;
     }
 
     /**
-     * @deprecated Use the new comment view
+     * Gets the comment with the given id.
+     * @param $commentId Id of the comment.
+     * @return Comment|null The comment, or null if not found.
      */
-    function getCommentHTML(Comment $comment, $show_actions) {
-        return CommentsTreeView::getSingleComment($this->websiteObject, $comment, $show_actions, false);
-    }
-
-    /**
-     * @deprecated Use Comment::getById
-     */
-    function getComment($commentId) {
-        return Comment::getById($this->databaseObject, $commentId);
+    public function getComment($commentId) {
+        try {
+            return $this->where($this->primaryField, '=', $commentId)->selectOneOrFail();
+        } catch (NotFoundException $e) {
+            return null;
+        }
     }
 
     /**
      * Gets all comments for an article.
      * @param int $articleId The article of the comments.
-     * @return array[][] The comments.
+     * @return Comment[] The comments.
      */
     function getCommentsArticle($articleId) {
-        $articleId = (int) $articleId;
-        return $this->getCommentsQuery("`article_id` = $articleId", 0, false);
+        return $this->where($this->articleIdField, '=', $articleId)->select();
     }
 
     /**
      * Gets the latest comments on the site.
      * @param int $amount The amount of comments to fetch.
-     * @return array[][] The comments.
+     * @return Comment[] The comments.
      */
-    function getCommentsLatest($amount = 20) {
-        return $this->getCommentsQuery("", (int) $amount, true);
+    public function getCommentsLatest($amount = 20) {
+        return $this->all()->orderDescending($this->primaryField)->limit($amount)->select();
     }
 
     /**
@@ -263,40 +322,7 @@ EOT;
      * @return array The comments.
      */
     public function getCommentsUser($userId) {
-        $userId = (int) $userId;
-        return $this->getCommentsQuery("`user_id` = $userId", 10, true);
-    }
-
-    // Unsafe method - doesn't sanitize input
-    private function getCommentsQuery($where_clausule, $limit,
-            $new_comments_first) {
-        $oDB = $this->databaseObject;
-
-        $sql = <<<SQL
-SELECT `comment_id`, `article_id`, `user_id`, `user_display_name`, 
-`user_login`, `user_email`, `user_rank`, `comment_name`, `comment_email`, 
-`comment_created`, `comment_last_edited`, `comment_body`, `comment_status` 
-FROM `comments` LEFT JOIN `users` USING(`user_id`)
-SQL;
-        if (strLen($where_clausule) > 0) {
-            $sql.= " WHERE $where_clausule ";
-        }
-        $sql.= "ORDER BY `comment_created`";
-        if ($new_comments_first) {
-            $sql.= " DESC";
-        }
-        if ($limit > 0) {
-            $sql.= " LIMIT " . $limit;
-        }
-
-        $result = $oDB->query($sql);
-        $comments = array();
-
-        while ($commentArray = $oDB->fetchAssoc($result)) {
-            $comments[] = Comment::getByArray($commentArray["comment_id"], $commentArray);
-        }
-
-        return $comments;
+        return $this->where($this->userIdField, '=', $userId)->limit(10)->select();
     }
 
     /**
@@ -321,5 +347,3 @@ SQL;
     }
 
 }
-
-?>

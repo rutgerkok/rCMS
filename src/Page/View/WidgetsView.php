@@ -3,16 +3,16 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Text;
-use Rcms\Core\Widgets;
+use Rcms\Core\WidgetRepository;
 
 class WidgetsView extends View {
 
     protected $area;
 
-    /** @var Widgets The widgets manager. */
+    /** @var WidgetRepository The widgets manager. */
     protected $widgets;
 
-    public function __construct(Text $text, Widgets $widgets, $area) {
+    public function __construct(Text $text, WidgetRepository $widgets, $area) {
         parent::__construct($text);
         $this->area = $area;
         $this->widgets = $widgets;

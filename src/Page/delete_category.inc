@@ -6,7 +6,7 @@ $textToDisplay='';
 
 //OBJECTEN
 $oAuth = new Authentication($this);
-$oCat = new Categories($this);
+$oCat = new CategoryRepository($this);
 unset($oDB);//al niet meer nodig, want doorgegeven als parameter
 
 //INLOGGEN
@@ -22,7 +22,7 @@ if($loggedIn)
 	}
 	
 	//OVERZICHT CATEGORIEEN
-	$cat_array = $oCat->getCategories();
+	$cat_array = $oCat->getCategoriesArray();
 	$textToDisplay.='<p>';
 	
 	foreach($cat_array as $id=>$name)

@@ -29,7 +29,7 @@ $selectedYear = $oWebsite->getRequestInt("year", date('Y'));//geselecteerd of hu
 $dateTime = DateTime::createFromFormat("n Y", $selectedMonth . " " .$selectedYear);
 
 //OBJECTEN
-$oArticles = new Articles($oWebsite);
+$oArticles = new ArticleRepository($oWebsite);
 $articles = $oArticles->getArticlesDataCalendarMonth($dateTime);
 $calendarView = new DatePickerView($oWebsite, $dateTime, $articles);
 

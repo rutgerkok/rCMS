@@ -2,8 +2,8 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Articles;
-use Rcms\Core\Categories;
+use Rcms\Core\ArticleRepository;
+use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Page\View\ArticleArchiveView;
@@ -28,8 +28,8 @@ class ArchivePage extends Page {
         $this->selectedCategory = $request->getParamInt(0);
 
         // Fetch all categories
-        $categories = new Categories($oWebsite);
-        $this->allCategories = $categories->getCategories();
+        $categories = new CategoryRepository($oWebsite);
+        $this->allCategories = $categories->getCategoriesArray();
 
         // Check if valid category
         if ($this->selectedCategory != 0 && !array_key_exists($this->selectedCategory, $this->allCategories)) {
@@ -38,7 +38,7 @@ class ArchivePage extends Page {
         }
 
         // Fetch all articles
-        $articles = new Articles($oWebsite);
+        $articles = new ArticleRepository($oWebsite);
         $this->articleCountInYears = $articles->getArticleCountInYears($this->selectedCategory);
         $this->foundArticles = $articles->getArticlesDataArchive($this->selectedYear, $this->selectedCategory);
     }
