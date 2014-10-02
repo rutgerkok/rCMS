@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use InvalidArgumentException;
+
 class HashHelper {
 
     /**
@@ -9,6 +11,22 @@ class HashHelper {
      * characters indicate a hashing failure.
      */
     const CRYPT_RETURN_VALUE_MIN_LENGHT = 13;
+    
+    /**
+     * Creates a random string consisting of only hexadecimal chars of the
+     * specified length. The random number generator does not have to be
+     * cryptographically secure and can be time-based.
+     * @param int $length Length of the desired string, in chars.
+     * @return string The random string.
+     * @throws InvalidArgumentException If the length is smaller than 0 or larger than 32.
+     */
+    public static function randomString($length = 32) {
+        $lengthNumber = (int) $length;
+        if ($lengthNumber <= 0 || $lengthNumber > 32) {
+            throw new InvalidArgumentException("Invalid string length: $lengthNumber");
+        }
+        return substr(md5(uniqid(rand(), true)), 0, $lengthNumber);
+    }
 
     /**
      * Hashes the string using blowfish or md5, depending on what this server
@@ -19,9 +37,9 @@ class HashHelper {
         if (CRYPT_BLOWFISH) {
             // Blowfish
             if (version_compare(PHP_VERSION, "5.3.7", '>')) {
-                $salt = '$2y$11$' . substr(md5(uniqid(rand(), true)), 0, 22);
+                $salt = '$2y$11$' . self::randomString(22);
             } else {
-                $salt = '$2a$11$' . substr(md5(uniqid(rand(), true)), 0, 22);
+                $salt = '$2a$11$' . self::randomString(22);
             }
             $hashed = crypt($string, $salt);
             if (strLen($hashed) >= self::CRYPT_RETURN_VALUE_MIN_LENGHT) {

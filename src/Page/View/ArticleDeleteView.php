@@ -3,6 +3,7 @@
 namespace Rcms\Page\View;
 
 use Rcms\Core\Article;
+use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 
 /**
@@ -15,15 +16,18 @@ class ArticleDeleteView extends View {
     const STATE_HIDDEN = 2;
     const STATE_ERROR = 3;
 
-    /** @var Article $article The article being deleted. */
+    /** @var Article The article being deleted. */
     protected $article;
     protected $state;
     protected $showAdminPageLink;
+    /** @var RequestToken Token needed to delete articles. */
+    protected $requestToken;
 
     public function __construct(Text $text, Article $articleToDelete,
-            $showAdminPageLink, $state) {
+            RequestToken $requestToken, $showAdminPageLink, $state) {
         parent::__construct($text);
         $this->article = $articleToDelete;
+        $this->requestToken = $requestToken;
         $this->state = (int) $state;
         $this->showAdminPageLink = (boolean) $showAdminPageLink;
     }
@@ -85,18 +89,20 @@ class ArticleDeleteView extends View {
     protected function getConfirmationText() {
         $text = $this->text;
         $article = $this->article;
+        $deleteUrlParams = array("action" => "delete", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
         $returnValue = <<<EOT
             <p>{$text->t('editor.article.delete.confirm')}</p>
             <p>
-                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->id, array("action" => "delete"))}">
+                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->id, $deleteUrlParams)}">
                     {$text->t("main.yes")}
                 </a>
 EOT;
         if (!$article->hidden) {
+            $hideUrlParams = array("action" => "make_private", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
             // Option to hide article is only relevant when the article
             // isn't already hidden
             $returnValue.= <<<EOT
-                <a class="button" href="{$text->getUrlPage("delete_article", $article->id, array("action" => "make_private"))}">
+                <a class="button" href="{$text->getUrlPage("delete_article", $article->id, $hideUrlParams)}">
                     {$text->t("editor.article.delete.make_hidden_instead")}
                 </a>
 EOT;

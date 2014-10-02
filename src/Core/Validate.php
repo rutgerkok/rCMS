@@ -170,4 +170,23 @@ class Validate {
         return self::stringLength($linkText, 1, LinkRepository::MAX_LINK_TEXT_LENGTH);
     }
 
+    /**
+     * Checks if the session token stored in the request matches the session
+     * token stored in the session. Just like the other validate methods, this
+     * method updates the last error. However, for something technical like a
+     * request token it is impossible to create a user-friendly message, so it's
+     * better to not display this error.
+     * @param Request $request The request that stores the session token.
+     * @return boolean True if they match, false otherwise.
+     */
+    public static function requestToken(Request $request) {
+        $sessionToken = RequestToken::fromSession();
+        $requestToken = RequestToken::fromRequest($request);
+        if ($sessionToken->matches($requestToken)) {
+            return true;
+        }
+        self::setError("invalid_request_token");
+        return false;
+    }
+
 }

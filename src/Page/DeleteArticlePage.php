@@ -6,8 +6,9 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\RequestToken;
+use Rcms\Core\Validate;
 use Rcms\Page\View\ArticleDeleteView;
-use Rcms\Page\View\EmptyView;
 
 class DeleteArticlePage extends Page {
 
@@ -26,29 +27,32 @@ class DeleteArticlePage extends Page {
         $oArticles = new ArticleRepository($oWebsite);
         $article = $oArticles->getArticleData($articleId);
         $this->article = $article;
+        $formToken = RequestToken::generateNew();
 
         $action = $request->getRequestString("action");
-        if ($action == "delete") {
+        if ($action == "delete" && Validate::requestToken($request)) {
             // Bye bye article
             if ($oArticles->delete($article)) {
-                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_DELETED);
+                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_DELETED);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
             }
             return;
-        } elseif ($action == "make_private") {
+        } elseif ($action == "make_private" && Validate::requestToken($request)) {
             // Hide article for visitors
             $article->hidden = true;
             if ($oArticles->save($article)) {
-                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_HIDDEN);
+                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_HIDDEN);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
             }
             return;
         } else {
             // Ask what to do
-            $this->view = new ArticleDeleteView($text, $article, $showAdminPageLink, ArticleDeleteView::STATE_CONFIRMATION);
+            $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_CONFIRMATION);
         }
+
+        $formToken->saveToSession();
     }
 
     public function getPageTitle(Text $text) {

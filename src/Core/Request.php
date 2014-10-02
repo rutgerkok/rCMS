@@ -14,7 +14,7 @@ class Request {
     /** @var string[] Parameters given to the path of the request. */
     private $params;
 
-    public function __construct(Website $website, array $params) {
+    public function __construct(Website $website, array $params = array()) {
         $this->website = $website;
         $this->params = $params;
     }
