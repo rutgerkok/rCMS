@@ -11,6 +11,8 @@ use Rcms\Core\Editor;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\RequestToken;
+use Rcms\Core\Validate;
 
 class EditArticlePage extends Page {
 
@@ -21,6 +23,7 @@ class EditArticlePage extends Page {
     protected $categories_object;
     protected $message; // Message at the top of the page
     protected $redirect; // Redirect link, page will redirect to this link
+    protected $token; // Token, always set
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
@@ -32,9 +35,14 @@ class EditArticlePage extends Page {
         $this->article_editor = $article_editor;
         $this->categories_object = new CategoryRepository($oWebsite);
 
+        // Validate token, then save new one to session
+        $validToken = Validate::requestToken($request);
+        $this->token = RequestToken::generateNew();
+        $this->token->saveToSession();
+
         // Now check input
         if ($article_editor->processInput($_REQUEST, $this->categories_object)) {
-            if ($request->hasRequestValue("submit")) {
+            if ($request->hasRequestValue("submit") && $validToken) {
                 // Try to save
                 $article = $article_editor->getArticle();
                 if ($articleRepository->save($article)) {
@@ -106,12 +114,12 @@ class EditArticlePage extends Page {
     }
 
     public function getPageContent(Request $request) {
-        if ($this->article_editor == null) {
-            return "";
-        }
         $oWebsite = $request->getWebsite();
         $article_editor = $this->article_editor;
         $article = $article_editor->getArticle();
+
+        $tokenName = RequestToken::FIELD_NAME;
+        $tokenHtml = htmlSpecialChars($this->token->getTokenString());
 
         // Setup variables
         $oEditor = new Editor($oWebsite);
@@ -157,7 +165,7 @@ class EditArticlePage extends Page {
             <p>
                 {$oWebsite->t("main.fields_required")}
             </p>
-            <form action="{$oWebsite->getUrlMain()}" method="post">
+            <form action="{$oWebsite->getUrlPage("edit_article", $article->id)}" method="post">
                 <p>
                     <label for="article_title">{$oWebsite->t("articles.title")}:<span class="required">*</span></label>
                     <br />
@@ -234,8 +242,7 @@ class EditArticlePage extends Page {
                         {$oEditor->get_text_editor("article_body", $body)}
                     </p>
                     <p>
-                        <input type="hidden" name="p" value="edit_article" />
-                        <input type="hidden" name="id" value="{$article->id}" />
+                        <input type="hidden" name="{$tokenName}" value="{$tokenHtml}" />
                         <input type="submit" name="submit" class="button primary_button" value="{$oWebsite->t("editor.save")}" />
                         <input type="submit" name="submit" class="button" value="{$oWebsite->t("editor.save_and_quit")}" />
                         <a class="button" href="{$oWebsite->getUrlPage("article", $article->id)}">{$oWebsite->t("editor.quit")}</a>
