@@ -84,7 +84,7 @@ class Field {
 
     /**
      * Transforms the string received from the database to the appropriate type.
-     * @param string $string String from the database
+     * @param string $string String from the database. May not be null.
      * @return mixed Type appropriate for this field.
      */
     public function deserializeValue($string) {
@@ -96,6 +96,10 @@ class Field {
             case self::TYPE_STRING_LOWERCASE:
                 return $string;
             case self::TYPE_DATE:
+                if ($string === "0000-00-00 00:00:00") {
+                    // Legacy "soft" nulls in database
+                    return null;
+                }
                 return DateTime::createFromFormat("Y-m-d H:i:s", $string);
             case self::TYPE_BOOLEAN:
                 return (boolean) $string;
