@@ -26,43 +26,39 @@ class EditArticlePage extends Page {
         $oWebsite = $request->getWebsite();
         $article_id = $request->getParamInt(0);
 
-        try {
-            $articleRepository = new ArticleRepository($oWebsite);
-            $article = $this->getArticle($articleRepository, $article_id);
-            $article_editor = new ArticleEditor($oWebsite, $article);
-            $this->article_editor = $article_editor;
-            $this->categories_object = new CategoryRepository($oWebsite);
+        $articleRepository = new ArticleRepository($oWebsite);
+        $article = $this->getArticle($articleRepository, $article_id);
+        $article_editor = new ArticleEditor($oWebsite, $article);
+        $this->article_editor = $article_editor;
+        $this->categories_object = new CategoryRepository($oWebsite);
 
-            // Now check input
-            if ($article_editor->processInput($_REQUEST, $this->categories_object)) {
-                if ($request->hasRequestValue("submit")) {
-                    // Try to save
-                    $article = $article_editor->getArticle();
-                    if ($articleRepository->save($article)) {
-                        if ($article_id == 0) {
-                            // New article created
-                            $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("editor.is_created") . "</em>";
-                        } else {
-                            // Article updated
-                            $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("editor.is_edited") . "</em>";
-                        }
-                        $this->message.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">';
-                        $this->message.= $oWebsite->t("articles.view") . "</a>";
-
-                        // Check for redirect
-                        if ($request->getRequestString("submit") == $oWebsite->t("editor.save_and_quit")) {
-                            $this->redirect = htmlspecialchars_decode($oWebsite->getUrlPage("article", $article->id));
-                        }
+        // Now check input
+        if ($article_editor->processInput($_REQUEST, $this->categories_object)) {
+            if ($request->hasRequestValue("submit")) {
+                // Try to save
+                $article = $article_editor->getArticle();
+                if ($articleRepository->save($article)) {
+                    if ($article_id == 0) {
+                        // New article created
+                        $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("editor.is_created") . "</em>";
                     } else {
-                        $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_saved") . "</em>";
+                        // Article updated
+                        $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("editor.is_edited") . "</em>";
                     }
+                    $this->message.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">';
+                    $this->message.= $oWebsite->t("articles.view") . "</a>";
+
+                    // Check for redirect
+                    if ($request->getRequestString("submit") == $oWebsite->t("editor.save_and_quit")) {
+                        $this->redirect = htmlspecialchars_decode($oWebsite->getUrlPage("article", $article->id));
+                    }
+                } else {
+                    $this->message = "<em>" . $oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_saved") . "</em>";
                 }
             }
-        } catch (NotFoundException $e) {
-            $oWebsite->addError($oWebsite->t("main.article") . " " . $oWebsite->t("errors.not_found"));
         }
     }
-    
+
     /**
      * Gets the article with the given id. If the id is 0, a new article is
      * created.
