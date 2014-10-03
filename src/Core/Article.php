@@ -40,21 +40,4 @@ class Article extends Entity {
         $this->created = new DateTime();
     }
 
-    /**
-     * Pernamently deletes the article.
-     * @param Database $oDatabase The database to delete the article from.
-     * @return Whether the article was deleted.
-     */
-    public function delete(Database $oDatabase) {
-        $sql = "DELETE FROM `artikel` ";
-        $sql.= "WHERE `artikel_id` = " . ((int) $this->id);
-        if ($oDatabase->query($sql)) {
-            // Reset article id
-            $this->id = 0;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }
