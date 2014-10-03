@@ -112,17 +112,24 @@ class ArticleEditor {
 
         // Event date
         $eventDate = "";
+        $eventTime = "";
         if (isSet($inputArray['article_eventdate'])) {
             $eventDate = trim($oWebsite->getRequestString('article_eventdate'));
         }
         if (isSet($inputArray['article_eventtime']) && $eventDate) {
-            $event_time = trim($oWebsite->getRequestString('article_eventtime'));
-            $article->onCalendar = new DateTime($eventDate . " " . $event_time);
+            $eventTime = trim($oWebsite->getRequestString('article_eventtime'));
         }
-        if ($eventDate) {
+        if (empty($eventDate) && isSet($inputArray['article_eventdate'])) {
+            // Field was made empty, so delete date on article
+            $article->onCalendar = null;
+        }
+        if (!empty($eventDate)) {
             if (strtotime($eventDate) === false) {
-                $oWebsite->addError($oWebsite->t("articles.event_date") . " " . $oWebsite->tReplaced("ërrors.not_correct"));
+                $oWebsite->addError($oWebsite->t("articles.event_date") . " " . $oWebsite->t("errors.not_correct"));
                 $noErrors = false;
+            } else {
+                // Add date to article
+                $article->onCalendar = new DateTime($eventDate . " " . $eventTime);
             }
         }
 
