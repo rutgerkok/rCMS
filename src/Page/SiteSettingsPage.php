@@ -5,6 +5,8 @@ namespace Rcms\Page;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\RequestToken;
+use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
 class SiteSettingsPage extends Page {
@@ -16,6 +18,7 @@ class SiteSettingsPage extends Page {
     protected $theme;
     protected $user_account_creation;
     protected $saved = false;
+    protected $token;
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
@@ -26,10 +29,14 @@ class SiteSettingsPage extends Page {
         $this->theme = $oWebsite->getConfig()->get("theme");
         $this->user_account_creation = $oWebsite->getConfig()->get("user_account_creation");
 
-        if (isSet($_REQUEST["submit"])) {
+        if (isSet($_REQUEST["submit"]) && Validate::requestToken($request)) {
             $this->save_values($oWebsite);
             $this->saved = true;
         }
+
+        // Refresh token
+        $this->token = RequestToken::generateNew();
+        $this->token->saveToSession();
     }
 
     public function getPageType() {
@@ -54,6 +61,8 @@ class SiteSettingsPage extends Page {
         $languages = $this->get_sub_directory_names($oWebsite->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';
         $top_message = $oWebsite->t("site_settings.editing_site_settings.explained");
+        $tokenName = RequestToken::FIELD_NAME;
+        $tokenHtml = htmlSpecialChars($this->token->getTokenString());
 
         if ($this->saved) {
             $top_message = <<<EOT
@@ -71,7 +80,7 @@ EOT;
             <p>
                 {$oWebsite->t("main.fields_required")}
             </p>
-            <form action="{$oWebsite->getUrlMain()}" method="post">
+            <form action="{$oWebsite->getUrlPage("site_settings")}" method="post">
                 <p>
                     <label for="option_title">{$oWebsite->t("site_settings.title")}</label>:<span class="required">*</span>
                     <br />
@@ -116,7 +125,7 @@ EOT;
                     <em>{$oWebsite->t("site_settings.user_account_creation.explained")}</em>
                 </p>
                 <p>
-                    <input type="hidden" name="p" value="site_settings" />
+                    <input type="hidden" name="$tokenName" value="$tokenHtml" />
                     <input type="submit" name="submit" class="button primary_button" value="{$oWebsite->t("editor.save")}" />
                 </p>
             </form>
