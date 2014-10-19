@@ -152,9 +152,6 @@ abstract class Repository {
 
         $statement = $this->pdo->prepare($sql);
         $statement->execute($params);
-        if ($statement->rowCount() === 0) {
-            throw new NotFoundException();
-        }
     }
 
     /**

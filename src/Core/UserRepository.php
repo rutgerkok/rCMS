@@ -2,6 +2,7 @@
 
 namespace Rcms\Core;
 
+use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
@@ -26,7 +27,7 @@ class UserRepository extends Repository {
     protected $statusTextField;
     protected $extraDataField;
 
-    public function __construct(Database $database) {
+    public function __construct(PDO $database) {
         parent::__construct($database);
 
         $this->usernameField = new Field(Field::TYPE_STRING_LOWERCASE, "username", "user_login");
@@ -108,7 +109,7 @@ class UserRepository extends Repository {
      */
     public function getByName($username) {
         return $this->where($this->usernameField, '=', $username)
-                        ->withExtraFields($this->passwordHashedField)
+                        ->withExtraFields($this->passwordHashedField, $this->joinedField, $this->lastLoginField, $this->statusTextField, $this->extraDataField)
                         ->selectOneOrFail();
     }
 
@@ -140,7 +141,7 @@ class UserRepository extends Repository {
      */
     public function getByEmail($email) {
         return $this->where($this->emailField, '=', $email)
-                        ->withExtraFields($this->passwordHashedField)
+                        ->withExtraFields($this->passwordHashedField, $this->joinedField, $this->lastLoginField, $this->statusTextField, $this->extraDataField)
                         ->selectOneOrFail();
     }
 

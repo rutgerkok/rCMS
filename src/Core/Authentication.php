@@ -4,6 +4,7 @@ namespace Rcms\Core;
 
 use DateTime;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Page\View\LoginView;
 
 class Authentication {
 
@@ -190,7 +191,8 @@ class Authentication {
 
             // Check whether the account is banned
             if ($status == Authentication::BANNED_STATUS) {
-                $oWebsite->addError($oWebsite->tReplaced("users.status.banned.your_account", $this->statusText));
+                $oWebsite = $this->websiteObject;
+                $oWebsite->addError($oWebsite->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
             }
 
@@ -234,7 +236,7 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                $loginView = new LoginView($this->websiteObject, $this->getLoginError($minimumRank));
+                $loginView = new LoginView($this->websiteObject->getText(), $this->getLoginError($minimumRank));
                 echo $loginView->getText();
             }
             return false;
