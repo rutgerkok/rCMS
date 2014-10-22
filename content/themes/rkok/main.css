@@ -99,6 +99,15 @@ div#header
 /* Main content area */
 div#content
 {
+    width: 93%;
+    padding-right: 5%;
+    padding-left: 2%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: relative;
+}
+div#contenthome
+{
     width: 58%;
     margin-right: 9%;
     margin-left: 2%;

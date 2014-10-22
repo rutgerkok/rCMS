@@ -42,6 +42,8 @@ if (!defined("WEBSITE")) {
             <div <?php
             if ($this->getPageType() == "BACKSTAGE") {
                 echo 'id="contentadmin"';
+            } else if ($this->getPageType() == "HOME") {
+                echo 'id="contenthome"';
             } else {
                 echo 'id="content"';
             }
@@ -51,7 +53,7 @@ if (!defined("WEBSITE")) {
                 <div style="clear:both"></div>
             </div>
 
-            <?php if ($this->getPageType() != "BACKSTAGE") { ?>
+            <?php if ($this->getPageType() == "HOME") { ?>
                 <div id="sidebar">
                     <?php $this->echoWidgets(2); ?>
                 </div>
