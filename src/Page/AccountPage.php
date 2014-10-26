@@ -11,6 +11,7 @@ use Rcms\Core\User;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\View\ArticleListView;
+use Rcms\Page\View\CommentsTreeView;
 
 /**
  * The code for the profile page of an user.
@@ -23,7 +24,7 @@ class AccountPage extends Page {
 
     public function init(Request $request) {
         $oWebsite = $request->getWebsite();
-        $userId = $request->getRequestInt("id", 0);
+        $userId = $request->getParamInt(0);
         if ($userId === 0) {
             // Use current user
             $this->user = $oWebsite->getAuth()->getCurrentUser();
@@ -225,17 +226,11 @@ EOT;
     public function get_comments_html(Website $oWebsite) {
         $oComments = new CommentRepository($oWebsite);
         $comments = $oComments->getCommentsUser($this->user->getId());
+        
         $returnValue = '<h3 class="notable">' . $oWebsite->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {
-            foreach ($comments as $comment) {
-                // Add comment
-                $returnValue .= $oComments->getCommentHTML($comment, $this->can_edit_user);
-                // Add a link to context
-                $returnValue .= '<p><a class="arrow" href="';
-                $returnValue .= $oWebsite->getUrlPage("article", $oComments->getArticleId($comment));
-                $returnValue .= "#comment-" . $oComments->getCommentId($comment);
-                $returnValue .= '">' . $oWebsite->t("comments.view_context") . "</a></p>";
-            }
+            $commentsView = new CommentsTreeView($oWebsite->getText(), $comments, true, $this->user);
+            $returnValue .= $commentsView->getText();
         } else {
             $returnValue .= "<p><em>" . $oWebsite->t("comments.no_comments_found_user") . "</em></p>";
         }
