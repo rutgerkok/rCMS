@@ -18,7 +18,7 @@ class DatePickerView extends CalendarView {
     const LOOKAHEAD_YEARS = 8;
 
     public function __construct(Text $text, DateTime $month,
-            Article $articlesInMonth) {
+            array $articlesInMonth) {
         // Edit links are never displayed, as the tooltips are not rendered at
         // all
         parent::__construct($text, $month, $articlesInMonth, false);

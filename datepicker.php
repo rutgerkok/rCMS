@@ -18,7 +18,7 @@ $dateTime = DateTime::createFromFormat("n Y", $selectedMonth . " " .$selectedYea
 //OBJECTEN
 $oArticles = new ArticleRepository($oWebsite);
 $articles = $oArticles->getArticlesDataCalendarMonth($dateTime);
-$calendarView = new DatePickerView($oWebsite, $dateTime, $articles);
+$calendarView = new DatePickerView($oWebsite->getText(), $dateTime, $articles);
 
 ?>
 <!DOCTYPE html>
