@@ -5,6 +5,7 @@ namespace Rcms\Page\Renderer;
 use BadMethodCallException;
 use Rcms\Core\Authentication;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\Page;
@@ -152,12 +153,21 @@ class PageRenderer {
             } catch (NotFoundException $e) {
                 $page = $this->loadPage(self::ERROR_404_PAGE_NAME);
                 $page->init($this->request);
+            } catch (RedirectException $e) {
+                $this->handleRedirect($e);
             }
         } else {
             $this->authenticationFailedRank = $rank;
         }
 
         return $page;
+    }
+
+    private function handleRedirect(RedirectException $e) {
+        if ($e->getRedirectionType() == RedirectException::TYPE_ALWAYS) {
+            http_response_code(301);
+        }
+        header("Location: " . $e->getRedirectionUrl());
     }
 
     protected function createPageObject($pageName) {
