@@ -112,6 +112,15 @@ class Query {
     }
 
     /**
+     * Changes this query so that all fields are selected.
+     * @return Query This object.
+     */
+    public function withAllFields() {
+        $this->fieldMap = $this->toFieldMap($this->repository->getAllFields());
+        return $this;
+    }
+
+    /**
      * Gets the results from the database.
      * @return array The result as an array of objects.
      * @throws PDOException If the query is invalid or the connection is lost.
