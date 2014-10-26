@@ -9,7 +9,10 @@ use PDOStatement;
 use Rcms\Core\Exception\NotFoundException;
 
 /**
- * Description of Query
+ * A query finds one or more rows and selects, counts or deletes them.
+ *
+ * Instantiating this class directly is both unsupported and unnecessary, use
+ * the methods on the `Repository` class.
  */
 class Query {
 
@@ -96,13 +99,13 @@ class Query {
             throw new NotFoundException();
         }
         if ($rowCount > 1) {
-            throw new PDOException("Deleted " . $statement->rowCount() . " rows instead of one");
+            throw new PDOException("Deleted {$statement->rowCount()} rows instead of one");
         }
     }
 
     /**
      * Adds fields that should also be selected, on top of the standard set.
-     * Varargs method.
+     * Varargs method. Duplicate fields are ignored.
      * @param Field ...$field The fields.
      * @return Query This object.
      */
@@ -170,8 +173,7 @@ class Query {
      * @return Query This object.
      */
     public function limit($limit) {
-        $limit = (int) $limit;
-        if ($limit <= 0) {
+        if (!is_int($limit) || $limit <= 0) {
             throw new BadMethodCallException("Limit must be higher than zero, was " . $limit);
         }
         $this->limit = $limit;

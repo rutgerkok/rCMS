@@ -7,7 +7,8 @@ use DateTime;
 use Rcms\Core\JsonHelper;
 
 /**
- * A field in the database.
+ * A field in the database. This class defines the name in the database, the
+ * name in the entity class, the type and relations with other tables, if any.
  */
 class Field {
 

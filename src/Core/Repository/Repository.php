@@ -8,7 +8,20 @@ use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 
 /**
- * An abstract repository.
+ * An abstract repository. Classes extending this class define the database
+ * scheme simply by implementing the abstract methods. The methods on this class
+ * will then allow you to select, update, delete and count rows.
+ *
+ * Some querying examples:
+ *
+ * ```
+ * $repo->where($this->idField, '=', 3)->selectOneOrFail();
+ * $repo->where($this->categoryIdField, '=', $category->getId())
+ *      ->withAllFiels()->limit(5)->orderDescending($this->dateField)->select();
+ * $repo->where($this->categoryIdField, '=', $category->getId())->count();
+ * $repo->where($this->idField, '=', 2)->deleteOneOrFail();
+ * $repo->saveEntity($user);
+ * ```
  */
 abstract class Repository {
 
