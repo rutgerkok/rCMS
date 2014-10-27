@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 use Rcms\Page\View\LoggedInView;
 use Rcms\Page\View\LoginView;
 
@@ -14,8 +15,7 @@ class LoginPage extends Page {
     private $loggedInAsAdmin;
     private $errorMessage;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
 
         // Handle login ourselves
         // (Using the provided getMinimumRank helper gives an ugly

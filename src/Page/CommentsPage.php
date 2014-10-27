@@ -6,6 +6,8 @@ use Rcms\Core\Authentication;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\CommentsTreeView;
 
 /**
@@ -18,10 +20,10 @@ class CommentsPage extends Page {
     /** @var User|null The user viewing the comments, null if logged out. */
     private $viewingUser;
 
-    public function init(Request $request) {
-        $oComments = new CommentRepository($request->getWebsite());
+    public function init(Website $website, Request $request) {
+        $oComments = new CommentRepository($website);
         $this->comments = $oComments->getCommentsLatest();
-        $this->viewingUser = $request->getWebsite()->getAuth()->getCurrentUser();
+        $this->viewingUser = $website->getAuth()->getCurrentUser();
     }
 
     public function getMinimumRank(Request $request) {

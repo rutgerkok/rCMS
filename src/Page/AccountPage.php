@@ -10,6 +10,7 @@ use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
+
 use Rcms\Page\View\ArticleListView;
 use Rcms\Page\View\CommentsTreeView;
 
@@ -22,8 +23,7 @@ class AccountPage extends Page {
     protected $user;
     protected $can_edit_user;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $userId = $request->getParamInt(0);
         if ($userId === 0) {
             // Use current user
@@ -66,9 +66,7 @@ class AccountPage extends Page {
         return $text->t("users.profile_page");
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
-
+    public function getPageContent(Website $website, Request $request) {
         // Display
         $textToDisplay = <<<EOT
             <div id="sidebar_page_sidebar">

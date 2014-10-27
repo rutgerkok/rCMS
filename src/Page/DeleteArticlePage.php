@@ -8,6 +8,8 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Validate;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\ArticleDeleteView;
 
 class DeleteArticlePage extends Page {
@@ -18,8 +20,7 @@ class DeleteArticlePage extends Page {
     /** @var Article The article to delete */
     protected $article;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $text = $website->getText();
         $articleId = $request->getParamInt(0);
         $showAdminPageLink = $website->isLoggedInAsStaff(true);

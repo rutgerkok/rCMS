@@ -78,7 +78,7 @@ class PageRenderer {
         }
 
         // Populate fiels
-        $this->request = new Request($website, $params);
+        $this->request = new Request($params);
         $this->page = $this->loadPage($pageName);
 
         // Locales
@@ -149,10 +149,10 @@ class PageRenderer {
         if ($rank == Authentication::$LOGGED_OUT_RANK || $website->getAuth()->check($rank, false)) {
             // Call init method
             try {
-                $page->init($this->request);
+                $page->init($website, $this->request);
             } catch (NotFoundException $e) {
                 $page = $this->loadPage(self::ERROR_404_PAGE_NAME);
-                $page->init($this->request);
+                $page->init($website, $this->request);
             } catch (RedirectException $e) {
                 $this->handleRedirect($e);
             }
@@ -280,7 +280,7 @@ class PageRenderer {
             $loginView = new LoginView($this->website->getText(), $errorMessage);
             return $loginView->getText();
         } else {
-            return $this->page->getPageContent($this->request);
+            return $this->page->getPageContent($this->website, $this->request);
         }
     }
 

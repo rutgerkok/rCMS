@@ -25,9 +25,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         return $website->isLoggedInAsStaff(false);
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
-
+    public function getPageContent(Website $website, Request $request) {
         // Don't allow to edit your own status (why would admins want to downgrade
         // themselves?)
         if (!$this->editing_someone_else) {

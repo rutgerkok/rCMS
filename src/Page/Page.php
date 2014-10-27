@@ -19,9 +19,10 @@ abstract class Page {
     /**
      * Initializes the page. This should fetch the data from the database,
      * validate the input and save it to the database.
+     * @param Website $website The application object.
      * @param Request $request Request that caused this page to load.
      */
-    public function init(Request $request) {
+    public function init(Website $website, Request $request) {
         // Not abstract, as simple static pages don't need to load/save data
     }
 
@@ -96,9 +97,9 @@ abstract class Page {
      * you should provide a view instead using {@link #getView(Request)}.
      * @return string The HTML content of this page.
      */
-    public function getPageContent(Request $request) {
+    public function getPageContent(Website $website, Request $request) {
         $returnValue = "";
-        $views = $this->getViews($request->getWebsite()->getText());
+        $views = $this->getViews($website->getText());
         foreach ($views as $view) {
             $returnValue.= $view->getText();
         }

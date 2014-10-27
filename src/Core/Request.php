@@ -8,23 +8,11 @@ namespace Rcms\Core;
  */
 class Request {
 
-    /** @var Website The website instance. */
-    private $website;
-
     /** @var string[] Parameters given to the path of the request. */
     private $params;
 
-    public function __construct(Website $website, array $params = array()) {
-        $this->website = $website;
+    public function __construct(array $params = array()) {
         $this->params = $params;
-    }
-
-    /**
-     * Gets the website object.
-     * @return Website The website object.
-     */
-    public function getWebsite() {
-        return $this->website;
     }
 
     /**
@@ -51,7 +39,16 @@ class Request {
      * @return string The value in the $_REQUEST array, or the default value.
      */
     public function getRequestString($key, $defaultValue = "") {
-        return $this->website->getRequestString($key, $defaultValue);
+        // Note: logic is the same as in the Website class - keep them in sync!
+        if (isSet($_REQUEST[$key]) && is_scalar($_REQUEST[$key])) {
+            if (ini_get("magic_quotes_gpc")) {
+                return stripSlashes((string) $_REQUEST[$key]);
+            } else {
+                return (string) $_REQUEST[$key];
+            }
+        } else {
+            return $defaultValue;
+        }
     }
 
     /**
@@ -106,7 +103,13 @@ class Request {
      * @return int The int.
      */
     public function getRequestInt($key, $defaultValue = 0) {
-        return $this->website->getRequestInt($key, $defaultValue);
+        // Note: logic is the same as in the Website class - keep them in sync!
+        if (isSet($_REQUEST[$key])) {
+            if (is_numeric($_REQUEST[$key])) {
+                return (int) $_REQUEST[$key];
+            }
+        }
+        return (int) $defaultValue;
     }
 
 }

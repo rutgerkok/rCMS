@@ -5,6 +5,8 @@ namespace Rcms\Page;
 use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\EmptyView;
 
 /**
@@ -13,8 +15,7 @@ use Rcms\Page\View\EmptyView;
  */
 class ViewArticlePage extends Page {
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $id = $request->getParamInt(0, 0);
         $rawUrl = urldecode($website->getUrlPage("article", $id));
 

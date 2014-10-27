@@ -20,8 +20,7 @@ class SiteSettingsPage extends Page {
     protected $saved = false;
     protected $token;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $this->title = $website->getConfig()->get("title");
         $this->copyright = $website->getConfig()->get("copyright");
         $this->password = $website->getConfig()->get("password");
@@ -55,8 +54,7 @@ class SiteSettingsPage extends Page {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
+    public function getPageContent(Website $website, Request $request) {
         $themes = $this->get_sub_directory_names($website->getUriThemes());
         $languages = $this->get_sub_directory_names($website->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';

@@ -19,20 +19,20 @@ class EditPasswordPage extends Page {
     protected $editing_someone_else;
 
     /** Fills the class variables, adds errors if needed. */
-    public function init(Request $request) {
-        $this->user = $this->getEditingUser($request);
-        $viewingUser = $request->getWebsite()->getAuth()->getCurrentUser();
+    public function init(Website $website, Request $request) {
+        $this->user = $this->getEditingUser($website, $request);
+        $viewingUser = $website->getAuth()->getCurrentUser();
         $this->editing_someone_else = ($viewingUser->getId() !== $this->user->getId());
     }
 
     /**
      * Gets the user that will be edited.
+     * @param Website $website The website.
      * @param Request $request The request.
      * @return User The user to edit.
      * @throws NotFoundException If the id in the request is invalid or if the user can only edit him/herself.
      */
-    private function getEditingUser(Request $request) {
-        $website = $request->getWebsite();
+    private function getEditingUser(Website $website, Request $request) {
         // Will always have a value - minimum rank of this page is user rank
         $loggedInUser = $website->getAuth()->getCurrentUser();
 
@@ -77,8 +77,7 @@ class EditPasswordPage extends Page {
         return "BACKSTAGE";
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
+    public function getPageContent(Website $website, Request $request) {
         $show_form = true;
         $textToDisplay = "";
         if ($request->hasRequestValue("password")) {

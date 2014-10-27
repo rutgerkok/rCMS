@@ -5,6 +5,7 @@ namespace Rcms\Page\Renderer;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Page\Page;
+use Rcms\Core\Website;
 
 /**
  * Class intented to wrap legacy pages.
@@ -36,9 +37,9 @@ class OldPageWrapper extends Page {
         return $this->title;
     }
 
-    public function getPageContent(Request $request) {
+    public function getPageContent(Website $website, Request $request) {
         ob_start();
-        $request->getWebsite()->execute($this->file);
+        $website->execute($this->file);
         return ob_get_clean();
     }
 

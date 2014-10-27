@@ -4,6 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 use Rcms\Core\WidgetRepository;
 use Rcms\Page\View\WidgetsView;
 
@@ -14,8 +15,8 @@ class HomePage extends Page {
      */
     private $widgets;
     
-    public function init(Request $request) {
-        $this->widgets = $request->getWebsite()->getWidgets();
+    public function init(Website $website, Request $request) {
+        $this->widgets = $website->getWidgets();
     }
 
     public function getPageTitle(Text $text) {

@@ -13,6 +13,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Validate;
+use Rcms\Core\Website;
 
 use Rcms\Page\View\ArticleEditView;
 use Rcms\Page\View\Support\CKEditor;
@@ -27,8 +28,7 @@ class EditArticlePage extends Page {
     protected $message; // Message at the top of the page
     protected $token; // Token, always set
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $text = $website->getText();
         $articleId = $request->getParamInt(0);
 
@@ -48,7 +48,7 @@ class EditArticlePage extends Page {
         $this->token->saveToSession();
 
         // Now check input
-        if (!$articleEditor->processInput($request->getWebsite()->getText(), $request, $categoryRepository)) {
+        if (!$articleEditor->processInput($website->getText(), $request, $categoryRepository)) {
             return;
         }
         if ($request->hasRequestValue("submit") && $validToken) {

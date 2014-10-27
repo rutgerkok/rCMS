@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 
 class EditEmailPage extends EditPasswordPage {
 
@@ -12,8 +13,7 @@ class EditEmailPage extends EditPasswordPage {
         return $text->t("editor.email.edit");
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
+    public function getPageContent(Website $website, Request $request) {
         $show_form = true;
         $textToDisplay = "";
         if ($request->hasRequestValue("email")) {

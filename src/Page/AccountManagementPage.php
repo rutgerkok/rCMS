@@ -40,7 +40,7 @@ class AccountManagementPage extends Page {
         return true;
     }
 
-    public function getPageContent(Request $request) {
+    public function getPageContent(Website $website, Request $request) {
         $page = max(0, $website->getRequestInt("id", 0));
         $usersCount = $website->getAuth()->getUserRepository()->getRegisteredUsersCount();
 

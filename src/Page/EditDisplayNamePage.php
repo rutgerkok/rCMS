@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 
 class EditDisplayNamePage extends EditPasswordPage {
 
@@ -12,8 +13,7 @@ class EditDisplayNamePage extends EditPasswordPage {
         return $text->t("editor.display_name.edit");
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
+    public function getPageContent(Website $website, Request $request) {
         $show_form = true;
         $textToDisplay = "";
         if (isSet($_REQUEST["display_name"])) {

@@ -342,6 +342,7 @@ class Website {
      * @return string The value in the $_REQUEST array, or the default value.
      */
     public function getRequestString($name, $default = "") {
+        // Note: logic is the same as in the Request class - keep them in sync!
         if (isSet($_REQUEST[$name]) && is_scalar($_REQUEST[$name])) {
             if (ini_get("magic_quotes_gpc")) {
                 return stripSlashes((string) $_REQUEST[$name]);
@@ -365,6 +366,7 @@ class Website {
      * @return int The int.
      */
     public function getRequestInt($name, $default = 0) {
+        // Note: logic is the same as in the Request class - keep them in sync!
         if (isSet($_REQUEST[$name])) {
             if (is_numeric($_REQUEST[$name])) {
                 return (int) $_REQUEST[$name];

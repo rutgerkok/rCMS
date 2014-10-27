@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 
 class EditRankPage extends EditPasswordPage {
 
@@ -16,8 +17,7 @@ class EditRankPage extends EditPasswordPage {
         return Authentication::$ADMIN_RANK;
     }
 
-    public function getPageContent(Request $request) {
-        $website = $request->getWebsite();
+    public function getPageContent(Website $website, Request $request) {
         // Don't allow to edit your own rank (why would admins want to downgrade
         // themselves?)
         if (!$this->editing_someone_else) {

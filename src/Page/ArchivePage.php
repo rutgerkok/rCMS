@@ -6,6 +6,8 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\ArticleArchiveView;
 
 /**
@@ -20,8 +22,7 @@ class ArchivePage extends Page {
     private $foundArticles;
     private $showEditLinks;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $this->showEditLinks = $website->isLoggedInAsStaff();
 
         $this->selectedYear = $request->getRequestInt("year", 0);

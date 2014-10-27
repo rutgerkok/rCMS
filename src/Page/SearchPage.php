@@ -6,6 +6,8 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\ArticleSearchView;
 use Rcms\Page\View\LinkSearchView;
 use Rcms\Page\View\SearchFormView;
@@ -27,8 +29,7 @@ class SearchPage extends Page {
     /** @var boolean Whether edit and delete links are shown. */
     protected $showEditLinks;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $this->keyword = trim($request->getRequestString("searchbox"));
         $this->pageNumber = $request->getRequestInt("page", 0);
         $this->showEditLinks = $website->isLoggedInAsStaff();

@@ -7,6 +7,8 @@ use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\User;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\ArticleView;
 
 class ArticlePage extends Page {
@@ -20,14 +22,14 @@ class ArticlePage extends Page {
     /** @var User The user viewing the comments. */
     protected $currentUser;
 
-    public function init(Request $request) {
+    public function init(Website $website, Request $request) {
         $articleId = $request->getParamInt(0);
-        $oArticles = new ArticleRepository($request->getWebsite());
+        $oArticles = new ArticleRepository($website);
         $this->article = $oArticles->getArticleOrFail($articleId);
-        $this->editLinks = $request->getWebsite()->isLoggedInAsStaff();
-        $this->currentUser = $request->getWebsite()->getAuth()->getCurrentUser();
+        $this->editLinks = $website->isLoggedInAsStaff();
+        $this->currentUser = $website->getAuth()->getCurrentUser();
         if ($this->article->showComments) {
-            $oComments = new CommentRepository($request->getWebsite());
+            $oComments = new CommentRepository($website);
             $this->comments = $oComments->getCommentsArticle($this->article->id);
         } else {
             $this->comments = array();

@@ -6,6 +6,8 @@ use DateTime;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
+
 use Rcms\Page\View\YearCalendarView;
 
 class CalendarPage extends Page {
@@ -22,8 +24,7 @@ class CalendarPage extends Page {
 
     private $showCreateLinks;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $oArticles = new ArticleRepository($website);
         $yearNumber = $request->getParamInt(0, date('Y'));
         if ($yearNumber < self::MIN_YEAR || $yearNumber > self::MAX_YEAR) {

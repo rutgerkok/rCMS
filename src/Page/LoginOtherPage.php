@@ -7,6 +7,7 @@ use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 use Rcms\Page\View\LoggedInOtherView;
 
 class LoginOtherPage extends Page {
@@ -16,8 +17,7 @@ class LoginOtherPage extends Page {
      */
     private $newUser = null;
 
-    public function init(Request $request) {
-        $website = $request->getWebsite();
+    public function init(Website $website, Request $request) {
         $userId = $request->getParamInt(0);
 
         // Fetch user
