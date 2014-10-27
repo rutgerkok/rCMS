@@ -33,7 +33,7 @@ class CategoryRepository extends Repository {
      * @return Category[] All categories.
      */
     public function getCategories() {
-        return $this->all()->select();
+        return $this->all()->orderDescending($this->idField)->select();
     }
 
     /**
