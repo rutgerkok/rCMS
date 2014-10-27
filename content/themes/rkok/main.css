@@ -189,6 +189,7 @@ div#sidebar_page_sidebar {
     padding-right: 2px;
 }
 div#sidebar_page_sidebar img {
+    width: 100%; /* Define standard width, Firefox needs this */
     max-width: 100%;
     margin: 1px;
 }
