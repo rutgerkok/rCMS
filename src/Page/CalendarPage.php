@@ -23,8 +23,8 @@ class CalendarPage extends Page {
     private $showCreateLinks;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $oArticles = new ArticleRepository($oWebsite);
+        $website = $request->getWebsite();
+        $oArticles = new ArticleRepository($website);
         $yearNumber = $request->getParamInt(0, date('Y'));
         if ($yearNumber < self::MIN_YEAR || $yearNumber > self::MAX_YEAR) {
             $yearNumber = date('Y');
@@ -33,7 +33,7 @@ class CalendarPage extends Page {
         $this->yearNumber = $yearNumber;
 
         $this->articlesInYear = $oArticles->getArticlesDataCalendarYear($this->year);
-        $this->showCreateLinks = $oWebsite->isLoggedInAsStaff();
+        $this->showCreateLinks = $website->isLoggedInAsStaff();
     }
 
     public function getPageTitle(Text $text) {

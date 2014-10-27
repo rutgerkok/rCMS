@@ -31,9 +31,9 @@ class Theme extends InfoFile {
     /**
      * The function should return an array (id=>name) with all places for widgets.
      * Ids must be a whole number larger than 1. (Id 0 is unused, id 1 is used on homepage)
-     * @param Website $oWebsite The website object, used for translations.
+     * @param Website $website The website object, used for translations.
      */
-    public function getWidgetAreas(Website $oWebsite) {
+    public function getWidgetAreas(Website $website) {
         // Get the number of widgets
         $areas = $this->getInteger("widget_areas", 1);
 
@@ -43,13 +43,13 @@ class Theme extends InfoFile {
         } elseif ($areas == 1) {
             // One widget area on position 2
             return array(
-                2 => $oWebsite->t("widgets.sidebar")
+                2 => $website->t("widgets.sidebar")
             );
         } else {
             // More widget areas, starting on position 2
             $widgetAreas = array();
             for ($i = 0; $i < $areas; $i++) {
-                $widgetAreas[$i + 2] = $oWebsite->t("widgets.sidebar") . " " . ($i + 1);
+                $widgetAreas[$i + 2] = $website->t("widgets.sidebar") . " " . ($i + 1);
             }
             return $widgetAreas;
         }

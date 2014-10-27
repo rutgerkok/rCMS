@@ -21,7 +21,7 @@ class Authentication {
     /**
      * @var Website The website object.
      */
-    protected $websiteObject;
+    protected $website;
 
     /**
      * @var UserRepository The user repository.
@@ -40,15 +40,15 @@ class Authentication {
 
     /**
      * Creates a new authentication checker.
-     * @param Website $oWebsite The website object.
+     * @param Website $website The website object.
      * @param UserRepository $userRepo The user repository. Omitting
      * this parameter is deprecated. When this parameter is omitted, the default
      * database is used for creating one.
      */
-    public function __construct(Website $oWebsite,
+    public function __construct(Website $website,
             UserRepository $userRepo = null) {
-        $this->websiteObject = $oWebsite;
-        $this->userRepo = $userRepo? : new UserRepository($oWebsite->getDatabase());
+        $this->website = $website;
+        $this->userRepo = $userRepo? : new UserRepository($website->getDatabase());
 
         // Check session and cookie
         if (isSet($_SESSION["user_id"])) {
@@ -191,8 +191,8 @@ class Authentication {
 
             // Check whether the account is banned
             if ($status == Authentication::BANNED_STATUS) {
-                $oWebsite = $this->websiteObject;
-                $oWebsite->addError($oWebsite->tReplaced("users.status.banned.your_account", $user->getStatusText()));
+                $website = $this->website;
+                $website->addError($website->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
             }
 
@@ -211,7 +211,7 @@ class Authentication {
      * @return boolean Whether the login was succesfull.
      */
     public function check($minimumRank, $showform = true) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         $minimumRank = (int) $minimumRank;
         $currentUser = $this->getCurrentUser();
 
@@ -220,8 +220,8 @@ class Authentication {
         }
 
         // Try to login if data was sent
-        $usernameOrEmail = $oWebsite->getRequestString("user");
-        $password = $oWebsite->getRequestString("pass");
+        $usernameOrEmail = $website->getRequestString("user");
+        $password = $website->getRequestString("pass");
         if ($usernameOrEmail && $password) {
             if ($this->logIn($usernameOrEmail, $password)) {
                 $currentUser = $this->getCurrentUser();
@@ -236,7 +236,7 @@ class Authentication {
         } else {
             // Not logged in with enough rights
             if ($showform) {
-                $loginView = new LoginView($this->websiteObject->getText(), $this->getLoginError($minimumRank));
+                $loginView = new LoginView($this->website->getText(), $this->getLoginError($minimumRank));
                 echo $loginView->getText();
             }
             return false;
@@ -251,14 +251,14 @@ class Authentication {
      * @return string The error message, or empty if there is no message.
      */
     public function getLoginError($minimumRank) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         if ($this->hasLoginFailed()) {
-            return $oWebsite->t("errors.invalid_login_credentials");
+            return $website->t("errors.invalid_login_credentials");
         }
         if ($this->isHigherOrEqualRank($minimumRank, Authentication::$MODERATOR_RANK)) {
-            return $oWebsite->t("users.must_be_logged_in_as_administrator");
+            return $website->t("users.must_be_logged_in_as_administrator");
         }
-        return $oWebsite->t("users.must_be_logged_in");
+        return $website->t("users.must_be_logged_in");
     }
 
     /**
@@ -321,13 +321,13 @@ class Authentication {
      * @return string The translated rank name.
      */
     public function getRankName($id) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         switch ($id) {
-            case -1: return $oWebsite->t("users.rank.visitor");
-            case 0: return $oWebsite->t("users.rank.moderator");
-            case 1: return $oWebsite->t("users.rank.admin");
-            case 2: return $oWebsite->t("users.rank.user");
-            default: return $oWebsite->t("users.rank.unknown");
+            case -1: return $website->t("users.rank.visitor");
+            case 0: return $website->t("users.rank.moderator");
+            case 1: return $website->t("users.rank.admin");
+            case 2: return $website->t("users.rank.user");
+            default: return $website->t("users.rank.unknown");
         }
     }
 
@@ -340,12 +340,12 @@ class Authentication {
     }
 
     public function getStatusName($id) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         switch ($id) {
-            case self::BANNED_STATUS: return $oWebsite->t("users.status.banned");
-            case self::DELETED_STATUS: return $oWebsite->t("users.status.deleted");
-            case self::NORMAL_STATUS: return $oWebsite->t("users.status.allowed");
-            default: return $oWebsite->t("users.status.unknown");
+            case self::BANNED_STATUS: return $website->t("users.status.banned");
+            case self::DELETED_STATUS: return $website->t("users.status.deleted");
+            case self::NORMAL_STATUS: return $website->t("users.status.allowed");
+            default: return $website->t("users.status.unknown");
         }
     }
 

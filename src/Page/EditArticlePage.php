@@ -28,19 +28,19 @@ class EditArticlePage extends Page {
     protected $token; // Token, always set
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $text = $oWebsite->getText();
+        $website = $request->getWebsite();
+        $text = $website->getText();
         $articleId = $request->getParamInt(0);
 
-        $articleRepository = new ArticleRepository($oWebsite);
+        $articleRepository = new ArticleRepository($website);
         $article = $this->getArticle($articleRepository, $articleId);
         $articleEditor = new ArticleEditor($article);
         $this->articleEditor = $articleEditor;
 
-        $categoryRepository = new CategoryRepository($oWebsite);
+        $categoryRepository = new CategoryRepository($website);
         $this->allCategories = $categoryRepository->getCategories();
         
-        $this->richEditor = new CKEditor($oWebsite->getText(), $oWebsite->getConfig(), $oWebsite->getThemeManager());
+        $this->richEditor = new CKEditor($website->getText(), $website->getConfig(), $website->getThemeManager());
 
         // Validate token, then save new one to session
         $validToken = Validate::requestToken($request);
@@ -62,12 +62,12 @@ class EditArticlePage extends Page {
                     // Article updated
                     $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_edited"));
                 }
-                $this->message.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("article", $article->id) . '">';
-                $this->message.= $oWebsite->t("articles.view") . "</a>";
+                $this->message.= ' <a class="arrow" href="' . $website->getUrlPage("article", $article->id) . '">';
+                $this->message.= $website->t("articles.view") . "</a>";
 
                 // Check for redirect
-                if ($request->getRequestString("submit") == $oWebsite->t("editor.save_and_quit")) {
-                    $urlRaw = htmlspecialchars_decode($oWebsite->getUrlPage("article", $article->id));
+                if ($request->getRequestString("submit") == $website->t("editor.save_and_quit")) {
+                    $urlRaw = htmlspecialchars_decode($website->getUrlPage("article", $article->id));
                     throw new RedirectException($urlRaw);
                 }
             }

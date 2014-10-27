@@ -74,7 +74,7 @@ class ArticleEditor {
                 // Silent failure when category id is set to 0, as it is a default value
                 $noErrors = false;
             } elseif (!$oCategories->getCategoryName($categoryId)) {
-                $text->addError($text->t("main.category") . " " . $oWebsite->t("errors.not_found"));
+                $text->addError($text->t("main.category") . " " . $website->t("errors.not_found"));
                 $noErrors = false;
             }
             $article->categoryId = $categoryId;

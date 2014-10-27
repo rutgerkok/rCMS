@@ -28,22 +28,22 @@ class SearchPage extends Page {
     protected $showEditLinks;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $this->keyword = trim($request->getRequestString("searchbox"));
         $this->pageNumber = $request->getRequestInt("page", 0);
-        $this->showEditLinks = $oWebsite->isLoggedInAsStaff();
+        $this->showEditLinks = $website->isLoggedInAsStaff();
 
         if (strLen($this->keyword) < self::MIN_SEARCH_LENGTH) {
             // Don't search for too short words
             if (!empty($this->keyword)) {
-                $oWebsite->addError($oWebsite->t("articles.search_term") . " "
-                        . $oWebsite->tReplaced("errors.is_too_short_num", self::MIN_SEARCH_LENGTH));
+                $website->addError($website->t("articles.search_term") . " "
+                        . $website->tReplaced("errors.is_too_short_num", self::MIN_SEARCH_LENGTH));
             }
             return;
         }
 
         // Fetch article count
-        $articles = new ArticleRepository($oWebsite);
+        $articles = new ArticleRepository($website);
         $this->totalResults = $articles->getMatchesFor($this->keyword);
         // Count total number of pages, limit current page number
         $this->highestPageNumber = floor($this->totalResults / self::ARTICLES_PER_PAGE);
@@ -54,7 +54,7 @@ class SearchPage extends Page {
         $this->displayedArticles = $articles->getArticlesDataMatch($this->keyword, self::ARTICLES_PER_PAGE, $this->pageNumber * self::ARTICLES_PER_PAGE);
 
         // Fetch links
-        $menus = new LinkRepository($oWebsite);
+        $menus = new LinkRepository($website);
         $this->links = $menus->getLinksBySearch($this->keyword);
     }
 

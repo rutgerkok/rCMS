@@ -17,11 +17,11 @@ class LoginOtherPage extends Page {
     private $newUser = null;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $userId = $request->getParamInt(0);
 
         // Fetch user
-        $userRepo = $oWebsite->getAuth()->getUserRepository();
+        $userRepo = $website->getAuth()->getUserRepository();
         $user = $userRepo->getById($userId);
         if (!$user->canLogIn()) {
             // Can't log in to deleted or banned users
@@ -30,7 +30,7 @@ class LoginOtherPage extends Page {
 
         // Set user
         $this->newUser = $user;
-        $oWebsite->getAuth()->setCurrentUser($user);
+        $website->getAuth()->setCurrentUser($user);
     }
 
     public function getPageType() {

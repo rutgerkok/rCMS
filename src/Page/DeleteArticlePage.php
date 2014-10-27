@@ -19,12 +19,12 @@ class DeleteArticlePage extends Page {
     protected $article;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $text = $oWebsite->getText();
+        $website = $request->getWebsite();
+        $text = $website->getText();
         $articleId = $request->getParamInt(0);
-        $showAdminPageLink = $oWebsite->isLoggedInAsStaff(true);
+        $showAdminPageLink = $website->isLoggedInAsStaff(true);
 
-        $oArticles = new ArticleRepository($oWebsite);
+        $oArticles = new ArticleRepository($website);
         $article = $oArticles->getArticleOrFail($articleId);
         $this->article = $article;
         $formToken = RequestToken::generateNew();

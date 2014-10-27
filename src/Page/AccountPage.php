@@ -23,20 +23,20 @@ class AccountPage extends Page {
     protected $can_edit_user;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $userId = $request->getParamInt(0);
         if ($userId === 0) {
             // Use current user
-            $this->user = $oWebsite->getAuth()->getCurrentUser();
+            $this->user = $website->getAuth()->getCurrentUser();
         } else {
             // Use provided user
-            $this->user = $oWebsite->getAuth()->getUserRepository()->getById($userId);
+            $this->user = $website->getAuth()->getUserRepository()->getById($userId);
         }
 
         if ($this->user !== null) {
             // Don't display banned/deleted users
             if (!$this->user->canLogIn()) {
-                if (!$oWebsite->isLoggedInAsStaff()) {
+                if (!$website->isLoggedInAsStaff()) {
                     // Staff can view everyone
                     $this->user = null;
                 }
@@ -67,19 +67,19 @@ class AccountPage extends Page {
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
 
         // Display
         $textToDisplay = <<<EOT
             <div id="sidebar_page_sidebar">
                 <h3 class="notable">{$this->user->getDisplayName()}</h3>
                 <p><img src="{$this->user->getAvatarUrl()}" style="max-width: 95%" /></p>
-                {$this->get_edit_links_html($oWebsite)}
+                {$this->get_edit_links_html($website)}
             </div>
             <div id="sidebar_page_content">
-                {$this->get_status_html($oWebsite)}
-                {$this->get_articles_html($oWebsite)}
-                {$this->get_comments_html($oWebsite)}
+                {$this->get_status_html($website)}
+                {$this->get_articles_html($website)}
+                {$this->get_comments_html($website)}
             </div>
             
 EOT;
@@ -87,13 +87,13 @@ EOT;
     }
 
     /** Returns the HTML of the articles of the user, including the header */
-    public function get_articles_html(Website $oWebsite) {
-        $oArticles = new ArticleRepository($oWebsite);
+    public function get_articles_html(Website $website) {
+        $oArticles = new ArticleRepository($website);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
-        $loggedInStaff = $oWebsite->isLoggedInAsStaff();
-        $oArticleView = new ArticleListView($oWebsite->getText(), $articles, 0, true, false, $loggedInStaff);
+        $loggedInStaff = $website->isLoggedInAsStaff();
+        $oArticleView = new ArticleListView($website->getText(), $articles, 0, true, false, $loggedInStaff);
         if (count($articles) > 0) {
-            $returnValue = '<h3 class="notable">' . $oWebsite->t("main.articles") . "</h3>\n";
+            $returnValue = '<h3 class="notable">' . $website->t("main.articles") . "</h3>\n";
             $returnValue.= $oArticleView->getText();
             return $returnValue;
         } else {
@@ -102,7 +102,7 @@ EOT;
     }
 
     /** Returns the HTML of the status of the user, including the header */
-    public function get_status_html(Website $oWebsite) {
+    public function get_status_html(Website $website) {
         $status_text = $this->user->getStatusText();
         if ($status_text) {
             $status_text = '<em>' . nl2br(htmlSpecialChars($status_text)) . '</em>';
@@ -115,10 +115,10 @@ EOT;
             // Banned
             return <<<EOT
                 <div class="error">
-                    {$oWebsite->tReplaced("users.status.banned.this_account", $status_text)}.
-                    {$oWebsite->t("users.user_page_hidden")}
-                    <a class="arrow" href="{$oWebsite->getUrlPage("edit_account_status", $this->user->getId())}">
-                        {$oWebsite->t("main.edit")}
+                    {$website->tReplaced("users.status.banned.this_account", $status_text)}.
+                    {$website->t("users.user_page_hidden")}
+                    <a class="arrow" href="{$website->getUrlPage("edit_account_status", $this->user->getId())}">
+                        {$website->t("main.edit")}
                     </a>
                 </div>
 EOT;
@@ -128,10 +128,10 @@ EOT;
         if ($this->user->getStatus() == Authentication::DELETED_STATUS) {
             return <<<EOT
                 <div class="error">
-                    {$oWebsite->tReplaced("users.status.deleted.this_account", $status_text)}.
-                    {$oWebsite->t("users.user_page_hidden")}
-                    <a class="arrow" href="{$oWebsite->getUrlPage("edit_account_status", $this->user->getId())}">
-                        {$oWebsite->t("main.edit")}
+                    {$website->tReplaced("users.status.deleted.this_account", $status_text)}.
+                    {$website->t("users.user_page_hidden")}
+                    <a class="arrow" href="{$website->getUrlPage("edit_account_status", $this->user->getId())}">
+                        {$website->t("main.edit")}
                     </a>
                 </div>
 EOT;
@@ -144,8 +144,8 @@ EOT;
      * Returns links to edit the profile, based on the permissions of the user
      * that is viewing this page. 
      */
-    public function get_edit_links_html(Website $oWebsite) {
-        $viewing_user = $oWebsite->getAuth()->getCurrentUser();
+    public function get_edit_links_html(Website $website) {
+        $viewing_user = $website->getAuth()->getCurrentUser();
         $returnValue = "";
 
         // Get privileges
@@ -154,10 +154,10 @@ EOT;
         $is_viewing_as_admin = false;
         if ($viewing_user != null) {
             $is_viewing_themselves = ($this->user->getId() == $viewing_user->getId());
-            if ($oWebsite->isLoggedInAsStaff(false)) {
+            if ($website->isLoggedInAsStaff(false)) {
                 $is_viewing_as_moderator = true;
             }
-            if ($oWebsite->isLoggedInAsStaff(true)) {
+            if ($website->isLoggedInAsStaff(true)) {
                 $is_viewing_as_admin = true;
             }
         }
@@ -167,7 +167,7 @@ EOT;
             // No way that other admins can edit someone's avatar, so only display help text for owner
             $returnValue.= <<<EOT
                 <p>
-                     {$oWebsite->tReplaced("users.gravatar.explained", '<a href="http://gravatar.com/">gravatar.com</a>')}
+                     {$website->tReplaced("users.gravatar.explained", '<a href="http://gravatar.com/">gravatar.com</a>')}
                 </p>
 EOT;
         }
@@ -178,24 +178,24 @@ EOT;
         if (!$is_viewing_themselves && $is_viewing_as_moderator) {
             // Accessed by a moderator that isn't viewing his/her own account
             // Add (un)ban link
-            $edit_links[] = $this->get_edit_link($oWebsite, "edit_account_status", "editor.status.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_account_status", "editor.status.edit");
         }
 
         if ($is_viewing_themselves || $is_viewing_as_admin) {
             // Accessed by the user themselves or an admin
             // Display links to edit profile
-            $edit_links[] = $this->get_edit_link($oWebsite, "edit_email", "editor.email.edit");
-            $edit_links[] = $this->get_edit_link($oWebsite, "edit_password", "editor.password.edit");
-            $edit_links[] = $this->get_edit_link($oWebsite, "edit_display_name", "editor.display_name.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_email", "editor.email.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_password", "editor.password.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_display_name", "editor.display_name.edit");
         }
         if (!$is_viewing_themselves && $is_viewing_as_admin) {
             // Accessed by an admin that isn't viewing his/her own account
             // Add rank edit link and login link
-            $edit_links[] = $this->get_edit_link($oWebsite, "edit_rank", "editor.rank.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_rank", "editor.rank.edit");
 
             // Only display login link if account is not deleted/banned
             if ($this->user->canLogIn()) {
-                $edit_links[] = $this->get_edit_link($oWebsite, "login_other", "main.log_in");
+                $edit_links[] = $this->get_edit_link($website, "login_other", "main.log_in");
             }
         }
 
@@ -209,30 +209,30 @@ EOT;
     /**
      * Gets a link with the specified url and text. User id and link class will
      * be added.
-     * @param Website $oWebsite The website object.
+     * @param Website $website The website object.
      * @param string $page_id The id of the page.
      * @param string $translation_id The translation id of the text to display.
      * @return string The link.
      */
-    public function get_edit_link(Website $oWebsite, $page_id, $translation_id) {
+    public function get_edit_link(Website $website, $page_id, $translation_id) {
         return <<<EOT
-            <a class="arrow" href="{$oWebsite->getUrlPage($page_id, $this->user->getId())}">
-                {$oWebsite->t($translation_id)}
+            <a class="arrow" href="{$website->getUrlPage($page_id, $this->user->getId())}">
+                {$website->t($translation_id)}
             </a><br />
 EOT;
     }
 
     /** Returns the HTML of the comments of the user, including the header */
-    public function get_comments_html(Website $oWebsite) {
-        $oComments = new CommentRepository($oWebsite);
+    public function get_comments_html(Website $website) {
+        $oComments = new CommentRepository($website);
         $comments = $oComments->getCommentsUser($this->user->getId());
         
-        $returnValue = '<h3 class="notable">' . $oWebsite->t("comments.comments") . "</h3>\n";
+        $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {
-            $commentsView = new CommentsTreeView($oWebsite->getText(), $comments, true, $this->user);
+            $commentsView = new CommentsTreeView($website->getText(), $comments, true, $this->user);
             $returnValue .= $commentsView->getText();
         } else {
-            $returnValue .= "<p><em>" . $oWebsite->t("comments.no_comments_found_user") . "</em></p>";
+            $returnValue .= "<p><em>" . $website->t("comments.no_comments_found_user") . "</em></p>";
         }
         return $returnValue;
     }

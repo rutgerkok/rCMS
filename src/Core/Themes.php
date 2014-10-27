@@ -6,14 +6,14 @@ class Themes {
 
     const THEME_INFO_FILE_NAME = "info.txt";
 
-    private $websiteObject; //bewaart het website-object
+    private $website; //bewaart het website-object
     private $theme;
 
-    public function __construct(Website $oWebsite) {
-        $this->websiteObject = $oWebsite;
+    public function __construct(Website $website) {
+        $this->website = $website;
 
         // Load theme info file
-        $this->theme = $this->loadTheme($oWebsite->getConfig()->get("theme"));
+        $this->theme = $this->loadTheme($website->getConfig()->get("theme"));
     }
 
     /**
@@ -23,7 +23,7 @@ class Themes {
      * @throws BadMethodCallException If no theme with that name exists.
      */
     private function loadTheme($themeName) {
-        $themeDirectory = $this->websiteObject->getUriThemes() . $themeName . "/";
+        $themeDirectory = $this->website->getUriThemes() . $themeName . "/";
         $themeInfoFile = $themeDirectory . self::THEME_INFO_FILE_NAME;
         return new Theme($themeName, $themeInfoFile);
     }
@@ -51,7 +51,7 @@ class Themes {
      * @return boolean Whether that theme exists.
      */
     public function themeExists($directoryName) {
-        return is_dir($this->websiteObject->getUriThemes() . $directoryName);
+        return is_dir($this->website->getUriThemes() . $directoryName);
     }
 
     /**
@@ -80,7 +80,7 @@ class Themes {
         if ($theme == null) {
             $theme = $this->theme;
         }
-        return $this->websiteObject->getUriThemes() . $theme->getName() . "/";
+        return $this->website->getUriThemes() . $theme->getName() . "/";
     }
 
     /**
@@ -93,7 +93,7 @@ class Themes {
         if ($theme == null) {
             $theme = $this->theme;
         }
-        return $this->websiteObject->getUrlThemes() . $theme->getName() . "/";
+        return $this->website->getUrlThemes() . $theme->getName() . "/";
     }
 
 }

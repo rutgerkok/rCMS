@@ -27,47 +27,46 @@ class AccountManagementPage extends Page {
      * Adds errors if the page number is invalid. Returns whether the page
      * number was valid.
      */
-    public function check_valid_page_id(Website $oWebsite, $page, $usersCount) {
+    public function check_valid_page_id(Website $website, $page, $usersCount) {
         if ($page < 0) {
-            $oWebsite->addError($oWebsite->t("main.page") . " " . $oWebsite->tReplaced("errors.is_too_low_num", $page));
+            $website->addError($website->t("main.page") . " " . $website->tReplaced("errors.is_too_low_num", $page));
             return false;
         }
         $pageCount = ceil($usersCount / self::USERS_PER_PAGE);
         if ($page >= $pageCount) {
-            $oWebsite->addError($oWebsite->t("main.page") . " " . $oWebsite->tReplaced("errors.is_too_high_num", $pageCount - 1));
+            $website->addError($website->t("main.page") . " " . $website->tReplaced("errors.is_too_high_num", $pageCount - 1));
             return false;
         }
         return true;
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $page = max(0, $oWebsite->getRequestInt("id", 0));
-        $usersCount = $oWebsite->getAuth()->getUserRepository()->getRegisteredUsersCount();
+        $page = max(0, $website->getRequestInt("id", 0));
+        $usersCount = $website->getAuth()->getUserRepository()->getRegisteredUsersCount();
 
         // Check page id
-        if (!$this->check_valid_page_id($oWebsite, $page, $usersCount)) {
+        if (!$this->check_valid_page_id($website, $page, $usersCount)) {
             return "";
         }
 
         // Display user count
-        $textToDisplay = "<p>" . $oWebsite->tReplaced("users.there_are_num_registered_users", $usersCount) . "</p>";
+        $textToDisplay = "<p>" . $website->tReplaced("users.there_are_num_registered_users", $usersCount) . "</p>";
         if ($usersCount == 1) {
-            $textToDisplay = "<p>" . $oWebsite->t("users.there_is_one_registered_user") . "</p>";
+            $textToDisplay = "<p>" . $website->t("users.there_is_one_registered_user") . "</p>";
         }
 
         // Display menu bar
-        $textToDisplay.= $this->get_menu_bar($oWebsite, $page, $usersCount);
+        $textToDisplay.= $this->get_menu_bar($website, $page, $usersCount);
 
         // Users table
         $start = $page * self::USERS_PER_PAGE;
-        $textToDisplay.= $this->get_users_table($oWebsite, $start);
+        $textToDisplay.= $this->get_users_table($website, $start);
         // Link to admin page
-        $textToDisplay.= '<p><br /><a class="arrow" href="' . $oWebsite->getUrlPage('admin') . '">' . $oWebsite->t("main.admin") . '</a></p>';
+        $textToDisplay.= '<p><br /><a class="arrow" href="' . $website->getUrlPage('admin') . '">' . $website->t("main.admin") . '</a></p>';
         return $textToDisplay;
     }
 
-    public function get_menu_bar(Website $oWebsite, $page, $users) {
+    public function get_menu_bar(Website $website, $page, $users) {
         $pages = ceil($users / self::USERS_PER_PAGE);
 
         // No need for a menu when there is only one page
@@ -78,37 +77,37 @@ class AccountManagementPage extends Page {
         $returnValue = '<p class="result_selector_menu">';
         // Link to previous page
         if ($page > 0) {
-            $returnValue.= '<a class="arrow" href="' . $oWebsite->getUrlPage("account_management", $page - 1);
-            $returnValue.= '">' . $oWebsite->t("articles.page.previous") . '</a> ';
+            $returnValue.= '<a class="arrow" href="' . $website->getUrlPage("account_management", $page - 1);
+            $returnValue.= '">' . $website->t("articles.page.previous") . '</a> ';
         }
-        $returnValue.= $oWebsite->tReplaced('articles.page.current', $page + 1, $pages);
+        $returnValue.= $website->tReplaced('articles.page.current', $page + 1, $pages);
         // Link to next page
         if (($page + 1) < $pages) {
-            $returnValue.= ' <a class="arrow" href="' . $oWebsite->getUrlPage("account_management", $page + 1);
-            $returnValue.= '">' . $oWebsite->t("articles.page.next") . '</a>';
+            $returnValue.= ' <a class="arrow" href="' . $website->getUrlPage("account_management", $page + 1);
+            $returnValue.= '">' . $website->t("articles.page.next") . '</a>';
         }
         $returnValue.= '</p>';
         return $returnValue;
     }
 
     /** Gets a table of all users */
-    public function get_users_table(Website $oWebsite, $start) {
+    public function get_users_table(Website $website, $start) {
         $start = (int) $start;
 
-        $oAuth = $oWebsite->getAuth();
+        $oAuth = $website->getAuth();
         $users = $oAuth->getUserRepository()->getRegisteredUsers($start, self::USERS_PER_PAGE);
         $current_user_id = $oAuth->getCurrentUser()->getId();
 
         // Start table
         $returnValue = "<table>\n";
-        $returnValue.="<tr><th>" . $oWebsite->t("users.username") . "</th><th>" . $oWebsite->t("users.display_name") . "</th><th>" . $oWebsite->t("users.email") . "</th><th>" . $oWebsite->t("users.rank") . "</th><th>" . $oWebsite->t("main.edit") . "</th></tr>\n"; //login-naam-email-admin-bewerk
-        $returnValue.='<tr><td colspan="5"><a class="arrow" href="' . $oWebsite->getUrlPage("create_account") . '">' . $oWebsite->t("users.create") . "...</a></td></tr>\n"; //maak nieuwe account
+        $returnValue.="<tr><th>" . $website->t("users.username") . "</th><th>" . $website->t("users.display_name") . "</th><th>" . $website->t("users.email") . "</th><th>" . $website->t("users.rank") . "</th><th>" . $website->t("main.edit") . "</th></tr>\n"; //login-naam-email-admin-bewerk
+        $returnValue.='<tr><td colspan="5"><a class="arrow" href="' . $website->getUrlPage("create_account") . '">' . $website->t("users.create") . "...</a></td></tr>\n"; //maak nieuwe account
 
 
         if (count($users) > 0) {
             foreach ($users as $user) {
                 // Email
-                $email_link = '<em>' . $oWebsite->t("main.not_set") . '</em>';
+                $email_link = '<em>' . $website->t("main.not_set") . '</em>';
                 $email = $user->getEmail();
                 if ($email) {
                     $email = htmlSpecialChars($email);
@@ -120,13 +119,13 @@ class AccountManagementPage extends Page {
                 $display_name = htmlSpecialChars($user->getDisplayName());
                 $rank_name = $oAuth->getRankName($user->getRank());
                 if ($user->getStatus() == Authentication::BANNED_STATUS) {
-                    $rank_name = $oWebsite->t("users.status.banned");
+                    $rank_name = $website->t("users.status.banned");
                 }
                 if ($user->getStatus() == Authentication::DELETED_STATUS) {
-                    $rank_name = $oWebsite->t("users.status.deleted");
+                    $rank_name = $website->t("users.status.deleted");
                 }
-                $username_link = '<a href="' . $oWebsite->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';
-                $login_link = '<a class="arrow" href="' . $oWebsite->getUrlPage("login_other", $user->getId()) . '">' . $oWebsite->t("main.log_in") . '</a>';
+                $username_link = '<a href="' . $website->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';
+                $login_link = '<a class="arrow" href="' . $website->getUrlPage("login_other", $user->getId()) . '">' . $website->t("main.log_in") . '</a>';
                 if ($user->getId() == $current_user_id || !$user->canLogIn()) {
                     // No need to log in as that account
                     $login_link = "";

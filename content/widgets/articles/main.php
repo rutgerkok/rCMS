@@ -24,7 +24,7 @@ class WidgetArticles extends WidgetDefinition {
     const SORT_NEWEST_TOP = 1;
     const SORT_OLDEST_TOP = 0;
 
-    public function getText(Website $oWebsite, $id, $data) {
+    public function getText(Website $website, $id, $data) {
         // Check variables
         if (!isSet($data["title"]) || !isSet($data["count"])
                 || !isSet($data["display_type"]) || !isSet($data["categories"])) {
@@ -58,21 +58,21 @@ class WidgetArticles extends WidgetDefinition {
             $showArchiveLink = true;
         }
 
-        $oArticles = new ArticleRepository($oWebsite);
+        $oArticles = new ArticleRepository($website);
         $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);
 
         if ($displayType >= self::TYPE_LIST) {
             // Small <ul> list
-            $oArticlesView = new ArticleSmallListView($oWebsite->getText(), $articles, $oWebsite->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
+            $oArticlesView = new ArticleSmallListView($website->getText(), $articles, $website->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
         } else {
             // Real paragraphs
-            $oArticlesView = new ArticleListView($oWebsite->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $oWebsite->isLoggedInAsStaff());
+            $oArticlesView = new ArticleListView($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $website->isLoggedInAsStaff());
         }
 
         return $titleHTML . $oArticlesView->getText();
     }
 
-    public function getEditor(Website $oWebsite, $widget_id, $data) {
+    public function getEditor(Website $website, $widget_id, $data) {
         $title = isSet($data["title"]) ? $data["title"] : "";
         $categories = isSet($data["categories"]) ? $data["categories"] : array();
         $count = isSet($data["count"]) ? $data["count"] : 4;
@@ -83,14 +83,14 @@ class WidgetArticles extends WidgetDefinition {
         // Title
         $textToDisplay = "<p>\n";
         $textToDisplay.= '<label for="title_' . $widget_id . '">';
-        $textToDisplay.= $oWebsite->t("widgets.title") . "</label>:<br />\n";
+        $textToDisplay.= $website->t("widgets.title") . "</label>:<br />\n";
         $textToDisplay.= '<input type="text" name="title_' . $widget_id . '" id="title_' . $widget_id . '"';
         $textToDisplay.= 'value="' . htmlSpecialChars($title) . '" />' . "\n";
         $textToDisplay.= "</p>\n";
 
         // Categories
-        $oCategories = new CategoryRepository($oWebsite, $oWebsite->getDatabase());
-        $textToDisplay.= "<p>" . $oWebsite->t("main.categories") . ':';
+        $oCategories = new CategoryRepository($website, $website->getDatabase());
+        $textToDisplay.= "<p>" . $website->t("main.categories") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         foreach ($oCategories->getCategories() as $category) {
             $checkbox_id = 'categories_' . $category->getId() . "_" . $widget_id;
@@ -105,35 +105,35 @@ class WidgetArticles extends WidgetDefinition {
         $textToDisplay.= "</p>\n";
 
         // Count
-        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $oWebsite->t("editor.article.count") . ':';
+        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $website->t("editor.article.count") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<input type="number" id="count_' . $widget_id . '" ';
         $textToDisplay.= 'name="count_' . $widget_id . '" value="' . $count . '" />';
         $textToDisplay.= "</p>";
 
         // Display type
-        $textToDisplay.= '<p><label for="display_type_' . $widget_id . '">' . $oWebsite->t("articles.display_type") . ':';
+        $textToDisplay.= '<p><label for="display_type_' . $widget_id . '">' . $website->t("articles.display_type") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<select name="display_type_' . $widget_id . '" id="display_type_' . $widget_id . '">';
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.display_type.without_metadata"), self::TYPE_WITHOUT_METADATA, $display_type);
+                $website->t("articles.display_type.without_metadata"), self::TYPE_WITHOUT_METADATA, $display_type);
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.display_type.with_metadata"), self::TYPE_WITH_METADATA, $display_type);
+                $website->t("articles.display_type.with_metadata"), self::TYPE_WITH_METADATA, $display_type);
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.display_type.list"), self::TYPE_LIST, $display_type);
+                $website->t("articles.display_type.list"), self::TYPE_LIST, $display_type);
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.display_type.list_with_images"), self::TYPE_LIST_WITH_IMAGES, $display_type);
+                $website->t("articles.display_type.list_with_images"), self::TYPE_LIST_WITH_IMAGES, $display_type);
         $textToDisplay.= "</select>\n";
         $textToDisplay.= "</p>\n";
 
         // Order
-        $textToDisplay.= '<p><label for="order_' . $widget_id . '">' . $oWebsite->t("articles.order") . ':';
+        $textToDisplay.= '<p><label for="order_' . $widget_id . '">' . $website->t("articles.order") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<select name="order_' . $widget_id . '" id="dorder_' . $widget_id . '">';
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.order.newest_top"), self::SORT_NEWEST_TOP, $order);
+                $website->t("articles.order.newest_top"), self::SORT_NEWEST_TOP, $order);
         $textToDisplay.= $this->getSelectOption(
-                $oWebsite->t("articles.order.oldest_top"), self::SORT_OLDEST_TOP, $order);
+                $website->t("articles.order.oldest_top"), self::SORT_OLDEST_TOP, $order);
         $textToDisplay.= "</select>\n";
         $textToDisplay.= "</p>\n";
 
@@ -141,7 +141,7 @@ class WidgetArticles extends WidgetDefinition {
         $checked = $archive ? 'checked="checked"' : "";
         $textToDisplay.= <<<EOT
             <p>
-                <label for="archive_$widget_id">{$oWebsite->t("articles.archive")}:</label>
+                <label for="archive_$widget_id">{$website->t("articles.archive")}:</label>
                 <input class="checkbox" type="checkbox" name="archive_$widget_id" id="archive_$widget_id" $checked />
             </p>
 EOT;
@@ -159,13 +159,13 @@ EOT;
         return $textToDisplay;
     }
 
-    public function parseData(Website $oWebsite, $id) {
+    public function parseData(Website $website, $id) {
         $data = array();
 
         // Title
-        $data["title"] = trim($oWebsite->getRequestString("title_" . $id, ""));
+        $data["title"] = trim($website->getRequestString("title_" . $id, ""));
         if (strLen($data["title"]) > 200) {
-            $oWebsite->addError($oWebsite->t("widgets.title") . " " . $oWebsite->t("errors.is_too_long_num", 200));
+            $website->addError($website->t("widgets.title") . " " . $website->t("errors.is_too_long_num", 200));
             $data["valid"] = false;
         }
 
@@ -173,7 +173,7 @@ EOT;
         $categories = isSet($_REQUEST["categories_" . $id]) ? $_REQUEST["categories_" . $id] : array();
         if (!is_array($categories)) {
             // Check for valid array
-            $oWebsite->addError($oWebsite->tReplacedKey("errors.none_set", "main.categories", true));
+            $website->addError($website->tReplacedKey("errors.none_set", "main.categories", true));
             $data["valid"] = false;
             $categories = array();
         }
@@ -187,7 +187,7 @@ EOT;
         }
         // Check the real array
         if (count($data["categories"]) == 0) {
-            $oWebsite->addError($oWebsite->tReplacedKey("errors.none_set", "main.categories", true));
+            $website->addError($website->tReplacedKey("errors.none_set", "main.categories", true));
             $data["valid"] = false;
         }
 
@@ -195,11 +195,11 @@ EOT;
         if (isSet($_REQUEST["count_" . $id])) {
             $data["count"] = (int) $_REQUEST["count_" . $id];
             if (!Validate::range($data["count"], 1, 20)) {
-                $oWebsite->addError($oWebsite->t("editor.article.count") . " " . Validate::getLastError($oWebsite));
+                $website->addError($website->t("editor.article.count") . " " . Validate::getLastError($website));
                 $data["valid"] = false;
             }
         } else {
-            $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }
 
@@ -210,11 +210,11 @@ EOT;
                     $data["display_type"] != self::TYPE_WITHOUT_METADATA &&
                     $data["display_type"] != self::TYPE_WITH_METADATA &&
                     $data["display_type"] != self::TYPE_LIST_WITH_IMAGES) {
-                $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
+                $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
                 $data["valid"] = false;
             }
         } else {
-            $oWebsite->addError($oWebsite->t("editor.article.count") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }
 
@@ -223,11 +223,11 @@ EOT;
             $data["order"] = (int) $_REQUEST["order_" . $id];
             if ($data["order"] != self::SORT_NEWEST_TOP &&
                     $data["order"] != self::SORT_OLDEST_TOP) {
-                $oWebsite->addError($oWebsite->t("articles.order") . " " . $oWebsite->t("errors.not_found"));
+                $website->addError($website->t("articles.order") . " " . $website->t("errors.not_found"));
                 $data["valid"] = false;
             }
         } else {
-            $oWebsite->addError($oWebsite->t("articles.order") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("articles.order") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }
 

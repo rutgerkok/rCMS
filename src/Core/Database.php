@@ -11,17 +11,17 @@ class Database extends PDO {
 
     const CURRENT_DATABASE_VERSION = 3;
 
-    protected $websiteObject;
+    protected $website;
     protected $prefix = "";
     // Replacing table names in queries
     private $tableNamesToReplace;
     private $replacingTableNames;
 
-    public function __construct(Website $oWebsite) {
+    public function __construct(Website $website) {
         // Save website object in this object
-        $this->websiteObject = $oWebsite;
+        $this->website = $website;
 
-        $config = $oWebsite->getConfig();
+        $config = $website->getConfig();
 
         // Connect
         try {
@@ -49,7 +49,7 @@ class Database extends PDO {
      * @return boolean True if the database is installed and up to date, false otherwise.
      */
     public function isUpToDate() {
-        $version = $this->websiteObject->getConfig()->get("database_version");
+        $version = $this->website->getConfig()->get("database_version");
         return $version == self::CURRENT_DATABASE_VERSION || $version == 0;
     }
 
@@ -59,7 +59,7 @@ class Database extends PDO {
      * @return boolean True if the database is installed, false otherwise.
      */
     public function isInstalled() {
-        $version = $this->websiteObject->getConfig()->get("database_version");
+        $version = $this->website->getConfig()->get("database_version");
         return $version > 0;
     }
 
@@ -82,7 +82,7 @@ class Database extends PDO {
 
         $admin = User::createNewUser("admin", "Admin", "admin");
         $admin->setRank(Authentication::$ADMIN_RANK);
-        $this->websiteObject->getAuth()->getUserRepository()->save($admin);
+        $this->website->getAuth()->getUserRepository()->save($admin);
 
         // Links
         $this->exec("CREATE TABLE IF NOT EXISTS `links` (`link_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `menu_id` INT UNSIGNED NOT NULL, `link_url` VARCHAR(200) NOT NULL, `link_text` VARCHAR(50) NOT NULL) ENGINE = MyISAM");
@@ -128,7 +128,7 @@ EOT;
      * installed.
      */
     public function updateTables() {
-        $version = $this->websiteObject->getConfig()->get("database_version");
+        $version = $this->website->getConfig()->get("database_version");
         if ($version == self::CURRENT_DATABASE_VERSION) {
             // Nothing to update
             return 0;
@@ -186,7 +186,7 @@ SQL;
         }
 
         // Done updating
-        $this->websiteObject->getConfig()->set($this, "database_version", self::CURRENT_DATABASE_VERSION);
+        $this->website->getConfig()->set($this, "database_version", self::CURRENT_DATABASE_VERSION);
         return 1;
     }
 

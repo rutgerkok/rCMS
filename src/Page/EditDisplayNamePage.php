@@ -13,7 +13,7 @@ class EditDisplayNamePage extends EditPasswordPage {
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
         if (isSet($_REQUEST["display_name"])) {
@@ -22,46 +22,46 @@ class EditDisplayNamePage extends EditPasswordPage {
             if (Validate::displayName($display_name)) {
                 // Valid display_name
                 $this->user->setDisplayName($display_name);
-                $userRepo = $oWebsite->getAuth()->getUserRepository();
+                $userRepo = $website->getAuth()->getUserRepository();
                 $userRepo->save($this->user);
                 // Saved
-                $textToDisplay.='<p>' . $oWebsite->t("users.display_name") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                $textToDisplay.='<p>' . $website->t("users.display_name") . ' ' . $website->t("editor.is_changed") . '</p>';
                 // Don't show form
                 $show_form = false;
             } else {
                 // Invalid display_name
-                $oWebsite->addError($oWebsite->t("users.display_name") . ' ' . Validate::getLastError($oWebsite));
-                $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.display_name", true) . '</em></p>';
+                $website->addError($website->t("users.display_name") . ' ' . Validate::getLastError($website));
+                $textToDisplay.='<p><em>' . $website->tReplacedKey("errors.your_input_has_not_been_changed", "users.display_name", true) . '</em></p>';
             }
         }
         // Show form
         if ($show_form) {
             // Text above form
-            $textToDisplay.= "<p>" . $oWebsite->t("editor.display_name.edit.explained") . "</p>\n";
+            $textToDisplay.= "<p>" . $website->t("editor.display_name.edit.explained") . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $oWebsite->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself
             $display_name = isSet($_POST['display_name']) ? htmlSpecialChars($_POST['display_name']) : $this->user->getDisplayName();
             $textToDisplay.=<<<EOT
-                <p>{$oWebsite->t("main.fields_required")}</p>
-                <form action="{$oWebsite->getUrlMain()}" method="post">
+                <p>{$website->t("main.fields_required")}</p>
+                <form action="{$website->getUrlMain()}" method="post">
                     <p>
-                        <label for="display_name">{$oWebsite->t('users.display_name')}:</label><span class="required">*</span><br />
+                        <label for="display_name">{$website->t('users.display_name')}:</label><span class="required">*</span><br />
                             <input type="text" id="display_name" name="display_name" value="$display_name"/><br />
                     </p>
                     <p>
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
                         <input type="hidden" name="p" value="edit_display_name" />
-                        <input type="submit" value="{$oWebsite->t('editor.display_name.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('editor.display_name.edit')} " class="button" />
                     </p>
                 </form>
 EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($oWebsite);
+        $textToDisplay.= $this->get_account_links_html($website);
 
         return $textToDisplay;
     }

@@ -13,9 +13,9 @@ class CommentRepository extends Repository {
 
     const TABLE_NAME = "comments";
 
-    /* @var $websiteObject Website */
+    /* @var $website Website */
 
-    protected $websiteObject;
+    protected $website;
     /* @var $databaseObject Database */
     protected $databaseObject;
     /* @var $authenticationObject Authentication */
@@ -36,16 +36,16 @@ class CommentRepository extends Repository {
 
     /**
      * Constructs a new comment object.
-     * @param Website $oWebsite The website.
+     * @param Website $website The website.
      * @param Authentication $oAuth Unneeded, provided for backwards compability.
      */
-    public function __construct(Website $oWebsite, Authentication $oAuth = null) {
-        parent::__construct($oWebsite->getDatabase());
-        $this->databaseObject = $oWebsite->getDatabase();
-        $this->websiteObject = $oWebsite;
+    public function __construct(Website $website, Authentication $oAuth = null) {
+        parent::__construct($website->getDatabase());
+        $this->databaseObject = $website->getDatabase();
+        $this->website = $website;
         $this->authenticationObject = $oAuth;
         if ($this->authenticationObject == null) {
-            $this->authenticationObject = $oWebsite->getAuth();
+            $this->authenticationObject = $website->getAuth();
         }
 
         $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "comment_id");
@@ -102,19 +102,19 @@ class CommentRepository extends Repository {
     function makeComment($validate, $comment_id, $author_name, $author_email,
             $comment_body, $account_id, $article_id) {
         if ($validate) {
-            $oWebsite = $this->websiteObject;
-            $loggedIn = $oWebsite->isLoggedIn();
+            $website = $this->website;
+            $loggedIn = $website->isLoggedIn();
             $valid = true;
             if (!$loggedIn) {
                 // Author name
                 if (strLen(trim($author_name)) === 0) {
                     // Name not found
-                    $oWebsite->addError($oWebsite->t("users.name") . ' ' . $oWebsite->t("errors.not_entered"));
+                    $website->addError($website->t("users.name") . ' ' . $website->t("errors.not_entered"));
                     $valid = false;
                 } else {
                     $author_name = htmlSpecialChars(trim($author_name));
                     if (!Validate::displayName($author_name)) {
-                        $oWebsite->addError($oWebsite->t("users.name") . ' ' . Validate::getLastError($oWebsite));
+                        $website->addError($website->t("users.name") . ' ' . Validate::getLastError($website));
                         $valid = false;
                     }
                 }
@@ -126,7 +126,7 @@ class CommentRepository extends Repository {
                 } else {
                     $author_email = trim($author_email);
                     if (!Validate::email($author_email)) {
-                        $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::getLastError($oWebsite));
+                        $website->addError($website->t("users.email") . ' ' . Validate::getLastError($website));
                         $valid = false;
                     }
                 }
@@ -162,27 +162,27 @@ class CommentRepository extends Repository {
     }
 
     function checkCommentBody($comment_body) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         $valid = true;
 
         if (!isSet($comment_body) || strLen(trim($comment_body)) === 0) {
-            $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_entered"));
+            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_entered"));
             $valid = false;
         } else {
             if ($comment_body != strip_tags($comment_body)) {
-                $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.contains_html"));
+                $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.contains_html"));
                 $valid = false;
             }
             if (strLen($comment_body) < 10) {
                 // WAY too long
-                $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->tReplaced("errors.is_too_short_num", 10));
+                $website->addError($website->t("comments.comment") . ' ' . $website->tReplaced("errors.is_too_short_num", 10));
                 $valid = false;
             }
 
             $comment_body = htmlSpecialChars($comment_body);
             if (strLen($comment_body) > 65565) {
                 // WAY too long
-                $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.is_too_long"));
+                $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.is_too_long"));
                 $valid = false;
             }
         }
@@ -194,9 +194,9 @@ class CommentRepository extends Repository {
             $this->saveEntity($comment);
             return true;
         } catch (PDOException $e) {
-            $oWebsite = $this->websiteObject;
-            $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_saved")); //reactie is niet opgeslagen
-            $oWebsite->getText()->logException("Saving comment", $e);
+            $website = $this->website;
+            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_saved")); //reactie is niet opgeslagen
+            $website->getText()->logException("Saving comment", $e);
             return false;
         }
     }
@@ -206,7 +206,7 @@ class CommentRepository extends Repository {
             $this->where($this->primaryField, '=', $id)->deleteOneOrFail();
             return true;
         } catch (PDOException $e) {
-            $oWebsite->addError($oWebsite->t("comments.comment") . ' ' . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_found"));
             return false;
         }
     }
@@ -220,13 +220,13 @@ class CommentRepository extends Repository {
      */
     function echoEditor($comment) {
         // $comment can be null
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         if (!isSet($_REQUEST['id']) || ((int) $_REQUEST['id']) == 0) {
-            $oWebsite->addError($oWebsite->t("main.article") . ' ' . $oWebsite->t("errors.not_found")); //Artikel niet gevonden
+            $website->addError($website->t("main.article") . ' ' . $website->t("errors.not_found")); //Artikel niet gevonden
             return false;
         }
 
-        if ($oWebsite->isLoggedIn()) {
+        if ($website->isLoggedIn()) {
             $this->echoEditorLoggedIn($comment);
         } else {
             $this->echoEditorNormal($comment);
@@ -235,22 +235,22 @@ class CommentRepository extends Repository {
     }
 
     function echoEditorLoggedIn($comment) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         $comment_body = ($comment == null) ? "" : htmlSpecialChars($comment->getBodyRaw());
         echo <<<EOT
             <p>
-                <em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
+                <em>{$website->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
             </p>
             <p>	
                 <!-- reactie -->
-                {$oWebsite->t("comments.comment")}<span class="required">*</span>:<br />
+                {$website->t("comments.comment")}<span class="required">*</span>:<br />
                 <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
             </p>	
 EOT;
     }
 
     function echoEditorNormal($comment) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
 
         if ($comment == null) {
             $name = "";
@@ -264,22 +264,22 @@ EOT;
 
         echo <<<EOT
             <p>
-                <em>{$oWebsite->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
+                <em>{$website->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
             </p>
             <p>
                 <!-- naam -->
-                {$oWebsite->t("users.name")}<span class="required">*</span>:<br />
+                {$website->t("users.name")}<span class="required">*</span>:<br />
                 <input type="text" name="name" id="name" maxlength="20" style="width:98%" value="$name" /><br />
             </p>
             <p>
                 <!-- email -->
-                {$oWebsite->t("users.email")}:<br />
+                {$website->t("users.email")}:<br />
                 <input type="email" name="email" id="email" style="width:98%" value="$email" /><br />
-                <em>{$oWebsite->t("comments.email_explained")}</em><br />
+                <em>{$website->t("comments.email_explained")}</em><br />
             </p>
             <p>	
                 <!-- reactie -->
-                {$oWebsite->t("comments.comment")}<span class="required">*</span>:<br />
+                {$website->t("comments.comment")}<span class="required">*</span>:<br />
                 <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
             </p>
 EOT;

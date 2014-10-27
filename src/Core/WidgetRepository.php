@@ -16,7 +16,7 @@ class WidgetRepository extends Repository {
     const TABLE_NAME = "widgets";
 
     // Reference to the Website.
-    private $websiteObject;
+    private $website;
     // Cache of all loaded widgets for this page
     private $loadedWidgets = array();
     // Temporary variable to store the directory name when echoeing the widgets
@@ -27,9 +27,9 @@ class WidgetRepository extends Repository {
     private $widgetNameField;
     private $widgetPriorityField;
 
-    public function __construct(Website $oWebsite) {
-        parent::__construct($oWebsite->getDatabase());
-        $this->websiteObject = $oWebsite;
+    public function __construct(Website $website) {
+        parent::__construct($website->getDatabase());
+        $this->website = $website;
 
         $this->sidebarIdField = new Field(Field::TYPE_INT, "sidebarId", "sidebar_id");
         $this->widgetDataField = new Field(Field::TYPE_JSON, "widgetData", "widget_data");
@@ -39,7 +39,7 @@ class WidgetRepository extends Repository {
     }
 
     public function createEmptyObject() {
-        return new PlacedWidget($this->websiteObject->getUriWidgets());
+        return new PlacedWidget($this->website->getUriWidgets());
     }
 
     public function getTableName() {
@@ -62,7 +62,7 @@ class WidgetRepository extends Repository {
      */
     public function getInstalledWidgets() {
         $widgets = array();
-        $directoryToScan = $this->websiteObject->getUriWidgets();
+        $directoryToScan = $this->website->getUriWidgets();
 
         // Check directory
         if (!is_dir($directoryToScan)) {
@@ -89,8 +89,8 @@ class WidgetRepository extends Repository {
      * @return array Array of widget, (numeric) id => name
      */
     public function getWidgetAreas() {
-        $areas = $this->websiteObject->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->websiteObject);
-        $areas[1] = $this->websiteObject->t("widgets.homepage");
+        $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
+        $areas[1] = $this->website->t("widgets.homepage");
         return $areas;
     }
 
@@ -124,7 +124,7 @@ class WidgetRepository extends Repository {
     public function getWidgetDefinition($widgetDirectoryName) {
         if (!isSet($this->loadedWidgets[$widgetDirectoryName])) {
             $this->widgetDirectoryName = $widgetDirectoryName;
-            $file = $this->websiteObject->getUriWidgets() . "/" . $widgetDirectoryName . "/main.php";
+            $file = $this->website->getUriWidgets() . "/" . $widgetDirectoryName . "/main.php";
             if (file_exists($file)) {
                 require($file);
             }
@@ -138,12 +138,12 @@ class WidgetRepository extends Repository {
 
     // Echoes all widgets in the specified sidebar
     public function getWidgetsHTML($sidebarId) {
-        $oWebsite = $this->websiteObject;
-        $oDB = $oWebsite->getDatabase();
+        $website = $this->website;
+        $oDB = $website->getDatabase();
         if (!$oDB->isInstalled() || !$oDB->isUpToDate()) {
             return $this->getSiteInstallError($sidebarId);
         }
-        $loggedInAsAdmin = $oWebsite->isLoggedInAsStaff(true);
+        $loggedInAsAdmin = $website->isLoggedInAsStaff(true);
         $output = "";
 
         // Get all widgets that should be displayed
@@ -156,36 +156,36 @@ class WidgetRepository extends Repository {
 
             // Try to load it if it isn't loaded yet
             if (!isSet($this->loadedWidgets[$directory_name])) {
-                $file = $oWebsite->getUriWidgets() . $directory_name . "/main.php";
+                $file = $website->getUriWidgets() . $directory_name . "/main.php";
                 if (file_exists($file)) {
                     require($file);
                 } else {
-                    $oWebsite->getText()->logError("The widget $directory_name (id=$id) was not found. File <code>$file</code> was missing.");
-                    $oWebsite->addError("A widget was missing.");
+                    $website->getText()->logError("The widget $directory_name (id=$id) was not found. File <code>$file</code> was missing.");
+                    $website->addError("A widget was missing.");
                     continue;
                 }
             }
 
             // Check if load was succesfull. Display widget or display error.
             if (isSet($this->loadedWidgets[$directory_name])) {
-                $output.= $this->loadedWidgets[$directory_name]->getText($this->websiteObject, $id, $widget->getData());
+                $output.= $this->loadedWidgets[$directory_name]->getText($this->website, $id, $widget->getData());
                 if ($loggedInAsAdmin) {
                     // Links for editing and deleting
                     $output.= "<p>\n";
-                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . " " . $oWebsite->t("main.widget") . '</a> ';
-                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
+                    $output.= '<a class="arrow" href="' . $website->getUrlPage("edit_widget", $id) . '">' . $website->t("main.edit") . " " . $website->t("main.widget") . '</a> ';
+                    $output.= '<a class="arrow" href="' . $website->getUrlPage("delete_widget", $id) . '">' . $website->t("main.delete") . " " . $website->t("main.widget") . '</a> ';
                     $output.= "</p>\n";
                 }
             } else {
-                $oWebsite->getText()->logError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.");
-                $oWebsite->addError("A widget was missing.");
+                $website->getText()->logError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.");
+                $website->addError("A widget was missing.");
             }
         }
 
         // Link to manage widgets
         if ($loggedInAsAdmin) {
-            $output.= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("widgets") . '">';
-            $output.= $oWebsite->t("main.manage") . " " . strToLower($oWebsite->t("main.widgets"));
+            $output.= '<p><a class="arrow" href="' . $website->getUrlPage("widgets") . '">';
+            $output.= $website->t("main.manage") . " " . strToLower($website->t("main.widgets"));
             $output.= "</a></p>\n";
         }
 
@@ -193,7 +193,7 @@ class WidgetRepository extends Repository {
     }
 
     private function getSiteInstallError($sidebarId) {
-        $website = $this->websiteObject;
+        $website = $this->website;
         if ($sidebarId != 1) {
             return "";
         }

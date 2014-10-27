@@ -5,6 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\Website;
 
 /**
  * Represents a page on the website.

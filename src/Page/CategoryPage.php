@@ -18,14 +18,14 @@ class CategoryPage extends Page {
     private $showEditLinks;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $text = $oWebsite->getText();
+        $website = $request->getWebsite();
+        $text = $website->getText();
 
-        $this->showEditLinks = $oWebsite->isLoggedInAsStaff();
+        $this->showEditLinks = $website->isLoggedInAsStaff();
 
         $categoryId = $request->getParamInt(0);
-        $oArticles = new ArticleRepository($oWebsite);
-        $oCategories = new CategoryRepository($oWebsite);
+        $oArticles = new ArticleRepository($website);
+        $oCategories = new CategoryRepository($website);
 
         if ($categoryId == 0) {
             // Display a list of categories
@@ -36,7 +36,7 @@ class CategoryPage extends Page {
             $this->pageTitle = $oCategories->getCategoryName($categoryId);
             if (empty($this->pageTitle)) {
                 $this->pageTitle = $text->t("main.category");
-                $text->addError($text->t("main.category") . " " . $oWebsite->t("errors.not_found"));
+                $text->addError($text->t("main.category") . " " . $website->t("errors.not_found"));
                 $this->view = new EmptyView($text);
             } else {
                 $articles = $oArticles->getArticlesData($categoryId);

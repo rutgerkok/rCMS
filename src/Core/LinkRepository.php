@@ -14,15 +14,15 @@ class LinkRepository extends Repository {
     const MAX_LINK_TEXT_LENGTH = 50;
     const MAX_MENU_NAME_LENGTH = 50;
 
-    protected $websiteObject;
+    protected $website;
     protected $linkIdField;
     protected $linkTextField;
     protected $linkUrlField;
     protected $menuIdField;
 
-    public function __construct(Website $oWebsite) {
-        parent::__construct($oWebsite->getDatabase());
-        $this->websiteObject = $oWebsite;
+    public function __construct(Website $website) {
+        parent::__construct($website->getDatabase());
+        $this->website = $website;
 
         $this->linkIdField = new Field(Field::TYPE_PRIMARY_KEY, "id", "link_id");
         $this->linkTextField = new Field(Field::TYPE_STRING, "text", "link_text");
@@ -95,15 +95,15 @@ class LinkRepository extends Repository {
      * @return string The HTML of the menu.
      */
     public function getMenuTop(CategoryRepository $oCats) {
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
 
 
         $links = array();
 
         // Add link to homepage
-        $links[] = Link::createTemporary($oWebsite->getUrlMain(), $oWebsite->t("main.home"));
+        $links[] = Link::createTemporary($website->getUrlMain(), $website->t("main.home"));
 
-        if ($oWebsite->getDatabase()->isUpToDate() && $oWebsite->getDatabase()->isInstalled()) {
+        if ($website->getDatabase()->isUpToDate() && $website->getDatabase()->isInstalled()) {
             $categories = $oCats->getCategories();
             foreach ($categories as $category) {
                 if ($category->isStandardCategory()) {
@@ -111,12 +111,12 @@ class LinkRepository extends Repository {
                 }
                 $links[] = Link::createTemporary(
                                 // Decode url, it will be encoded again by get_as_html
-                                html_entity_decode($oWebsite->getUrlPage("category", $category->getId())), $category->getName()
+                                html_entity_decode($website->getUrlPage("category", $category->getId())), $category->getName()
                 );
             }
         } else {
             // No categories yet, so database is not installed
-            $links[] = Link::createTemporary($oWebsite->getUrlPage("installing_database"), "Setup database");
+            $links[] = Link::createTemporary($website->getUrlPage("installing_database"), "Setup database");
         }
 
         return $links;
@@ -134,7 +134,7 @@ class LinkRepository extends Repository {
     public function getAsHtml(array $menu_array, $open_in_new_window = false,
             $edit_links = false) {
         $returnValue = "";
-        $oWebsite = $this->websiteObject;
+        $website = $this->website;
         foreach ($menu_array as $link) {
             $returnValue.= '<li><a href="' . htmlSpecialChars($link->getUrl()) . '"';
             if ($open_in_new_window) {
@@ -142,8 +142,8 @@ class LinkRepository extends Repository {
             }
             $returnValue.= ">" . htmlSpecialChars($link->getText()) . "</a>";
             if ($edit_links) {
-                $returnValue.=' <a class="arrow" href="' . $oWebsite->getUrlPage("edit_link", $link->getId()) . '">' . $oWebsite->t("main.edit") . "</a>";
-                $returnValue.=' <a class="arrow" href="' . $oWebsite->getUrlPage("delete_link", $link->getId()) . '">' . $oWebsite->t("main.delete") . "</a>";
+                $returnValue.=' <a class="arrow" href="' . $website->getUrlPage("edit_link", $link->getId()) . '">' . $website->t("main.edit") . "</a>";
+                $returnValue.=' <a class="arrow" href="' . $website->getUrlPage("delete_link", $link->getId()) . '">' . $website->t("main.delete") . "</a>";
             }
             $returnValue.= "</li>\n";
         }
@@ -163,7 +163,7 @@ class LinkRepository extends Repository {
             $this->saveEntity($link);
             return true;
         } catch (PDOException $e) {
-            $this->websiteObject->getText()->logException("Failed to add link", $e);
+            $this->website->getText()->logException("Failed to add link", $e);
             return false;
         }
     }
@@ -176,7 +176,7 @@ class LinkRepository extends Repository {
             $this->saveEntity($link, array($this->linkTextField, $this->linkUrlField));
             return true;
         } catch (PDOException $e) {
-            $this->websiteObject->getText()->logException("Failed to update link", $e);
+            $this->website->getText()->logException("Failed to update link", $e);
             return false;
         }
     }
@@ -192,8 +192,8 @@ class LinkRepository extends Repository {
             $this->where($this->linkIdField, '=', $link_id)->deleteOneOrFail();
             return true;
         } catch (NotFoundException $e) {
-            $text = $this->websiteObject->getText();
-            $text->addError($oWebsite->t("main.link") . " " . $oWebsite->t("errors.is_not_removed"));
+            $text = $this->website->getText();
+            $text->addError($website->t("main.link") . " " . $website->t("errors.is_not_removed"));
             $text->logException("Error deleting link", $e);
             return false;
         }

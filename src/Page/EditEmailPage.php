@@ -13,7 +13,7 @@ class EditEmailPage extends EditPasswordPage {
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
         if ($request->hasRequestValue("email")) {
@@ -22,44 +22,44 @@ class EditEmailPage extends EditPasswordPage {
             if (Validate::email($email)) {
                 // Valid email
                 $this->user->setEmail($email);
-                $userRepo = $oWebsite->getAuth()->getUserRepository();
+                $userRepo = $website->getAuth()->getUserRepository();
                 $userRepo->save($this->user);
                 // Saved
-                $textToDisplay.='<p>' . $oWebsite->t("users.email") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                $textToDisplay.='<p>' . $website->t("users.email") . ' ' . $website->t("editor.is_changed") . '</p>';
                 // Don't show form
                 $show_form = false;
             } else {
                 // Invalid email
-                $oWebsite->addError($oWebsite->t("users.email") . ' ' . Validate::getLastError($oWebsite));
-                $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.email", true) . '</em></p>';
+                $website->addError($website->t("users.email") . ' ' . Validate::getLastError($website));
+                $textToDisplay.='<p><em>' . $website->tReplacedKey("errors.your_input_has_not_been_changed", "users.email", true) . '</em></p>';
             }
         }
         // Show form
         if ($show_form) {
             // Text above form
-            $textToDisplay.= "<p>" . $oWebsite->t("editor.email.edit.explained") . "</p>\n";
+            $textToDisplay.= "<p>" . $website->t("editor.email.edit.explained") . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $oWebsite->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself
             $email = htmlSpecialChars($request->getRequestString("email", $this->user->getEmail()));
             $textToDisplay.=<<<EOT
-                <form action="{$oWebsite->getUrlMain()}" method="post">
+                <form action="{$website->getUrlMain()}" method="post">
                     <p>
-                        <label for="email">{$oWebsite->t('users.email')}:</label><br /><input type="text" id="email" name="email" value="$email"/><br />
+                        <label for="email">{$website->t('users.email')}:</label><br /><input type="text" id="email" name="email" value="$email"/><br />
                     </p>
                     <p>
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
                         <input type="hidden" name="p" value="edit_email" />
-                        <input type="submit" value="{$oWebsite->t('editor.email.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('editor.email.edit')} " class="button" />
                     </p>
                 </form>
 EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($oWebsite);
+        $textToDisplay.= $this->get_account_links_html($website);
 
         return $textToDisplay;
     }

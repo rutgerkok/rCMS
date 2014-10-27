@@ -32,9 +32,9 @@ class EditPasswordPage extends Page {
      * @throws NotFoundException If the id in the request is invalid or if the user can only edit him/herself.
      */
     private function getEditingUser(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         // Will always have a value - minimum rank of this page is user rank
-        $loggedInUser = $oWebsite->getAuth()->getCurrentUser();
+        $loggedInUser = $website->getAuth()->getCurrentUser();
 
         // Check if editing another user
         if (!$request->hasParameter(0)) {
@@ -45,11 +45,11 @@ class EditPasswordPage extends Page {
             return $loggedInUser;
         }
 
-        if ($this->can_user_edit_someone_else($oWebsite)) {
-            $userRepo = $oWebsite->getAuth()->getUserRepository();
+        if ($this->can_user_edit_someone_else($website)) {
+            $userRepo = $website->getAuth()->getUserRepository();
             return $userRepo->getById($userId);
         } else {
-            $oWebsite->addError($oWebsite->t("users.account") . " " . $oWebsite->t("errors.not_editable"));
+            $website->addError($website->t("users.account") . " " . $website->t("errors.not_editable"));
             throw new NotFoundException();
         }
     }
@@ -58,11 +58,11 @@ class EditPasswordPage extends Page {
      * Returns whether the user viewing this page can edit the account of
      * someone else. By default, only admins can edit someone else, but this
      * can be overriden.
-     * @param Website $oWebsite The website object.
+     * @param Website $website The website object.
      * @return boolean Whether the user can edit someone else.
      */
-    public function can_user_edit_someone_else(Website $oWebsite) {
-        return $oWebsite->isLoggedInAsStaff(true);
+    public function can_user_edit_someone_else(Website $website) {
+        return $website->isLoggedInAsStaff(true);
     }
 
     public function getPageTitle(Text $text) {
@@ -78,7 +78,7 @@ class EditPasswordPage extends Page {
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
+        $website = $request->getWebsite();
         $show_form = true;
         $textToDisplay = "";
         if ($request->hasRequestValue("password")) {
@@ -91,33 +91,33 @@ class EditPasswordPage extends Page {
                 if (Validate::password($password, $password2)) {
                     // Valid password
                     $this->user->setPassword($password);
-                    $userRepo = $oWebsite->getAuth()->getUserRepository();
+                    $userRepo = $website->getAuth()->getUserRepository();
                     $userRepo->save($this->user);
                     // Saved
-                    $textToDisplay.='<p>' . $oWebsite->t("users.password") . ' ' . $oWebsite->t("editor.is_changed") . '</p>';
+                    $textToDisplay.='<p>' . $website->t("users.password") . ' ' . $website->t("editor.is_changed") . '</p>';
                     // Update login cookie (only when changing your own password)
                     if (!$this->editing_someone_else) {
-                        $oWebsite->getAuth()->setLoginCookie();
+                        $website->getAuth()->setLoginCookie();
                     }
                     // Don't show form
                     $show_form = false;
                 } else {
                     // Invalid new password
-                    $oWebsite->addError($oWebsite->t("users.password") . ' ' . Validate::getLastError($oWebsite));
-                    $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
+                    $website->addError($website->t("users.password") . ' ' . Validate::getLastError($website));
+                    $textToDisplay.='<p><em>' . $website->tReplacedKey("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
                 }
             } else {
                 // Invalid old password
-                $oWebsite->addError($oWebsite->t("users.old_password") . ' ' . $oWebsite->t("errors.not_correct"));
-                $textToDisplay.='<p><em>' . $oWebsite->tReplacedKey("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
+                $website->addError($website->t("users.old_password") . ' ' . $website->t("errors.not_correct"));
+                $textToDisplay.='<p><em>' . $website->tReplacedKey("errors.your_input_has_not_been_changed", "users.password", true) . '</em></p>';
             }
         }
         // Show form
         if ($show_form) {
             // Text above form
-            $textToDisplay.= "<p>" . $oWebsite->tReplaced("editor.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "</p>\n";
+            $textToDisplay.= "<p>" . $website->tReplaced("editor.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $oWebsite->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself
@@ -125,53 +125,53 @@ class EditPasswordPage extends Page {
             if (!$this->editing_someone_else) {
                 // Add field to verify old password when editing yourself
                 $old_password_text = <<<EOT
-                    <label for="old_password">{$oWebsite->t('users.old_password')}:</label><span class="required">*</span><br />
+                    <label for="old_password">{$website->t('users.old_password')}:</label><span class="required">*</span><br />
                     <input type="password" id="old_password" name="old_password" value=""/><br />
 EOT;
             }
             $textToDisplay.=<<<EOT
-                <p>{$oWebsite->t("main.fields_required")}</p>
-                <form action="{$oWebsite->getUrlMain()}" method="post">
+                <p>{$website->t("main.fields_required")}</p>
+                <form action="{$website->getUrlMain()}" method="post">
                     <p>
                         $old_password_text
-                        <label for="password">{$oWebsite->t('users.password')}:</label><span class="required">*</span><br />
+                        <label for="password">{$website->t('users.password')}:</label><span class="required">*</span><br />
                         <input type="password" id="password" name="password" value=""/><br />
-                        <label for="password2">{$oWebsite->t('editor.password.repeat')}:</label><span class="required">*</span><br />
+                        <label for="password2">{$website->t('editor.password.repeat')}:</label><span class="required">*</span><br />
                         <input type="password" id="password2" name="password2" value=""/><br />
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_password" />
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
-                        <input type="submit" value="{$oWebsite->t('editor.password.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('editor.password.edit')} " class="button" />
                     </p>
                 </form>
 EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($oWebsite);
+        $textToDisplay.= $this->get_account_links_html($website);
 
         return $textToDisplay;
     }
 
     /** Gets the links for the bottom of the page */
-    public function get_account_links_html(Website $oWebsite) {
+    public function get_account_links_html(Website $website) {
         $textToDisplay = "";
         if ($this->editing_someone_else) {
             // Editing someone else, don't show "My account" link
             $textToDisplay .= <<<EOT
             <p>
-                <a class="arrow" href="{$oWebsite->getUrlPage("account", $this->user->getId())}">
-                    {$oWebsite->tReplaced("users.profile_page_of", $this->user->getDisplayName())}
+                <a class="arrow" href="{$website->getUrlPage("account", $this->user->getId())}">
+                    {$website->tReplaced("users.profile_page_of", $this->user->getDisplayName())}
                 </a><br />
-                <a class="arrow" href="{$oWebsite->getUrlPage("account_management")}">
-                    {$oWebsite->t("main.account_management")}
+                <a class="arrow" href="{$website->getUrlPage("account_management")}">
+                    {$website->t("main.account_management")}
                 </a>
 EOT;
         } else {
-            $textToDisplay .= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("account") . '">' . $oWebsite->t("main.my_account") . "</a>\n";
-            if ($oWebsite->isLoggedInAsStaff(true)) {
-                $textToDisplay .= '<br /><a class="arrow" href="' . $oWebsite->getUrlPage("account_management") . '">' . $oWebsite->t("main.account_management") . "</a>\n";
+            $textToDisplay .= '<p><a class="arrow" href="' . $website->getUrlPage("account") . '">' . $website->t("main.my_account") . "</a>\n";
+            if ($website->isLoggedInAsStaff(true)) {
+                $textToDisplay .= '<br /><a class="arrow" href="' . $website->getUrlPage("account_management") . '">' . $website->t("main.account_management") . "</a>\n";
             }
             $textToDisplay.= "</p>";
         }

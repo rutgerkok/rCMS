@@ -11,6 +11,6 @@ require("environment.php");
 session_start();
 
 // Display site
-$oWebsite = new Website();
-$pageRenderer = new PageRenderer($oWebsite, PageRenderer::getPagePath());
+$website = new Website();
+$pageRenderer = new PageRenderer($website, PageRenderer::getPagePath());
 $pageRenderer->render();

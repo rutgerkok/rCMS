@@ -21,24 +21,24 @@ class ArchivePage extends Page {
     private $showEditLinks;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $this->showEditLinks = $oWebsite->isLoggedInAsStaff();
+        $website = $request->getWebsite();
+        $this->showEditLinks = $website->isLoggedInAsStaff();
 
         $this->selectedYear = $request->getRequestInt("year", 0);
         $this->selectedCategory = $request->getParamInt(0);
 
         // Fetch all categories
-        $categories = new CategoryRepository($oWebsite);
+        $categories = new CategoryRepository($website);
         $this->allCategories = $categories->getCategoriesArray();
 
         // Check if valid category
         if ($this->selectedCategory != 0 && !array_key_exists($this->selectedCategory, $this->allCategories)) {
-            $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("main.category") . " " . $website->t("errors.not_found"));
             $this->selectedCategory = 0;
         }
 
         // Fetch all articles
-        $articles = new ArticleRepository($oWebsite);
+        $articles = new ArticleRepository($website);
         $this->articleCountInYears = $articles->getArticleCountInYears($this->selectedCategory);
         $this->foundArticles = $articles->getArticlesDataArchive($this->selectedYear, $this->selectedCategory);
     }

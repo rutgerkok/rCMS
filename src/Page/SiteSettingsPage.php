@@ -21,16 +21,16 @@ class SiteSettingsPage extends Page {
     protected $token;
 
     public function init(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $this->title = $oWebsite->getConfig()->get("title");
-        $this->copyright = $oWebsite->getConfig()->get("copyright");
-        $this->password = $oWebsite->getConfig()->get("password");
-        $this->language = $oWebsite->getConfig()->get("language");
-        $this->theme = $oWebsite->getConfig()->get("theme");
-        $this->user_account_creation = $oWebsite->getConfig()->get("user_account_creation");
+        $website = $request->getWebsite();
+        $this->title = $website->getConfig()->get("title");
+        $this->copyright = $website->getConfig()->get("copyright");
+        $this->password = $website->getConfig()->get("password");
+        $this->language = $website->getConfig()->get("language");
+        $this->theme = $website->getConfig()->get("theme");
+        $this->user_account_creation = $website->getConfig()->get("user_account_creation");
 
         if (isSet($_REQUEST["submit"]) && Validate::requestToken($request)) {
-            $this->save_values($oWebsite);
+            $this->save_values($website);
             $this->saved = true;
         }
 
@@ -56,19 +56,19 @@ class SiteSettingsPage extends Page {
     }
 
     public function getPageContent(Request $request) {
-        $oWebsite = $request->getWebsite();
-        $themes = $this->get_sub_directory_names($oWebsite->getUriThemes());
-        $languages = $this->get_sub_directory_names($oWebsite->getUriTranslations());
+        $website = $request->getWebsite();
+        $themes = $this->get_sub_directory_names($website->getUriThemes());
+        $languages = $this->get_sub_directory_names($website->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';
-        $top_message = $oWebsite->t("site_settings.editing_site_settings.explained");
+        $top_message = $website->t("site_settings.editing_site_settings.explained");
         $tokenName = RequestToken::FIELD_NAME;
         $tokenHtml = htmlSpecialChars($this->token->getTokenString());
 
         if ($this->saved) {
             $top_message = <<<EOT
-                <em>{$oWebsite->t("site_settings.site_settings")} {$oWebsite->t("editor.are_changed")}</em>
-                <a class="arrow" href="{$oWebsite->getUrlPage("admin")}">
-                    {$oWebsite->t("main.admin")}
+                <em>{$website->t("site_settings.site_settings")} {$website->t("editor.are_changed")}</em>
+                <a class="arrow" href="{$website->getUrlPage("admin")}">
+                    {$website->t("main.admin")}
                 </a>
 EOT;
         }
@@ -78,73 +78,73 @@ EOT;
                 $top_message
             </p>
             <p>
-                {$oWebsite->t("main.fields_required")}
+                {$website->t("main.fields_required")}
             </p>
-            <form action="{$oWebsite->getUrlPage("site_settings")}" method="post">
+            <form action="{$website->getUrlPage("site_settings")}" method="post">
                 <p>
-                    <label for="option_title">{$oWebsite->t("site_settings.title")}</label>:<span class="required">*</span>
+                    <label for="option_title">{$website->t("site_settings.title")}</label>:<span class="required">*</span>
                     <br />
                     <input type="text" name="option_title" id="option_title" value="{$this->title}" />
                     <br />
-                    <em>{$oWebsite->t("site_settings.title.explained")}</em>
+                    <em>{$website->t("site_settings.title.explained")}</em>
                 </p>
                 <p>
-                    <label for="option_copyright">{$oWebsite->t("site_settings.copyright")}</label>:
+                    <label for="option_copyright">{$website->t("site_settings.copyright")}</label>:
                     <br />
                     <input type="text" name="option_copyright" id="option_copyright" value="{$this->copyright}" />
                     <br />
-                    <em>{$oWebsite->t("site_settings.copyright.explained")}</em>
+                    <em>{$website->t("site_settings.copyright.explained")}</em>
                 </p>
                 <p>
-                    <label for="option_password">{$oWebsite->t("site_settings.password")}</label>:
+                    <label for="option_password">{$website->t("site_settings.password")}</label>:
                     <br />
                     <input type="text" name="option_password" id="option_password" value="{$this->password}" />
                     <br />
-                    <em>{$oWebsite->t("site_settings.password.explained")}</em>
+                    <em>{$website->t("site_settings.password.explained")}</em>
                 </p>
                 <p>
-                    <label for="option_language">{$oWebsite->t("site_settings.language")}</label>:<span class="required">*</span>
+                    <label for="option_language">{$website->t("site_settings.language")}</label>:<span class="required">*</span>
                     <br />
                     {$this->get_dropdown_list("option_language", $languages, $this->language, true)}
                     <br />
-                    <em>{$oWebsite->t("site_settings.language.explained")}</em>
+                    <em>{$website->t("site_settings.language.explained")}</em>
                 </p>
                 <p>
-                    <label for="option_theme">{$oWebsite->t("site_settings.theme")}</label>:<span class="required">*</span>
+                    <label for="option_theme">{$website->t("site_settings.theme")}</label>:<span class="required">*</span>
                     <br />
                     {$this->get_dropdown_list("option_theme", $themes, $this->theme, true)}
                     <br />
-                    <em>{$oWebsite->t("site_settings.theme.explained")}</em>
+                    <em>{$website->t("site_settings.theme.explained")}</em>
                 </p>
                 <p>
                     <label for="option_user_account_creation">
                         <input class="checkbox" type="checkbox" name="option_user_account_creation" id="option_user_account_creation" $user_account_creation_checked />
-                        {$oWebsite->t("site_settings.user_account_creation")}
+                        {$website->t("site_settings.user_account_creation")}
                     </label>
                     <br />
-                    <em>{$oWebsite->t("site_settings.user_account_creation.explained")}</em>
+                    <em>{$website->t("site_settings.user_account_creation.explained")}</em>
                 </p>
                 <p>
                     <input type="hidden" name="$tokenName" value="$tokenHtml" />
-                    <input type="submit" name="submit" class="button primary_button" value="{$oWebsite->t("editor.save")}" />
+                    <input type="submit" name="submit" class="button primary_button" value="{$website->t("editor.save")}" />
                 </p>
             </form>
             <p>
-                <a class="arrow" href="{$oWebsite->getUrlPage("admin")}">
-                    {$oWebsite->t("main.admin")}
+                <a class="arrow" href="{$website->getUrlPage("admin")}">
+                    {$website->t("main.admin")}
                 </a>
             </p>
 EOT;
     }
 
-    protected function save_values(Website $oWebsite) {
-        $config = $oWebsite->getConfig();
-        $database = $oWebsite->getDatabase();
+    protected function save_values(Website $website) {
+        $config = $website->getConfig();
+        $database = $website->getDatabase();
 
         // Title, copyright, password
-        $this->save_string($oWebsite, "title", false);
-        $this->save_string($oWebsite, "copyright", true);
-        $this->save_string($oWebsite, "password", true);
+        $this->save_string($website, "title", false);
+        $this->save_string($website, "copyright", true);
+        $this->save_string($website, "password", true);
 
         // If a password is set, pass it as a parameter, to avoid getting locked out
         if (!empty($this->password)) {
@@ -162,31 +162,31 @@ EOT;
         }
 
         // Language
-        $language = $oWebsite->getRequestString("option_language", $this->language);
-        if (is_dir($oWebsite->getUriTranslations($language))) {
+        $language = $website->getRequestString("option_language", $this->language);
+        if (is_dir($website->getUriTranslations($language))) {
             $this->language = $language;
             $config->set($database, "language", $language);
         } else {
-            $oWebsite->addError($oWebsite->t("site_settings.language") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("site_settings.language") . " " . $website->t("errors.not_found"));
         }
 
         // Theme
-        $theme = $oWebsite->getRequestString("option_theme", $this->theme);
-        if (is_dir($oWebsite->getUriThemes() . $theme . '/')) {
+        $theme = $website->getRequestString("option_theme", $this->theme);
+        if (is_dir($website->getUriThemes() . $theme . '/')) {
             $this->theme = $theme;
             $config->set($database, "theme", $theme);
         } else {
-            $oWebsite->addError($oWebsite->t("site_settings.theme") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("site_settings.theme") . " " . $website->t("errors.not_found"));
         }
     }
 
-    protected function save_string(Website $oWebsite, $name, $optional) {
-        $value = trim($oWebsite->getRequestString("option_$name", $this->$name));
+    protected function save_string(Website $website, $name, $optional) {
+        $value = trim($website->getRequestString("option_$name", $this->$name));
         if ($optional || !empty($value)) {
             $this->$name = substr($value, 0, Website::MAX_SITE_OPTION_LENGTH);
-            $oWebsite->getConfig()->set($oWebsite->getDatabase(), $name, $this->$name);
+            $website->getConfig()->set($website->getDatabase(), $name, $this->$name);
         } else {
-            $oWebsite->addError($oWebsite->t("site_settings.$name") . " " . $oWebsite->t("errors.not_found"));
+            $website->addError($website->t("site_settings.$name") . " " . $website->t("errors.not_found"));
         }
     }
 

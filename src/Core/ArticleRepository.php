@@ -33,17 +33,17 @@ class ArticleRepository extends Repository {
     /**
      * @var Website The website.
      */
-    protected $websiteObject;
+    protected $website;
 
     /**
      * Constructs the article displayer.
-     * @param Website $websiteObject The website to use.
+     * @param Website $website The website to use.
      * @param Database $databaseObject Not needed, for backwards compability.
      */
-    public function __construct(Website $websiteObject,
+    public function __construct(Website $website,
             Database $databaseObject = null) {
-        parent::__construct($databaseObject ? : $websiteObject->getDatabase());
-        $this->websiteObject = $websiteObject;
+        parent::__construct($databaseObject ? : $website->getDatabase());
+        $this->website = $website;
 
         $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "artikel_id");
         $this->titleField = new Field(Field::TYPE_STRING, "title", "artikel_titel");
@@ -94,7 +94,7 @@ class ArticleRepository extends Repository {
 
     protected function whereRaw($sql, $params) {
         // Remove hidden articles for normal visitors
-        if (!$this->websiteObject->isLoggedInAsStaff()) {
+        if (!$this->website->isLoggedInAsStaff()) {
             if (!empty($sql)) {
                 $sql.= " AND ";
             }
@@ -122,7 +122,7 @@ class ArticleRepository extends Repository {
         } catch (NotFoundException $e) {
             return false;
         } catch (PDOException $e) {
-            $this->websiteObject->getText()->logException("Error deleting article", $e);
+            $this->website->getText()->logException("Error deleting article", $e);
             return false;
         }
     }
@@ -136,8 +136,8 @@ class ArticleRepository extends Repository {
             $this->saveEntity($article);
             return true;
         } catch (PDOException $e) {
-            $website = $this->websiteObject;
-            $website->addError($oWebsite->t("main.article") . ' ' . $oWebsite->t("errors.not_saved"));
+            $website = $this->website;
+            $website->addError($website->t("main.article") . ' ' . $website->t("errors.not_saved"));
             $website->getText()->logException("Error saving article", $e);
             return false;
         }

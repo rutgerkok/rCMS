@@ -11,11 +11,11 @@ header("Content-type: application/rss+xml");
 require("environment.php");
 
 // Objects
-$oWebsite = new Website();
-$oArticles = new ArticleRepository($oWebsite);
+$website = new Website();
+$oArticles = new ArticleRepository($website);
 
 // Get category
-$category_id = $oWebsite->getRequestInt("category");
+$category_id = $website->getRequestInt("category");
 
 // Get the data
 $articles = $oArticles->getArticlesData($category_id, 15);
@@ -27,7 +27,7 @@ if ($articles) {
         $pubdate = $article->created->format(DateTime::RSS);
         $textToDisplay.="<item>\n";
         $textToDisplay.="  <title>" . htmlSpecialChars($article->title) . "</title>\n";
-        $textToDisplay.="  <link>" . $oWebsite->getUrlPage('article', $article->id) . "</link>\n";
+        $textToDisplay.="  <link>" . $website->getUrlPage('article', $article->id) . "</link>\n";
         $textToDisplay.="  <description>" . htmlSpecialChars($article->intro) . "</description>\n";
         $textToDisplay.="  <pubDate>" . htmlSpecialChars($pubdate) . "</pubDate>\n";
         $textToDisplay.="  <author>" . htmlSpecialChars($article->author) . "</author>\n";
@@ -44,8 +44,8 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 
 <rss version="2.0">
     <channel>
-        <title><?php echo htmlSpecialChars($oWebsite->getConfig()->get('title')) ?></title>
-        <link><?php echo htmlSpecialChars($oWebsite->getUrlMain()) ?></link>
+        <title><?php echo htmlSpecialChars($website->getConfig()->get('title')) ?></title>
+        <link><?php echo htmlSpecialChars($website->getUrlMain()) ?></link>
         <?php
         echo $textToDisplay;
         ?>

@@ -8,14 +8,14 @@ namespace Rcms\Core;
 class Widgets {
 
     // Reference to the Website.
-    private $websiteObject;
+    private $website;
     // Cache of all loaded widgets for this page
     private static $loadedWidgets = array();
     // Temporary variable to store the directory name when echoeing the widgets
     private $widgetDirectoryName;
 
-    public function __construct(Website $oWebsite) {
-        $this->websiteObject = $oWebsite;
+    public function __construct(Website $website) {
+        $this->website = $website;
     }
 
     /**
@@ -24,7 +24,7 @@ class Widgets {
      */
     public function getInstalledWidgets() {
         $widgets = array();
-        $directoryToScan = $this->websiteObject->getUriWidgets();
+        $directoryToScan = $this->website->getUriWidgets();
 
         // Check directory
         if (!is_dir($directoryToScan)) {
@@ -51,8 +51,8 @@ class Widgets {
      * @return array Array of widget, (numeric) id => name
      */
     public function getWidgetAreas() {
-        $areas = $this->websiteObject->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->websiteObject);
-        $areas[1] = $this->websiteObject->t("widgets.homepage");
+        $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
+        $areas[1] = $this->website->t("widgets.homepage");
         return $areas;
     }
 
@@ -62,11 +62,11 @@ class Widgets {
      * @return \PlacedWidget List of placed widgets.
      */
     public function getPlacedWidgetsFromSidebar($sidebar_id) {
-        $oWebsite = $this->websiteObject;
-        $oDB = $oWebsite->getDatabase();
+        $website = $this->website;
+        $oDB = $website->getDatabase();
 
         $sidebar_id = (int) $sidebar_id;
-        $widgets_directory = $oWebsite->getUriWidgets();
+        $widgets_directory = $website->getUriWidgets();
 
         $widgets = array();
 
@@ -86,12 +86,12 @@ class Widgets {
      */
     public function getPlacedWidget($widget_id) {
         $widget_id = (int) $widget_id;
-        $oWebsite = $this->websiteObject;
-        $oDB = $oWebsite->getDatabase();
+        $website = $this->website;
+        $oDB = $website->getDatabase();
         $result = $oDB->query("SELECT `widget_naam`, `widget_data`, `widget_priority`, `sidebar_id` FROM `widgets` WHERE `widget_id` = $widget_id");
         if ($result && $oDB->rows($result) > 0) {
             list($name, $data, $priority, $sidebar_id) = $oDB->fetchNumeric($result);
-            return new PlacedWidget($widget_id, $sidebar_id, $name, $data, $priority, $oWebsite->getUriWidgets() . "/" . $name);
+            return new PlacedWidget($widget_id, $sidebar_id, $name, $data, $priority, $website->getUriWidgets() . "/" . $name);
         } else {
             return null;
         }
@@ -105,7 +105,7 @@ class Widgets {
     public function getWidgetDefinition($widgetDirectoryName) {
         if (!isSet(self::$loadedWidgets[$widgetDirectoryName])) {
             $this->widgetDirectoryName = $widgetDirectoryName;
-            $file = $this->websiteObject->getUriWidgets() . "/" . $widgetDirectoryName . "/main.php";
+            $file = $this->website->getUriWidgets() . "/" . $widgetDirectoryName . "/main.php";
             if (file_exists($file)) {
                 require($file);
             }
@@ -119,9 +119,9 @@ class Widgets {
 
     // Echoes all widgets in the specified sidebar
     public function getWidgetsHTML($sidebarId) {
-        $oWebsite = $this->websiteObject;
-        $oDB = $oWebsite->getDatabase();
-        $loggedInAsAdmin = $oWebsite->isLoggedInAsStaff(true);
+        $website = $this->website;
+        $oDB = $website->getDatabase();
+        $loggedInAsAdmin = $website->isLoggedInAsStaff(true);
         $output = "";
         $sidebarId = (int) $sidebarId;
 
@@ -133,35 +133,35 @@ class Widgets {
 
             // Try to load it if it isn't loaded yet
             if (!isSet(Widgets::$loadedWidgets[$directory_name])) {
-                $file = $oWebsite->getUriWidgets() . $directory_name . "/main.php";
+                $file = $website->getUriWidgets() . $directory_name . "/main.php";
                 if (file_exists($file)) {
                     require($file);
                 } else {
-                    $oWebsite->addError("The widget $directory_name (id=$id) was not found. File <code>$file</code> was missing.", "A widget was missing.");
+                    $website->addError("The widget $directory_name (id=$id) was not found. File <code>$file</code> was missing.", "A widget was missing.");
                 }
             }
 
             // Check if load was succesfull. Display widget or display error.
             if (isSet(Widgets::$loadedWidgets[$directory_name])) {
                 $output.= '<div class="widget">';
-                $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->websiteObject, $id, JsonHelper::stringToArray($data));
+                $output.= Widgets::$loadedWidgets[$directory_name]->getWidget($this->website, $id, JsonHelper::stringToArray($data));
                 if ($loggedInAsAdmin) {
                     // Links for editing and deleting
                     $output.= "<p>\n";
-                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("edit_widget", $id) . '">' . $oWebsite->t("main.edit") . " " . $oWebsite->t("main.widget") . '</a> ';
-                    $output.= '<a class="arrow" href="' . $oWebsite->getUrlPage("delete_widget", $id) . '">' . $oWebsite->t("main.delete") . " " . $oWebsite->t("main.widget") . '</a> ';
+                    $output.= '<a class="arrow" href="' . $website->getUrlPage("edit_widget", $id) . '">' . $website->t("main.edit") . " " . $website->t("main.widget") . '</a> ';
+                    $output.= '<a class="arrow" href="' . $website->getUrlPage("delete_widget", $id) . '">' . $website->t("main.delete") . " " . $website->t("main.widget") . '</a> ';
                     $output.= "</p>\n";
                 }
                 $output.= '</div>';
             } else {
-                $oWebsite->addError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.", "A widget was missing.");
+                $website->addError("The widget $directory_name (id=$id) could not be loaded. File <code>$file</code> is incorrect.", "A widget was missing.");
             }
         }
 
         // Link to manage widgets
         if ($loggedInAsAdmin) {
-            $output.= '<p><a class="arrow" href="' . $oWebsite->getUrlPage("widgets") . '">';
-            $output.= $oWebsite->t("main.manage") . " " . strToLower($oWebsite->t("main.widgets"));
+            $output.= '<p><a class="arrow" href="' . $website->getUrlPage("widgets") . '">';
+            $output.= $website->t("main.manage") . " " . strToLower($website->t("main.widgets"));
             $output.= "</a></p>\n";
         }
 

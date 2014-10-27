@@ -18,7 +18,7 @@ class WidgetCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
 
-    public function getText(Website $oWebsite, $id, $data) {
+    public function getText(Website $website, $id, $data) {
 
 
         // Title
@@ -28,9 +28,9 @@ class WidgetCalendar extends WidgetDefinition {
         }
 
         $now = new DateTime();
-        $oArticles = new ArticleRepository($oWebsite);
+        $oArticles = new ArticleRepository($website);
         $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
-        $calendar = new CalendarView($oWebsite->getText(), $now, $articlesInMonth, $oWebsite->isLoggedInAsStaff());
+        $calendar = new CalendarView($website->getText(), $now, $articlesInMonth, $website->isLoggedInAsStaff());
 
         $monthName = ucFirst($calendar->getMonthName($now));
         $year = $now->format('Y');
@@ -39,30 +39,30 @@ class WidgetCalendar extends WidgetDefinition {
             <h3>$monthName $year</h3>
             {$calendar->getText()}
             <p>
-                <a class="arrow" href="{$oWebsite->getUrlPage("calendar", $year)}">
-                    {$oWebsite->tReplaced("calendar.calendar_for_year", $year)}
+                <a class="arrow" href="{$website->getUrlPage("calendar", $year)}">
+                    {$website->tReplaced("calendar.calendar_for_year", $year)}
                 </a>
             </p>
 WIDGET;
     }
 
-    public function getEditor(Website $oWebsite, $id, $data) {
+    public function getEditor(Website $website, $id, $data) {
         $max_title_length = self::MAX_TITLE_LENGTH;
         $title = isSet($data["title"]) ? $data["title"] : "";
         return <<<EOT
             <p>
-                <label for="title_$id">{$oWebsite->t("widgets.title")}</label>:<br />
+                <label for="title_$id">{$website->t("widgets.title")}</label>:<br />
                 <input type="text" name="title_$id" id="title_$id" value="$title" maxlength="$max_title_length" />
             </p>
 EOT;
     }
 
-    public function parseData(Website $oWebsite, $id) {
+    public function parseData(Website $website, $id) {
         $data = array();
-        $data["title"] = $oWebsite->getRequestString("title_" . $id, "");
+        $data["title"] = $website->getRequestString("title_" . $id, "");
         if (strLen($data["title"]) > self::MAX_TITLE_LENGTH) {
             // Limit title length
-            $oWebsite->addError($oWebsite->t("widgets.title") . " " . $oWebsite->tReplaced("errors.too_long_num", self::MAX_TITLE_LENGTH));
+            $website->addError($website->t("widgets.title") . " " . $website->tReplaced("errors.too_long_num", self::MAX_TITLE_LENGTH));
             $data["valid"] = false;
         }
         return $data;
