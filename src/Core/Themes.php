@@ -96,12 +96,4 @@ class Themes {
         return $this->websiteObject->getUrlThemes() . $theme->getName() . "/";
     }
 
-    /**
-     * Returns whether the user viewing the page is logged in.
-     * @return boolean True if logged in, false otherwise.
-     */
-    public function isLoggedIn() {
-        return $this->websiteObject->isLoggedIn();
-    }
-
 }

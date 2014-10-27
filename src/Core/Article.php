@@ -10,6 +10,14 @@ use Rcms\Core\Repository\Entity;
  * caution (read: htmlSpecialChars)
  */
 class Article extends Entity {
+    
+    const MAX_TITLE_LENGTH = 100;
+    const MIN_TITLE_LENGTH = 2;
+    const MAX_INTRO_LENGTH = 325;
+    const MIN_INTRO_LENGTH = 2;
+    const MAX_BODY_LENGTH = 65535;
+    const MIN_BODY_LENGTH = 9;
+    const MAX_FEATURED_IMAGE_URL_LENGTH = 150;
 
     public $id = 0;
     public $title = "";

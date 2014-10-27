@@ -5,6 +5,7 @@ namespace Rcms\Extend\Widget;
 use Rcms\Core\Editor;
 use Rcms\Core\Website;
 use Rcms\Core\WidgetDefinition;
+use Rcms\Page\View\Support\CKEditor;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -32,7 +33,7 @@ class WidgetRkokText extends WidgetDefinition {
     public function getEditor(Website $oWebsite, $id, $data) {
         $title = isSet($data["title"]) ? $data["title"] : "";
         $text = isSet($data["text"]) ? $data["text"] : "";
-        $oEditor = new Editor($oWebsite);
+        $oEditor = new CKEditor($oWebsite->getText(), $oWebsite->getConfig(), $oWebsite->getThemeManager());
 
         // Title
         $textToDisplay = "<p>\n";
@@ -46,7 +47,7 @@ class WidgetRkokText extends WidgetDefinition {
         $textToDisplay.= "<p>\n";
         $textToDisplay.= '<label for="text_' . $id . '">' . $oWebsite->t("editor.message") . "</label>:";
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
-        $textToDisplay.= $oEditor->get_text_editor("text_" . $id, $text);
+        $textToDisplay.= $oEditor->getEditor("text_" . $id, $text);
         $textToDisplay.= "</p>\n";
         return $textToDisplay;
     }

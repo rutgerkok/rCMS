@@ -1,5 +1,3 @@
-error_occured=Er is een fout opgetreden.
-errors_occured=Er zijn {0} fouten opgetreden.
 not_found=is niet gevonden.
 not_public=is niet openbaar.
 not_entered=is niet ingevuld.

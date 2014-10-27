@@ -14,6 +14,9 @@ class Config {
     const DEFAULT_THEME = "rkok";
     const DEFAULT_TITLE = "Welcome!";
 
+    const OPTION_CKEDITOR_URL = "ckeditor_url";
+    const OPTION_CKFINDER_URL = "ckfinder_url";
+
     private $config = array();
 
     /**
@@ -66,18 +69,19 @@ class Config {
      * Requires that there is a table called `settings` in the database 
      * with the columns `setting_name` and `setting_value`.
      * @param string $name Name of the setting.
-     * @return mixed false if not found, otherwise the value.
+     * @param mixed $default Default value for the setting
+     * @return mixed default value if not found, otherwise the value.
      */
-    public function get($name) {
+    public function get($name, $default = false) {
         if (isSet($this->config[$name])) {
             $value = $this->config[$name];
-            if (strToLower($value) == "false") {
+            if (strToLower($value) === "false") {
                 // Because "false" == true
                 return false;
             }
             return $value;
         } else {
-            return false;
+            return $default;
         }
     }
 

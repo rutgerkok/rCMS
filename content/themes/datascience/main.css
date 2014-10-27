@@ -282,7 +282,7 @@ div#contentadmin th, div#contentadmin td {
 }
 
 /* Forms */
-input, textarea {
+input, textarea, div.cke_editable {
     font-family: verdana, sans-serif;
     color: #4a7180;
     background: #fafafa;
@@ -292,7 +292,7 @@ input, textarea {
     padding: 3px;
     margin: 2px;
 }
-input:focus, textarea:focus, select:focus {
+input:focus, textarea:focus, select:focus, div.cke_focus {
     background: #efefef;
 }
 fieldset {
@@ -310,7 +310,7 @@ legend {
     font-weight: bold;
 }
 .button, button/*ook geschikt voor links*/ {
-    background: #ddd; 
+    background: #ddd;
     border: 0;
     color: #444444;
     border-radius: 4px;
@@ -344,7 +344,11 @@ legend {
 .full_width {
     width: 98%;
 }
-
+div.cke_editable {
+    min-height: 10em;
+    /* Makes sure that editor buttons don't hide rest of form */
+    margin-bottom: 70px;
+}
 
 /* Links */
 a {

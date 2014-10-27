@@ -166,16 +166,6 @@ SQL;
     // Lookup functions
 
     /**
-     * Returns an article with an id. Respects page protection. Id is casted.
-     * @param int $id The id of the article
-     * @return Article The article.
-     * @throws NotFoundException If the article does not exist.
-     */
-    public function getArticleData($id) {
-        return $this->getArticleOrFail($id);
-    }
-
-    /**
      * Gets an article by its id.
      * @param int $id Id of the article.
      * @return Article The article.
@@ -183,7 +173,7 @@ SQL;
      */
     public function getArticleOrFail($id) {
         return $this->where($this->getPrimaryKey(), '=', (int) $id)
-                        ->withExtraFields($this->bodyField, $this->showCommentsField)
+                        ->withAllFields()
                         ->selectOneOrFail();
     }
 

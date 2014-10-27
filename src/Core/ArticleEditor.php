@@ -9,135 +9,115 @@ use DateTime;
  */
 class ArticleEditor {
 
-    /** @var Website $websiteObject The website */
-    private $websiteObject;
 
     /** @var Article $articleObject The article being edited */
     private $articleObject;
 
     /**
      * Creates a new editor for the article.
-     * @param Website $website The website object.
      * @param Article $article The article object.
      */
-    public function __construct(Website $website, Article $article) {
-        $this->websiteObject = $website;
+    public function __construct(Article $article) {
         $this->articleObject = $article;
     }
 
-    public function processInput($inputArray, CategoryRepository $oCategories) {
-        $oWebsite = $this->websiteObject;
+    public function processInput(Text $text, Request $request, CategoryRepository $oCategories) {
         $article = $this->articleObject;
-        $sent = isSet($inputArray["submit"]);
         $noErrors = true;
 
         // Title
-        if (isSet($inputArray['article_title'])) {
-            $title = trim($oWebsite->getRequestString('article_title'));
-            if (strLen($title) > 100) {
-                $oWebsite->addError($oWebsite->t("articles.title") . " " . $oWebsite->tReplaced("errors.is_too_long_num", 100));
+        if ($request->hasRequestValue("article_title")) {
+            $title = trim($request->getRequestString('article_title'));
+            if (strLen($title) > Article::MAX_TITLE_LENGTH) {
+                $text->addError($text->t("articles.title") . " " . $text->tReplaced("errors.is_too_long_num", Article::MAX_TITLE_LENGTH));
                 $noErrors = false;
             }
-            if (strLen($title) < 2) {
-                $oWebsite->addError($oWebsite->tReplacedKey("errors.please_enter_this", "articles.title", true));
+            if (strLen($title) < Article::MIN_TITLE_LENGTH) {
+                $text->addError($text->tReplacedKey("errors.please_enter_this", "articles.title", true));
                 $noErrors = false;
             }
             $article->title = $title;
         }
 
         // Intro
-        if (isSet($inputArray['article_intro'])) {
-            $intro = trim($oWebsite->getRequestString('article_intro'));
-            if (strLen($intro) < 2) {
-                $oWebsite->addError($oWebsite->tReplacedKey("errors.please_enter_this", "articles.intro", true));
+        if ($request->hasRequestValue("article_intro")) {
+            $intro = trim($request->getRequestString("article_intro"));
+            if (strLen($intro) < Article::MIN_INTRO_LENGTH) {
+                $text->addError($text->tReplacedKey("errors.please_enter_this", "articles.intro", true));
                 $noErrors = false;
             }
-            if (strLen($intro) > 325) {
-                $oWebsite->addError($oWebsite->t("articles.intro") . " " . $oWebsite->tReplaced("errors.is_too_long_num", 325));
+            if (strLen($intro) > Article::MAX_INTRO_LENGTH) {
+                $text->addError($text->t("articles.intro") . " " . $text->tReplaced("errors.is_too_long_num", Article::MAX_INTRO_LENGTH));
                 $noErrors = false;
             }
             $article->intro = $intro;
         }
 
         // Body
-        if (isSet($inputArray['article_body'])) {
-            $body = trim($oWebsite->getRequestString('article_body'));
-            if (strLen($body) < 9) {
-                $oWebsite->addError($oWebsite->tReplacedKey("errors.please_enter_this", "articles.body", true));
+        if ($request->hasRequestValue("article_body")) {
+            $body = trim($request->getRequestString("article_body"));
+            if (strLen($body) < Article::MIN_BODY_LENGTH) {
+                $text->addError($text->tReplacedKey("errors.please_enter_this", "articles.body", true));
                 $noErrors = false;
             }
-            if (strLen($body) > 65535) {
-                $oWebsite->addError($oWebsite->t("articles.body") . " " . $oWebsite->tReplaced("errors.is_too_long_num", 65535));
+            if (strLen($body) > Article::MAX_BODY_LENGTH) {
+                $text->addError($text->t("articles.body") . " " . $text->tReplaced("errors.is_too_long_num", Article::MAX_BODY_LENGTH));
                 $noErrors = false;
             }
             $article->body = $body;
         }
 
         // Category
-        if (isSet($inputArray['article_category'])) {
-            $categoryId = (int) $oWebsite->getRequestString('article_category', 0);
+        if ($request->hasRequestValue("article_category")) {
+            $categoryId = (int) $request->getRequestString('article_category', 0);
             if ($categoryId == 0) {
-                // Silent failure when category id is set to 0
+                // Silent failure when category id is set to 0, as it is a default value
                 $noErrors = false;
             } elseif (!$oCategories->getCategoryName($categoryId)) {
-                $oWebsite->addError($oWebsite->t("main.category") . " " . $oWebsite->t("errors.not_found"));
+                $text->addError($text->t("main.category") . " " . $oWebsite->t("errors.not_found"));
                 $noErrors = false;
             }
             $article->categoryId = $categoryId;
         }
 
         // Featured image
-        if (isSet($inputArray['article_featured_image'])) {
-            $featuredImage = trim($oWebsite->getRequestString('article_featured_image'));
-            if (strLen($featuredImage) > 150) {
-                $oWebsite->addError($oWebsite->t("articles.featured_image") . " " . $oWebsite->tReplaced("ërrors.is_too_long_num", 150));
+        if ($request->hasRequestValue("article_featured_image")) {
+            $featuredImage = trim($request->getRequestString("article_featured_image"));
+            if (strLen($featuredImage) > Article::MAX_FEATURED_IMAGE_URL_LENGTH) {
+                $text->addError($text->t("articles.featured_image") . " " . $text->tReplaced("ërrors.is_too_long_num", Article::MAX_FEATURED_IMAGE_URL_LENGTH));
                 $noErrors = false;
             }
             $article->featuredImage = $featuredImage;
         }
 
-        // Pinned
-        if (isSet($inputArray['article_pinned'])) {
-            $article->pinned = true;
-        } elseif ($sent) {
-            $article->pinned = false;
-        }
-
-        // Hidden
-        if (isSet($inputArray['article_hidden'])) {
-            $article->hidden = true;
-        } elseif ($sent) {
-            $article->hidden = false;
+        // Pinned, hidden, comments
+        if ($request->hasRequestValue("submit")) {
+            $article->pinned = $request->hasRequestValue("article_pinned");
+            $article->hidden = $request->hasRequestValue("article_hidden");
+            $article->showComments = $request->hasRequestValue("article_comments");
         }
 
         // Event date
         $eventDate = "";
         $eventTime = "";
-        if (isSet($inputArray['article_eventdate'])) {
-            $eventDate = trim($oWebsite->getRequestString('article_eventdate'));
+        if ($request->hasRequestValue("article_eventdate")) {
+            $eventDate = trim($request->getRequestString("article_eventdate"));
         }
-        if (isSet($inputArray['article_eventtime']) && $eventDate) {
-            $eventTime = trim($oWebsite->getRequestString('article_eventtime'));
+        if ($request->hasRequestValue("article_eventtime") && $eventDate) {
+            $eventTime = trim($request->getRequestString("article_eventtime"));
         }
-        if (empty($eventDate) && isSet($inputArray['article_eventdate'])) {
+        if (empty($eventDate) && $request->hasRequestValue("article_eventdate")) {
             // Field was made empty, so delete date on article
             $article->onCalendar = null;
         }
         if (!empty($eventDate)) {
             if (strtotime($eventDate) === false) {
-                $oWebsite->addError($oWebsite->t("articles.event_date") . " " . $oWebsite->t("errors.not_correct"));
+                $text->addError($text->t("articles.event_date") . " " . $text->t("errors.not_correct"));
                 $noErrors = false;
             } else {
                 // Add date to article
                 $article->onCalendar = new DateTime($eventDate . " " . $eventTime);
             }
-        }
-
-        // Comments
-        if (isSet($inputArray['article_comments'])) {
-            $article->showComments = true;
-        } elseif ($sent) {
-            $article->showComments = false;
         }
 
         return $noErrors;

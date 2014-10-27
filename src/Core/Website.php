@@ -41,7 +41,9 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(self::CONFIG_FILE);
-        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations(Config::DEFAULT_LANGUAGE));
+        $this->text = new Text($this->getConfig()->get('url'),
+                $this->getUriTranslations(Config::DEFAULT_LANGUAGE),
+                $this->getUrlJavaScripts());
 
         // Connect to database, read settings
         $this->databaseObject = new Database($this);

@@ -76,8 +76,10 @@ class ThemeElementsRenderer {
         // Fetch content first
         $content = $this->pageRenderer->getMainContent();
 
-        // Errors
-        $this->echoErrors();
+        // Errors and confirmations
+        $text = $this->website->getText();
+        $this->echoList($text->getErrors(), "error");
+        $this->echoList($text->getConfirmations(), "confirmation");
 
         // Display page content
         echo $content;
@@ -99,30 +101,36 @@ class ThemeElementsRenderer {
         return $this->pageRenderer->getPageType();
     }
 
+    /**
+     * @deprecated Use `echoList($text->getErrors(), "error")` instead.
+     */
     protected function echoErrors() {
         $website = $this->website;
         $errors = $website->getText()->getErrors();
-        $errorCount = count($errors); //totaal aantal foutmeldingen
-        if ($errorCount == 0) {
+        $this->echoList($errors, "error");
+    }
+
+    private function echoList(array $messages, $cssClass) {
+        $messageCount = count($messages);
+        if ($messageCount == 0) {
             return;
-        } elseif ($errorCount == 1) {
+        } elseif ($messageCount == 1) {
             echo <<<ERROR
-                <div class="error">
-                    <h3>{$website->t("errors.error_occured")}</h3>
-                    <p>{$errors[0]}</p>
+                <div class="$cssClass">
+                    <p>{$messages[0]}</p>
                 </div>
 ERROR;
         } else {
-            echo '<div class="error">';
-            echo "   <h3>" . $website->tReplaced('errors.errors_occured', $errorCount) . "</h3>";
-            echo '   <p>';
-            echo '      <ul>';
-            foreach ($errors as $nr => $error) {
-                echo '<li>' . $error . '</li>';
-            }
-            echo '      </ul>';
-            echo '</p>';
-            echo '</div>';
+            $messages = "<li>" . join("</li><li>", $messages) . "</li>";
+            echo <<<LIST
+                <div class="$cssClass">
+                    <p>
+                        <ul>
+                            $messages
+                        </ul>
+                    </p>
+                </div>
+LIST;
         }
     }
 

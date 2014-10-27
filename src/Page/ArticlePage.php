@@ -23,7 +23,7 @@ class ArticlePage extends Page {
     public function init(Request $request) {
         $articleId = $request->getParamInt(0);
         $oArticles = new ArticleRepository($request->getWebsite());
-        $this->article = $oArticles->getArticleData($articleId);
+        $this->article = $oArticles->getArticleOrFail($articleId);
         $this->editLinks = $request->getWebsite()->isLoggedInAsStaff();
         $this->currentUser = $request->getWebsite()->getAuth()->getCurrentUser();
         if ($this->article->showComments) {

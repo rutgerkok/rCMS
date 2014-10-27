@@ -20,8 +20,9 @@ class Text {
     protected $translations;
     private $translationsDir;
     private $errors;
-    private $messages;
+    private $confirmations;
     private $rewriteUrls;
+    private $javascriptsUrl;
 
     /**
      * Creates a new Text instance.
@@ -29,13 +30,16 @@ class Text {
      * Trailing slash must be included.
      * @param string $translationsDir Path to the directory with the
      * translation files for the language of the site.
+     * @param string $javascriptsUrl Url of the directory that contains all
+     * scripts.
      */
-    public function __construct($siteUrl, $translationsDir) {
-        $this->siteUrl = $siteUrl;
+    public function __construct($siteUrl, $translationsDir, $javascriptsUrl) {
+        $this->siteUrl = (string) $siteUrl;
         $this->translations = array();
         $this->errors = array();
-        $this->messages = array();
+        $this->confirmations = array();
         $this->rewriteUrls = false;
+        $this->javascriptsUrl = (string) $javascriptsUrl;
 
         $this->setTranslationsDirectory($translationsDir);
     }
@@ -47,7 +51,7 @@ class Text {
      * must be included.
      */
     public function setTranslationsDirectory($translationsDir) {
-        $this->translationsDir = $translationsDir;
+        $this->translationsDir = (string) $translationsDir;
     }
 
     /**
@@ -100,10 +104,10 @@ class Text {
     /**
      * Adds a message that will be displayed on the top of the page. Messages
      * should be confirmations, like "Article has been saved".
-     * @param string $message The message to add.
+     * @param string $confirmation The message to add.
      */
-    public function addMessage($message) {
-        $this->messages[] = $message;
+    public function addMessage($confirmation) {
+        $this->confirmations[] = $confirmation;
     }
 
     /**
@@ -121,8 +125,8 @@ class Text {
      * Changing this array is not allowed.
      * @return string[] The messages.
      */
-    public function getMessages() {
-        return $this->messages;
+    public function getConfirmations() {
+        return $this->confirmations;
     }
 
     // Translations
@@ -254,6 +258,15 @@ class Text {
      */
     public function getUrlMain() {
         return $this->siteUrl;
+    }
+
+    /**
+     * Gets the URL to the specified JavaScript file.
+     * @param string $name Name of the script, without the .js.
+     * @return string The url.
+     */
+    public function getUrlJavascript($name) {
+        return $this->javascriptsUrl . $name . ".js";
     }
 
     /**

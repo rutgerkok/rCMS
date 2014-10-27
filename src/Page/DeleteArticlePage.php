@@ -25,7 +25,7 @@ class DeleteArticlePage extends Page {
         $showAdminPageLink = $oWebsite->isLoggedInAsStaff(true);
 
         $oArticles = new ArticleRepository($oWebsite);
-        $article = $oArticles->getArticleData($articleId);
+        $article = $oArticles->getArticleOrFail($articleId);
         $this->article = $article;
         $formToken = RequestToken::generateNew();
 

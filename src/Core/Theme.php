@@ -64,15 +64,6 @@ class Theme extends InfoFile {
     }
 
     /**
-     * Gets the relative url to the stylesheet containing all the rules for 
-     * text styling. This is used for the text editor. The url is relative
-     * to the directory of this theme.
-     */
-    public function getTextStylesheet() {
-        return $this->getString("styles.text", "main.css");
-    }
-
-    /**
      * When the user doesn't have access to the site for whatever reason
      * (no access key, site is down, etc.) a simple page is shown. When it is
      * still possible to load the theme, this stylesheet is used for that page.
