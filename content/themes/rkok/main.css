@@ -2,44 +2,37 @@
 /*
  * Fonts, colors and margins of common elements
  */
-body
-{
+body {
     font-size: 85%;
     margin: 0;
     padding: 0;
 }
-p, h1, h2, h3, h4, ul
-{
+p, h1, h2, h3, h4, ul {
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
     color: #454545;
 }
-p, h1, h2, h3, h4
-{
+p, h1, h2, h3, h4 {
     margin: 1px 3px 10px 3px;
     padding: 1px;
 }
-h2
-{
+h2 {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
     font-size: 164%;
     font-weight: normal;
     margin: 23px 3px 10px 3px;
 }
-h3
-{
+h3 {
     font-size: 100%;
     font-weight: bold;
     margin: 12px 3px 2px 3px;
 }
-div
-{
+div {
     margin: 0;
     padding: 0;
 }
 
 /* HTML5 fixes for IE8 */
-header, article, footer
-{
+header, article, footer {
     display: block;
 }
 
@@ -48,12 +41,10 @@ header, article, footer
  */
 
 /* Body en container */
-body
-{
+body {
     background: #a0a0a0;
 }
-div#container
-{
+div#container {
     margin: 22px auto;
     padding: 0;
     width: 80%;
@@ -61,8 +52,7 @@ div#container
     background: white;
     box-shadow: 0px 0px 35px #262626;
 }
-@media all and (max-width : 59em)
-{
+@media all and (max-width : 59em) {
     body
     {
         background: white;
@@ -77,13 +67,11 @@ div#container
 }
 
 /* Header */
-div#header
-{
+div#header {
     background: #f4f4f4;
     position: relative;
 }
-@media all and (max-width : 59em)
-{
+@media all and (max-width : 59em) {
     div#header
     {
         /*
@@ -97,8 +85,7 @@ div#header
 }
 
 /* Main content area */
-div#content
-{
+div#content {
     width: 93%;
     padding-right: 5%;
     padding-left: 2%;
@@ -106,8 +93,7 @@ div#content
     padding-bottom: 3px;
     position: relative;
 }
-div#contenthome
-{
+div#contenthome {
     width: 58%;
     margin-right: 9%;
     margin-left: 2%;
@@ -116,8 +102,7 @@ div#contenthome
     position: relative;
     overflow: hidden;
 }
-div#contentadmin
-{
+div#contentadmin {
     width: 93%;
     padding-right: 5%;
     padding-left: 2%;
@@ -128,8 +113,7 @@ div#contentadmin
 }
 
 /* Header menu */
-div#header h1
-{
+div#header h1 {
     margin: 0;
     padding: 0;
     padding-top: 40px;
@@ -138,8 +122,7 @@ div#header h1
     font-weight: normal;
     color: #494949;
 }
-ul#main_menu
-{
+ul#main_menu {
     margin: 0;
     padding-right: 0;
     padding-left: 0.2em;
@@ -148,8 +131,7 @@ ul#main_menu
     height: 2.5em;
     list-style-type: none;
 }
-ul#main_menu li
-{
+ul#main_menu li {
     margin: 0;
     padding: 0;
     float: left;
@@ -158,28 +140,24 @@ ul#main_menu li
     width: 8em;
     display: block;
 }
-ul#main_menu li a
-{
+ul#main_menu li a {
     text-decoration: none;
     text-transform: uppercase;
     font-size: 100%;
     color: #494949;
     border: 0;
 }
-ul#main_menu li a:hover
-{
+ul#main_menu li a:hover {
     text-decoration: none;
     color: #999;
 }
 
 /* Sidebar on the right of the page */
-div#sidebar
-{
+div#sidebar {
     width: 30%;
     float: left;
 }
-@media all and (max-width : 50em)
-{
+@media all and (max-width : 50em) {
     /* No sidebar at lower resolutions */
     div#content
     {
@@ -205,19 +183,16 @@ div#sidebar_page_content
     margin-left:0;
     margin-right:0;
 }
-div#sidebar_page_sidebar
-{
+div#sidebar_page_sidebar {
     float: left;
     width: 27%;
     padding-right: 2px;
 }
-div#sidebar_page_sidebar img
-{
+div#sidebar_page_sidebar img {
     max-width: 100%;
     margin: 1px;
 }
-@media all and (max-width: 40em)
-{
+@media all and (max-width: 40em) {
     /* No sidebar on smaller screens */
     div#sidebar_page_content, div#sidebar_page_sidebar
     {
@@ -230,8 +205,7 @@ div#sidebar_page_sidebar img
         float: right;
     }
 }
-@media all and (max-width: 30em)
-{
+@media all and (max-width: 30em) {
     div#sidebar_page_sidebar img
     {
         width: 100%;
@@ -241,8 +215,7 @@ div#sidebar_page_sidebar img
 }
 
 /* Page footer */
-div#footer
-{
+div#footer {
     clear: both;
     padding: 2px 0 0 0;
     min-height: 30px;
@@ -257,34 +230,28 @@ div#footer
  */
 
 /* Tables */
-table
-{
+table {
     border-collapse:separate;
     margin-top: 10px;
     margin-bottom: 10px;
 }
-th,td
-{
+th,td {
     font-family: verdana, sans-serif;
     text-align:left;
 }
-th
-{
+th {
     font-weight: bold;
 }
-table.layout
-{
+table.layout {
     width:98%;
     border:0;
 }
-table.layout th,table.layout td
-{
+table.layout th,table.layout td {
     padding:5px;
 }
 
 /* Forms */
-input, textarea, div.cke_editable
-{
+input, textarea, div.cke_editable {
     font-family: verdana, sans-serif;
     color: #4a7180;
     background: #fafafa;
@@ -292,28 +259,23 @@ input, textarea, div.cke_editable
     padding: 3px;
     margin: 2px;
 }
-input:focus, textarea:focus, select:focus, div.cke_focus
-{
+input:focus, textarea:focus, select:focus, div.cke_focus {
     background: #efefef;
 }
-fieldset
-{
+fieldset {
     border: none;
     border-bottom: 1px solid #ccc;
     margin: 3px;
 }
-fieldset:last-of-type
-{
+fieldset:last-of-type {
     border-bottom: none;
 }
-legend
-{
+legend {
     font-family: verdana,sans-serif;
     font-weight: bold;
     margin-top: 10px;
 }
-.button, button
-{
+.button, button {
     display: inline-block;
     background-color: #ddd;
     background-image: linear-gradient(#f0f0f0, #dedede);
@@ -330,77 +292,63 @@ legend
     font-size: 100%;
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
 }
-.button:hover, button:hover
-{
+.button:hover, button:hover {
     background-color: #e9e9e9;
     background-image: linear-gradient(#f9f9f9, #dfdfdf);
     color: black; /* For links dressed up as buttons */
 }
-.button:focus, button:focus
-{
+.button:focus, button:focus {
     background:#eee; /* Resets background */
 }
-.primary_button
-{
+.primary_button {
     background-color: #61faff;
     background-image: linear-gradient(#b6fdff, #42e5eb);
     border: 1px solid #42e5eb;
 }
-.primary_button:hover
-{
+.primary_button:hover {
     background-color: #a7fcff;
     background-image: linear-gradient(#D4FCFE, #6FF6FA);
 }
-input.checkbox
-{
+input.checkbox {
     background:white;
     padding:0;
     border:0;
     border-radius:0;
     box-shadow:none;
 }
-input.full_width, textarea.full_width
-{
+input.full_width, textarea.full_width {
     width: 98%;
 }
-div.cke_editable
-{
+div.cke_editable {
     min-height: 10em;
     /* Makes sure that editor buttons don't hide rest of form */
     margin-bottom: 70px;
 }
 
 /* Links */
-a
-{
+a {
     text-decoration: none;
     color: #00ccff;
 }
-a:link
-{
+a:link {
     text-decoration: none;
 }
-a:hover
-{
+a:hover {
     text-decoration: none;
     color: #5252ff;
 }
-a:active
-{
+a:active {
     text-decoration: none;
 }
-a.disguised_link
-{
+a.disguised_link {
     color: inherit;
 }
-a.arrow
-{
+a.arrow {
     margin-left: 10px;
     text-transform: uppercase;
     font-size: 85%;
 }
-a.arrow-disabled
-{
+a.arrow-disabled {
     margin-left: 10px;
     text-transform: uppercase;
     color:gray;
@@ -408,52 +356,43 @@ a.arrow-disabled
 }
 
 /* Images */
-img
-{
+img {
     margin:3px;
     max-width:100%;
 }
-a img
-{
+a img {
     border:0;
 }
 
 
 /* Errors and confirmations */
-div.error, div.confirmation
-{
+div.error, div.confirmation {
     color: #6c0000;
     margin: 3px 3px 10px 3px;
     padding: 5px;
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
 }
-div.error h3, div.confirmation h3
-{
+div.error h3, div.confirmation h3 {
     margin: 0;
 }
-div.error
-{
+div.error {
     background-color: #ffd0d9;
 }
-div.confirmation
-{
+div.confirmation {
     background-color: #75FF9A;
 }
 
 /* Lists of articles */
-div.article_teaser
-{
+div.article_teaser {
     margin:10px;
     margin-left: 0;
     min-height: 8em;
 }
-p.meta
-{
+p.meta {
     color: #bbb;
     font-style: italic;
 }
-div.article_teaser img
-{
+div.article_teaser img {
     max-height: 250px;
     width: 20%;
     max-width: 140px;
@@ -462,26 +401,22 @@ div.article_teaser img
 }
 
 /* Lists of links */
-ul.linklist
-{
+ul.linklist {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-ul.linklist li
-{
+ul.linklist li {
     padding:5px;
     font-family: verdana, sans-serif;
 }
-ul.linklist li img
-{
+ul.linklist li img {
     max-width: 32px;
     max-height: 24px;
     padding: 0;
     margin: 0;
 }
-ul.linklist li div.linklist_icon_image
-{
+ul.linklist li div.linklist_icon_image {
     display: block;
     float: left;
     min-width: 32px;
@@ -527,8 +462,7 @@ article.comment .comment_date {
 }
 
 /* Account box and label (inside header box) */
-div#account_label
-{
+div#account_label {
     position: absolute;
     top: 0;
     right: 0;
@@ -536,25 +470,21 @@ div#account_label
     background: white;
     box-shadow: 0 0 5px #aaa;
 }
-div#account_box
-{
+div#account_box {
     display: none;
     text-align: left;
     min-height: 6em;
     min-width: 18em;
 }
-body.logged_in div#account_label:hover div#account_box
-{
+body.logged_in div#account_label:hover div#account_box {
     display: block;
 }
-div#account_box img
-{
+div#account_box img {
     float: left;
     width: 5em;
     margin: 1.1em;
 }
-div#account_box ul
-{
+div#account_box ul {
     padding: 1.1em;
     margin-left: 10px;
     list-style-type: none;
@@ -562,37 +492,31 @@ div#account_box ul
 }
 
 /* Search box */
-div#search
-{
+div#search {
     position: absolute;
     right: 0;
     top: 3em;
 }
-input#searchbutton
-{
+input#searchbutton {
     min-width: 80px;
     padding: 2px;
 }
 
 /* Calendar */
-div.calender_month_wrapper
-{
+div.calender_month_wrapper {
     height: 14em;
     margin: 1%;
 }
-td.calendar_other_month
-{
+td.calendar_other_month {
     color: #aaa;
 }
-td.calendar_active_date
-{
+td.calendar_active_date {
     color:#0000ff;
     font-weight:bold;
     text-decoration:underline;
 }
 /* On higher resulotions, multiple calendars can be placed next to each other */
-@media all and (min-width : 38em)
-{
+@media all and (min-width : 38em) {
     div.calender_month_wrapper
     {
         float: left;
@@ -602,20 +526,17 @@ td.calendar_active_date
 
 
 /* Some random classes */
-p.result_selector_menu
-{
+p.result_selector_menu {
     border-top: 1px #c9c9c9 solid;
     border-bottom: 1px #c9c9c9 solid;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-span.required
-{
+span.required {
     color: #990000;
     font-size:110%;
 }
-h3.notable
-{
+h3.notable {
     font-size: 200%;
     font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
     font-weight: normal;
@@ -624,14 +545,12 @@ span.username{
     color: #666;
     font-size: 90%;
 }
-p.intro
-{
+p.intro {
     font-style: italic;
 }
 
 /* Tooltips */
-#tooltip
-{
+#tooltip {
     border: solid 1px white;
     background: #eee;
     background: rgba(244,244,244,0.8);
@@ -642,18 +561,15 @@ p.intro
     font-family: verdana, sans-serif;
     box-shadow: #333 0 0 20px;
 }
-#tooltip ul
-{
+#tooltip ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-#tooltip li
-{
+#tooltip li {
     margin: 5px;
 }
-.tooltip_contents
-{
+.tooltip_contents {
     /* Used to store tooltip contents on a page */
     display: none;
 }
@@ -661,8 +577,7 @@ p.intro
 /*
  * Site login screen
  */
-#login
-{
+#login {
     background:#eeeeee;
     width: 50%;
     margin: 100px auto auto auto;

@@ -5,70 +5,58 @@ header, article, footer {
 
 /* DITJES EN DATJES 
         /*lettertype en lettergrote */
-body
-{
+body {
     font-size: 0.81em;
 }
-p, h1, h2, h3, h4
-{
+p, h1, h2, h3, h4 {
     font-family: verdana, sans-serif;
     color: #595959;
     margin: 1px 3px 10px 3px;
     padding:1px;
 }
-h2
-{
+h2 {
     font-family: Georgia, "Times New Roman", Times, serif;
     font-size: 1.5em;
     margin: 3px 3px 10px 3px;
 }
-h3
-{
+h3 {
     font-size: 1em;
     margin: 12px 3px 1px 3px;
 }
-li
-{
+li {
     font-family: verdana, sans-serif;
     color: #595959;
 }
 
 /*tabellen*/
-table
-{
+table {
     border-collapse:collapse;
 }
-th,td
-{
+th,td {
     border: 2px solid white;
     background: #d6d6c3;
     font-family: verdana, sans-serif;
     text-align:left;
 }
-th
-{
+th {
     color: white;
     background:#9a9a79;
 }
-table.layout
-{
+table.layout {
     background:transparent;
     width:98%;
 }
-table.layout th,table.layout td
-{
+table.layout th,table.layout td {
     background: transparent;
     border: none;
     padding:5px;
 }
-div#contentadmin th,div#contentadmin td
-{
+div#contentadmin th,div#contentadmin td {
     border-color: #e9e9e9;
 }
 
 /*formulieren*/
-input, textarea, div.cke_editable
-{
+input, textarea, div.cke_editable {
     font-family: verdana, sans-serif;
     color: #4a7180;
     background:#fafafa;
@@ -78,28 +66,23 @@ input, textarea, div.cke_editable
     padding:3px;
     margin:2px;
 }
-input:focus, textarea:focus, select:focus, div.cke_focus
-{
+input:focus, textarea:focus, select:focus, div.cke_focus {
     background:#efefef;
 }
-fieldset
-{
+fieldset {
     border: none;
     border-bottom: 2px solid #9a9a79;
     margin-top: 10px;
     margin-bottom: 10px;
 }
-fieldset:last-of-type
-{
+fieldset:last-of-type {
     border-bottom: none;
 }
-legend
-{
+legend {
     font-family: verdana,sans-serif;
     font-weight:bold;
 }
-.button,button /*ook geschikt voor links*/
-{
+.button,button /*ook geschikt voor links*/ {
     background: #ccc; 
     border:0;
     padding: 5px;
@@ -115,103 +98,85 @@ legend
     min-width: 5em;
     text-align: center;
 }
-.button:hover, button:hover
-{
+.button:hover, button:hover {
     background: #ddd; 
     border:0;
 }
-.button:focus,button:focus
-{
+.button:focus,button:focus {
     background: #ddd; /*geen andere achtergrond */
 }
-.primary_button
-{
+.primary_button {
     background: #9a9a79;
     color: white;
 }
-.primary_button:hover
-{
+.primary_button:hover {
     background: #b4b488;
 }
-.checkbox
-{
+.checkbox {
     background:white;
     padding:0;
     border:0;
     border-radius:0;
     box-shadow:none;
 }
-input.full_width, textarea.full_width
-{
+input.full_width, textarea.full_width {
     width: 98%;
 }
-div.cke_editable
-{
+div.cke_editable {
     min-height: 10em;
     /* Makes sure that editor buttons don't hide rest of form */
     margin-bottom: 70px;
 }
 
 /*links*/
-a
-{
+a {
     color:#6b966b;
     text-decoration: none;
 }
-a.arrow
-{
+a.arrow {
     padding-left: 5px;
     padding-right: 5px;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-transform: uppercase;
     font-size: 0.85em;
 }
-a.arrow-disabled
-{
+a.arrow-disabled {
     padding-left: 5px;
     padding-right: 5px;
     text-transform: uppercase;
     color:gray;
     font-size: 0.85em;
 }
-a.disguised_link
-{
+a.disguised_link {
     color: inherit;
 }
-a:link
-{
+a:link {
     text-decoration: none;
 }
-a:hover
-{
+a:hover {
     text-decoration: none;
     border-bottom: 1px solid;
 }
-a.disguised_link:hover
-{
+a.disguised_link:hover {
     border-bottom: none;
 }
-a:active
-{
+a:active {
     text-decoration: underline;
     border-bottom: 1px solid #990000;
 }
 
 /* afbeeldingen */
-img
-{
+img {
     margin:3px;
     max-width:100%;
 }
-a img
-{
+a img {
     border:0;
 }
 
 
 /* Message boxes */
-div.error, div.confirmation
-{
+div.error, div.confirmation {
     font-family: verdana, sans-serif;
     color: #990000;
     margin: 3px;
@@ -220,41 +185,34 @@ div.error, div.confirmation
 }
 
 /*Pagina's met artikellijsten */
-div.article_teaser
-{
+div.article_teaser {
     margin: 2%;
     margin-left: 0;
     min-height: 5em;
 }
-div.article_teaser:hover
-{
+div.article_teaser:hover {
     background: #f7f7f7;
 }
-p.meta
-{
+p.meta {
     color: #bbb;
     font-style: italic;
 }
-div.article_teaser img
-{
+div.article_teaser img {
     max-width: 130px;
     float: left;
     margin: 5px;
 }
-div.article_teaser p.article_teaser_links
-{
+div.article_teaser p.article_teaser_links {
     clear: both;
 }
 
 /* Linklijsten */
-ul.linklist
-{
+ul.linklist {
     margin:0;
     padding:0;
     list-style-type:none;
 }
-ul.linklist li
-{
+ul.linklist li {
     border-bottom: 1px dotted #999999;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -262,15 +220,13 @@ ul.linklist li
     margin-right: 8px;
     font-family: verdana, sans-serif;
 }
-ul.linklist li img
-{
+ul.linklist li img {
     max-width: 32px;
     max-height: 24px;
     padding: 0;
     margin: 0;
 }
-ul.linklist li div.linklist_icon_image
-{
+ul.linklist li div.linklist_icon_image {
     display: block;
     float: left;
     min-width: 32px;
@@ -279,32 +235,27 @@ ul.linklist li div.linklist_icon_image
 }
 
 /* Calendar */
-div.calender_month_wrapper
-{
+div.calender_month_wrapper {
     height: 14em;
     margin: 1%;
 }
-td.calendar_other_month
-{
+td.calendar_other_month {
     color: #888;
 }
-td.calendar_active_date
-{
+td.calendar_active_date {
     color: #fff;
     background-color: #6b966b;
     font-weight: bold;
 }
 /* On higher resulotions, multiple calendars can be placed next to each other */
-@media all and (min-width : 38em)
-{
+@media all and (min-width : 38em) {
     div.calender_month_wrapper
     {
         float: left;
         width: 45%;
     }
 }
-@media all and (min-width : 46em)
-{
+@media all and (min-width : 46em) {
     div.calender_month_wrapper
     {
         float: left;
@@ -359,19 +310,16 @@ div#sidebar_page_content
     margin-left:0;
     margin-right:0;
 }
-div#sidebar_page_sidebar
-{
+div#sidebar_page_sidebar {
     float:left;
     width:27%;
     padding-right:2px;
 }
-div#sidebar_page_sidebar img
-{
+div#sidebar_page_sidebar img {
     max-width: 100%;
     margin:1px;
 }
-@media all and (max-width : 38em)
-{
+@media all and (max-width : 38em) {
     /* Don't use sidebars on small resolutions */
     div#sidebar_page_sidebar, div#sidebar_page_content
     {
@@ -381,43 +329,36 @@ div#sidebar_page_sidebar img
 }
 
 /* Other */
-p.intro
-{
+p.intro {
     font-weight: bold;
     font-style: italic;
 }
-p.result_selector_menu
-{
+p.result_selector_menu {
     border-top: 1px #999999 dotted;
     border-bottom: 1px #999999 dotted;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-span.required
-{
+span.required {
     color: #990000;
     font-size: 1.1em;
 }
-h3.notable
-{
+h3.notable {
     color:#9d8a0a;
     font-size: 1.1em;
     font-family: Georgia, "Times New Roman", Times, serif;
     margin-bottom: 10px; /* As this header is a little larger, it needs more margin */
 }
-ul.no_bullets
-{
+ul.no_bullets {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-ul.no_bullets li
-{
+ul.no_bullets li {
     margin: 0.2em 0 0 1em;
 }
 /* Tooltips */
-#tooltip
-{
+#tooltip {
     border: solid 1px #6b966b;
     background: #e4f2e9; /* IE8 */
     background: rgba(228, 242, 233, 0.8);
@@ -428,26 +369,22 @@ ul.no_bullets li
     font-family: verdana, sans-serif;
     box-shadow: #6b966b 0 0 20px;
 }
-#tooltip ul
-{
+#tooltip ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-#tooltip li
-{
+#tooltip li {
     margin: 5px;
 }
-.tooltip_contents
-{
+.tooltip_contents {
     /* Used to store tooltip contents on a page */
     display: none;
 }
 
 /* BOXMODEL */
 /* inlogscherm */
-#login
-{
+#login {
     background:#e4f2e9;
     width: 50%;
     margin: 100px auto auto auto;
@@ -455,13 +392,11 @@ ul.no_bullets li
     box-shadow: white 0 0 20px;
 }
 /* body en container */
-body
-{
+body {
     background: #416f4a url(images/achtergrond.jpg) top center no-repeat;
     height: 100%;
 }
-div#container
-{
+div#container {
     margin: 22px auto;
     padding:0;
     width: 950px;
@@ -477,14 +412,12 @@ div#container
 }
 
 /* Header */
-div#header
-{
+div#header {
     background: #e4f2e9 url(images/logo.png) 15px center no-repeat;
     height: 100px;
     position: relative;
 }
-div#header h1
-{
+div#header h1 {
     color:#6b966b;
     font-family: Georgia, "Times New Roman", Times, serif;
     font-size: 4.85em;
@@ -529,15 +462,13 @@ div#header h1
 }
 
 /* Search */
-div#search
-{
+div#search {
     position: absolute;
     top: 0;
     right: 0;
 }
 /* Search textfield */
-div#header div#search #searchbox
-{
+div#header div#search #searchbox {
     height:1.4em;
     width:11em;
     margin:0;
@@ -545,8 +476,7 @@ div#header div#search #searchbox
 }
 
 /* Accountbox */
-div#account_label
-{
+div#account_label {
     position: absolute;
     right: 0;
     top: 100%;
@@ -554,53 +484,45 @@ div#account_label
     text-align: right;
 
 }
-div#account_label p, a.user_welcome_link
-{
+div#account_label p, a.user_welcome_link {
     color: white;
     border: 0;
 }
-div#account_box
-{
+div#account_box {
     background: #e4f2e9;
     text-align: left;
     margin-top: -7px;
     display: none;
     box-shadow: 0 0 13px #9a9a79;
 }
-div#account_label:hover div#account_box
-{
+div#account_label:hover div#account_box {
     display: block;
 }
-div#account_box img
-{
+div#account_box img {
     float: left;
     margin: 8px;
 }
-div#account_box ul
-{
+div#account_box ul {
     float: left;
     list-style-type: none;
     margin: 8px;
     padding: 0;
 }
-div#account_box a
-{
+div#account_box a {
     padding-left: 5px;
     color: #6b966b;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-transform: uppercase;
 }
 /* content 	*/
-div#content
-{
+div#content {
     width:39%;
     clear:left;
     float:left;
     min-height:600px;
     overflow:hidden;
 }
-div#contentwide
-{
+div#contentwide {
     background: white;
     width:95%;
     padding-right:5%;
@@ -609,8 +531,7 @@ div#contentwide
     min-height:600px;
     overflow:hidden;
 }
-div#contentadmin
-{
+div#contentadmin {
     background: #e4f2e9;
     width:95%;
     padding-right:5%;
@@ -620,16 +541,14 @@ div#contentadmin
 }
 
 /* Sidebars on home page */
-div#sidebar
-{
+div#sidebar {
     width: 30%;
     height: max-content;
     float: left;
     height: 100%;
     border-left: 1px dotted #999999;
 }
-div#nav
-{
+div#nav {
     width: 30%;
     float: left;
     border-left: 1px dotted #999999;
@@ -660,28 +579,24 @@ div#nav
 }
 
 /* Horizontal link bar on top of page */
-div#hornav
-{
+div#hornav {
     background: #9a9a79;
     min-height: 19px;
     padding-left: 10px;
     overflow: auto;
 }
-div#hornav ul
-{
+div#hornav ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
-div#hornav ul li
-{
+div#hornav ul li {
     float: left;
     background: transparent;
     border-right: 1px dotted white;
     color: white;
 }
-div#hornav ul li a
-{
+div#hornav ul li a {
     color: #fff;
     text-decoration:none;
     padding: 2px 5px 2px 5px;
@@ -690,8 +605,7 @@ div#hornav ul li a
     display: block;
     margin-bottom: 2px;
 }
-div#hornav ul li a:hover
-{
+div#hornav ul li a:hover {
     background: transparent;
     color: #303030;
     text-decoration: none;
@@ -716,20 +630,17 @@ div#hornav ul li a:hover
     }
 }
 /* Login link of horizontal bar */
-div#hornav ul#accountlinks
-{
+div#hornav ul#accountlinks {
     float: right;
 }
-div#hornav ul#accountlinks li
-{
+div#hornav ul#accountlinks li {
     border-style: none none none dotted;
     border-width: 0 0 0 1px;
     border-color: white;
 }
 
 /* footer */
-div#footer
-{
+div#footer {
     clear:both;
     background: #9a9a79;
     color: white;
