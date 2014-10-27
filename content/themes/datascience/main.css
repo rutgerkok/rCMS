@@ -2,9 +2,11 @@
 /*
  * Fonts, colors and margins of common elements
  */
+body {
+    font-size: 70%;
+}
 p, h1, h2, h3, h4 {
     font-family: verdana, sans-serif;
-    font-size: 0.7em;
     line-height: 1.4em;
     color: #4a7180;
     margin: 1px 3px 10px 3px;
@@ -13,20 +15,19 @@ p, h1, h2, h3, h4 {
 h2 {
     color: #990000;
     font-family: Georgia, Times, serif;
-    font-size: 1.5em;
+    font-size: 214%;
     font-weight: normal;
     margin: 15px 15px 10px 3px;
     padding: 0 0 5px 0;
 }
 h3 {
     color: #9d8a0a;
-    font-size: 0.8em;
+    font-size: 114%;
     margin: 12px 3px 1px 3px;
 }
 li {
     font-family: verdana, sans-serif;
     color: #4a7180;
-    font-size: 0.7em;
 }
 
 /* HTML5 fixes for IE8 */
@@ -62,7 +63,7 @@ div#header h1 {
     float: right;
     color: white;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 1.4em;
+    font-size: 200%;
     margin: 40px 10px 0 0;
     font-weight: normal;
     max-width: 327px;
@@ -77,7 +78,7 @@ div#search {
     margin-top: 40px;
 }
 div#search input.button {
-    font-size: 0.9em;
+    font-size: 129%;
 }
 #searchbox {
     height: 1.4em;
@@ -147,6 +148,7 @@ div#sidebar_page_sidebar {
     padding-right: 2px;
 }
 div#sidebar_page_sidebar img {
+    width: 100%; /* Define standard width, Firefox needs this */
     max-width: 95%;
     margin: 2%;
     padding: 2px;
@@ -170,7 +172,7 @@ div#sidebar_page_content img {
 /* Horizontal navigation bar */
 div#hornav {
     background: #8592bb;
-    height: 1.3em;
+    height: 1.86em;
     padding-left: 10px;
 }
 div#hornav ul {
@@ -209,7 +211,7 @@ div#footer {
     padding: 2px 0 0 0;
     min-height: 24px;
     text-align: right;
-    font-size: 1.1em;
+    font-size: 157%;
     font-family: Georgia, "Times New Roman", Times, serif;
     padding-right: 35px;
 }
@@ -228,7 +230,7 @@ div#breadcrumbs {
 div#breadcrumbs a {
     color: #336699;
     font-family: verdana, sans-serif;
-    font-size: 0.65em;
+    font-size: 93%;
     padding: 0 0 0 5px;
     background: url(images/arrowsmall.gif) 0em 0.4em no-repeat;
     text-decoration: none;
@@ -252,7 +254,6 @@ div#breadcrumbs #accountlinks li {
 }
 div#breadcrumbs #accountlinks li a {
     background: none; /* disable those arrows */
-    font-size: 1em;
     padding: 0;
     margin: 0;
 }
@@ -267,7 +268,6 @@ th, td {
     font-family: verdana, sans-serif;
     color: #4a7180;
     text-align: left;
-    font-size: 0.7em;
 }
 table.layout {
     background: transparent;
@@ -356,14 +356,14 @@ a {
     text-decoration: underline;
 }
 a.arrow {
-    margin-right: 9px;
-    padding-left: 9px;
+    padding-right: 5px;
+    padding-left: 6px;
     background: transparent url(images/arrow.gif) center left no-repeat;
     text-decoration: none;
 }
 a.arrow-disabled {
-    margin-right: 9px;
-    padding-left: 9px;
+    padding-right: 5px;
+    padding-left: 6px;
     text-transform: uppercase;
     color: gray;
 }
@@ -516,7 +516,7 @@ td.calendar_active_date {
     color: #4a7184;
     text-transform: uppercase;
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 0.8em;
+    font-size: 114%;
     font-weight: bold;
     border-bottom: 1px dotted #ccd5d3;
 }
@@ -533,11 +533,11 @@ p.result_selector_menu {
 }
 span.required {
     color: #990000;
-    font-size: 1.2em;
+    font-size: 171%;
 }
 h3.notable {
     color: #921;
-    font-size: 1.1em;
+    font-size: 157%;
     font-weight: normal;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
