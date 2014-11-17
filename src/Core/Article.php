@@ -3,6 +3,7 @@
 namespace Rcms\Core;
 
 use DateTime;
+
 use Rcms\Core\Repository\Entity;
 
 /**
@@ -46,6 +47,15 @@ class Article extends Entity {
      */
     public function __construct() {
         $this->created = new DateTime();
+    }
+
+    /**
+     * Sets the author of this article to the given user.
+     * @param User $user The user.
+     */
+    public function setAuthor(User $user) {
+        $this->author = $user->getDisplayName();
+        $this->authorId = $user->getId();
     }
 
 }

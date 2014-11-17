@@ -12,6 +12,7 @@ use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
+use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
@@ -30,10 +31,11 @@ class EditArticlePage extends Page {
 
     public function init(Website $website, Request $request) {
         $text = $website->getText();
+        $currentUser = $website->getAuth()->getCurrentUser();
         $articleId = $request->getParamInt(0);
 
         $articleRepository = new ArticleRepository($website);
-        $article = $this->getArticle($articleRepository, $articleId);
+        $article = $this->getArticle($articleRepository, $currentUser, $articleId);
         $articleEditor = new ArticleEditor($article);
         $this->articleEditor = $articleEditor;
 
@@ -78,13 +80,16 @@ class EditArticlePage extends Page {
      * Gets the article with the given id. If the id is 0, a new article is
      * created.
      * @param ArticleRepository $repository Repository to fetch articles from.
+     * @param User $currentUser Becomes the author if a new article is created.
      * @param int $id Id of the article. Use 0 to create a new article.
      * @return Article The article.
      * @throws NotFoundException If no article exists with the given id.
      */
-    protected function getArticle(ArticleRepository $repository, $id) {
+    protected function getArticle(ArticleRepository $repository, User $currentUser, $id) {
         if ($id === 0) {
-            return new Article();
+            $article = new Article();
+            $article->setAuthor($currentUser);
+            return $article;
         } else {
             return $repository->getArticleOrFail($id);
         }
