@@ -189,9 +189,6 @@ div.article_teaser {
     margin-left: 0;
     min-height: 5em;
 }
-div.article_teaser:hover {
-    background: #f7f7f7;
-}
 p.meta {
     color: #bbb;
     font-style: italic;
