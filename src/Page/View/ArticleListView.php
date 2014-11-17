@@ -71,12 +71,18 @@ class ArticleListView extends View {
     public function getArticleTextSmall(Article $article, $show_metainfo,
             $show_edit_delete_links) {
         $text = $this->text;
+        
+
         $returnValue = "\n\n" . '<div class="article_teaser ';
         if (!empty($article->featuredImage)) {
             $returnValue.= "with_featured_image";
         }
-        $returnValue.= '"onclick\"location.href=\'' . $text->getUrlPage("article", $article->id) . "'\" onmouseover=\"this.style.cursor='pointer'\">";
-        $returnValue.= "<h3>" . htmlSpecialChars($article->title) . "</h3>\n";
+        $returnValue.= '">';
+
+        // Title
+        $titleHtml = htmlSpecialChars($article->title);
+        $returnValue.= "<h3>" . $this->encloseInArticleLink($article, $titleHtml) . "</h3>";
+
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
             // Created and last edited
@@ -105,16 +111,18 @@ class ArticleListView extends View {
 
         // Featured image
         if (!empty($article->featuredImage)) {
-            $returnValue.= '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" />';
+            $imageHtml = '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" />';
+            $returnValue.= $this->encloseInArticleLink($article, $imageHtml);
         }
 
         // Intro
         $returnValue.= '<div class="article_teaser_text">';
         $returnValue.= '<p>';
-        $returnValue.= htmlSpecialChars($article->intro);
-        $returnValue.= '</p> <p class="article_teaser_links">';
+        $returnValue.= $this->encloseInArticleLink($article, htmlSpecialChars($article->intro));
+        $returnValue.= '</p>';
+        $returnValue.= '<p class="article_teaser_links">';
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t('main.read') . '</a>';
+        $returnValue.= '<a class="arrow" href="' .  $text->getUrlPage("article", $article->id) . '">' . $text->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
             $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id) . '">' . $text->t('main.edit') . '</a>' . //edit
                     '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id) . '">' . $text->t('main.delete') . '</a>'; //delete
@@ -126,6 +134,20 @@ class ArticleListView extends View {
         $returnValue.= "</div>";
 
         return $returnValue;
+    }
+
+    /**
+     * Enloses the given HTML in an invisble link to the article.
+     * @param Article $article Article to link to.
+     * @param string $html HTML to enclose.
+     * @return string The linked HTML.
+     */
+    private function encloseInArticleLink(Article $article, $html) {
+        return <<<LINKED
+            <a class="disguised_link" href="{$this->text->getUrlPage("article", $article->id)}">
+                $html
+            </a>
+LINKED;
     }
 
 }
