@@ -271,6 +271,7 @@ SQL;
             $query = $this->whereRaw($whereClausule, $params);
         }
 
+        $query->orderDescending($this->pinnedField);
         if ($oldestTop) {
             $query->orderAscending($this->createdField);
         } else {
