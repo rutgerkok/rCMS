@@ -22,12 +22,14 @@ if (!defined("WEBSITE")) {
         echo 'class="logged_in"';
     }
     ?>>
-        <div id="container">
-            <div id="header">
+        <header id="site_header">
+            <div class="site_container">
                 <h1> <?php echo $this->getHeaderTitle(); ?> </h1>
-                <ul id="main_menu">
-                    <?php $this->echoTopMenu(); ?>
-                </ul>
+                <nav>
+                    <ul id="main_menu">
+                        <?php $this->echoTopMenu(); ?>
+                    </ul>
+                </nav>
                 <div id="search">
                     <?php $this->echoSearchForm(); ?>
                 </div>
@@ -39,10 +41,10 @@ if (!defined("WEBSITE")) {
                     </div>
                 </div>
             </div>
+        </header>
+        <div class="site_container">
             <div <?php
-            if ($this->getPageType() == "BACKSTAGE") {
-                echo 'id="contentadmin"';
-            } else if ($this->getPageType() == "HOME") {
+            if ($this->getPageType() == "HOME") {
                 echo 'id="contenthome"';
             } else {
                 echo 'id="content"';
@@ -50,18 +52,20 @@ if (!defined("WEBSITE")) {
             ?>>
 
                 <?php $this->echoPageContent(); ?>
-                <div style="clear:both"></div>
             </div>
-
             <?php if ($this->getPageType() == "HOME") { ?>
                 <div id="sidebar">
                     <?php $this->echoWidgets(2); ?>
                 </div>
             <?php } ?>
+            <div style="clear:both"></div>
+        </div>
 
-            <div id="footer">
+
+        <footer id="site_footer">
+            <div class="site_container">
                 <?php $this->echoCopyright(); ?>
             </div>
-        </div>
+        </footer>
     </body>
 </html>	
