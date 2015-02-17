@@ -70,11 +70,11 @@ class EditPasswordPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$USER_RANK;
+        return Authentication::RANK_USER;
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getPageContent(Website $website, Request $request) {

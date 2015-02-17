@@ -15,7 +15,7 @@ use Rcms\Page\View\AdminPageView;
 class AdminPage extends Page {
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getPageTitle(Text $text) {
@@ -27,7 +27,7 @@ class AdminPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$ADMIN_RANK;
+        return Authentication::RANK_ADMIN;
     }
 
 }

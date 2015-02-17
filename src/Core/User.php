@@ -18,7 +18,7 @@ class User extends Entity {
     protected $rank;
     protected $joined;
     protected $lastLogin;
-    protected $status = Authentication::NORMAL_STATUS;
+    protected $status = Authentication::STATUS_NORMAL;
     protected $statusText = "";
     protected $extraData = array();
 
@@ -35,7 +35,7 @@ class User extends Entity {
         $user->setUsername($username);
         $user->setDisplayName($displayName);
         $user->setPassword($password);
-        $user->rank = Authentication::$USER_RANK;
+        $user->rank = Authentication::RANK_USER;
 
         $now = new DateTime();
         $user->setLastLogin($now);
@@ -50,10 +50,10 @@ class User extends Entity {
      * @return boolean Whether the user can log in.
      */
     public function canLogIn() {
-        if ($this->status == Authentication::DELETED_STATUS) {
+        if ($this->status == Authentication::STATUS_DELETED) {
             return false;
         }
-        if ($this->status == Authentication::BANNED_STATUS) {
+        if ($this->status == Authentication::STATUS_BANNED) {
             return false;
         }
         return true;
@@ -150,11 +150,11 @@ class User extends Entity {
     }
 
     public function isAdmin() {
-        return ($this->rank == Authentication::$ADMIN_RANK);
+        return ($this->rank == Authentication::RANK_ADMIN);
     }
 
     public function isStaff() {
-        return $this->rank == Authentication::$MODERATOR_RANK || Authentication::$ADMIN_RANK;
+        return $this->rank == Authentication::RANK_MODERATOR || Authentication::RANK_ADMIN;
     }
 
     public function getRank() {

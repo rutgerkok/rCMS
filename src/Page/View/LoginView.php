@@ -17,7 +17,7 @@ class LoginView extends View {
      * @param string $errorMessage Message to display on top of the login form
      * in a red box.. Leave blank for no message.
      * This will be displayed on top of the page. Set this to
-     * Authentication::$LOGGED_OUT_RANK to display no message on top of the
+     * Authentication::LOGGED_OUT_RANK to display no message on top of the
      * page.
      */
     public function __construct(Text $text, $errorMessage) {

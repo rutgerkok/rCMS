@@ -49,7 +49,7 @@ class Comment extends Entity {
         $comment->userName = isSet($commentArray["user_login"]) ? $commentArray["user_login"] : $commentArray["comment_name"];
         $comment->userDisplayName = isSet($commentArray["user_display_name"]) ? $commentArray["user_display_name"] : $commentArray["comment_name"];
         $comment->userEmail = isSet($commentArray["user_email"]) ? $commentArray["user_email"] : $commentArray["comment_email"];
-        $comment->userRank = isSet($commentArray["user_rank"]) ? (int) $commentArray["user_rank"] : Authentication::$LOGGED_OUT_RANK;
+        $comment->userRank = isSet($commentArray["user_rank"]) ? (int) $commentArray["user_rank"] : Authentication::RANK_LOGGED_OUT;
         $comment->created = isSet($commentArray["comment_created"]) ? new DateTime($commentArray["comment_created"]) : new DateTime();
         $comment->lastEdited = isSet($commentArray["comment_last_edited"]) ? new DateTime($commentArray["comment_last_edited"]) : null;
         $comment->body = $commentArray["comment_body"];
@@ -83,7 +83,7 @@ class Comment extends Entity {
     }
 
     public function getUserRank() {
-        return isSet($this->userRank) ? $this->userRank : Authentication::$LOGGED_OUT_RANK;
+        return isSet($this->userRank) ? $this->userRank : Authentication::RANK_LOGGED_OUT;
     }
 
     /**

@@ -34,7 +34,7 @@ class LoginOtherPage extends Page {
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getPageTitle(Text $text) {
@@ -50,7 +50,7 @@ class LoginOtherPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$ADMIN_RANK;
+        return Authentication::RANK_ADMIN;
     }
 
 }

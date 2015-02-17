@@ -44,7 +44,7 @@ class OldPageWrapper extends Page {
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
 }

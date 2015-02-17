@@ -12,7 +12,7 @@ class AccountManagementPage extends Page {
     const USERS_PER_PAGE = 50;
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$ADMIN_RANK;
+        return Authentication::RANK_ADMIN;
     }
 
     public function getPageTitle(Text $text) {
@@ -20,7 +20,7 @@ class AccountManagementPage extends Page {
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     /**
@@ -118,10 +118,10 @@ class AccountManagementPage extends Page {
                 $username = $user->getUsername(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlSpecialChars($user->getDisplayName());
                 $rank_name = $oAuth->getRankName($user->getRank());
-                if ($user->getStatus() == Authentication::BANNED_STATUS) {
+                if ($user->getStatus() == Authentication::STATUS_BANNED) {
                     $rank_name = $website->t("users.status.banned");
                 }
-                if ($user->getStatus() == Authentication::DELETED_STATUS) {
+                if ($user->getStatus() == Authentication::STATUS_DELETED) {
                     $rank_name = $website->t("users.status.deleted");
                 }
                 $username_link = '<a href="' . $website->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';

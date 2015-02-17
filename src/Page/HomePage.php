@@ -32,7 +32,7 @@ class HomePage extends Page {
     }
 
     public function getPageType() {
-        return "HOME";
+        return Page::TYPE_HOME;
     }
 
 }

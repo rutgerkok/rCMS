@@ -52,7 +52,7 @@ class AccountPage extends Page {
     public function getMinimumRank(Request $request) {
         if ($request->getParamInt(0) == 0) {
             // Need to be logged in to view your own account
-            return Authentication::$USER_RANK;
+            return Authentication::RANK_USER;
         } else {
             return parent::getMinimumRank($request);
         }
@@ -109,7 +109,7 @@ EOT;
         // It's safe to display the edit links, as only moderators and up can
         // view account pages of banned/deleted users.
         // Check if account is banned
-        if ($this->user->getStatus() == Authentication::BANNED_STATUS) {
+        if ($this->user->getStatus() == Authentication::STATUS_BANNED) {
             // Banned
             return <<<EOT
                 <div class="error">
@@ -123,7 +123,7 @@ EOT;
         }
 
         // Check if account is deleted
-        if ($this->user->getStatus() == Authentication::DELETED_STATUS) {
+        if ($this->user->getStatus() == Authentication::STATUS_DELETED) {
             return <<<EOT
                 <div class="error">
                     {$website->tReplaced("users.status.deleted.this_account", $status_text)}.

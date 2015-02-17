@@ -65,11 +65,11 @@ class DeleteArticlePage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$MODERATOR_RANK;
+        return Authentication::RANK_MODERATOR;
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getShortPageTitle(Text $text) {

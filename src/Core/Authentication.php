@@ -8,14 +8,15 @@ use Rcms\Page\View\LoginView;
 
 class Authentication {
 
-    public static $LOGGED_OUT_RANK = -1;
-    public static $ADMIN_RANK = 1;
-    public static $MODERATOR_RANK = 0;
-    public static $USER_RANK = 2;
+    const RANK_LOGGED_OUT = -1;
+    const RANK_ADMIN = 1;
+    const RANK_MODERATOR = 0;
+    const RANK_USER = 2;
 
-    const NORMAL_STATUS = 0;
-    const BANNED_STATUS = 1;
-    const DELETED_STATUS = 2;
+    const STATUS_NORMAL = 0;
+    const STATUS_BANNED = 1;
+    const STATUS_DELETED = 2;
+
     const AUTHENTIATION_COOKIE = "remember_me";
 
     /**
@@ -123,7 +124,7 @@ class Authentication {
         }
 
         $_SESSION['user_id'] = $user->getId();
-        if ($this->isHigherOrEqualRank($user->getRank(), self::$MODERATOR_RANK)) {
+        if ($this->isHigherOrEqualRank($user->getRank(), self::RANK_MODERATOR)) {
             // This session vars are purely used for CKEditor.
             // In rCMS there are much better, easier and safer ways to check this.
             $_SESSION['moderator'] = true;
@@ -184,13 +185,13 @@ class Authentication {
         if ($loggedIn) {
             $status = $user->getStatus();
             // Check whether the account is deleted
-            if ($status == Authentication::DELETED_STATUS) {
+            if ($status == Authentication::STATUS_DELETED) {
                 // Act like the account doesn't exist
                 return false;
             }
 
             // Check whether the account is banned
-            if ($status == Authentication::BANNED_STATUS) {
+            if ($status == Authentication::STATUS_BANNED) {
                 $website = $this->website;
                 $website->addError($website->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
@@ -215,7 +216,7 @@ class Authentication {
         $minimumRank = (int) $minimumRank;
         $currentUser = $this->getCurrentUser();
 
-        if ($minimumRank == self::$LOGGED_OUT_RANK) {
+        if ($minimumRank == self::RANK_LOGGED_OUT) {
             throw new InvalidArgumentException("Rank for logging in cannot be LOGGED_OUT_RANK");
         }
 
@@ -255,7 +256,7 @@ class Authentication {
         if ($this->hasLoginFailed()) {
             return $website->t("errors.invalid_login_credentials");
         }
-        if ($this->isHigherOrEqualRank($minimumRank, Authentication::$MODERATOR_RANK)) {
+        if ($this->isHigherOrEqualRank($minimumRank, Authentication::RANK_MODERATOR)) {
             return $website->t("users.must_be_logged_in_as_administrator");
         }
         return $website->t("users.must_be_logged_in");
@@ -285,7 +286,7 @@ class Authentication {
      * @return array The highest id in use for a rank.
      */
     public function getRanks() {
-        $rankIds = array(self::$USER_RANK, self::$MODERATOR_RANK, self::$ADMIN_RANK);
+        $rankIds = array(self::RANK_USER, self::RANK_MODERATOR, self::RANK_ADMIN);
         $ranks = array();
         foreach ($rankIds as $rankId) {
             $ranks[$rankId] = $this->getRankName($rankId);
@@ -298,7 +299,7 @@ class Authentication {
      * @return int The rank id.
      */
     public function getDefaultRankForAccounts() {
-        return self::$USER_RANK;
+        return self::RANK_USER;
     }
 
     /**
@@ -307,7 +308,7 @@ class Authentication {
      * @return boolean Whether the rank is valid. 
      */
     public function isValidRankForAccounts($id) {
-        if ($id == self::$USER_RANK || $id == self::$ADMIN_RANK || $id == self::$MODERATOR_RANK) {
+        if ($id == self::RANK_USER || $id == self::RANK_ADMIN || $id == self::RANK_MODERATOR) {
             return true;
         } else {
             return false;
@@ -332,7 +333,7 @@ class Authentication {
     }
 
     public function isValidStatus($id) {
-        if ($id == self::NORMAL_STATUS || $id == self::DELETED_STATUS || $id == self::BANNED_STATUS) {
+        if ($id == self::STATUS_NORMAL || $id == self::STATUS_DELETED || $id == self::STATUS_BANNED) {
             return true;
         } else {
             return false;
@@ -342,33 +343,33 @@ class Authentication {
     public function getStatusName($id) {
         $website = $this->website;
         switch ($id) {
-            case self::BANNED_STATUS: return $website->t("users.status.banned");
-            case self::DELETED_STATUS: return $website->t("users.status.deleted");
-            case self::NORMAL_STATUS: return $website->t("users.status.allowed");
+            case self::STATUS_BANNED: return $website->t("users.status.banned");
+            case self::STATUS_DELETED: return $website->t("users.status.deleted");
+            case self::STATUS_NORMAL: return $website->t("users.status.allowed");
             default: return $website->t("users.status.unknown");
         }
     }
 
     public function isHigherOrEqualRank($rankId, $compareTo) {
-        if ($compareTo == self::$LOGGED_OUT_RANK) {
+        if ($compareTo == self::RANK_LOGGED_OUT) {
             // Comparing to logged out user
             return true;
         }
-        if ($compareTo == self::$USER_RANK) {
+        if ($compareTo == self::RANK_USER) {
             // Comparing to normal user
-            return $rankId != self::$LOGGED_OUT_RANK;
+            return $rankId != self::RANK_LOGGED_OUT;
         }
-        if ($compareTo == self::$MODERATOR_RANK) {
+        if ($compareTo == self::RANK_MODERATOR) {
             // Comparing to moderator
-            if ($rankId == self::$USER_RANK || $rankId == self::$LOGGED_OUT_RANK) {
+            if ($rankId == self::RANK_USER || $rankId == self::RANK_LOGGED_OUT) {
                 // Normal and logged out users aren't higher or equal
                 return false;
             }
             return true;
         }
-        if ($compareTo == self::$ADMIN_RANK) {
+        if ($compareTo == self::RANK_ADMIN) {
             // Only other admins have the same rank
-            return $rankId == self::$ADMIN_RANK;
+            return $rankId == self::RANK_ADMIN;
         }
     }
 

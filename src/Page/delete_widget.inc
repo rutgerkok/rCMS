@@ -5,7 +5,7 @@
 // AUTHENTICATION
 $oAuth = new Authentication($this);
 
-$loggedIn = $oAuth->check(Authentication::$MODERATOR_RANK, true);
+$loggedIn = $oAuth->check(Authentication::RANK_MODERATOR, true);
 
 // CONTENTS
 $textToDisplay = '';

@@ -27,7 +27,7 @@ class CommentsPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$MODERATOR_RANK;
+        return Authentication::RANK_MODERATOR;
     }
 
     public function getPageTitle(Text $text) {

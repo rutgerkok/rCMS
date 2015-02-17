@@ -280,9 +280,9 @@ class Website {
     }
 
     public function isLoggedInAsStaff($admin = false) {
-        $neededRank = Authentication::$MODERATOR_RANK;
+        $neededRank = Authentication::RANK_MODERATOR;
         if ($admin) {
-            $neededRank = Authentication::$ADMIN_RANK;
+            $neededRank = Authentication::RANK_ADMIN;
         }
         return $this->userHasRank($neededRank);
     }

@@ -39,7 +39,7 @@ class SiteSettingsPage extends Page {
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getPageTitle(Text $text) {
@@ -51,7 +51,7 @@ class SiteSettingsPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$ADMIN_RANK;
+        return Authentication::RANK_ADMIN;
     }
 
     public function getPageContent(Website $website, Request $request) {

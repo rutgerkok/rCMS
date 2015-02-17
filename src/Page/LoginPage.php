@@ -20,7 +20,7 @@ class LoginPage extends Page {
         // Handle login ourselves
         // (Using the provided getMinimumRank helper gives an ugly
         // "You need to be logged in to view this page" message.)
-        $this->loggedIn = $website->getAuth()->check(Authentication::$USER_RANK, false);
+        $this->loggedIn = $website->getAuth()->check(Authentication::RANK_USER, false);
         $this->loggedInAsAdmin = $website->isLoggedInAsStaff(true);
         if (!$this->loggedIn) {
             $this->errorMessage = $this->getLoginErrorMessage($website->getText(), $website->getAuth());
@@ -36,7 +36,7 @@ class LoginPage extends Page {
     }
 
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 
     /**

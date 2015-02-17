@@ -15,10 +15,27 @@ use Rcms\Core\Website;
  * method may be called, even multiple times.
  */
 abstract class Page {
+    /**
+     * Page type for most pages. You can get the type of a page using the
+     * getPageType method.
+     *
+     * Page types are used for styling purposes. For authentication, see the
+     * getMinimumRank method.
+     */
+    const TYPE_NORMAL = 2;
+    /**
+     * Pages in the admin area of the site have this type.
+     */
+    const TYPE_BACKSTAGE = 3;
+    /**
+     * Page type for the home page.
+     */
+    const TYPE_HOME = 4;
 
     /**
      * Initializes the page. This should fetch the data from the database,
-     * validate the input and save it to the database.
+     * validate the input and save it to the database. Will only be called when
+     * the user has the rank specified by `getMinimumRank`.
      * @param Website $website The application object.
      * @param Request $request Request that caused this page to load.
      */
@@ -31,18 +48,18 @@ abstract class Page {
      * $return string The page type.
      */
     public function getPageType() {
-        return "NORMAL";
+        return Page::TYPE_NORMAL;
     }
 
     /**
      * Gets the minimum rank required to view this page, like
-     * Authentication::$USER_RANK. If the user doesn't satisfy this rank, no
+     * Authentication::USER_RANK. If the user doesn't satisfy this rank, no
      * other methods on this class will be called.
      * @param Request $request Request that caused this page to load.
      * @return int The minimum rank required to view this page.
      */
     public function getMinimumRank(Request $request) {
-        return Authentication::$LOGGED_OUT_RANK;
+        return Authentication::RANK_LOGGED_OUT;
     }
 
     /**

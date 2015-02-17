@@ -17,7 +17,7 @@ class EditAccountStatusPage extends EditPasswordPage {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$MODERATOR_RANK;
+        return Authentication::RANK_MODERATOR;
     }
 
     // Overrided to allow moderators to (un)block someone else
@@ -74,7 +74,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         if ($show_form) {
             // Variables
             $status = $website->getRequestInt("status", $this->user->getStatus());
-            $statuses = array(Authentication::NORMAL_STATUS, Authentication::BANNED_STATUS, Authentication::DELETED_STATUS);
+            $statuses = array(Authentication::STATUS_NORMAL, Authentication::STATUS_BANNED, Authentication::STATUS_DELETED);
             $status_text = htmlSpecialChars($request->getRequestString("status_text", $this->user->getStatusText()));
 
             // Form itself

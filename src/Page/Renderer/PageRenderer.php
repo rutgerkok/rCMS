@@ -146,7 +146,7 @@ class PageRenderer {
         // Authentication stuff
         $rank = (int) $page->getMinimumRank($this->request);
 
-        if ($rank == Authentication::$LOGGED_OUT_RANK || $website->getAuth()->check($rank, false)) {
+        if ($rank == Authentication::RANK_LOGGED_OUT || $website->getAuth()->check($rank, false)) {
             // Call init method
             try {
                 $page->init($website, $this->request);

@@ -3,6 +3,9 @@
 if (!defined("WEBSITE")) {
     die();
 }
+
+use Rcms\Page\Page;
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -44,7 +47,7 @@ if (!defined("WEBSITE")) {
         </header>
         <div class="site_container">
             <div <?php
-            if ($this->getPageType() == "HOME") {
+            if ($this->getPageType() === Page::TYPE_HOME) {
                 echo 'id="contenthome"';
             } else {
                 echo 'id="content"';
@@ -53,7 +56,7 @@ if (!defined("WEBSITE")) {
 
                 <?php $this->echoPageContent(); ?>
             </div>
-            <?php if ($this->getPageType() == "HOME") { ?>
+            <?php if ($this->getPageType() == Page::TYPE_HOME) { ?>
                 <div id="sidebar">
                     <?php $this->echoWidgets(2); ?>
                 </div>

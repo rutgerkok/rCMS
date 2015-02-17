@@ -3,6 +3,9 @@
 if (!defined("WEBSITE")) {
     die();
 }
+
+use Rcms\Page\Page;
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -38,11 +41,11 @@ if (!defined("WEBSITE")) {
                     </ul>
                 </div>
                 <div <?php
-if ($this->getPageType() == "HOME") {
+if ($this->getPageType() === Page::TYPE_HOME) {
     echo 'id="content"';
-} elseif ($this->getPageType() == "BACKSTAGE") {
+} elseif ($this->getPageType() === Page::TYPE_BACKSTAGE) {
     echo 'id="contentadmin"';
-} else { // dus $this->get_page_type()=="NORMAL"
+} else { // so $this->get_page_type() === Page::TYPE_NORMAL
     echo 'id="contentwide"';
 }
 ?> >
@@ -54,7 +57,7 @@ if ($this->getPageType() == "HOME") {
 
                 </div><!-- id="content"/"contentwide" -->
 
-<?php if ($this->getPageType() == "HOME") { ?>
+<?php if ($this->getPageType() === Page::TYPE_HOME) { ?>
                     <div id="homepage_sidebar_1">
                     <?php $this->echoWidgets(2); ?>
                         &nbsp;

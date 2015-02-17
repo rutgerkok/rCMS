@@ -18,6 +18,6 @@ class Error404Page extends Page {
     }
     
     public function getPageType() {
-        return "BACKSTAGE";
+        return Page::TYPE_BACKSTAGE;
     }
 }

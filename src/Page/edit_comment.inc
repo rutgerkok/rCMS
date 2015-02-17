@@ -5,7 +5,7 @@
 //OBJECTEN
 $oAuth = new Authentication($this);
 $oComments = new CommentRepository($this, $oAuth);
-$loggedIn = $oAuth->check(Authentication::$USER_RANK, true);
+$loggedIn = $oAuth->check(Authentication::RANK_USER, true);
 $is_moderator = $this->isLoggedInAsStaff();
 $display_form = false;
 

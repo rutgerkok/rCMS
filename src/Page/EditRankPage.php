@@ -14,7 +14,7 @@ class EditRankPage extends EditPasswordPage {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::$ADMIN_RANK;
+        return Authentication::RANK_ADMIN;
     }
 
     public function getPageContent(Website $website, Request $request) {
@@ -51,7 +51,7 @@ class EditRankPage extends EditPasswordPage {
         if ($show_form) {
             // Variables
             $rank = $request->getRequestInt("rank", $this->user->getRank());
-            $ranks = array(Authentication::$USER_RANK, Authentication::$MODERATOR_RANK, Authentication::$ADMIN_RANK);
+            $ranks = array(Authentication::RANK_USER, Authentication::RANK_MODERATOR, Authentication::RANK_ADMIN);
 
             // Form itself
             $textToDisplay.=<<<EOT

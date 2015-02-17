@@ -4,7 +4,7 @@
 <?php
 // AUTHENTICATION
 $oAuth = new Authentication($this);
-$loggedIn = $oAuth->check(Authentication::$ADMIN_RANK, true);
+$loggedIn = $oAuth->check(Authentication::RANK_ADMIN, true);
 
 // CONTENTS
 $oWidgets = new WidgetRepository($this);
