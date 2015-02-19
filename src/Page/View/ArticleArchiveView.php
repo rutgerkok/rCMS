@@ -134,7 +134,7 @@ MENUBAR;
         $text = $this->text;
 
         $textToDisplay = '<tr><td><a href="' . $text->getUrlPage("article", $article->id);
-        $textToDisplay.= '">' . $article->title . "</a>";
+        $textToDisplay.= '">' . htmlSpecialChars($article->title) . "</a>";
         if ($loggedIn) {
             // Display edit links in new cell
             $textToDisplay.= '</td><td style="width:20%">';
