@@ -70,7 +70,7 @@ class ThemeElementsRenderer {
         // Title
         $title = $this->pageRenderer->getPageTitle();
         if (!empty($title)) {
-            echo "<h2>" . $title . "</h2>\n";
+            echo "<h2>" . htmlSpecialChars($title) . "</h2>\n";
         }
 
         // Fetch content first

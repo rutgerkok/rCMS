@@ -63,7 +63,8 @@ abstract class Page {
     }
 
     /**
-     * Gets the title of this page. Empty titles are allowed.
+     * Gets the title of this page. Empty titles are allowed. The returned
+     * title must be unescaped.
      * @param Text $text The messages instance.
      * @return string The title of this page.
      */

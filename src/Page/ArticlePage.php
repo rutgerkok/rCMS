@@ -37,7 +37,7 @@ class ArticlePage extends Page {
     }
 
     public function getPageTitle(Text $text) {
-        return htmlSpecialChars($this->article->title);
+        return $this->article->title;
     }
 
     public function getView(Text $text) {

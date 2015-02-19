@@ -58,7 +58,7 @@ class DeleteArticlePage extends Page {
 
     public function getPageTitle(Text $text) {
         if ($this->article) {
-            return $text->t("main.delete") . ' "' . htmlSpecialChars($this->article->title) . '"';
+            return $text->t("main.delete") . ' "' . $this->article->title . '"';
         } else {
             return $this->getShortPageTitle($text);
         }

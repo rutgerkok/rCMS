@@ -61,7 +61,7 @@ class SearchPage extends Page {
 
     public function getPageTitle(Text $text) {
         if ($this->keyword) {
-            return $text->tReplaced("articles.search_for", htmlSpecialChars($this->keyword));
+            return $text->tReplaced("articles.search_for", $this->keyword);
         } else {
             return $this->getShortPageTitle($text);
         }
