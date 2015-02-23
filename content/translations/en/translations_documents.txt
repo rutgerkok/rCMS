@@ -1,0 +1,3 @@
+create=Create new document
+view=View
+list.title=All documents

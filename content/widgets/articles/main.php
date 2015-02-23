@@ -6,7 +6,7 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Core\WidgetDefinition;
+use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Page\View\ArticleListView;
 use Rcms\Page\View\ArticleSmallListView;
 

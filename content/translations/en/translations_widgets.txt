@@ -8,3 +8,6 @@ sidebar=Sidebar
 homepage=Homepage
 title=Title
 priority=Priority
+edit=Edit widget
+delete=Delete widget
+manage=Manage widgets

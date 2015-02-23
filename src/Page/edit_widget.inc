@@ -1,4 +1,10 @@
-<?php namespace Rcms\Core; ?>
+<?php
+
+namespace Rcms\Core;
+
+use Rcms\Core\Widget\WidgetRepository;
+
+?>
 
 <h2><?php echo $this->t("editor.widget.edit") ?></h2>
 <?php
@@ -35,7 +41,7 @@ if ($loggedIn) {
     } else {
         // Get data from widget
         $widget_info = $widget->getWidgetInfo();
-        $widget_definition = $widget->getWidgetDefinition($oWidgets);
+        $widget_definition = $this->getWidgets()->getDefinition($widget);
         $widget_data = $widget->getData();
 
         // Show header

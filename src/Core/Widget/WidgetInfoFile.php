@@ -1,9 +1,11 @@
 <?php
 
-namespace Rcms\Core;
+namespace Rcms\Core\Widget;
+
+use Rcms\Core\InfoFile;
 
 /**
- * Stores info about a widget. All methods return strings.
+ * Stores metadata about a widget definition, comes from a widget info file.
  */
 class WidgetInfoFile extends InfoFile {
 
@@ -12,7 +14,6 @@ class WidgetInfoFile extends InfoFile {
     public function __construct($widgetName, $infoFile) {
         parent::__construct($infoFile);
         $this->widgetName = $widgetName;
-        $this->infoFile = $infoFile;
     }
 
     public function getName() {

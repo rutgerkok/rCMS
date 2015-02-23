@@ -9,3 +9,6 @@ sidebar=Zijbalk
 homepage=Hoofdpagina
 title=Titel
 priority=Prioriteit
+edit=Bewerk widget
+delete=Verwijder widget
+manage=Beheer widgets

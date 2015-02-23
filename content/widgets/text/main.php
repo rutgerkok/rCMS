@@ -2,9 +2,8 @@
 
 namespace Rcms\Extend\Widget;
 
-use Rcms\Core\Editor;
 use Rcms\Core\Website;
-use Rcms\Core\WidgetDefinition;
+use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Page\View\Support\CKEditor;
 
 // Protect against calling this script directly

@@ -6,8 +6,6 @@ use PDOException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 use Rcms\Core\Exception\NotFoundException;
-// Yeah, this should not be here
-use Rcms\Page\View\CommentsTreeView;
 
 class CommentRepository extends Repository {
 

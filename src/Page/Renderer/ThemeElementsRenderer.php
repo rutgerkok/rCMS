@@ -6,6 +6,7 @@ use Rcms\Core\CategoryRepository;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Theme;
 use Rcms\Core\Website;
+use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\HomePage;
 use Rcms\Page\View\WidgetsView;
 
@@ -23,6 +24,12 @@ class ThemeElementsRenderer {
 
     /**  @var PageRenderer The renderer of the page. */
     private $pageRenderer;
+
+    /**
+     * @var WidgetRepository|null Repository for the widgets on the sidebar.
+     * Initialized when first needed. 
+     */
+    private $widgetsRepo = null;
 
     public function __construct(Website $website, Theme $theme,
             PageRenderer $pageRenderer) {
@@ -244,7 +251,13 @@ SEARCH;
     }
 
     public function echoWidgets($area) {
-        $widgetsView = new WidgetsView($this->website->getText(), $this->website->getWidgets(), $area);
+        $editLinks = $this->website->isLoggedInAsStaff();
+        if ($this->widgetsRepo === null) {
+            $this->widgetsRepo = new WidgetRepository($this->website);
+        }
+        $widgets = $this->widgetsRepo->getPlacedWidgetsFromSidebar($area);
+
+        $widgetsView = new WidgetsView($this->website->getText(), $this->website->getWidgets(), $widgets, $editLinks);
         echo $widgetsView->getText();
     }
 

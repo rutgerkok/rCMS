@@ -96,7 +96,7 @@ class ArticleRepository extends Repository {
         // Remove hidden articles for normal visitors
         if (!$this->website->isLoggedInAsStaff()) {
             if (!empty($sql)) {
-                $sql.= " AND ";
+                $sql = "({$sql}) AND ";
             }
             $sql.= "`{$this->hiddenField->getNameInDatabase()}` = 0";
         }

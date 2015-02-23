@@ -1,9 +1,8 @@
 <?php
 
-namespace Rcms\Core;
+namespace Rcms\Core\Widget;
 
 use InvalidArgumentException;
-
 use Rcms\Core\Repository\Entity;
 
 /**
@@ -39,15 +38,12 @@ class PlacedWidget extends Entity {
      * @param int $sidebarId Id of the sidebar the widget is placed in.
      * @return PlacedWidget The placed widget.
      */
-    public static function newPlacedWidget($baseDirectory, $widgetName, $sidebarId) {
+    public static function newPlacedWidget($baseDirectory, $widgetName,
+            $sidebarId) {
         $placedWidget = new PlacedWidget($baseDirectory);
         $placedWidget->setSidebarId($sidebarId);
         $placedWidget->widgetName = (string) $widgetName;
         return $placedWidget;
-    }
-
-    public function getWidgetDefinition(WidgetRepository $widget_loader) {
-        return $widget_loader->getWidgetDefinition($this->widgetName);
     }
 
     /**
@@ -102,11 +98,27 @@ class PlacedWidget extends Entity {
     }
 
     /**
+     * Gets the file where the widget metadata is stored.
+     * @return string The file.
+     */
+    public function getWidgetInfoFile() {
+        return $this->baseDirectory . '/' . $this->widgetName . "/info.txt";
+    }
+
+    /**
+     * Gets the PHP file with the main entry point of the code of the widget.
+     * @return string The file.
+     */
+    public function getWidgetCodeFile() {
+        return $this->baseDirectory . '/' . $this->widgetName . "/main.php";
+    }
+
+    /**
      * Returns info about this widget provided by the author.
      * @return WidgetInfoFile Info about the widget.
      */
     public function getWidgetInfo() {
-        return new WidgetInfoFile($this->widgetName, $this->baseDirectory . '/' . $this->widgetName . "/info.txt");
+        return new WidgetInfoFile($this->widgetName, $this->getWidgetInfoFile());
     }
 
     /**

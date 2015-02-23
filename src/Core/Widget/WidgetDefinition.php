@@ -1,6 +1,8 @@
 <?php
 
-namespace Rcms\Core;
+namespace Rcms\Core\Widget;
+
+use Rcms\Core\Website;
 
 /**
  * Holds the code of a widget.
@@ -27,7 +29,7 @@ abstract class WidgetDefinition {
      * Parses all input created by getEditor. You'll have to use the $_REQUEST
      * array. Make sure to sanitize your input, but don't escape it, that will
      * be done for you.
-     * 
+     *
      * If the data is invalid set $return_array["valid"] to false. If you want
      * to give any feedback to the user, use $website->addError(message).
      * 

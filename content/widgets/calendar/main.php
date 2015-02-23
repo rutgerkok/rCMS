@@ -6,7 +6,7 @@ use DateTime;
 
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Website;
-use Rcms\Core\WidgetDefinition;
+use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Page\View\CalendarView;
 
 // Protect against calling this script directly

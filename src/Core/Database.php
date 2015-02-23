@@ -2,14 +2,13 @@
 
 namespace Rcms\Core;
 
-use DateTime;
 use PDO;
 use PDOException;
 use PDOStatement;
 
 class Database extends PDO {
 
-    const CURRENT_DATABASE_VERSION = 3;
+    const CURRENT_DATABASE_VERSION = 4;
 
     protected $website;
     protected $prefix = "";
@@ -26,7 +25,7 @@ class Database extends PDO {
         // Connect
         try {
             $dataSource = "mysql:dbname={$config->get("database_name")};host={$config->get("database_location")}";
-            parent::__construct($dataSource, $config->get("database_user"), $config->get("database_password"));
+            parent::__construct($dataSource, $config->get("database_user"), $config->get("database_password"), array());
         } catch (PDOException $e) {
             // Abort on error
             exit("Failed to connect to database: " . $e->getMessage());
@@ -38,8 +37,11 @@ class Database extends PDO {
         // Fill prefix replacement arrays
         $prefix = $config->get("database_table_prefix");
         $this->prefix = $prefix;
-        $this->tableNamesToReplace = array("`categorie`", "`users`", "`links`", "`artikel`", "`comments`", "`menus`", "`widgets`", "`settings`");
-        $this->replacingTableNames = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", "`{$prefix}artikel`", "`{$prefix}comments`", "`{$prefix}menus`", "`{$prefix}widgets`", "`{$prefix}settings`");
+        $this->tableNamesToReplace = array("`categorie`", "`users`", "`links`",
+            "`artikel`", "`comments`", "`menus`", "`widgets`", "`documents`", "`settings`");
+        $this->replacingTableNames = array("`{$prefix}categorie`", "`{$prefix}users`", "`{$prefix}links`", 
+                "`{$prefix}artikel`", "`{$prefix}comments`", "`{$prefix}menus`", 
+                "`{$prefix}widgets`", "`{$prefix}documents`", "`{$prefix}settings`");
     }
 
     /**
@@ -62,6 +64,25 @@ class Database extends PDO {
         $version = $this->website->getConfig()->get("database_version");
         return $version > 0;
     }
+    
+    private function createDocumentsTable() {
+        $documentsTable = <<<SQL
+        CREATE TABLE IF NOT EXISTS `documents` (
+            `document_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+            `document_title` varchar(255) NOT NULL,
+            `document_intro` text NOT NULL,
+            `document_hidden` tinyint(1) NOT NULL,
+            `document_created` datetime NOT NULL,
+            `document_edited` datetime DEFAULT NULL,
+            `user_id` int(10) unsigned NOT NULL,
+            `document_parent_id` int(10) unsigned NOT NULL,
+            PRIMARY KEY (`document_id`),
+            KEY `document_hidden` (`document_hidden`, `document_created`, `user_id`, `document_parent_id`),
+            FULLTEXT KEY `document_title` (`document_title`, `document_intro`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;         
+SQL;
+        $this->exec($documentsTable);
+    }
 
     /**
      * Creates any missing tables.
@@ -81,7 +102,7 @@ class Database extends PDO {
                 "PRIMARY KEY (`user_id`), UNIQUE KEY `user_login` (`user_login`)) ENGINE=InnoDB");
 
         $admin = User::createNewUser("admin", "Admin", "admin");
-        $admin->setRank(Authentication::$ADMIN_RANK);
+        $admin->setRank(Authentication::RANK_ADMIN);
         $this->website->getAuth()->getUserRepository()->save($admin);
 
         // Links
@@ -103,6 +124,9 @@ class Database extends PDO {
         $this->exec("CREATE TABLE `widgets` (`widget_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `widget_naam` VARCHAR(40) NOT NULL , `widget_data` TEXT NULL, `widget_priority` INT NOT NULL, `sidebar_id` INT UNSIGNED NOT NULL) ENGINE=MyISAM");
         $this->exec("INSERT INTO `widgets` (`widget_naam`, `widget_data`, `widget_priority`, `sidebar_id`) VALUES ('articles', '{\"title\":\"News\",\"categories\":[3],\"count\":4,\"display_type\":0,\"order\":0}', '0', '1'), ('calendar', '{\"title\":\"Events\"}', '0', '2')");
 
+        // Documents
+        $this->createDocumentsTable();
+
         // Settings
         $this->exec("CREATE TABLE `settings` (`setting_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `setting_name` varchar(30) NOT NULL, `setting_value` varchar(" . Website::MAX_SITE_OPTION_LENGTH . ") NOT NULL, PRIMARY KEY (`setting_id`) ) ENGINE=MyIsam");
         $year = date("Y");
@@ -120,29 +144,11 @@ class Database extends PDO {
 EOT;
         $this->exec($sql);
     }
-
-    /**
-     * Updates/installs the database.
-     * @return int 0 if nothing changed, returns 1
-     * if the database structure was updated, returns 2 if the database was
-     * installed.
-     */
-    public function updateTables() {
-        $version = $this->website->getConfig()->get("database_version");
-        if ($version == self::CURRENT_DATABASE_VERSION) {
-            // Nothing to update
-            return 0;
-        }
-        if ($version == 0) {
-            // Not installed yet
-            $this->createTables();
-            return 2;
-        }
-        if ($version == 1) {
-            // Update from version 1
-            // Update users table (prefix needs to be included, since that isn't
-            // automatically added by $this->query() )
-            $updateSql = <<<SQL
+    
+    private function updateUsersTable() {
+        // Update users table (prefix needs to be included, since that isn't
+        // automatically added for old table names )
+        $updateSql = <<<SQL
                 ALTER TABLE `{$this->prefix}gebruikers`
                 CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `gebruiker_admin` `user_rank` TINYINT(4) NOT NULL,
@@ -156,17 +162,14 @@ EOT;
                 ADD `user_status_text` VARCHAR( 255 ) NOT NULL,
                 ADD `user_extra_data` TEXT NOT NULL
 SQL;
-            $this->exec($updateSql);
+        $this->exec($updateSql);
 
-            $renameSql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
-            $this->exec($renameSql);
-
-            $version = 2; // Continue to next step
-        }
-        if ($version == 2) {
-            // Update from version 2
-            // Update comments table
-            $updateSql = <<<SQL
+        $renameSql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
+        $this->exec($renameSql);
+    }
+    
+    private function updateCommentsTable() {
+        $updateSql = <<<SQL
                 ALTER TABLE `{$this->prefix}reacties`
                 CHANGE `reactie_id` `comment_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `artikel_id` `article_id` INT(10) UNSIGNED NOT NULL,
@@ -179,13 +182,45 @@ SQL;
                 ADD `comment_parent_id` INT(10) UNSIGNED NULL,
                 ADD `comment_status` TINYINT(3) UNSIGNED NOT NULL
 SQL;
-            $this->exec($updateSql);
+        $this->exec($updateSql);
 
-            $renameSql = "RENAME TABLE `{$this->prefix}reacties` TO `comments`";
-            $this->exec($renameSql);
+        $renameSql = "RENAME TABLE `{$this->prefix}reacties` TO `comments`";
+        $this->exec($renameSql);
+
+    }
+
+    /**
+     * Updates/installs the database.
+     * @return int 0 if nothing changed, returns 1
+     * if the database structure was updated, returns 2 if the database was
+     * installed.
+     */
+    public function updateTables() {
+        $version = $this->website->getConfig()->get("database_version");
+        
+        // Nothing to update
+        if ($version == self::CURRENT_DATABASE_VERSION) {
+            return 0;
         }
 
-        // Done updating
+        // Create tables
+        if ($version == 0) {
+            $this->createTables();
+            return 2;
+        }
+        
+        // Upgrade existing
+        if ($version == 1) {
+            $this->updateUsersTable();
+        }
+        if ($version <= 2) {
+            $this->updateCommentsTable();
+        }
+        if ($version <= 3) {
+            $this->createDocumentsTable();
+        }
+
+        // Update version number to signify database update
         $this->website->getConfig()->set($this, "database_version", self::CURRENT_DATABASE_VERSION);
         return 1;
     }

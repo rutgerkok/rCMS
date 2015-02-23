@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use Rcms\Core\Widget\InstalledWidgets;
+
 class Website {
 
     const MAX_SITE_OPTION_LENGTH = 200;
@@ -17,7 +19,7 @@ class Website {
     /** @var Config Settings of the site. */
     protected $config;
 
-    /** @var WidgetRepository Widgets object. */
+    /** @var InstalledWidgets Widgets currently loaded. */
     protected $widgets;
 
     /** @var Authentication Handles authentication */
@@ -126,7 +128,7 @@ class Website {
     public function getWidgets() {
         if (!$this->widgets) {
             // Not every page needs them, so use lazy initialization
-            $this->widgets = new WidgetRepository($this);
+            $this->widgets = new InstalledWidgets($this);
         }
         return $this->widgets;
     }

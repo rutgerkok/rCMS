@@ -5,7 +5,7 @@ namespace Rcms\Extend\Widget;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\MenuRepository;
 use Rcms\Core\Website;
-use Rcms\Core\WidgetDefinition;
+use Rcms\Core\Widget\WidgetDefinition;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {

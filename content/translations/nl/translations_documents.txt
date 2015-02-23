@@ -1,0 +1,3 @@
+create=Maak nieuw document
+view=Bekijk
+list.title=Alle documenten

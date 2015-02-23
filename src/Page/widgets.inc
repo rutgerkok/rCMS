@@ -1,4 +1,10 @@
-<?php namespace Rcms\Core; ?>
+<?php
+
+namespace Rcms\Core;
+
+use Rcms\Core\Widget\WidgetRepository;
+
+?>
 
 <h2><?php echo $this->t("main.widgets") ?></h2>
 <?php

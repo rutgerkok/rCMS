@@ -5,30 +5,45 @@ namespace Rcms\Page;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Core\WidgetRepository;
+use Rcms\Core\Widget\InstalledWidgets;
+use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\View\WidgetsView;
 
 class HomePage extends Page {
-    
+
     /**
-     * @var WidgetRepository The widgets instance. 
+     * @var PlacedWidget[] The widgets to display. 
      */
-    private $widgets;
-    
+    private $placedWidgets;
+
+    /**
+     *
+     * @var InstalledWidgets Loaded widget cache.
+     */
+    private $loadedWidgets;
+
+    /**
+     * @var boolean Whether edit/delete links are shown.
+     */
+    private $editLinks;
+
     public function init(Website $website, Request $request) {
-        $this->widgets = $website->getWidgets();
+        $this->loadedWidgets = $website->getWidgets();
+
+        $widgetsRepo = new WidgetRepository($website);
+        $this->widgets = $widgetsRepo->getPlacedWidgetsFromSidebar(1);
     }
 
     public function getPageTitle(Text $text) {
         return ""; // The widgets will already provide a title
     }
-    
+
     public function getShortPageTitle(Text $text) {
         return $text->t("main.home");
     }
 
     public function getView(Text $text) {
-        return new WidgetsView($text, $this->widgets, 1);
+        return new WidgetsView($text, $this->loadedWidgets, $this->widgets, $this->editLinks);
     }
 
     public function getPageType() {
