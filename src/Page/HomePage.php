@@ -32,6 +32,8 @@ class HomePage extends Page {
 
         $widgetsRepo = new WidgetRepository($website);
         $this->widgets = $widgetsRepo->getPlacedWidgetsFromSidebar(1);
+
+        $this->editLinks = $website->isLoggedInAsStaff();
     }
 
     public function getPageTitle(Text $text) {
