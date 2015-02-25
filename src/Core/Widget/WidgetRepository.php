@@ -103,14 +103,11 @@ class WidgetRepository extends Repository {
     /**
      * Searches the database for the widget with the given id.
      * @param int $widget_id The id of the widget.
-     * @return PlacedWidget|null The placed widget, or null if it isn't found.
+     * @return PlacedWidget The placed widget, or null if it isn't found.
+     * @throws NotFoundException If no widget exists with that id.
      */
     public function getPlacedWidget($widget_id) {
-        try {
-            return $this->where($this->getPrimaryKey(), '=', $widget_id)->selectOneOrFail();
-        } catch (NotFoundException $e) {
-            return null;
-        }
+        return $this->where($this->getPrimaryKey(), '=', $widget_id)->selectOneOrFail();
     }
 
     /**

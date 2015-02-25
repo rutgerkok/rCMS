@@ -11,3 +11,6 @@ priority=Priority
 edit=Edit widget
 delete=Delete widget
 manage=Manage widgets
+missing_definition=The code for the widget {0} is not installed.
+missing_definition.edit=This widget cannot be edited, as the widget code is not installed.
+view_in_document=View in document

@@ -7,11 +7,11 @@ use LogicException;
 use Rcms\Core\Website;
 
 /**
- * Holds all widgets currently loaded. This class avoids that widgets can be
- * loaded twice, which would cause a fatal error.
+ * Provides access to the definitions of all widgets installed on the site. This
+ * class avoids that widgets can be loaded twice, which would cause a fatal error.
  */
 class InstalledWidgets {
-    
+
     /**
      * @var Website The website instance, for running the widget code.
      */
@@ -72,6 +72,9 @@ class InstalledWidgets {
     /**
      * Gets the widget definition (containing the actual behaviour of the widget)
      * from the placed widget.
+     *
+     * If the widget code has been uninstalled, an instance of `NullWidget` is
+     * returned.
      * @param PlacedWidget $placedWidget The placed widget.
      * @return WidgetDefinition The widget definition.
      * @throws LogicException If the widget code contains an error.
@@ -82,7 +85,11 @@ class InstalledWidgets {
         // Load the widget
         if (!isSet($this->loadedWidgets[$dirName])) {
             $this->currentlyLoadingWidgetName = $dirName;
-            require($placedWidget->getWidgetCodeFile());
+            $file = $placedWidget->getWidgetCodeFile();
+            if (!file_exists($file)) {
+                return new NullWidget($dirName);
+            }
+            require($file);
             $this->currentlyLoadingWidgetName = "";
         }
 
@@ -102,6 +109,16 @@ class InstalledWidgets {
     public function getOutput(PlacedWidget $placedWidget) {
         $widgetDefinition = $this->getDefinition($placedWidget);
         return $widgetDefinition->getText($this->website, $placedWidget->getId(), $placedWidget->getData());
+    }
+
+    /**
+     * Gets the HTML for the editor of the widget.
+     * @param PlacedWidget $placedWidget The widget.
+     * @return string The HTML output.
+     */
+    public function getEditor(PlacedWidget $placedWidget) {
+        $widgetDefinition = $this->getDefinition($placedWidget);
+        return $widgetDefinition->getEditor($this->website, $placedWidget->getId(), $placedWidget->getData());
     }
 
     /**
