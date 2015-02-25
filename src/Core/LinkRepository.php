@@ -101,7 +101,7 @@ class LinkRepository extends Repository {
         $links = array();
 
         // Add link to homepage
-        $links[] = Link::createTemporary($website->getUrlMain(), $website->t("main.home"));
+        $links[] = Link::of($website->getUrlMain(), $website->t("main.home"));
 
         if ($website->getDatabase()->isUpToDate() && $website->getDatabase()->isInstalled()) {
             $categories = $oCats->getCategories();
@@ -109,14 +109,14 @@ class LinkRepository extends Repository {
                 if ($category->isStandardCategory()) {
                     continue; // Don't display "No categories"
                 }
-                $links[] = Link::createTemporary(
+                $links[] = Link::of(
                                 // Decode url, it will be encoded again by get_as_html
                                 html_entity_decode($website->getUrlPage("category", $category->getId())), $category->getName()
                 );
             }
         } else {
             // No categories yet, so database is not installed
-            $links[] = Link::createTemporary($website->getUrlPage("installing_database"), "Setup database");
+            $links[] = Link::of($website->getUrlPage("installing_database"), "Setup database");
         }
 
         return $links;

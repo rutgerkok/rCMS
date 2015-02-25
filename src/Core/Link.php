@@ -19,11 +19,15 @@ class Link extends Entity {
 
     /**
      * Creates a new link with the given url and text.
+     *
+     * This link will not be part of a menu and therefore cannot be saved to
+     * the link repository.
+     *
      * @param string $url Url of the link.
      * @param string $text Text of the link.
      * @return Link The link.
      */
-    public static function createTemporary($url, $text) {
+    public static function of($url, $text) {
         $link = new Link();
         $link->url = (string) $url;
         $link->text = (string) $text;
@@ -39,7 +43,7 @@ class Link extends Entity {
      * @return Link The link.
      */
     public static function createSaveable($linkId, $menuId, $url, $text) {
-        $link = static::createTemporary($url, $text);
+        $link = static::of($url, $text);
         $link->id = (int) $linkId;
         $link->menuId = (int) $menuId;
         return $link;

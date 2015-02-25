@@ -66,13 +66,26 @@ class Text {
     // Messages and errors
 
     /**
-     * Adds a new error that will be displayed on the top of the page. Errors
-     * should notify users about mistakes they made, or about technical failures
-     * on the website. Expect all messages here to be publicy visible.
+     * Adds a new error that will be displayed on the top of the page. These
+     * errors are intended to inform users, either of mistakes they made, or of
+     * system failures. The errors will not be logged by this method.
      * @param string $error The error to add.
+     * @param Link $links ... Vararg to add links to this message.
      */
     public function addError($error) {
-        $this->errors[] = $error;
+        // Support varargs
+        $links = func_get_args();
+        array_shift($links);
+
+        $this->errors[] = $error . $this->toHtmlLinks($links);
+    }
+
+    private function toHtmlLinks($links) {
+        $returnValue = "";
+        foreach ($links as $link) {
+            $returnValue.= ' <a class="arrow" href="' . $link->getUrl() . '">' . $link->getText() . '</a>';
+        }
+        return $returnValue;
     }
 
     /**
@@ -105,16 +118,22 @@ class Text {
      * Adds a message that will be displayed on the top of the page. Messages
      * should be confirmations, like "Article has been saved".
      * @param string $confirmation The message to add.
+     * @param Link $links ... Vararg to add links to this message.
      */
     public function addMessage($confirmation) {
-        $this->confirmations[] = $confirmation;
+        // Support varargs
+        $links = func_get_args();
+        array_shift($links);
+
+        $this->confirmations[] = $confirmation . $this->toHtmlLinks($links);
     }
+
+
 
     /**
      * Gets the errors that were posted using {@link #addError(string)}.
      * Changing this array is not allowed.
-     * @see #addError(string)
-     * @return string[] The errors.
+     * @return string[] The errors. Each line may contain HTML tags.
      */
     public function getErrors() {
         return $this->errors;
@@ -123,7 +142,7 @@ class Text {
     /**
      * Gets the messages that were posted using {@link #addMessage(string)}.
      * Changing this array is not allowed.
-     * @return string[] The messages.
+     * @return string[] The messages. Each line may contain HTML tags.
      */
     public function getConfirmations() {
         return $this->confirmations;

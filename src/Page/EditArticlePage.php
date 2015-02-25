@@ -9,6 +9,7 @@ use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Exception\RedirectException;
+use Rcms\Core\Link;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -26,7 +27,6 @@ class EditArticlePage extends Page {
 
     /** @var Category[] All categories on the site. */
     protected $allCategories;
-    protected $message; // Message at the top of the page
     protected $token; // Token, always set
 
     public function init(Website $website, Request $request) {
@@ -57,15 +57,14 @@ class EditArticlePage extends Page {
             // Try to save
             $article = $articleEditor->getArticle();
             if ($articleRepository->save($article)) {
+                $viewArticleLink = Link::of($website->getUrlPage("article", $article->id), $website->t("articles.view"));
                 if ($articleId == 0) {
                     // New article created
-                    $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_created"));
+                    $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_created"), $viewArticleLink);
                 } else {
                     // Article updated
-                    $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_edited"));
+                    $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_edited"), $viewArticleLink);
                 }
-                $this->message.= ' <a class="arrow" href="' . $website->getUrlPage("article", $article->id) . '">';
-                $this->message.= $website->t("articles.view") . "</a>";
 
                 // Check for redirect
                 if ($request->getRequestString("submit") == $website->t("editor.save_and_quit")) {
