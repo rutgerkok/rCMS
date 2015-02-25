@@ -48,7 +48,7 @@ class HashHelper {
         }
         if (CRYPT_MD5) {
             // Salted md5
-            $salt = '$1$' . substr(md5(uniqid(rand(), true)), 0, 8) . '$';
+            $salt = '$1$' . static::randomString(8) . '$';
             $hashed = crypt($string, $salt);
             if (strLen($hashed) >= self::CRYPT_RETURN_VALUE_MIN_LENGHT) {
                 return $hashed;
