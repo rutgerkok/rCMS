@@ -13,7 +13,7 @@ use Rcms\Core\Repository\Entity;
 class PlacedWidget extends Entity {
 
     protected $id;
-    protected $sidebarId;
+    protected $documentId;
     protected $widgetData = array();
     protected $priority = 0;
     protected $widgetName;
@@ -35,13 +35,13 @@ class PlacedWidget extends Entity {
      * widget repository.
      * @param string $baseDirectory Base directory of all widgets.
      * @param string $widgetName Name of the widget.
-     * @param int $sidebarId Id of the sidebar the widget is placed in.
+     * @param int $documentId Id of the document the widget is placed in.
      * @return PlacedWidget The placed widget.
      */
     public static function newPlacedWidget($baseDirectory, $widgetName,
-            $sidebarId) {
+            $documentId) {
         $placedWidget = new PlacedWidget($baseDirectory);
-        $placedWidget->setSidebarId($sidebarId);
+        $placedWidget->setDocumentId($documentId);
         $placedWidget->widgetName = (string) $widgetName;
         return $placedWidget;
     }
@@ -80,12 +80,12 @@ class PlacedWidget extends Entity {
         $this->priority = (int) $priority;
     }
 
-    public function getSidebarId() {
-        return $this->sidebarId;
+    public function getDocumentId() {
+        return $this->documentId;
     }
 
-    public function setSidebarId($sidebar_id) {
-        $this->sidebarId = (int) $sidebar_id;
+    public function setDocumentId($documentId) {
+        $this->documentId = (int) $documentId;
     }
 
     /**

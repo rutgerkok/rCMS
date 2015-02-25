@@ -51,7 +51,7 @@ class DocumentPage extends Page {
         // Load document widgets
         $this->widgetLoader = $website->getWidgets();
         $widgetRepo = new WidgetRepository($website);
-        $this->widgets = $widgetRepo->getPlacedWidgetsFromSidebar($id);
+        $this->widgets = $widgetRepo->getWidgetsInDocumentWithId($id);
     }
 
     public function getPageTitle(Text $text) {

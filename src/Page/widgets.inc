@@ -24,7 +24,7 @@ if ($loggedIn) {
         $textToDisplay.= '<h3 class="notable">';
         $textToDisplay.= $this->tReplaced("widgets.placed_on", strToLower($name));
         $textToDisplay.= "</h3>\n";
-        $widgets_in_sidebar = $oWidgets->getPlacedWidgetsFromSidebar($i);
+        $widgets_in_sidebar = $oWidgets->getWidgetsInDocumentWithId($i);
         foreach ($widgets_in_sidebar as $widget_in_sidebar) {
             $textToDisplay.= "<h3>\n";
             $textToDisplay.= $widget_in_sidebar->getWidgetInfo()->getName();

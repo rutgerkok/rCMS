@@ -60,7 +60,7 @@ class EditWidgetPage extends Page {
     private function addSaveMessage(PlacedWidget $placedWidget, Text $text) {
         $homeLink = Link::of($text->getUrlMain(), $text->t("main.home"));
         $documentLink = Link::of(
-                        $text->getUrlPage("document", $placedWidget->getSidebarId()), $text->t("widgets.view_in_document"));
+                        $text->getUrlPage("document", $placedWidget->getDocumentId()), $text->t("widgets.view_in_document"));
 
         $message = "";
         if ($placedWidget->getId() === 0) {

@@ -38,7 +38,7 @@ class WidgetEditView extends View {
     public function getText() {
         $editorHtml = $this->installedWidgets->getEditor($this->editWidget);
         $actionUrl = $this->text->getUrlPage("edit_widget", $this->editWidget->getId());
-        $documentUrl = $this->text->getUrlPage("document", $this->editWidget->getSidebarId());
+        $documentUrl = $this->text->getUrlPage("document", $this->editWidget->getDocumentId());
         
         $tokenName = RequestToken::FIELD_NAME;
         $tokenValue = htmlSpecialChars($this->requestToken->getTokenString());

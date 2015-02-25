@@ -18,7 +18,7 @@ class WidgetRepository extends Repository {
 
     // Reference to the Website.
     private $website;
-    private $sidebarIdField;
+    private $documentIdField;
     private $widgetDataField;
     private $widgetIdField;
     private $widgetNameField;
@@ -28,7 +28,7 @@ class WidgetRepository extends Repository {
         parent::__construct($website->getDatabase());
         $this->website = $website;
 
-        $this->sidebarIdField = new Field(Field::TYPE_INT, "sidebarId", "sidebar_id");
+        $this->documentIdField = new Field(Field::TYPE_INT, "documentId", "sidebar_id");
         $this->widgetDataField = new Field(Field::TYPE_JSON, "widgetData", "widget_data");
         $this->widgetIdField = new Field(Field::TYPE_PRIMARY_KEY, "id", "widget_id");
         $this->widgetNameField = new Field(Field::TYPE_STRING, "widgetName", "widget_naam");
@@ -50,7 +50,7 @@ class WidgetRepository extends Repository {
     public function getAllFields() {
         return array($this->widgetIdField, $this->widgetDataField,
             $this->widgetNameField, $this->widgetPriorityField,
-            $this->sidebarIdField);
+            $this->documentIdField);
     }
 
     /**
@@ -92,12 +92,12 @@ class WidgetRepository extends Repository {
     }
 
     /**
-     * Returns a list of PlacedWidgets for the given sidebar.
-     * @param int $sidebar_id The id of the sidebar.
+     * Returns a list of PlacedWidgets for the given document.
+     * @param int $documentId The id of the document.
      * @return PlacedWidget[] List of placed widgets.
      */
-    public function getPlacedWidgetsFromSidebar($sidebar_id) {
-        return $this->where($this->sidebarIdField, '=', $sidebar_id)->orderDescending($this->widgetPriorityField)->select();
+    public function getWidgetsInDocumentWithId($documentId) {
+        return $this->where($this->documentIdField, '=', $documentId)->orderDescending($this->widgetPriorityField)->select();
     }
 
     /**

@@ -31,7 +31,7 @@ class HomePage extends Page {
         $this->loadedWidgets = $website->getWidgets();
 
         $widgetsRepo = new WidgetRepository($website);
-        $this->widgets = $widgetsRepo->getPlacedWidgetsFromSidebar(1);
+        $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(1);
 
         $this->editLinks = $website->isLoggedInAsStaff();
     }

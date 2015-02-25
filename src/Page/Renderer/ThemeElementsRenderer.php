@@ -255,7 +255,7 @@ SEARCH;
         if ($this->widgetsRepo === null) {
             $this->widgetsRepo = new WidgetRepository($this->website);
         }
-        $widgets = $this->widgetsRepo->getPlacedWidgetsFromSidebar($area);
+        $widgets = $this->widgetsRepo->getWidgetsInDocumentWithId($area);
 
         $widgetsView = new WidgetsView($this->website->getText(), $this->website->getWidgets(), $widgets, $editLinks);
         echo $widgetsView->getText();
