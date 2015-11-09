@@ -296,6 +296,14 @@ article.comment .comment_date {
     font-size: 90%;
 }
 
+/* Quotes */
+blockquote {
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 5px 5px 5px 25px;
+}
+
 /* Pages with an extra sidebar on the left */
 div#sidebar_page_content
 {	/*gebruikt bij de artikelpagina*/

@@ -479,6 +479,13 @@ article.comment .comment_date {
     font-size: 90%;
 }
 
+/* Quotes */
+blockquote {
+    border-left: 5px solid #eee;
+    margin-left: 0;
+    padding-left: 15px;
+}
+
 /* Calendar */
 div.calender_month_wrapper {
     height: 14em;
