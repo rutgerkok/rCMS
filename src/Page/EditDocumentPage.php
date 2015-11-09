@@ -39,27 +39,29 @@ class EditDocumentPage extends Page {
         $id = $request->getParamInt(0, -1);
 
         // Load document
-        $documentRepo = new DocumentRepository($website->getDatabase(), true);
-        $this->document = $documentRepo->getDocument($id);
+        $user = $website->getAuth()->getCurrentUser();
+        // ^ this is never null, as the required rank for this page is moderator
+        $this->document = $this->retrieveDocument($website, $id, $user);
 
         // Load document widgets
         $this->widgetLoader = $website->getWidgets();
         $widgetRepo = new WidgetRepository($website);
         $this->widgets = $widgetRepo->getWidgetsInDocumentWithId($id);
     }
-    
+
     private function retrieveDocument(Website $website, $id, User $user) {
         if ($id === 0) {
             // New document
             return Document::createNew("", "", $user->getId());
         }
-        
+
         $documentRepo = new DocumentRepository($website->getDatabase(), true);
         try {
             return $documentRepo->getDocument($id);
         } catch (NotFoundException $e) {
-            // Check if document should be created now
-            
+            // Check if document should be created for widget area
+            // (method below throws NotFoundException if no such widget area exist)
+            return Document::createForWidgetArea($website, $user, $id);
         }
     }
 
