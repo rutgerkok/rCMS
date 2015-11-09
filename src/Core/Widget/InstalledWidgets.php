@@ -3,7 +3,8 @@
 namespace Rcms\Core\Widget;
 
 use LogicException;
-
+use Rcms\Core\Document\Document;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Website;
 
 /**
@@ -82,6 +83,10 @@ class InstalledWidgets {
     public function getDefinition(PlacedWidget $placedWidget) {
         $dirName = $placedWidget->getDirectoryName();
 
+        if (!preg_match('/^[A-Za-z0-9\-_]+$/', $dirName)) {
+            // Not a valid name
+            return new NullWidget("invalidName");
+        }
         // Load the widget
         if (!isSet($this->loadedWidgets[$dirName])) {
             $this->currentlyLoadingWidgetName = $dirName;

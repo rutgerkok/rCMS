@@ -68,7 +68,7 @@ if ($loggedIn) {
                 $textToDisplay.= '<a class="arrow" href="';
                 $textToDisplay.= $this->getUrlPage("edit_widget", 0, array(
                     "directory_name" => $widget->getDirectoryName(),
-                    "sidebar_id" => $i)
+                    "document_id" => $i)
                 );
                 $textToDisplay.= '">' . $this->tReplaced("widgets.add_to", strToLower($name));
                 $textToDisplay.= "</a><br />\n";

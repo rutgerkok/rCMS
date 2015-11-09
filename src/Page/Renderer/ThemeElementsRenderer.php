@@ -8,7 +8,7 @@ use Rcms\Core\Theme;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\HomePage;
-use Rcms\Page\View\WidgetsView;
+use Rcms\Page\View\WidgetsPageView;
 
 /**
  * Context in which a theme operates. All methods that a theme can use for
@@ -257,7 +257,7 @@ SEARCH;
         }
         $widgets = $this->widgetsRepo->getWidgetsInDocumentWithId($area);
 
-        $widgetsView = new WidgetsView($this->website->getText(), $this->website->getWidgets(), $widgets, $editLinks);
+        $widgetsView = new WidgetsPageView($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
         echo $widgetsView->getText();
     }
 

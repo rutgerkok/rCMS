@@ -7,9 +7,11 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\WidgetsView;
+use Rcms\Page\View\WidgetsColumnView;
 
 class HomePage extends Page {
+    
+    const DOCUMENT_ID = 1;
 
     /**
      * @var PlacedWidget[] The widgets to display. 
@@ -31,7 +33,7 @@ class HomePage extends Page {
         $this->loadedWidgets = $website->getWidgets();
 
         $widgetsRepo = new WidgetRepository($website);
-        $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(1);
+        $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(self::DOCUMENT_ID);
 
         $this->editLinks = $website->isLoggedInAsStaff();
     }
@@ -45,7 +47,7 @@ class HomePage extends Page {
     }
 
     public function getView(Text $text) {
-        return new WidgetsView($text, $this->loadedWidgets, $this->widgets, $this->editLinks);
+        return new WidgetsColumnView($text, self::DOCUMENT_ID, $this->loadedWidgets, $this->widgets, $this->editLinks);
     }
 
     public function getPageType() {

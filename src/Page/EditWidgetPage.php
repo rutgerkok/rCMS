@@ -3,6 +3,8 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Document\DocumentRepository;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -10,6 +12,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
+use Rcms\Core\Widget\NullWidget;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\View\WidgetEditView;
@@ -34,11 +37,41 @@ class EditWidgetPage extends Page {
      */
     private $requestToken;
 
+    /**
+     * Creates a new widget based on the request paramaters, or throws an
+     * exception on error.
+     * @param Website $website The website object.
+     * @param Request $request The request.
+     * @return PlacedWidget A new widget, still needs to be saved in the database.
+     * @throws NotFoundException If the document or widget type in the request
+     * is non-existant.
+     */
+    private function getNewWidget(Website $website, Request $request) {
+        $directoryName = $request->getRequestString("directory_name", "");
+        $documentId = $request->getRequestInt("document_id", 0);
+        if ($directoryName === "" || $documentId == 0) {
+            throw new NotFoundException();
+        }
+
+        // Get document
+        $documentRepo = new DocumentRepository($website->getDatabase(), true);
+        $document = $documentRepo->getDocument($documentId);
+
+        return PlacedWidget::newPlacedWidget($website->getUriWidgets(), $directoryName, $document);
+    }
+
     public function init(Website $website, Request $request) {
+        $this->installedWidgets = $website->getWidgets();
+
         $widgetRepo = new WidgetRepository($website);
         $widgetId = $request->getParamInt(0);
-        $this->placedWidget = $widgetRepo->getPlacedWidget($widgetId);
-        $this->installedWidgets = $website->getWidgets();
+        if ($widgetId === 0) {
+            // New widget
+            $this->placedWidget = $this->getNewWidget($website, $request);
+        } else {
+            $this->placedWidget = $widgetRepo->getPlacedWidget($widgetId);
+        }
+
 
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {
             // Use incoming data

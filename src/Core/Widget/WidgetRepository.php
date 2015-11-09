@@ -56,6 +56,7 @@ class WidgetRepository extends Repository {
     /**
      * Gets a list of all installed widgets.
      * @return WidgetInfoFile[] List of all installed widgets.
+     * @deprecated Use the method on InstalledWidgets instead.
      */
     public function getInstalledWidgets() {
         $widgets = array();

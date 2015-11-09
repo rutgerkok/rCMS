@@ -3,6 +3,8 @@
 namespace Rcms\Core\Widget;
 
 use InvalidArgumentException;
+use Rcms\Core\Document\Document;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 
 /**
@@ -34,15 +36,19 @@ class PlacedWidget extends Entity {
      * Creates a new placed widget. Won't be saved automatically, save it to a
      * widget repository.
      * @param string $baseDirectory Base directory of all widgets.
-     * @param string $widgetName Name of the widget.
-     * @param int $documentId Id of the document the widget is placed in.
+     * @param string $dirName Name of the widget.
+     * @param Document $document The document the widget is placed in.
      * @return PlacedWidget The placed widget.
+     * @throws NotFoundException If no widget exists with the given dirName.
      */
-    public static function newPlacedWidget($baseDirectory, $widgetName,
-            $documentId) {
+    public static function newPlacedWidget($baseDirectory, $dirName,
+            Document $document) {
         $placedWidget = new PlacedWidget($baseDirectory);
-        $placedWidget->setDocumentId($documentId);
-        $placedWidget->widgetName = (string) $widgetName;
+        $placedWidget->setDocumentId($document->getId());
+        $placedWidget->widgetName = (string) $dirName;
+        if (!file_exists($placedWidget->getWidgetCodeFile())) {
+            throw new NotFoundException();
+        }
         return $placedWidget;
     }
 

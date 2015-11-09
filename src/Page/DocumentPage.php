@@ -11,7 +11,7 @@ use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\WidgetRepository;
 
 use Rcms\Page\View\DocumentView;
-use Rcms\Page\View\WidgetsView;
+use Rcms\Page\View\WidgetsPageView;
 
 /**
  * A page that displays a single document.
@@ -24,7 +24,6 @@ class DocumentPage extends Page {
     private $document;
     
     /**
-     *
      * @var PlacedWidget[] Widgets added to this document.
      */
     private $widgets;
@@ -60,8 +59,8 @@ class DocumentPage extends Page {
 
     public function getViews(Text $text) {
         return array(
-            new DocumentView($text, $this->document),
-            new WidgetsView($text, $this->widgetLoader, $this->widgets, $this->editLinks)
+            new DocumentView($text, $this->document, $this->editLinks),
+            new WidgetsPageView($text, $this->document->getId(), $this->widgetLoader, $this->widgets, false)
             );
     }
 

@@ -38,8 +38,8 @@ class WidgetEditView extends View {
     public function getText() {
         $editorHtml = $this->installedWidgets->getEditor($this->editWidget);
         $actionUrl = $this->text->getUrlPage("edit_widget", $this->editWidget->getId());
-        $documentUrl = $this->text->getUrlPage("document", $this->editWidget->getDocumentId());
-        
+        $documentEditUrl = $this->text->getUrlPage("edit_document", $this->editWidget->getDocumentId());
+
         $tokenName = RequestToken::FIELD_NAME;
         $tokenValue = htmlSpecialChars($this->requestToken->getTokenString());
 
@@ -50,11 +50,13 @@ class WidgetEditView extends View {
 
                 <p>
                     <input type="hidden" name="{$tokenName}" value="{$tokenValue}" />
+                    <input type="hidden" name="document_id" value="{$this->editWidget->getDocumentId()}" />
+                    <input type="hidden" name="directory_name" value="{$this->editWidget->getDirectoryName()}" />
                     <input class="button primary_button" 
                         type="submit" 
                         name="submit"
                         value="{$this->text->t("editor.save")}" />
-                    <a class="button" href="{$documentUrl}">
+                    <a class="button" href="{$documentEditUrl}">
                         {$this->text->t("main.cancel")}
                     </a>
                 </p>
