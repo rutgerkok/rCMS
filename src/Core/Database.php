@@ -79,7 +79,7 @@ class Database extends PDO {
             PRIMARY KEY (`document_id`),
             KEY `document_hidden` (`document_hidden`, `document_created`, `user_id`, `document_parent_id`),
             FULLTEXT KEY `document_title` (`document_title`, `document_intro`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;         
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10 ;         
 SQL;
         $this->exec($documentsTable);
     }
