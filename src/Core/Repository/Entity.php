@@ -10,21 +10,21 @@ use BadMethodCallException;
 abstract class Entity {
 
     /** Internal const. Value if markConstructed has been called. */
-    const STATE_FINAL = 0;
+    const INTERNAL_STATE_FINAL = 0;
 
     /** Internal const. Value after first setField call. */
-    const STATE_SETTING = 1;
+    const INTERNAL_STATE_SETTING = 1;
 
     /** Internal const. Value before setField and markConstructed are called. */
-    const STATE_DEFAULT = 2;
+    const INTERNAL_STATE_DEFAULT = 2;
 
-    private $state = self::STATE_DEFAULT;
+    private $state = self::INTERNAL_STATE_DEFAULT;
 
     /**
      * Called after all fields have been set using the setField method.
      */
     public final function markConstructed() {
-        $this->state = self::STATE_FINAL;
+        $this->state = self::INTERNAL_STATE_FINAL;
     }
 
     /**
@@ -34,13 +34,13 @@ abstract class Entity {
      * @throws BadMethodCallException If the object is already constructed.
      */
     public function setField(Field $field, $value) {
-        if ($this->state == self::STATE_FINAL && $field->getType() != Field::TYPE_PRIMARY_KEY) {
+        if ($this->state == self::INTERNAL_STATE_FINAL && $field->getType() != Field::TYPE_PRIMARY_KEY) {
             // Primary key can be changed for insert queries to set the id to
             // something else than 0
             throw new BadMethodCallException("Already constructed");
         }
 
-        $this->state = self::STATE_SETTING;
+        $this->state = self::INTERNAL_STATE_SETTING;
         $fieldName = $field->getName();
         $this->$fieldName = $field->deserializeValue($value);
     }
@@ -64,7 +64,20 @@ abstract class Entity {
      * @return boolean Whether this object is constructed.
      */
     public final function isConstructed() {
-        return $this->state != self::STATE_SETTING;
+        return $this->state != self::INTERNAL_STATE_SETTING;
+    }
+    
+    /**
+     * Gets whether all conditions are met to safely place this object in the
+     * database. When this method returns false, required fields are not yet
+     * filled in, or fields have invalid contents.
+     *
+     * Subclasses should override this method to do validation.
+     * @return boolean True if the object can safely be persisted, false
+     * otherwise.
+     */
+    public function canBeSaved() {
+        return $this->isConstructed();
     }
 
 }

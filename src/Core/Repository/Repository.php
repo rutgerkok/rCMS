@@ -123,6 +123,9 @@ abstract class Repository {
      * the given id exists in the database.
      */
     protected function saveEntity(Entity $entity, array $fields = array()) {
+        if (!$entity->canBeSaved()) {
+            throw new InvalidArgumentException("entity cannot be saved yet");
+        }
         if (empty($fields)) {
             $fields = $this->getAllFields();
         }
@@ -137,11 +140,10 @@ abstract class Repository {
     }
 
     /**
-     * Updates a single entity in the database.
+     * Updates a single entity in the database. Does nothing if the entity does
+     * not exist yet in the database.
      * @param Entity $entity Entity to update.
      * @param Field[] $fields Fiels to update.
-     * @throws NotFoundException If no entity with the given id exists in the
-     * database.
      */
     private function updateEntity(Entity $entity, array $fields) {
         $sql = "UPDATE `{$this->getTableName()}` SET ";
