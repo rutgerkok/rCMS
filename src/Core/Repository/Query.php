@@ -254,7 +254,7 @@ class Query {
     }
 
     private function getCountQuery() {
-        $sql = "SELECT COUNT(*) FROM " . $this->repository->getTableName();
+        $sql = "SELECT COUNT(*) FROM `{$this->repository->getTableName()}`";
         if (!empty($this->whereRaw)) {
             $sql.= " WHERE " . $this->whereRaw;
         }
