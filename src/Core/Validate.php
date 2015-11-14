@@ -20,14 +20,14 @@ class Validate {
 
     /**
      * Returns the localized error message of the last error.
-     * @param Website $website The website object
+     * @param Website|Text $websiteOrText The Website object or Text object.
      * @return string The localized error message
      */
-    public static function getLastError(Website $website) {
+    public static function getLastError($websiteOrText) {
         if (Validate::$replaceInLastError === "") {
-            $message = $website->t("errors." . Validate::$lastError);
+            $message = $websiteOrText->t("errors." . Validate::$lastError);
         } else {
-            $message = $website->tReplaced("errors." . Validate::$lastError, Validate::$replaceInLastError);
+            $message = $websiteOrText->tReplaced("errors." . Validate::$lastError, Validate::$replaceInLastError);
         }
         Validate::$lastError = "";
         Validate::$replaceInLastError = "";
