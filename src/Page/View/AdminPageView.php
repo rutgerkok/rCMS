@@ -19,6 +19,7 @@ class AdminPageView extends View {
             <h3>{$text->t("main.articles")}</h3>
             <p>
                 <a href="{$text->getUrlPage("edit_article")}" class="arrow">{$text->t("articles.create")}</a><br />
+                <a href="{$text->getUrlPage('archive')}" class="arrow">{$text->t("articles.archive")}</a><br />
                 <a href="{$text->getUrlPage("comments")}" class="arrow">{$text->t("comments.comments")}</a>
             </p>
 
