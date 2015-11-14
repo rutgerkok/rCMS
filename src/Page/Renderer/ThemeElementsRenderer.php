@@ -251,7 +251,7 @@ SEARCH;
     }
 
     public function echoWidgets($area) {
-        $editLinks = $this->website->isLoggedInAsStaff();
+        $editLinks = $this->website->isLoggedInAsStaff(true);
         if ($this->widgetsRepo === null) {
             $this->widgetsRepo = new WidgetRepository($this->website);
         }

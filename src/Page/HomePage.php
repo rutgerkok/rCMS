@@ -35,7 +35,7 @@ class HomePage extends Page {
         $widgetsRepo = new WidgetRepository($website);
         $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(self::DOCUMENT_ID);
 
-        $this->editLinks = $website->isLoggedInAsStaff();
+        $this->editLinks = $website->isLoggedInAsStaff(true);
     }
 
     public function getPageTitle(Text $text) {

@@ -125,7 +125,7 @@ class EditDocumentPage extends Page {
     }
 
     public function getMinimumRank(Request $request) {
-        return Authentication::RANK_MODERATOR;
+        return Authentication::RANK_ADMIN;
     }
 
     public function getPageType() {

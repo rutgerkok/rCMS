@@ -41,7 +41,7 @@ class DocumentPage extends Page {
     public function init(Website $website, Request $request) {
         $isStaff = $website->isLoggedInAsStaff();
         $id = $request->getParamInt(0);
-        $this->editLinks = $isStaff;
+        $this->editLinks = $website->isLoggedInAsStaff(true);
 
         // Load document
         $documentRepo = new DocumentRepository($website->getDatabase(), $isStaff);
