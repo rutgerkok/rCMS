@@ -15,7 +15,7 @@ $loggedIn = $oAuth->check(Authentication::RANK_ADMIN);
 
 if ($loggedIn) {
     $oWidgets = new WidgetRepository($this);
-    $widget_areas = $oWidgets->getWidgetAreas();
+    $widget_areas = $this->getWidgets()->getWidgetAreas();
     $sidebarCount = $this->getThemeWidgetAreaCount();
 
     // Echo sidebars

@@ -82,17 +82,6 @@ class WidgetRepository extends Repository {
     }
 
     /**
-     * Shortcut to retrieve the widget areas. Also includes the home page as
-     * an option.
-     * @return array Array of widget, (numeric) id => name
-     */
-    public function getWidgetAreas() {
-        $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
-        $areas[1] = $this->website->t("widgets.homepage");
-        return $areas;
-    }
-
-    /**
      * Returns a list of PlacedWidgets for the given document.
      * @param int $documentId The id of the document.
      * @return PlacedWidget[] List of placed widgets.

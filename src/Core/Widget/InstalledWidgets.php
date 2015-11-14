@@ -127,6 +127,17 @@ class InstalledWidgets {
     }
 
     /**
+     * Gets all widget areas on the site. This is both the area on the home
+     * page, as well as any theme-defined locations.
+     * @return string[] All widget areas, indexed by their id.
+     */
+    public function getWidgetAreas() {
+        $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
+        $areas[1] = $this->website->t("widgets.homepage");
+        return $areas;
+    }
+
+    /**
      * Registers a widget. Widget files must call this method.
      * @param WidgetDefinition $widget The widget to register.
      */
