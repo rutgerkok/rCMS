@@ -60,6 +60,12 @@ final class Document extends Entity {
      * @var int Id of the parent document.
      */
     protected $parentId = 0;
+    
+    /**
+     * @var boolean Whether this document is a widget area. See the method
+     * isForWidgetArea() for more information.
+     */
+    private $isWidgetArea = false;
 
     /**
      * Gets whether the given string would be a valid document title.
@@ -68,7 +74,9 @@ final class Document extends Entity {
      * false otherwise.
      */
     public static function isValidTitle($title) {
-        return strLen($title) >= self::TITLE_MIN_LENGTH && strLen($title) <= self::TITLE_MAX_LENGTH;
+        return is_string($title)
+                && strLen($title) >= self::TITLE_MIN_LENGTH
+                && strLen($title) <= self::TITLE_MAX_LENGTH;
     }
 
     /**
@@ -78,7 +86,9 @@ final class Document extends Entity {
      * false otherwise.
      */
     public static function isValidIntro($intro) {
-        return strLen($intro) >= self::INTRO_MIN_LENGTH && strLen($intro) <= self::INTRO_MAX_LENGTH;
+        return is_string($intro)
+                && strLen($intro) >= self::INTRO_MIN_LENGTH
+                && strLen($intro) <= self::INTRO_MAX_LENGTH;
     }
 
     /**
@@ -90,10 +100,6 @@ final class Document extends Entity {
      * @return Document The document.
      */
     public static function createNew($title, $intro, User $user) {
-        if (!self::isValidTitle($title)) {
-            throw new InvalidArgumentException("Title is too long");
-        }
-
         $document = new Document();
         $document->title = (string) $title;
         $document->intro = (string) $intro;
@@ -114,7 +120,7 @@ final class Document extends Entity {
      */
     public static function createForWidgetArea(Website $website, User $user,
             $widgetArea) {
-        $widgetAreas = $website->getThemeManager()->getCurrentTheme()->getWidgetAreas($website);
+        $widgetAreas = $website->getWidgets()->getWidgetAreas();
         if (!isSet($widgetAreas[$widgetArea])) {
             throw new NotFoundException();
         }
@@ -125,7 +131,10 @@ final class Document extends Entity {
             $title = substr($title, 0, self::TITLE_MAX_LENGTH);
         }
         $intro = $website->tReplaced("documents.created_for_widgets", $title);
-        return self::createNew($title, $intro, $user);
+
+        $document = self::createNew($title, $intro, $user);
+        $document->isWidgetArea = true;
+        return $document;
     }
 
     /**
@@ -145,6 +154,22 @@ final class Document extends Entity {
     }
 
     /**
+     * Sets the title. Doesn't validate the title.
+     * @param string $title The new title.
+     */
+    public function setTitle($title) {
+        $this->title = (string) $title;
+    }
+
+    /**
+     * Sets the intro. Doesn't validate the intro.
+     * @param string $intro The new intro.
+     */
+    public function setIntro($intro) {
+        $this->intro = (string) $intro;
+    }
+
+    /**
      * Gets the (html escaped) URL for this document.
      * @param Text $text The text object, for URL structure.
      * @return string The URL.
@@ -160,5 +185,22 @@ final class Document extends Entity {
     public function getId() {
         return $this->id;
     }
+    
+    /**
+     * Returns true if this document is just a widget area; for such
+     * documents the title and description cannot be changed, and the document
+     * doesn't appear in the database.
+     * @return boolean True if this is a document for a widget area, false
+     * otherwise.
+     */
+    public function isForWidgetArea() {
+        return $this->isWidgetArea;
+    }
 
+    public function canBeSaved() {
+        return parent::canBeSaved()
+                && !$this->isWidgetArea
+                && self::isValidIntro($this->intro)
+                && self::isValidTitle($this->title);
+    }
 }

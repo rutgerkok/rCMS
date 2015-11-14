@@ -3,9 +3,8 @@
 namespace Rcms\Core\Document;
 
 use PDO;
-
+use PDOException;
 use Rcms\Core\Exception\NotFoundException;
-
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 
@@ -14,9 +13,9 @@ use Rcms\Core\Repository\Repository;
  * @see Document
  */
 class DocumentRepository extends Repository {
-    
+
     const TABLE_NAME = "documents";
-    
+
     protected $primaryField;
     protected $titleField;
     protected $introField;
@@ -25,7 +24,7 @@ class DocumentRepository extends Repository {
     protected $editedField;
     protected $userIdField;
     protected $parentIdField;
-    
+
     /** @var boolean Whether hidden documents should be displayed. */
     private $showHiddenDocuments;
 
@@ -49,25 +48,25 @@ class DocumentRepository extends Repository {
 
         $this->showHiddenDocuments = (boolean) $showHiddenDocuments;
     }
-    
+
     public function getAllFields() {
         return array($this->primaryField, $this->titleField, $this->introField,
             $this->hiddenField, $this->createdField, $this->editedField,
             $this->userIdField, $this->parentIdField);
     }
-    
+
     public function createEmptyObject() {
         return new Document();
     }
-    
+
     public function getTableName() {
         return self::TABLE_NAME;
     }
-    
+
     public function getPrimaryKey() {
         return $this->primaryField;
     }
-    
+
     public function whereRaw($sql, $params) {
         // Overridden to modify SQL, so that hidden articles stay hidden
         if (!$this->showHiddenDocuments) {
@@ -96,7 +95,17 @@ class DocumentRepository extends Repository {
      */
     public function getDocument($id) {
         return $this
-                ->where($this->primaryField, '=', (int) $id)
-                ->selectOneOrFail();
+                        ->where($this->primaryField, '=', (int) $id)
+                        ->selectOneOrFail();
     }
+
+    /**
+     * Saves a document to the database.
+     * @param Document $document The document to save.
+     * @throws PDOException If a database error occurs while saving the document.
+     */
+    public function save(Document $document) {
+        $this->saveEntity($document);
+    }
+
 }

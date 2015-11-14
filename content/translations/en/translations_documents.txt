@@ -2,3 +2,5 @@ create=Create new document
 view=View
 list.title=All documents
 created_for_widgets=This document is used to provide content for '{0}'.
+title=Title
+intro=Intro
