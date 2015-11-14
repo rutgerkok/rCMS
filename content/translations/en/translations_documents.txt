@@ -4,3 +4,4 @@ list.title=All documents
 created_for_widgets=This document is used to provide content for '{0}'.
 title=Title
 intro=Intro
+no_widgets_added_yet=This documents is currently empty. To add content, add a widget using one of the links below.

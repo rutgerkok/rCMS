@@ -1,8 +1,10 @@
 no_widgets_found=No widgets found.
 installed_widgets=Installed widgets
 view_website=View website of widget
+view_more_information=More information
 created_by=Created by
 add_to=Add to {0}
+add_to_document=Add to document
 add_new_widget=Add new widget
 placed_on=Placed on {0}
 sidebar=Sidebar

@@ -7,6 +7,8 @@ use PDOException;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
+use Rcms\Core\Text;
+use Rcms\Core\Widget\InstalledWidgets;
 
 /**
  * Repository for documents.
@@ -97,6 +99,14 @@ class DocumentRepository extends Repository {
         return $this
                         ->where($this->primaryField, '=', (int) $id)
                         ->selectOneOrFail();
+    }
+
+    public function getDocumentOrWidgetArea(InstalledWidgets $installedWidgets, Text $text, $id) {
+        try {
+            return $this->getDocument($id);
+        } catch (NotFoundException $ex) {
+            return Document::createForWidgetArea($installedWidgets, $text, $id);
+        }
     }
 
     /**

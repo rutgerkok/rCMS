@@ -31,6 +31,11 @@ class EditWidgetPage extends Page {
      * @var InstalledWidgets The widgets installed on the website.
      */
     private $installedWidgets;
+    
+    /**
+     * @var Document The document the widget is placed in.
+     */
+    private $document;
 
     /**
      * @var RequestToken Token against CSRF attacks.
@@ -48,14 +53,14 @@ class EditWidgetPage extends Page {
      */
     private function getNewWidget(Website $website, Request $request) {
         $directoryName = $request->getRequestString("directory_name", "");
-        $documentId = $request->getRequestInt("document_id", 0);
-        if ($directoryName === "" || $documentId == 0) {
+        if ($directoryName === "") {
             throw new NotFoundException();
         }
-
+        
         // Get document
         $documentRepo = new DocumentRepository($website->getDatabase(), true);
-        $document = $documentRepo->getDocument($documentId);
+        $documentId = $request->getRequestInt("document_id", 0);
+        $document = $documentRepo->getDocumentOrWidgetArea($website->getWidgets(), $website->getText(), $documentId);
 
         return PlacedWidget::newPlacedWidget($website->getUriWidgets(), $directoryName, $document);
     }
@@ -71,7 +76,6 @@ class EditWidgetPage extends Page {
         } else {
             $this->placedWidget = $widgetRepo->getPlacedWidget($widgetId);
         }
-
 
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {
             // Use incoming data
@@ -92,8 +96,7 @@ class EditWidgetPage extends Page {
 
     private function addSaveMessage(PlacedWidget $placedWidget, Text $text) {
         $homeLink = Link::of($text->getUrlMain(), $text->t("main.home"));
-        $documentLink = Link::of(
-                        $text->getUrlPage("document", $placedWidget->getDocumentId()), $text->t("widgets.view_in_document"));
+        $documentLink = Link::of($text->getUrlPage("edit_document", $placedWidget->getDocumentId()), $text->t("widgets.view_in_document"));
 
         $message = "";
         if ($placedWidget->getId() === 0) {

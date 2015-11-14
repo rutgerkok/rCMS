@@ -9,6 +9,7 @@ use Rcms\Core\Repository\Entity;
 use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Website;
+use Rcms\Core\Widget\InstalledWidgets;
 
 /**
  * Documents are more-or-less static pages on a site. They can be customized
@@ -24,7 +25,7 @@ final class Document extends Entity {
     /**
      * @var int The id of the document.
      */
-    protected $id;
+    protected $id = 0;
 
     /**
      * @var string The title of the document.
@@ -60,7 +61,7 @@ final class Document extends Entity {
      * @var int Id of the parent document.
      */
     protected $parentId = 0;
-    
+
     /**
      * @var boolean Whether this document is a widget area. See the method
      * isForWidgetArea() for more information.
@@ -74,9 +75,7 @@ final class Document extends Entity {
      * false otherwise.
      */
     public static function isValidTitle($title) {
-        return is_string($title)
-                && strLen($title) >= self::TITLE_MIN_LENGTH
-                && strLen($title) <= self::TITLE_MAX_LENGTH;
+        return is_string($title) && strLen($title) >= self::TITLE_MIN_LENGTH && strLen($title) <= self::TITLE_MAX_LENGTH;
     }
 
     /**
@@ -86,9 +85,7 @@ final class Document extends Entity {
      * false otherwise.
      */
     public static function isValidIntro($intro) {
-        return is_string($intro)
-                && strLen($intro) >= self::INTRO_MIN_LENGTH
-                && strLen($intro) <= self::INTRO_MAX_LENGTH;
+        return is_string($intro) && strLen($intro) >= self::INTRO_MIN_LENGTH && strLen($intro) <= self::INTRO_MAX_LENGTH;
     }
 
     /**
@@ -111,16 +108,16 @@ final class Document extends Entity {
     /**
      * Creates a document with the id, title and intro customized for the widget
      * area. (The id of the widget area is equal to the id of the document.)
-     * @param Website $website The website object.
-     * @param User $user User that becomes the author of the document.
+     * @param InstalledWidgets $installedWidgets The installed widgets object.
+     * @param Text $text The text object, for populating the intro field.
      * @param int $widgetArea Id of the widget area and document.
      * @return Document The document.
      * @throws NotFoundException If the theme supports no widget area with the
      * given number.
      */
-    public static function createForWidgetArea(Website $website, User $user,
-            $widgetArea) {
-        $widgetAreas = $website->getWidgets()->getWidgetAreas();
+    public static function createForWidgetArea(InstalledWidgets $installedWidgets,
+            Text $text, $widgetArea) {
+        $widgetAreas = $installedWidgets->getWidgetAreas();
         if (!isSet($widgetAreas[$widgetArea])) {
             throw new NotFoundException();
         }
@@ -130,10 +127,14 @@ final class Document extends Entity {
         if (strLen($title) > self::TITLE_MAX_LENGTH) {
             $title = substr($title, 0, self::TITLE_MAX_LENGTH);
         }
-        $intro = $website->tReplaced("documents.created_for_widgets", $title);
+        $intro = $text->tReplaced("documents.created_for_widgets", $title);
 
-        $document = self::createNew($title, $intro, $user);
+        $document = new Document();
         $document->isWidgetArea = true;
+        $document->id = (int) $widgetArea;
+        $document->setTitle($title);
+        $document->setIntro($intro);
+
         return $document;
     }
 
@@ -175,6 +176,9 @@ final class Document extends Entity {
      * @return string The URL.
      */
     public function getUrl(Text $text) {
+        if ($this->isForWidgetArea()) {
+            return $text->getUrlMain();
+        }
         return $text->getUrlPage("document", $this->id);
     }
 
@@ -185,7 +189,7 @@ final class Document extends Entity {
     public function getId() {
         return $this->id;
     }
-    
+
     /**
      * Returns true if this document is just a widget area; for such
      * documents the title and description cannot be changed, and the document
@@ -198,9 +202,7 @@ final class Document extends Entity {
     }
 
     public function canBeSaved() {
-        return parent::canBeSaved()
-                && !$this->isWidgetArea
-                && self::isValidIntro($this->intro)
-                && self::isValidTitle($this->title);
+        return parent::canBeSaved() && !$this->isWidgetArea && self::isValidIntro($this->intro) && self::isValidTitle($this->title);
     }
+
 }

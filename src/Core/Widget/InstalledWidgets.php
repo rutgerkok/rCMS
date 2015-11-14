@@ -47,12 +47,12 @@ class InstalledWidgets {
         $directoryToScan = $this->website->getUriWidgets();
 
         // Check directory
-        if (!is_dir($this->widgetDirectory)) {
+        if (!is_dir($directoryToScan)) {
             return;
         }
 
         // Scan it
-        $files = scanDir($this->widgetDirectory);
+        $files = scanDir($directoryToScan);
         foreach ($files as $file) {
             // Ignore hidden files
             if ($file[0] === '.') {
@@ -60,7 +60,7 @@ class InstalledWidgets {
             }
 
             // Ignore anything that's not a directory
-            if (!is_dir($this->widgetDirectory . $file)) {
+            if (!is_dir($directoryToScan . $file)) {
                 continue;
             }
 

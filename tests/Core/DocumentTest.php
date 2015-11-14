@@ -19,6 +19,8 @@ class DocumentTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals("Test Title", $document->getTitle());
         $this->assertEquals("Test Intro", $document->getIntro());
+        $this->assertEquals(0, $document->getId()); // new documents have id 0
+        $this->assertFalse($document->isForWidgetArea());
     }
 
     public function testTitleValidation() {

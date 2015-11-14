@@ -5,3 +5,4 @@ created_for_widgets=Dit document bevat de inhoud van '{0}'.
 title=Titel
 intro=Intro
 saved=Document is opgeslagen.
+no_widgets_added_yet=Dit document is nog leeg. Gebruik een van onderstaande links om inhoud toe te voegen.

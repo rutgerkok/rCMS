@@ -113,13 +113,7 @@ class EditDocumentPage extends Page {
             return Document::createNew("", "", $user);
         }
 
-        try {
-            return $documentRepo->getDocument($id);
-        } catch (NotFoundException $e) {
-            // Check if document should be created for widget area
-            // (method below throws NotFoundException if no such widget area exist)
-            return Document::createForWidgetArea($website, $user, $id);
-        }
+        return $documentRepo->getDocumentOrWidgetArea($website->getWidgets(), $website->getText(), $id);
     }
 
     public function getPageTitle(Text $text) {

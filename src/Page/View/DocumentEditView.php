@@ -12,7 +12,7 @@ use Rcms\Core\Widget\PlacedWidget;
  * The HTML view of a single document. Only includes the intro of the document,
  * the widgets are not shown. Use `WidgetsView` for that.
  */
-class DocumentEditView extends View {
+final class DocumentEditView extends View {
 
     /**
      * @var Document The document.
@@ -49,9 +49,8 @@ class DocumentEditView extends View {
             {$this->getDocumentTitleAndIntroEditor()}
 
             {$this->getWidgetsHtml()}
-            <p>
-                {$this->text->t("widgets.add_new_widget")}:
-            </p>
+
+            {$this->getNewWidgetChoicesHtml()}
 HTML;
     }
     
@@ -68,20 +67,21 @@ HTML;
         if ($this->document->isForWidgetArea()) {
             return $this->getDocumentTitleAndIntro();
         }
+        $documentUrlHtml = $this->text->getUrlPage("edit_document", $this->document->getId());
         $titleHtml = htmlSpecialChars($this->document->getTitle());
         $introHtml = nl2br(htmlSpecialChars($this->document->getIntro()), true);
         $tokenNameHtml = htmlSpecialChars(RequestToken::FIELD_NAME);
         $tokenHtml = htmlSpecialChars($this->requestToken->getTokenString());
 
         return <<<HTML
-            <form>
+            <form action="{$documentUrlHtml}" method="POST">
                 <p>
                     <label for="title">
                         {$this->text->t("documents.title")}:
                         <span class="required">*</span>
                     </label>
                     <br />
-                    <input type="text" value="$titleHtml" name="title" id="title" class="full_width" />
+                    <input type="text" value="{$titleHtml}" name="title" id="title" class="full_width" />
                 </p>
                 <p>
                     {$this->text->t("main.fields_required")}
@@ -131,6 +131,50 @@ HTML;
 HTML;
         }
         return $output;
+    }
+    
+    private function getNewWidgetChoicesHtml() {
+        if ($this->document->getId() === 0) {
+            return "";
+        }
+        $returnValue = <<<HTML
+            <p>
+                {$this->text->t("widgets.add_new_widget")}:
+            </p>
+HTML;
+        if (empty($this->placedWidgets)) {
+            $returnValue = "<p>{$this->text->t("documents.no_widgets_added_yet")}</p>";
+        }
+        
+        $installedWidgets = $this->installedWidgets->getInstalledWidgets();
+        foreach ($installedWidgets as $installedWidget) {
+            $widgetNameHtml = htmlSpecialChars($installedWidget->getName());
+            $descriptionHtml = htmlSpecialChars($installedWidget->getDescription());
+            
+            $widgetUrlHtml = htmlSpecialChars($installedWidget->getWidgetWebsite());
+            $authorNameHtml = htmlSpecialChars($installedWidget->getAuthor());
+            $authorUrlHtml = htmlSpecialChars($installedWidget->getAuthorWebsite());
+            
+            $addToDocumentUrlHtml = $this->text->getUrlPage("edit_widget", null,
+                    array("directory_name" => $installedWidget->getDirectoryName(),
+                        "document_id" => $this->document->getId()));
+            
+            $returnValue.= <<<HTML
+                <h3>{$widgetNameHtml}</h3>
+                <p>
+                    {$descriptionHtml}
+                    {$this->text->t("widgets.created_by")}
+                    <a href="{$authorUrlHtml}"">{$authorNameHtml}</a>.
+                    <a href="{$widgetUrlHtml}" class="arrow">{$this->text->t("widgets.view_more_information")}</a>
+                    
+                </p>
+                <p>
+                    <a href="{$addToDocumentUrlHtml}" class="arrow">{$this->text->t("widgets.add_to_document")}</a>
+                </p>
+HTML;
+        }
+        
+        return $returnValue;
     }
 
 }

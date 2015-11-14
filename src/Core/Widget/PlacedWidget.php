@@ -46,6 +46,7 @@ class PlacedWidget extends Entity {
         $placedWidget = new PlacedWidget($baseDirectory);
         $placedWidget->setDocumentId($document->getId());
         $placedWidget->widgetName = (string) $dirName;
+        $placedWidget->id = 0;
         if (!file_exists($placedWidget->getWidgetCodeFile())) {
             throw new NotFoundException();
         }
