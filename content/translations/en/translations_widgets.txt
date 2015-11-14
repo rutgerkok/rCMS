@@ -18,3 +18,6 @@ missing_definition.edit=This widget cannot be edited, as the widget code is not 
 view_in_document=View in document
 edit_column_layout=Edit column layout
 edit_page_layout=Edit page layout
+move_up=Move up
+move_down=Move down
+moving_a_widget=Verplaatsen van een widget

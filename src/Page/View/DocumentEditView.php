@@ -35,8 +35,9 @@ final class DocumentEditView extends View {
      */
     private $installedWidgets;
 
-    public function __construct(Text $text, Document $document, RequestToken $requestToken,
-            InstalledWidgets $installedWidgets, array $placedWidgets) {
+    public function __construct(Text $text, Document $document,
+            RequestToken $requestToken, InstalledWidgets $installedWidgets,
+            array $placedWidgets) {
         parent::__construct($text);
         $this->document = $document;
         $this->requestToken = $requestToken;
@@ -53,7 +54,7 @@ final class DocumentEditView extends View {
             {$this->getNewWidgetChoicesHtml()}
 HTML;
     }
-    
+
     private function getDocumentTitleAndIntro() {
         $titleHtml = htmlSpecialChars($this->document->getTitle());
         $introHtml = nl2br(htmlSpecialChars($this->document->getIntro()), true);
@@ -62,7 +63,7 @@ HTML;
             <p class="intro">{$introHtml}</p>
 HTML;
     }
-    
+
     private function getDocumentTitleAndIntroEditor() {
         if ($this->document->isForWidgetArea()) {
             return $this->getDocumentTitleAndIntro();
@@ -106,59 +107,87 @@ HTML;
 
     private function getWidgetsHtml() {
         $output = "";
-        foreach ($this->placedWidgets as $placedWidget) {
-            $widgetInfo = $placedWidget->getWidgetInfo();
-            $nameHtml = htmlSpecialChars($widgetInfo->getName());
-            $widgetData = $placedWidget->getData();
-            if (isSet($widgetData["title"])) {
-                $nameHtml.= htmlSpecialChars(": " . $widgetData["title"]);
-            }
-            $id = $placedWidget->getId();
-
-            $output.= <<<HTML
-                <blockquote>
-                     {$this->installedWidgets->getOutput($placedWidget)}
-                </blockquote>
-                <p>
-                    <a class="arrow" href="{$this->text->getUrlPage("edit_widget", $id)}">
-                        {$this->text->t("main.edit")}
-                    </a>
-                    <a class="arrow" href="{$this->text->getUrlPage("delete_widget", $id)}">
-                        {$this->text->t("main.delete")}
-                    </a>
-                </p>
-                <hr>
-HTML;
+        $placedWidgets = array_values($this->placedWidgets);
+        for ($i = 0; $i < count($placedWidgets); $i++) {
+            $placedWidget = $placedWidgets[$i];
+            $output.= $this->getWidgetHtml($placedWidget, $i);
         }
         return $output;
     }
-    
+
+    private function getWidgetHtml(PlacedWidget $placedWidget, $widgetNumber) {
+        $id = $placedWidget->getId();
+        $widgetInfo = $placedWidget->getWidgetInfo();
+        $widgetData = $placedWidget->getData();
+
+        $tokenName = RequestToken::FIELD_NAME;
+        $token = $this->requestToken->getTokenString();
+
+        $nameHtml = htmlSpecialChars($widgetInfo->getName());
+        if (isSet($widgetData["title"])) {
+            $nameHtml.= htmlSpecialChars(": " . $widgetData["title"]);
+        }
+
+        $output = <<<HTML
+            <blockquote>
+                 {$this->installedWidgets->getOutput($placedWidget)}
+            </blockquote>
+            <p>
+                <a class="arrow" href="{$this->text->getUrlPage("edit_widget", $id)}">
+                    {$this->text->t("main.edit")}
+                </a>
+                <a class="arrow" href="{$this->text->getUrlPage("delete_widget", $id)}">
+                    {$this->text->t("main.delete")}
+                </a>
+HTML;
+        if ($widgetNumber != 0) {
+            $output.= <<<HTML
+                <a class="arrow" href="{$this->text->getUrlPage("move_widget", $id, array("direction" => "up", $tokenName => $token))}">
+                    {$this->text->t("widgets.move_up")}
+                </a>   
+HTML;
+        }
+        if ($widgetNumber < count($this->placedWidgets) - 1) {
+            $output.= <<<HTML
+                <a class="arrow" href="{$this->text->getUrlPage("move_widget", $id, array("direction" => "down", $tokenName => $token))}">
+                    {$this->text->t("widgets.move_down")}
+                </a>  
+HTML;
+        }
+        $output.= <<<HTML
+            </p>
+            <hr />
+HTML;
+        return $output;
+    }
+
     private function getNewWidgetChoicesHtml() {
         if ($this->document->getId() === 0) {
             return "";
         }
-        $returnValue = <<<HTML
-            <p>
-                {$this->text->t("widgets.add_new_widget")}:
-            </p>
-HTML;
+
+        $returnValue = "";
         if (empty($this->placedWidgets)) {
-            $returnValue = "<p>{$this->text->t("documents.no_widgets_added_yet")}</p>";
+            $returnValue.= "<p>{$this->text->t("documents.no_widgets_added_yet")}</p>";
         }
-        
+        $returnValue.= <<<HTML
+            <h3 class="notable">
+                {$this->text->t("widgets.add_new_widget")}
+            </h3>
+HTML;
+
         $installedWidgets = $this->installedWidgets->getInstalledWidgets();
         foreach ($installedWidgets as $installedWidget) {
             $widgetNameHtml = htmlSpecialChars($installedWidget->getName());
             $descriptionHtml = htmlSpecialChars($installedWidget->getDescription());
-            
+
             $widgetUrlHtml = htmlSpecialChars($installedWidget->getWidgetWebsite());
             $authorNameHtml = htmlSpecialChars($installedWidget->getAuthor());
             $authorUrlHtml = htmlSpecialChars($installedWidget->getAuthorWebsite());
-            
-            $addToDocumentUrlHtml = $this->text->getUrlPage("edit_widget", null,
-                    array("directory_name" => $installedWidget->getDirectoryName(),
-                        "document_id" => $this->document->getId()));
-            
+
+            $addToDocumentUrlHtml = $this->text->getUrlPage("edit_widget", null, array("directory_name" => $installedWidget->getDirectoryName(),
+                "document_id" => $this->document->getId()));
+
             $returnValue.= <<<HTML
                 <h3>{$widgetNameHtml}</h3>
                 <p>
@@ -166,14 +195,13 @@ HTML;
                     {$this->text->t("widgets.created_by")}
                     <a href="{$authorUrlHtml}"">{$authorNameHtml}</a>.
                     <a href="{$widgetUrlHtml}" class="arrow">{$this->text->t("widgets.view_more_information")}</a>
-                    
                 </p>
                 <p>
                     <a href="{$addToDocumentUrlHtml}" class="arrow">{$this->text->t("widgets.add_to_document")}</a>
                 </p>
 HTML;
         }
-        
+
         return $returnValue;
     }
 

@@ -20,3 +20,6 @@ missing_definition.edit=De widget kan niet bewerkt worden, want de broncode is n
 view_in_document=Bekijk in document
 edit_column_layout=Wijzig layout van deze kolom
 edit_page_layout=Wijzig layout van deze pagina
+move_up=Omhoog
+move_down=Omlaag
+moving_a_widget=Verplaatsen van een widget
