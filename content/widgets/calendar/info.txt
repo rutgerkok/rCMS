@@ -1,6 +1,6 @@
 name=Calendar
 description=Adds a calendar to your site which shows all upcoming events.
 version=1.0
-website=http://www.rutgerkok.nl/
+website=https://github.com/rutgerkok/rCMS/wiki/Widget-overview#calendar
 author=Rutger Kok
 author.website=http://www.rutgerkok.nl/
