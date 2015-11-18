@@ -76,18 +76,32 @@ ERROR;
     private function getDocumentIntro(Document $document) {
         $titleHtml = htmlSpecialChars($document->getTitle());
         $introHtml = htmlSpecialChars($document->getIntro());
-        $linkHtml = $document->getUrl($this->text);
         return <<<DOCUMENT
             <article>
                 <h3>$titleHtml</h3>
                 <p>$introHtml</p>
                 <p>
-                    <a class="arrow" href="$linkHtml">
+                    <a class="arrow" href="{$document->getUrl($this->text)}">
                         {$this->text->t("documents.view")}
                     </a>
+                    {$this->getDocumentEditLinks($document)}
                 </p>
             </article>
 DOCUMENT;
+    }
+    
+    private function getDocumentEditLinks(Document $document) {
+        if (!$this->editLinks) {
+            return "";
+        }
+        return <<<HTML
+            <a class="arrow" href="{$this->text->getUrlPage("edit_document", $document->getId())}">
+                {$this->text->t("main.edit")}
+            </a>
+            <a class="arrow" href="{$this->text->getUrlPage("delete_document", $document->getId())}">
+                {$this->text->t("main.delete")}
+            </a>
+HTML;
     }
 
 }

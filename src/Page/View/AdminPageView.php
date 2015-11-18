@@ -25,7 +25,8 @@ class AdminPageView extends View {
                 
             <h3>{$text->t("main.documents")}</h3>
             <p>
-                <a href="{$text->getUrlPage("edit_document")}" class="arrow">{$text->t("documents.create")}</a>
+                <a href="{$text->getUrlPage("edit_document")}" class="arrow">{$text->t("documents.create")}</a><br />
+                <a href="{$text->getUrlPage("document_list")}" class="arrow">{$text->t("documents.list.title")}</a>
             </p>
 
             <h3>{$text->t("users.account_management")}</h3>

@@ -20,7 +20,7 @@ class DocumentListPage extends Page {
     private $editLinks;
     
     public function init(Website $website, Request $request) {
-        $isStaff = $website->isLoggedInAsStaff();
+        $isStaff = $website->isLoggedInAsStaff(true);
 
         $documentRepo = new DocumentRepository($website->getDatabase(), $isStaff);
         $this->documents = $documentRepo->getAll();
