@@ -1,6 +1,7 @@
 save=Save
 save_and_quit=Save and quit
 quit=Quit
+delete_permanently=Delete permanently
 message=Message
 is_created=is created.
 is_edited=is edited.

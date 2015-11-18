@@ -1,6 +1,7 @@
 save=Opslaan
 save_and_quit=Opslaan en weggaan
 quit=Weggaan
+delete_permanently=Verwijder
 message=Bericht
 is_created=is toegevoegd.
 is_edited=is bijgewerkt.

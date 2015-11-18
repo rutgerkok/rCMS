@@ -2,6 +2,7 @@
 
 namespace Rcms\Core\Widget;
 
+use InvalidArgumentException;
 use PDOException;
 
 use Rcms\Core\Exception\NotFoundException;
@@ -118,6 +119,20 @@ class WidgetRepository extends Repository {
      */
     public function deletePlacedWidget(PlacedWidget $placedWidget) {
         $this->where($this->widgetIdField, '=', $placedWidget->getId())->deleteOneOrFail();
+    }
+    
+    /**
+     * Deletes all widgets of a document. If the given document has no widgets,
+     * then this method will have no effect.
+     * @param int $documentId The document id.
+     * @throws InvalidArgumentException If documentId is not an int.
+     * @throws PDOException If a database error occurs.
+     */
+    public function deleteAllPlacedWidgetsInDocument($documentId) {
+        if (!is_int($documentId)) {
+            throw new InvalidArgumentException("documentId must be an int");
+        }
+        $this->where($this->documentIdField, '=', $documentId)->delete();
     }
 
 }

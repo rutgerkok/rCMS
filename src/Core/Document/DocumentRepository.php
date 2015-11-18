@@ -9,6 +9,7 @@ use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 use Rcms\Core\Text;
 use Rcms\Core\Widget\InstalledWidgets;
+use Rcms\Core\Widget\WidgetRepository;
 
 /**
  * Repository for documents.
@@ -114,8 +115,19 @@ class DocumentRepository extends Repository {
      * @param Document $document The document to save.
      * @throws PDOException If a database error occurs while saving the document.
      */
-    public function save(Document $document) {
+    public function saveDocument(Document $document) {
         $this->saveEntity($document);
+    }
+
+    /**
+     * Deletes a document from the database.
+     * @param Document $document The document to delete.
+     * @throws NotFoundException If the document was already deleted or never saved.
+     * @throws PDOException If a database error occurs.
+     */
+    public function deleteDocument(Document $document, WidgetRepository $widgetRepo) {
+        $this->where($this->primaryField, '=', $document->getId())->deleteOneOrFail();
+        $widgetRepo->deleteAllPlacedWidgetsInDocument($document->getId());
     }
 
 }

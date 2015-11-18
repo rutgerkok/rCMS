@@ -98,7 +98,7 @@ class EditDocumentPage extends Page {
         }
 
         $isNew = $document->getId() == 0;
-        $documentRepo->save($document);
+        $documentRepo->saveDocument($document);
         if ($isNew) {
             $text->addMessage($text->t("main.document") . ' ' . $text->t("editor.is_created"));
         } else {
