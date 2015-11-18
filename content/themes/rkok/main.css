@@ -58,7 +58,7 @@ body {
     background: #f4f4f4;
     position: relative;
     margin-bottom: 20px;
-    box-shadow: 0 0 30px black;
+    box-shadow: 0 0 16px black;
 }
 @media all and (max-width : 59em) {
     #site_header
