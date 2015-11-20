@@ -149,19 +149,19 @@ LIST;
 
         if ($website->isLoggedInAsStaff(true)) {
             // Logged in as admin
-            echo '<li><a href="' . $website->getUrlPage("admin") . '">' . $website->t("main.admin") . '</a></li>';
+            echo '<li><a class="arrow" href="' . $website->getUrlPage("admin") . '">' . $website->t("main.admin") . '</a></li>';
         }
         if ($website->isLoggedIn()) {
             // Logged in
-            echo '<li><a href="' . $website->getUrlPage("account") . '">' . $this->website->t("main.my_account") . '</a></li>';
-            echo '<li><a href="' . $website->getUrlPage("logout") . '">' . $this->website->t("main.log_out") . '</a></li>';
+            echo '<li><a class="arrow" href="' . $website->getUrlPage("account") . '">' . $this->website->t("main.my_account") . '</a></li>';
+            echo '<li><a class="arrow" href="' . $website->getUrlPage("logout") . '">' . $this->website->t("main.log_out") . '</a></li>';
         } else {
             // Not logged in
             if ($website->getConfig()->get("user_account_creation")) {
                 // Show account creation link
-                echo '<li><a href="' . $website->getUrlPage("create_account") . '">' . $this->website->t("main.create_account") . '</a></li>';
+                echo '<li><a class="arrow" href="' . $website->getUrlPage("create_account") . '">' . $this->website->t("main.create_account") . '</a></li>';
             }
-            echo '<li><a href="' . $website->getUrlPage("login") . '">' . $this->website->t("main.log_in") . '</a></li>';
+            echo '<li><a class="arrow" href="' . $website->getUrlPage("login") . '">' . $this->website->t("main.log_in") . '</a></li>';
         }
     }
 
@@ -185,7 +185,7 @@ LIST;
                 </a>
 EOT;
         }
-        echo "<p>" . $welcome_text . "</p>";
+        echo $welcome_text;
     }
 
     public function echoAccountBox($gravatarSize = 140) {
