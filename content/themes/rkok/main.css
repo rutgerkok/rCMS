@@ -118,6 +118,8 @@ div#account_label {
     text-align: right;
     background: white;
     box-shadow: 0 0 5px #aaa;
+    font-family: verdana, sans-serif;
+    padding: 3px;
 }
 div#account_box {
     display: none;
