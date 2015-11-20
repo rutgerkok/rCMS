@@ -27,7 +27,7 @@ if ($loggedIn) {
             // Confirmed
             $oWidgets->deletePlacedWidget($widget);
             $textToDisplay.= '<p>' . $this->t("main.widget") . ' ' . $this->t("editor.is_deleted") . '</p>';
-            $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.ok") . '</a></p>';
+            $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("edit_document", $widget->getDocumentId()) . '">' . $this->t("main.ok") . '</a></p>';
         } else {
             // Show confirmation message
             $textToDisplay.= '<p>' . $this->t("editor.widget.delete.confirm") . '</p>';
@@ -37,7 +37,7 @@ if ($loggedIn) {
             $textToDisplay.= '<h3>' . $widget_info->getName() . "</h3>\n";
             $textToDisplay.= '<p>' . $widget_info->getDescription() . "</h3>\n";
             $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("delete_widget", $widget_id, array("confirm" => 1)) . '">' . $this->t("main.yes") . "</a> | \n";
-            $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("widgets") . '">' . $this->t("main.no") . '</a></p>';
+            $textToDisplay.= '<a class="arrow" href="' . $this->getUrlPage("edit_document", $widget->getDocumentId()) . '">' . $this->t("main.no") . '</a></p>';
         }
     } else {
         // Widget not found
