@@ -302,7 +302,7 @@ EOT;
      * @return Comment[] The comments.
      */
     function getCommentsArticle($articleId) {
-        return $this->where($this->articleIdField, '=', $articleId)->select();
+        return $this->where($this->articleIdField, '=', $articleId)->orderDescending($this->primaryField)->select();
     }
 
     /**
