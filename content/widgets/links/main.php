@@ -96,7 +96,7 @@ EOT;
             $data["valid"] = false;
         }
         $data["menu_id"] = isSet($_REQUEST["menu_id_" . $id]) ? (int) $_REQUEST["menu_id_" . $id] : 0;
-        $oMenu = new LinkRepository($website);
+        $oMenu = new MenuRepository($website->getDatabase());
         if ($oMenu->getMenuName($data["menu_id"]) == null) {
             $website->addError($website->t("widgets.menu") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
