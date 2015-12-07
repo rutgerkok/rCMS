@@ -24,11 +24,11 @@ $articles = $oArticles->getArticlesData($category_id, 15);
 $textToDisplay = '';
 if ($articles) {
     foreach ($articles as $article) {
-        $pubdate = $article->created->format(DateTime::RSS);
+        $pubdate = $article->getDateCreated()->format(DateTime::RSS);
         $textToDisplay.="<item>\n";
         $textToDisplay.="  <title>" . htmlSpecialChars($article->title) . "</title>\n";
-        $textToDisplay.="  <link>" . $website->getUrlPage('article', $article->id) . "</link>\n";
-        $textToDisplay.="  <description>" . htmlSpecialChars($article->intro) . "</description>\n";
+        $textToDisplay.="  <link>" . $website->getUrlPage('article', $article->getId()) . "</link>\n";
+        $textToDisplay.="  <description>" . htmlSpecialChars($article->getIntro()) . "</description>\n";
         $textToDisplay.="  <pubDate>" . htmlSpecialChars($pubdate) . "</pubDate>\n";
         $textToDisplay.="  <author>" . htmlSpecialChars($article->author) . "</author>\n";
         $textToDisplay.="  <image>" . htmlSpecialChars($article->featuredImage) . "</image>\n";

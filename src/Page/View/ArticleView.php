@@ -55,7 +55,7 @@ class ArticleView extends View {
             array $comments = array()) {
         // Store some variables for later use
         $text = $this->text;
-        $id = (int) $article->id;
+        $id = $article->getId();
 
         $returnValue = '';
         $loggedIn = $this->editLink;
@@ -65,14 +65,14 @@ class ArticleView extends View {
 
         // Featured image
         if (!empty($article->featuredImage)) {
-            $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></p>';
+            $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" /></p>';
         }
         $returnValue.= '<p class="meta">';
 
         // Created and last edited
-        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->created);
-        if ($article->lastEdited) {
-            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->lastEdited);
+        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateCreated());
+        if ($article->getDateLastEdited()) {
+            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateLastEdited());
         }
 
         // Category
@@ -89,7 +89,7 @@ class ArticleView extends View {
         if ($article->pinned) {
             $returnValue.= "<br />" . $text->t('articles.pinned') . " ";
         }
-        if ($article->hidden) {
+        if ($article->isHidden()) {
             $returnValue.= "<br />" . $text->t('articles.hidden');
         }
         if ($loggedIn && $article->showComments) {
@@ -108,11 +108,11 @@ class ArticleView extends View {
 
         // Article
         $returnValue.= '<div id="sidebar_page_content">';
-        if ($loggedIn && $article->hidden) {
+        if ($loggedIn && $article->isHidden()) {
             $returnValue.= '<p class="meta">' . $text->t('articles.is_hidden') . "<br /> \n" . $text->t('articles.hidden.explained') . '</p>';
         }
-        $returnValue.= '<p class="intro">' . htmlSpecialChars($article->intro) . '</p>';
-        $returnValue.= $article->body;
+        $returnValue.= '<p class="intro">' . htmlSpecialChars($article->getIntro()) . '</p>';
+        $returnValue.= $article->getBody();
 
         // Comments
         if ($article->showComments) {

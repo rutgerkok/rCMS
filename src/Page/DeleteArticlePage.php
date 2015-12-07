@@ -41,8 +41,8 @@ class DeleteArticlePage extends Page {
             return;
         } elseif ($action == "make_private" && Validate::requestToken($request)) {
             // Hide article for visitors
-            $article->hidden = true;
-            if ($oArticles->save($article)) {
+            $article->setHidden(true);
+            if ($oArticles->saveArticle($article)) {
                 $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_HIDDEN);
             } else {
                 $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
@@ -58,7 +58,7 @@ class DeleteArticlePage extends Page {
 
     public function getPageTitle(Text $text) {
         if ($this->article) {
-            return $text->t("main.delete") . ' "' . $this->article->title . '"';
+            return $text->t("main.delete") . ' "' . $this->article->getTitle() . '"';
         } else {
             return $this->getShortPageTitle($text);
         }

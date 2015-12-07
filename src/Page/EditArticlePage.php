@@ -56,8 +56,8 @@ class EditArticlePage extends Page {
         if ($request->hasRequestValue("submit") && $validToken) {
             // Try to save
             $article = $articleEditor->getArticle();
-            if ($articleRepository->save($article)) {
-                $viewArticleLink = Link::of($website->getUrlPage("article", $article->id), $website->t("articles.view"));
+            if ($articleRepository->saveArticle($article)) {
+                $viewArticleLink = Link::of($website->getUrlPage("article", $article->getId()), $website->t("articles.view"));
                 if ($articleId == 0) {
                     // New article created
                     $text->addMessage($text->t("main.article") . " " . $text->t("editor.is_created"), $viewArticleLink);
@@ -68,7 +68,7 @@ class EditArticlePage extends Page {
 
                 // Check for redirect
                 if ($request->getRequestString("submit") == $website->t("editor.save_and_quit")) {
-                    $urlRaw = htmlspecialchars_decode($website->getUrlPage("article", $article->id));
+                    $urlRaw = htmlspecialchars_decode($website->getUrlPage("article", $article->getId()));
                     throw new RedirectException($urlRaw);
                 }
             }
@@ -105,7 +105,7 @@ class EditArticlePage extends Page {
 
     public function getShortPageTitle(Text $text) {
         if ($this->articleEditor != null) {
-            $articleTitle = $this->articleEditor->getArticle()->title;
+            $articleTitle = $this->articleEditor->getArticle()->getTitle();
             if (empty($articleTitle)) {
                 // New article
                 return $text->t("articles.create");

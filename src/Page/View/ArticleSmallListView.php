@@ -83,12 +83,12 @@ class ArticleSmallListView extends View {
     /** Returns a single article enclosed in li tags */
     public function getArticleTextListEntry(Article $article,
             $displayImage = false) {
-        $returnValue = '<li><a href="' . $this->text->getUrlPage("article", $article->id) . '"';
-        $returnValue.= 'title="' . $article->intro . '">';
+        $returnValue = '<li><a href="' . $this->text->getUrlPage("article", $article->getId()) . '"';
+        $returnValue.= 'title="' . htmlSpecialChars($article->getIntro()) . '">';
         if ($displayImage && !empty($article->featuredImage)) {
-            $returnValue.= '<div class="linklist_icon_image"><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" /></div>';
+            $returnValue.= '<div class="linklist_icon_image"><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" /></div>';
         }
-        $returnValue.= "<span>" . htmlSpecialChars($article->title) . "</span></a></li>\n";
+        $returnValue.= "<span>" . htmlSpecialChars($article->getTitle()) . "</span></a></li>\n";
         return $returnValue;
     }
 

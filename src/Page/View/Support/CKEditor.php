@@ -147,7 +147,8 @@ FORM;
                 CKEDITOR.inline( '$nameHtml', {
                     uiColor: '$editorColor',
                     format_tags : 'p;h3;pre',
-                    allowedContent : true
+                    allowedContent : true,
+                    image2_alignClasses : ['image-align-left', 'image-align-center', 'image-align-right']
                 });
             </script>
 EDITOR;

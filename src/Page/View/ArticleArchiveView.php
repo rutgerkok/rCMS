@@ -133,14 +133,14 @@ MENUBAR;
     protected function getTableRow(Article $article, $loggedIn) {
         $text = $this->text;
 
-        $textToDisplay = '<tr><td><a href="' . $text->getUrlPage("article", $article->id);
-        $textToDisplay.= '">' . htmlSpecialChars($article->title) . "</a>";
+        $textToDisplay = '<tr><td><a href="' . $text->getUrlPage("article", $article->getId());
+        $textToDisplay.= '">' . htmlSpecialChars($article->getTitle()) . "</a>";
         if ($loggedIn) {
             // Display edit links in new cell
             $textToDisplay.= '</td><td style="width:20%">';
-            $textToDisplay.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id);
+            $textToDisplay.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->getId());
             $textToDisplay.= '">' . $text->t("main.edit") . "</a>";
-            $textToDisplay.= ' <a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id);
+            $textToDisplay.= ' <a class="arrow" href="' . $text->getUrlPage("delete_article", $article->getId());
             $textToDisplay.= '">' . $text->t("main.delete") . "</a>";
         }
         $textToDisplay.= "</td></tr>\n";
@@ -163,7 +163,7 @@ MENUBAR;
 
         // Start the loop, grouping articles by month
         foreach ($this->articles as $article) {
-            $date = $article->created;
+            $date = $article->getDateCreated();
             $currentMonth = $date->format('n');
             $currentYear = $date->format('Y');
             if ($currentMonth != $previousMonth || $currentYear != $previousYear) {

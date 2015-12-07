@@ -245,11 +245,11 @@ TOOLTIP_END;
         $articles = $this->articlesByDay[$dayNumber];
         $tooltip = "<ul>";
         foreach ($articles as $article) {
-            $title = htmlSpecialChars($article->title);
-            $intro = htmlSpecialChars($article->intro);
+            $title = htmlSpecialChars($article->getTitle());
+            $intro = htmlSpecialChars($article->getIntro());
             $tooltip.= <<<TOOLTIP_ELEMENT
                 <li title="{$intro}">
-                    <a href="{$text->getUrlPage("article", $article->id)}">
+                    <a href="{$text->getUrlPage("article", $article->getId())}">
                         {$title}
                     </a>
                 </li>

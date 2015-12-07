@@ -38,9 +38,9 @@ class ArticleEditView extends View {
     public function getText() {
         $text = $this->text;
         $article = $this->article;
-        $title = htmlSpecialChars($article->title);
-        $intro = htmlSpecialChars($article->intro);
-        $body = $article->body; // Escaped by the get_editor method
+        $title = htmlSpecialChars($article->getTitle());
+        $intro = htmlSpecialChars($article->getIntro());
+        $body = $article->getBody(); // Will be escaped by the get_editor method
 
         $tokenName = RequestToken::FIELD_NAME;
         $tokenHtml = htmlSpecialChars($this->requestToken->getTokenString());
@@ -48,7 +48,7 @@ class ArticleEditView extends View {
         // Create form
         return <<<ARTICLE_FORM
             <script type="text/javascript" src="{$text->getUrlJavaScript("datepicker")}"></script>
-            <form action="{$text->getUrlPage("edit_article", $article->id)}" method="post">
+            <form action="{$text->getUrlPage("edit_article", $article->getId())}" method="post">
                 <p>
                     <label for="article_title">{$text->t("articles.title")}:<span class="required">*</span></label>
                     <br />
@@ -104,7 +104,7 @@ ARTICLE_FORM;
         return <<<BUTTONS
             <input type="submit" name="submit" class="button primary_button" value="{$text->t("editor.save")}" />
             <input type="submit" name="submit" class="button" value="{$text->t("editor.save_and_quit")}" />
-            <a class="button" href="{$text->getUrlPage("article", $article->id)}">{$text->t("editor.quit")}</a>
+            <a class="button" href="{$text->getUrlPage("article", $article->getId())}">{$text->t("editor.quit")}</a>
 BUTTONS;
     }
 
@@ -161,7 +161,7 @@ FORM;
     }
 
     private function getOtherOptionsHtml() {
-        $hidden = $this->article->hidden ? 'checked="checked"' : '';
+        $hidden = $this->article->isHidden() ? 'checked="checked"' : '';
         $pinned = $this->article->pinned ? 'checked="checked"' : '';
         $show_comments = $this->article->showComments ? 'checked="checked"' : '';
         $text = $this->text;

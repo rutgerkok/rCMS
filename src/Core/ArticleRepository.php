@@ -117,7 +117,7 @@ class ArticleRepository extends Repository {
      */
     public function delete(Article $article) {
         try {
-            $this->where($this->getPrimaryKey(), '=', $article->id)->deleteOneOrFail();
+            $this->where($this->getPrimaryKey(), '=', $article->getId())->deleteOneOrFail();
             return true;
         } catch (NotFoundException $e) {
             return false;
@@ -131,7 +131,7 @@ class ArticleRepository extends Repository {
      * Saves the given article to the database.
      * @param Article $article Article to save.
      */
-    public function save(Article $article) {
+    public function saveArticle(Article $article) {
         try {
             $this->saveEntity($article);
             return true;

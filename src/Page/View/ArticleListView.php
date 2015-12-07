@@ -80,15 +80,15 @@ class ArticleListView extends View {
         $returnValue.= '">';
 
         // Title
-        $titleHtml = htmlSpecialChars($article->title);
+        $titleHtml = htmlSpecialChars($article->getTitle());
         $returnValue.= "<h3>" . $this->encloseInArticleLink($article, $titleHtml) . "</h3>";
 
         if ($show_metainfo) {
             $returnValue.= '<p class="meta">';
             // Created and last edited
-            $returnValue.= $text->t('articles.created') . " " . $text->formatDateTime($article->created) . ' - ';
-            if ($article->lastEdited) {
-                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $text->formatDateTime($article->lastEdited) . '<br />';
+            $returnValue.= $text->t('articles.created') . " " . $text->formatDateTime($article->getDateCreated()) . ' - ';
+            if ($article->getDateLastEdited()) {
+                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $text->formatDateTime($article->getDateLastEdited()) . '<br />';
             }
             // Category
             $returnValue.= $text->t('main.category') . ": ";
@@ -103,7 +103,7 @@ class ArticleListView extends View {
                 $returnValue.= " - " . $text->t('articles.pinned');
             }
             // Hidden
-            if ($article->hidden) {
+            if ($article->isHidden()) {
                 $returnValue.= " - " . $text->t('articles.hidden');
             }
             $returnValue.= '</p>';
@@ -111,21 +111,21 @@ class ArticleListView extends View {
 
         // Featured image
         if (!empty($article->featuredImage)) {
-            $imageHtml = '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->title) . '" />';
+            $imageHtml = '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" />';
             $returnValue.= $this->encloseInArticleLink($article, $imageHtml);
         }
 
         // Intro
         $returnValue.= '<div class="article_teaser_text">';
         $returnValue.= '<p>';
-        $returnValue.= $this->encloseInArticleLink($article, htmlSpecialChars($article->intro));
+        $returnValue.= $this->encloseInArticleLink($article, htmlSpecialChars($article->getIntro()));
         $returnValue.= '</p>';
         $returnValue.= '<p class="article_teaser_links">';
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' .  $text->getUrlPage("article", $article->id) . '">' . $text->t('main.read') . '</a>';
+        $returnValue.= '<a class="arrow" href="' .  $text->getUrlPage("article", $article->getId()) . '">' . $text->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
-            $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->id) . '">' . $text->t('main.edit') . '</a>' . //edit
-                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->id) . '">' . $text->t('main.delete') . '</a>'; //delete
+            $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->getId()) . '">' . $text->t('main.edit') . '</a>' . //edit
+                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->getId()) . '">' . $text->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
         $returnValue.= "</div>";
@@ -144,7 +144,7 @@ class ArticleListView extends View {
      */
     private function encloseInArticleLink(Article $article, $html) {
         return <<<LINKED
-            <a class="disguised_link" href="{$this->text->getUrlPage("article", $article->id)}">
+            <a class="disguised_link" href="{$this->text->getUrlPage("article", $article->getId())}">
                 $html
             </a>
 LINKED;

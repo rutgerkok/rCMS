@@ -30,14 +30,14 @@ class ArticlePage extends Page {
         $this->currentUser = $website->getAuth()->getCurrentUser();
         if ($this->article->showComments) {
             $oComments = new CommentRepository($website);
-            $this->comments = $oComments->getCommentsArticle($this->article->id);
+            $this->comments = $oComments->getCommentsArticle($this->article->getId());
         } else {
             $this->comments = array();
         }
     }
 
     public function getPageTitle(Text $text) {
-        return $this->article->title;
+        return $this->article->getTitle();
     }
 
     public function getView(Text $text) {

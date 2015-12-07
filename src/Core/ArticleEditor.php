@@ -36,7 +36,7 @@ class ArticleEditor {
                 $text->addError($text->tReplacedKey("errors.please_enter_this", "articles.title", true));
                 $noErrors = false;
             }
-            $article->title = $title;
+            $article->setTitle($title);
         }
 
         // Intro
@@ -50,7 +50,7 @@ class ArticleEditor {
                 $text->addError($text->t("articles.intro") . " " . $text->tReplaced("errors.is_too_long_num", Article::MAX_INTRO_LENGTH));
                 $noErrors = false;
             }
-            $article->intro = $intro;
+            $article->setIntro($intro);
         }
 
         // Body
@@ -64,7 +64,7 @@ class ArticleEditor {
                 $text->addError($text->t("articles.body") . " " . $text->tReplaced("errors.is_too_long_num", Article::MAX_BODY_LENGTH));
                 $noErrors = false;
             }
-            $article->body = $body;
+            $article->setBody($body);
         }
 
         // Category
@@ -93,7 +93,7 @@ class ArticleEditor {
         // Pinned, hidden, comments
         if ($request->hasRequestValue("submit")) {
             $article->pinned = $request->hasRequestValue("article_pinned");
-            $article->hidden = $request->hasRequestValue("article_hidden");
+            $article->setHidden($request->hasRequestValue("article_hidden"));
             $article->showComments = $request->hasRequestValue("article_comments");
         }
 

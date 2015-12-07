@@ -78,7 +78,7 @@ class ArticleDeleteView extends View {
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
-        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->id) . '">' . $text->t("articles.view") . '</a> ';
+        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->getId()) . '">' . $text->t("articles.view") . '</a> ';
         if ($this->showAdminPageLink) {
             $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
         }
@@ -93,22 +93,22 @@ class ArticleDeleteView extends View {
         $returnValue = <<<EOT
             <p>{$text->t('editor.article.delete.confirm')}</p>
             <p>
-                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->id, $deleteUrlParams)}">
+                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams)}">
                     {$text->t("main.yes")}
                 </a>
 EOT;
-        if (!$article->hidden) {
+        if (!$article->isHidden()) {
             $hideUrlParams = array("action" => "make_private", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
             // Option to hide article is only relevant when the article
             // isn't already hidden
             $returnValue.= <<<EOT
-                <a class="button" href="{$text->getUrlPage("delete_article", $article->id, $hideUrlParams)}">
+                <a class="button" href="{$text->getUrlPage("delete_article", $article->getId(), $hideUrlParams)}">
                     {$text->t("editor.article.delete.make_hidden_instead")}
                 </a>
 EOT;
         }
         $returnValue.= <<<EOT
-                <a class="button" href="{$text->getUrlPage("article", $article->id)}">
+                <a class="button" href="{$text->getUrlPage("article", $article->getId())}">
                     {$text->t("main.no")}
                 </a>
             </p>

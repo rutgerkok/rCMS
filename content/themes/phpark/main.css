@@ -1,5 +1,5 @@
 /* HTML5 FIXES FOR IE8 */
-header, article, footer {
+header, article, footer, figure, figcaption {
     display: block;
 }
 * {
@@ -9,7 +9,7 @@ header, article, footer {
 /*
  * Fonts, colors and margins of common elements
  */
-p, h1, h2, h3, h4, li {
+p, h1, h2, h3, h4, li, figcaption {
     font-family: Georgia, "Times New Roman", Times, serif;
     color: #595959;
     margin: 0 0 10px 0;
@@ -24,7 +24,10 @@ h3 {
     margin: 0.64em 0 1px 0; /* 0.64em = 0.7em / 110% */
     font-size: 110%;
 }
-p, li {
+p {
+    text-align: justify;
+}
+p, li, figcaption {
     line-height: 1.5;
 }
 li {
@@ -446,18 +449,6 @@ a:active {
     border-bottom: 1px solid #990000;
 }
 
-/* Images */
-img {
-    display: block;
-    margin: 0.7em auto;
-    max-width: 100%;
-    height: 100% !important; /* override CKEditor-added inline styles */
-}
-a img {
-    border:0;
-}
-
-
 /* Message boxes */
 div.error, div.confirmation {
     font-family: verdana, sans-serif;
@@ -630,8 +621,8 @@ p.intro {
     font-weight: bold;
     font-style: italic;
 }
-#sidebar_page_content p, #content p {
-    text-align: justify;
+#sidebar_page_sidebar p, #sidebar p, #nav p {
+    text-align: left;
 }
 p.result_selector_menu {
     border-top: 1px #999999 dotted;
@@ -654,6 +645,40 @@ ul.no_bullets {
 ul.no_bullets li {
     margin: 0.2em 0 0 1em;
 }
+
+/* Images */
+img {
+    display: block;
+    margin: 0.7em auto;
+    max-width: 100%;
+    height: 100% !important; /* override CKEditor-added inline styles */
+}
+a img {
+    border:0;
+}
+.image-align-left {
+    float: left;
+    margin: 0.7em 0.7em 0.7em 0;
+}
+.image-align-right {
+    float: right;
+    margin: 0.7em 0 0.7em 0.7em;
+}
+.image-align-center {
+    text-align: center;
+}
+.image-align-center > figure {
+    display: inline-block;
+}
+figure {
+    padding: 0;
+    margin: 0;
+}
+figcaption {
+    font-style: italic;
+    color: #777;
+}
+
 /* Tooltips */
 #tooltip {
     border: solid 1px #6b966b;
