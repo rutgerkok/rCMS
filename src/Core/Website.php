@@ -60,14 +60,13 @@ class Website {
             $this->databaseObject->prefixTables(array("categorie", "users",
                 "links", "artikel", "comments", "menus", "widgets", "documents",
                 "settings", "gebruikers", "reacties"));
-            
+            $this->config->readFromDatabase($this->databaseObject);
         } catch (PDOException $e) {
             // No database connection - safe to ignore this error, as the page
             // renderer will start the installation procedure, based on the lack
             // of settings
             $this->text->addError($this->text->tReplaced("install.no_database_connection", $e->getMessage()));
         }
-        $this->config->readFromDatabase($this->databaseObject);
 
         // Set updated properties of Text object, now that settings are read
         // from the database
