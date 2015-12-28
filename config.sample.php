@@ -1,7 +1,8 @@
 <?php
 /*
  * The main configuration file.
- * 
+ *
+ * Save a copy of this file as config.php, then edit the settings in that file.
  */
 
 /**** Database settings ****/
@@ -10,13 +11,13 @@
 $this->config['database_location'] = 'localhost';
 
 // Name of database, for example 'website'
-$this->config['database_name'] = 'rkok';
+$this->config['database_name'] = 'website';
 
 // Your database username, for example 'root' or 'username'
 $this->config['database_user'] = 'root';
 
 // Your database password, for example 'rgo93ly69h'
-$this->config['database_password'] = '';
+$this->config['database_password'] = 'rgo93ly69h';
 
 // A prefix. No two installations of rCMS on a single database may have the same
 // prefix

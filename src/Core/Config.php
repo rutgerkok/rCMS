@@ -54,7 +54,7 @@ class Config {
         if (file_exists($file)) {
             require($file);
         } else {
-            echo "<code>" . $file . "</code> was not found! Please create a config file.";
+            echo "<code>" . $file . "</code> not found. Please create a config file. See the <code>config.sample.php</code> file for details.";
             die();
         }
     }
