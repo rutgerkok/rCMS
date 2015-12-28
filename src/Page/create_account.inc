@@ -97,7 +97,7 @@ if (!$display_page) {
                         <label for="creating_username">{$this->t("users.username")}<span class="required">*</span>:</label><br /><input type="text" id="creating_username" name="creating_username" value="$creating_username" /><br />
                         <label for="creating_display_name">{$this->t("users.display_name")}<span class="required">*</span>:</label><br /><input type="text" id="creating_display_name" name="creating_display_name" value="$creating_display_name" /><br />
                         <label for="creating_password1">{$this->t("users.password")}<span class="required">*</span>:</label><br /><input type="password" id="creating_password1" name="creating_password1" value="$creating_password1"/><br />
-                        <label for="creating_password2">{$this->t("editor.password.repeat")}<span class="required">*</span>:</label><br /><input type="password" id="creating_password2" name="creating_password2" value=""/><br />
+                        <label for="creating_password2">{$this->t("users.password.repeat")}<span class="required">*</span>:</label><br /><input type="password" id="creating_password2" name="creating_password2" value=""/><br />
                         <label for="creating_email">{$this->t("users.email")}:</label><br /><input type="email" id="creating_email" name="creating_email" value="$creating_email" /><br />
                     </p>
                     <p>

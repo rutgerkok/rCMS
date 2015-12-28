@@ -1,3 +1,4 @@
+_=Vertalingen voor het beheren van widgets
 view_more_information=Meer informatie
 created_by=Gemaakt door
 add_to_document=Toevoegen aan document

@@ -1,3 +1,4 @@
+_=Translations for managing widgets
 view_more_information=More information
 created_by=Created by
 add_to_document=Add to document

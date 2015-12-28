@@ -1,3 +1,4 @@
+_=Vertalingen voor categorieën
 all=Alle categorie&euml;n
 search.all_in_year=Doorzoek alle categorie&euml;n in {0}
 create=Maak nieuwe categorie

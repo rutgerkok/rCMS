@@ -1,7 +1,10 @@
+_=Translations related to calendars
 calendar_for=Calendar for
 calendar_for_year=Calendar for {0}
 pick_a_date=Pick a date
 no_activities_today=No activities today.
+date=Date (YYYY-MM-DD)
+time=Time (HH:MM)
 format.date_time=%c
 weekday.mon=Mon
 weekday.tue=Tue

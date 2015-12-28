@@ -1,3 +1,4 @@
+_=Algemene vertalingen
 locales=nl_NL|nl|du|nld|dutch
 read=Lees meer
 edit=Bewerk

@@ -66,7 +66,7 @@ class EditPasswordPage extends Page {
     }
 
     public function getPageTitle(Text $text) {
-        return $text->t("editor.password.edit");
+        return $text->t("users.password.edit");
     }
 
     public function getMinimumRank(Request $request) {
@@ -114,9 +114,9 @@ class EditPasswordPage extends Page {
         // Show form
         if ($show_form) {
             // Text above form
-            $textToDisplay.= "<p>" . $website->tReplaced("editor.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "</p>\n";
+            $textToDisplay.= "<p>" . $website->tReplaced("users.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $website->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("accounts.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself
@@ -135,13 +135,13 @@ EOT;
                         $old_password_text
                         <label for="password">{$website->t('users.password')}:</label><span class="required">*</span><br />
                         <input type="password" id="password" name="password" value=""/><br />
-                        <label for="password2">{$website->t('editor.password.repeat')}:</label><span class="required">*</span><br />
+                        <label for="password2">{$website->t('users.password.repeat')}:</label><span class="required">*</span><br />
                         <input type="password" id="password2" name="password2" value=""/><br />
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_password" />
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
-                        <input type="submit" value="{$website->t('editor.password.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('users.password.edit')} " class="button" />
                     </p>
                 </form>
 EOT;

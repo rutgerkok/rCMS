@@ -32,9 +32,9 @@ class AdminPageView extends View {
             <h3>{$text->t("users.account_management")}</h3>
             <p>
                 <a href="{$text->getUrlPage("create_account")}" class="arrow">{$text->t("users.create")}</a><br /> 
-                <a class="arrow" href="{$text->getUrlPage("edit_password")}">{$text->t("editor.password.edit")}</a><br />
-                <a class="arrow" href="{$text->getUrlPage("edit_email")}">{$text->t("editor.email.edit")}</a><br />
-                <a class="arrow" href="{$text->getUrlPage("edit_display_name")}">{$text->t("editor.display_name.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("edit_password")}">{$text->t("users.password.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("edit_email")}">{$text->t("users.email.edit")}</a><br />
+                <a class="arrow" href="{$text->getUrlPage("edit_display_name")}">{$text->t("users.display_name.edit")}</a><br />
                 <a class="arrow" href="{$text->getUrlPage("account_management")}">{$text->t("users.account_management")}</a><br />
             </p>
 

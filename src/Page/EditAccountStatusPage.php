@@ -13,7 +13,7 @@ class EditAccountStatusPage extends EditPasswordPage {
     const MAXIMUM_STATUS_TEXT_LENGTH = 255;
 
     public function getPageTitle(Text $text) {
-        return $text->t("editor.status.edit");
+        return $text->t("users.status.edit");
     }
 
     public function getMinimumRank(Request $request) {
@@ -80,8 +80,8 @@ class EditAccountStatusPage extends EditPasswordPage {
             // Form itself
             $textToDisplay.=<<<EOT
                 <p>
-                    {$website->t("editor.status.edit.explained")}
-                    {$website->tReplaced("editor.account.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
+                    {$website->t("users.status.edit.explained")}
+                    {$website->tReplaced("accounts.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
                 </p>  
                 <p>
                     {$website->t("main.fields_required")}

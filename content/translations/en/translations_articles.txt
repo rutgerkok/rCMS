@@ -1,3 +1,4 @@
+_=Translations related to articles
 created=Created on
 last_edited=Last edited on
 author=Author
@@ -39,3 +40,9 @@ display_type.without_metadata=With intro and image, without metadata (date creat
 order=Order
 order.newest_top=Newest articles at the top
 order.oldest_top=Oldest articles at the top
+delete=Delete an article
+delete.confirm=Are you sure you want to delete this article? This cannot be undone.
+delete.make_hidden_instead=No, just hide it
+delete.done=Ok, article is deleted.
+hide.done=Ok, article is now hidden.
+count=Article count

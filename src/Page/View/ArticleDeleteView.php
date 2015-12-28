@@ -58,7 +58,7 @@ class ArticleDeleteView extends View {
     protected function getDeletedText() {
         $text = $this->text;
         $returnValue = "<p>";
-        $returnValue.= $text->t("editor.article.delete.done");
+        $returnValue.= $text->t("articles.delete.done");
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
@@ -74,7 +74,7 @@ class ArticleDeleteView extends View {
         $text = $this->text;
         $article = $this->article;
         $returnValue = "<p>";
-        $returnValue.= $text->t("editor.article.hidden.done");
+        $returnValue.= $text->t("articles.hide.done");
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
@@ -91,7 +91,7 @@ class ArticleDeleteView extends View {
         $article = $this->article;
         $deleteUrlParams = array("action" => "delete", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
         $returnValue = <<<EOT
-            <p>{$text->t('editor.article.delete.confirm')}</p>
+            <p>{$text->t('articles.delete.confirm')}</p>
             <p>
                 <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams)}">
                     {$text->t("main.yes")}
@@ -103,7 +103,7 @@ EOT;
             // isn't already hidden
             $returnValue.= <<<EOT
                 <a class="button" href="{$text->getUrlPage("delete_article", $article->getId(), $hideUrlParams)}">
-                    {$text->t("editor.article.delete.make_hidden_instead")}
+                    {$text->t("articles.delete.make_hidden_instead")}
                 </a>
 EOT;
         }

@@ -10,7 +10,7 @@ use Rcms\Core\Website;
 class EditRankPage extends EditPasswordPage {
 
     public function getPageTitle(Text $text) {
-        return $text->t("editor.rank.edit");
+        return $text->t("users.rank.edit");
     }
 
     public function getMinimumRank(Request $request) {
@@ -56,8 +56,8 @@ class EditRankPage extends EditPasswordPage {
             // Form itself
             $textToDisplay.=<<<EOT
                 <p>
-                    {$website->t("editor.rank.edit.explained")}
-                    {$website->tReplaced("editor.account.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
+                    {$website->t("users.rank.edit.explained")}
+                    {$website->tReplaced("accounts.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
                 </p>  
                 <p>
                     {$website->t("main.fields_required")}
@@ -70,7 +70,7 @@ class EditRankPage extends EditPasswordPage {
                     <p>
                         <input type="hidden" name="p" value="edit_rank" />
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
-                        <input type="submit" value="{$website->t('editor.rank.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('users.rank.edit')} " class="button" />
                     </p>
                 </form>
 EOT;

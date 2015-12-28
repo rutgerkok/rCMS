@@ -4,7 +4,7 @@ namespace Rcms\Core;
 use Rcms\Page\View\CommentsTreeView;
 ?>
 
-<h2><?php echo $this->t("editor.comment.delete") ?></h2>
+<h2><?php echo $this->t("comments.delete") ?></h2>
 <?php
 //OBJECTEN
 $oAuth = new Authentication($this);
@@ -36,7 +36,7 @@ if ($loggedIn) {
                 }
             } else {
                 // Show confirmation message
-                $textToDisplay.= '<p>' . $this->t("editor.comment.delete.confirm") . '</p>';
+                $textToDisplay.= '<p>' . $this->t("comments.delete.confirm") . '</p>';
 
                 //en laat daarbij de comment zien
                 $commentView = new CommentsTreeView($this->getText(), array($comment), true);

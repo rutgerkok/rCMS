@@ -1,7 +1,10 @@
+_=Vertalingen voor kalenders
 calendar_for=Agenda voor
 calendar_for_year=Jaaroverzicht van {0}
 pick_a_date=Kies een datum
 no_activities_today=Niets gepland.
+date=Datum (JJJJ-MM-DD)
+time=Tijd (UU:MM)
 format.date_time=%c
 weekday.mon=ma
 weekday.tue=di

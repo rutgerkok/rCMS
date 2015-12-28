@@ -8,3 +8,7 @@ no_comments_found_user=Deze gebruiker heeft nog geen reacties achtergelaten op d
 email_explained=Het opgeven van uw emailadres is niet verplicht. Vul het alleen in als u wil dat wij met u in contact kunnen komen. Het emailadres wordt niet weergegeven.
 view_latest_on_site=Op deze pagina worden de laatste reacties (verspreid over de hele site) weergegeven.
 view_context=Bekijk context
+edit=Reactie bewerken
+delete=Reactie verwijderen
+delete.confirm=Weet u zeker dat u deze reactie wil verwijderen?
+count=Aantal reacties

@@ -176,20 +176,20 @@ EOT;
         if (!$is_viewing_themselves && $is_viewing_as_moderator) {
             // Accessed by a moderator that isn't viewing his/her own account
             // Add (un)ban link
-            $edit_links[] = $this->get_edit_link($website, "edit_account_status", "editor.status.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_account_status", "users.status.edit");
         }
 
         if ($is_viewing_themselves || $is_viewing_as_admin) {
             // Accessed by the user themselves or an admin
             // Display links to edit profile
-            $edit_links[] = $this->get_edit_link($website, "edit_email", "editor.email.edit");
-            $edit_links[] = $this->get_edit_link($website, "edit_password", "editor.password.edit");
-            $edit_links[] = $this->get_edit_link($website, "edit_display_name", "editor.display_name.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_email", "users.email.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_password", "users.password.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_display_name", "users.display_name.edit");
         }
         if (!$is_viewing_themselves && $is_viewing_as_admin) {
             // Accessed by an admin that isn't viewing his/her own account
             // Add rank edit link and login link
-            $edit_links[] = $this->get_edit_link($website, "edit_rank", "editor.rank.edit");
+            $edit_links[] = $this->get_edit_link($website, "edit_rank", "users.rank.edit");
 
             // Only display login link if account is not deleted/banned
             if ($this->user->canLogIn()) {

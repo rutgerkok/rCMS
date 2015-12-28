@@ -1,3 +1,4 @@
+_=General translations
 locales=en_US|en|english
 read=Read more
 edit=Edit

@@ -1,3 +1,4 @@
+_=Algemene foutmeldingen
 not_found=is niet gevonden.
 not_public=is niet openbaar.
 not_entered=is niet ingevuld.

@@ -1,3 +1,4 @@
+_=General errors
 not_found=was not found.
 not_public=is not public.
 not_entered=was not entered.

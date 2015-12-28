@@ -1,3 +1,4 @@
+_=Vertallingen voor het installeren en bijwerken van de website
 installing_database=Database installeren
 no_database_connection=Kan de database niet bereiken: {0}
 no_database_connection_explained=De website kan de database niet bereiken. Zorg ervoor dat de databaseinstellingen in <code>config.php</code> goed ingesteld staan.

@@ -1,3 +1,4 @@
+_=Vertalingen voor links
 create=Voeg een nieuwe link toe
 create_another=Voeg nog een nieuwe link toe
 new_link=Nieuwe link

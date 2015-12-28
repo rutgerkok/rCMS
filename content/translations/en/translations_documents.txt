@@ -1,3 +1,4 @@
+_=Translations related to documents
 create=Create new document
 view=View
 list.title=All documents

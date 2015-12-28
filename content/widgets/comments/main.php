@@ -45,7 +45,7 @@ class WidgetComments extends WidgetDefinition {
             </p>
 
             <p>
-                <label for="amount_$id">{$website->t("editor.comment.count")}:</label><span class="required">*</span><br />
+                <label for="amount_$id">{$website->t("comments.count")}:</label><span class="required">*</span><br />
                 <input type="number" name="amount_$id" id="amount_$id" min="$minComments" max="$maxComments" value="$amount" />
             </p>
 FORM;
@@ -62,7 +62,7 @@ FORM;
         $amount = $settingsArray["amount"];
         if (!Validate::range($amount, self::MIN_COMMENTS, self::MAX_COMMENTS)) {
             $settingsArray["valid"] = false;
-            $website->addError($website->t("editor.comment.count") . " " . Validate::getLastError($website));
+            $website->addError($website->t("comments.count") . " " . Validate::getLastError($website));
         }
 
         return $settingsArray;

@@ -5,6 +5,7 @@ namespace Rcms\Core;
 use BadMethodCallException;
 use DateTime;
 use Exception;
+use RuntimeException;
 
 /**
  * Translations, error messages and success messages.
@@ -163,8 +164,20 @@ class Text {
         }
 
         $fileContents = file($translationsFile);
-        foreach ($fileContents as $line) {
+        foreach ($fileContents as $i => $line) {
+            if (empty($line)) {
+                continue;
+            }
             $translation = explode("=", $line, 2);
+            if (count($translation) !== 2) {
+                // Invalid line
+                $lineNumber = $i + 1;
+                throw new RuntimeException("Line {$lineNumber} in file {$translationsFile} is not a valid translation: {$line}");
+            }
+            if ($translation[0] == "_") {
+                // Comment
+                continue;
+            }
             $this->translations[$translationCategory][$translation[0]] = trim($translation[1]);
         }
     }

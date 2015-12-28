@@ -73,7 +73,7 @@ class DeleteArticlePage extends Page {
     }
 
     public function getShortPageTitle(Text $text) {
-        return $text->t("editor.article.delete");
+        return $text->t("articles.delete");
     }
 
     public function getView(Text $text) {

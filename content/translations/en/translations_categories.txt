@@ -1,3 +1,4 @@
+_=Translations related to categories
 all=All categories
 search.all_in_year=Search all categories in {0}
 create=Create a new category

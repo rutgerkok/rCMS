@@ -1,3 +1,4 @@
+_=Translations for the site settings screen
 site_settings=Site settings
 editing_site_settings=Editing the settings of the site
 editing_site_settings.explained=Here you can change some global settings of your site. Most changes are applied immediately, but for some settings you'll need to load another page before they have effect.

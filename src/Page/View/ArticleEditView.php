@@ -144,7 +144,7 @@ FORM;
             </p>
             <p>
                 <label for="article_eventdate">
-                    {$text->t("editor.date")}:
+                    {$text->t("calendar.date")}:
                     <br />
                     <input type="date" id="article_eventdate" name="article_eventdate" value="$date" style="width:10em" />
                     <input type="button" class="button" value="{$text->t("articles.event_date.select")}" onclick="showDatePicker()" />
@@ -152,7 +152,7 @@ FORM;
             </p>
             <p>
                 <label for="article_eventtime">
-                    {$text->t("editor.time")}:
+                    {$text->t("calendar.time")}:
                     <br />
                     <input type="time" id="article_eventtime" name="article_eventtime" value="$time" style="width:10em" />
                 </label>

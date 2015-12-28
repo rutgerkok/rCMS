@@ -10,7 +10,7 @@ use Rcms\Core\Website;
 class EditEmailPage extends EditPasswordPage {
 
     public function getPageTitle(Text $text) {
-        return $text->t("editor.email.edit");
+        return $text->t("users.email.edit");
     }
 
     public function getPageContent(Website $website, Request $request) {
@@ -37,9 +37,9 @@ class EditEmailPage extends EditPasswordPage {
         // Show form
         if ($show_form) {
             // Text above form
-            $textToDisplay.= "<p>" . $website->t("editor.email.edit.explained") . "</p>\n";
+            $textToDisplay.= "<p>" . $website->t("users.email.edit.explained") . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $website->tReplaced("editor.account.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("accounts.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself
@@ -52,7 +52,7 @@ class EditEmailPage extends EditPasswordPage {
                     <p>
                         <input type="hidden" name="id" value="{$this->user->getId()}" />
                         <input type="hidden" name="p" value="edit_email" />
-                        <input type="submit" value="{$website->t('editor.email.edit')} " class="button" />
+                        <input type="submit" value="{$website->t('users.email.edit')} " class="button" />
                     </p>
                 </form>
 EOT;

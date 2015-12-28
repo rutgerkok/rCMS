@@ -105,7 +105,7 @@ class WidgetArticles extends WidgetDefinition {
         $textToDisplay.= "</p>\n";
 
         // Count
-        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $website->t("editor.article.count") . ':';
+        $textToDisplay.= '<p><label for="count_' . $widget_id . '">' . $website->t("articles.count") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         $textToDisplay.= '<input type="number" id="count_' . $widget_id . '" ';
         $textToDisplay.= 'name="count_' . $widget_id . '" value="' . $count . '" />';
@@ -195,11 +195,11 @@ EOT;
         if (isSet($_REQUEST["count_" . $id])) {
             $data["count"] = (int) $_REQUEST["count_" . $id];
             if (!Validate::range($data["count"], 1, 20)) {
-                $website->addError($website->t("editor.article.count") . " " . Validate::getLastError($website));
+                $website->addError($website->t("articles.count") . " " . Validate::getLastError($website));
                 $data["valid"] = false;
             }
         } else {
-            $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
+            $website->addError($website->t("articles.count") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }
 
@@ -210,11 +210,11 @@ EOT;
                     $data["display_type"] != self::TYPE_WITHOUT_METADATA &&
                     $data["display_type"] != self::TYPE_WITH_METADATA &&
                     $data["display_type"] != self::TYPE_LIST_WITH_IMAGES) {
-                $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
+                $website->addError($website->t("articles.count") . " " . $website->t("errors.not_found"));
                 $data["valid"] = false;
             }
         } else {
-            $website->addError($website->t("editor.article.count") . " " . $website->t("errors.not_found"));
+            $website->addError($website->t("articles.count") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }
 

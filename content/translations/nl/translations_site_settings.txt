@@ -1,3 +1,4 @@
+_=Vertalingen voor het instellingenscherm van de site
 site_settings=Siteinstellingen
 editing_site_settings=Instellingen van de site bewerken
 editing_site_settings.explained=Hier kunt u de belangrijkste instellingen van de site wijzigen. De meeste wijzigingen zijn onmiddelijk zichtbaar, voor ander wijzigingen moet eerst nog een nieuwe webpagina worden geladen.

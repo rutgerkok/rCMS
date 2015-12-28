@@ -1,3 +1,4 @@
+_=Messages displayed when installing or updating the website
 installing_database=Installing database
 no_database_connection=Cannot connect to the database: {0}
 no_database_connection_explained=The website cannot reach the database. Please make sure the database settings in <code>config.php</code> are correct.

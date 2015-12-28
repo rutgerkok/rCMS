@@ -1,3 +1,4 @@
+_=Translations for links
 create=Create a new link
 create_another=Create another link
 new_link=New link

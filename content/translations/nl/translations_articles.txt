@@ -1,3 +1,4 @@
+_=Vertalingen voor artikelen
 created=Geplaatst op
 last_edited=Laatst bewerkt op
 author=Auteur
@@ -39,3 +40,9 @@ display_type.without_metadata=Met intro, zonder naam auteur, datum, categorienaa
 order=Sorteervolgorde
 order.newest_top=Nieuwste artikelen bovenaan
 order.oldest_top=Oudste artikelen bovenaan
+delete=Verwijder een artikel
+delete.confirm=Weet u zeker dat u dit artikel wil verwijderen? Dit kan niet ongedaan gemaakt worden.
+delete.make_hidden_instead=Nee, verberg het alleen
+delete.done=Het artikel is nu verwijderd.
+hide.done=Het artikel is nu verborgen.
+count=Aantal artikelen
