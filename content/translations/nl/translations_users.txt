@@ -45,3 +45,4 @@ status.allowed=Toegestaan
 status.unknown=Onbekend
 status_text=Uitleg
 user_page_hidden=Deze gebruikerspagina kan niet bezocht worden door gewone gebruikers.
+your_password_is_insecure=U gebruikt een onveilig wachtwoord.

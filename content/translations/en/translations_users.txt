@@ -45,3 +45,4 @@ status.allowed=Allowed
 status.unknown=Unknown
 status_text=Status text
 user_page_hidden=This user page cannot be viewed by normal users.
+your_password_is_insecure=Your password is considered insecure. Please change it.

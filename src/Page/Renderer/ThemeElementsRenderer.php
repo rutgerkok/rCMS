@@ -3,11 +3,14 @@
 namespace Rcms\Page\Renderer;
 
 use Rcms\Core\CategoryRepository;
-use Rcms\Core\LinkRepository;
+use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Link;
 use Rcms\Core\Theme;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
+
 use Rcms\Page\HomePage;
+use Rcms\Page\View\MenuView;
 use Rcms\Page\View\WidgetsPageView;
 
 /**
@@ -229,8 +232,26 @@ EOT;
 
     public function echoTopMenu() {
         $website = $this->website;
-        $oMenu = new LinkRepository($website);
-        echo $oMenu->getAsHtml($oMenu->getMenuTop(new CategoryRepository($website)));
+        
+
+        $links = array();
+        $links[] = Link::of($website->getUrlMain(), $website->t("main.home"));
+
+        if ($website->getConfig()->isDatabaseUpToDate()) {
+            $categoriesRepo = new CategoryRepository($website);
+            $categories = $categoriesRepo->getCategories();
+            foreach ($categories as $category) {
+                if ($category->isStandardCategory()) {
+                    continue; // Don't display "No categories"
+                }
+                $links[] = Link::of(
+                                // Decode url, it will be encoded again by get_as_html
+                                html_entity_decode($website->getUrlPage("category", $category->getId())), $category->getName()
+                );
+            }
+        }
+        $menuView = new MenuView($website->getText(), $links);
+        echo $menuView->getText();
     }
 
     //Geeft een zoekformulier weer

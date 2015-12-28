@@ -38,11 +38,9 @@ class ArticleRepository extends Repository {
     /**
      * Constructs the article displayer.
      * @param Website $website The website to use.
-     * @param Database $databaseObject Not needed, for backwards compability.
      */
-    public function __construct(Website $website,
-            Database $databaseObject = null) {
-        parent::__construct($databaseObject ? : $website->getDatabase());
+    public function __construct(Website $website) {
+        parent::__construct($website->getDatabase());
         $this->website = $website;
 
         $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "artikel_id");

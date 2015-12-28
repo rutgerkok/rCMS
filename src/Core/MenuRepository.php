@@ -3,6 +3,7 @@
 namespace Rcms\Core;
 
 use InvalidArgumentException;
+use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
@@ -18,7 +19,7 @@ class MenuRepository extends Repository {
     private $menuIdField;
     private $menuNameField;
 
-    public function __construct(Database $database) {
+    public function __construct(PDO $database) {
         parent::__construct($database);
 
         $this->menuIdField = new Field(Field::TYPE_PRIMARY_KEY, "id", "menu_id");

@@ -10,12 +10,25 @@ use PDOException;
  */
 class Config {
 
+    /**
+     * Schema version of the database.
+     * @see #isDatabaseUpToDate
+     */
+    const CURRENT_DATABASE_VERSION = 4;
+
     const DEFAULT_LANGUAGE = "en";
     const DEFAULT_THEME = "rkok";
     const DEFAULT_TITLE = "Welcome!";
 
     const OPTION_CKEDITOR_URL = "ckeditor_url";
     const OPTION_CKFINDER_URL = "ckfinder_url";
+    
+    const OPTION_DATABASE_NAME = "database_name";
+    const OPTION_DATABASE_HOST = "database_location";
+    const OPTION_DATABASE_USER = "database_user";
+    const OPTION_DATABASE_PASSWORD = "database_password";
+    const OPTION_DATABASE_TABLE_PREFIX = "database_table_prefix";
+    const OPTION_DATABASE_VERSION = "database_version";
 
     private $config = array();
 
@@ -49,18 +62,18 @@ class Config {
     /**
      * Loads the settings from the database. Requires that there is a table
      * called `settings` in the database with the columns `setting_name` and
-     * `setting_value`.
-     * @param Database $database The database to load the settings from.
+     * `setting_value`. If not, this method will do nothing.
+     * @param PDO $database The database to load the settings from.
      */
-    public function readFromDatabase(Database $database) {
-        // Load settings from the database
+    public function readFromDatabase(PDO $database) {
         try {
             $result = $database->query("SELECT `setting_name`, `setting_value` FROM `settings`");
             while (list($key, $value) = $result->fetch(PDO::FETCH_NUM)) {
                 $this->config[$key] = $value;
             }
         } catch (PDOException $e) {
-            // No, database is not up to date
+            // No settings table in database - either database is not installed,
+            // or severly outdated, from a time when there was no settings table
         }
     }
 
@@ -88,11 +101,11 @@ class Config {
     /**
      * Changes a setting. Saves a setting to the database. Does nothing if the
      * setting is unchanged.
-     * @param Database $database The database to save the setting to.
+     * @param PDO $database The database to save the setting to.
      * @param string $name The name of the setting.
      * @param string $value The value of the setting.
      */
-    public function set(Database $database, $name, $value) {
+    public function set(PDO $database, $name, $value) {
         if (isSet($this->config[$name]) && $this->config[$name] == $value) {
             // No need to update
             return;
@@ -114,6 +127,16 @@ class Config {
             $sql.= " VALUES (:name, :value)";
             $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
         }
+    }
+
+    /**
+     * Returns whether the database is up to date with the current database
+     * schema. If the database is not installed yet, it is considered outdated.
+     * @return boolean True if the database is installed and up to date, false otherwise.
+     */
+    public function isDatabaseUpToDate() {
+        $version = $this->get("database_version");
+        return $version == self::CURRENT_DATABASE_VERSION;
     }
 
 }

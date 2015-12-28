@@ -89,40 +89,6 @@ class LinkRepository extends Repository {
     }
 
     /**
-     * Gets the menu that should be displayed at the top of the page.
-     * Returns a <li> list (HTML) for now. No <ul>/<ol> tags included.
-     * @param CategoryRepository $oCats The categories object.
-     * @return string The HTML of the menu.
-     */
-    public function getMenuTop(CategoryRepository $oCats) {
-        $website = $this->website;
-
-
-        $links = array();
-
-        // Add link to homepage
-        $links[] = Link::of($website->getUrlMain(), $website->t("main.home"));
-
-        if ($website->getDatabase()->isUpToDate() && $website->getDatabase()->isInstalled()) {
-            $categories = $oCats->getCategories();
-            foreach ($categories as $category) {
-                if ($category->isStandardCategory()) {
-                    continue; // Don't display "No categories"
-                }
-                $links[] = Link::of(
-                                // Decode url, it will be encoded again by get_as_html
-                                html_entity_decode($website->getUrlPage("category", $category->getId())), $category->getName()
-                );
-            }
-        } else {
-            // No categories yet, so database is not installed
-            $links[] = Link::of($website->getUrlPage("installing_database"), "Setup database");
-        }
-
-        return $links;
-    }
-
-    /**
      * Gets the links as HTML (just some li and a tags)
      * @param Link[] $menu_array The menu array.
      * @param boolean $open_in_new_window Whether the links should

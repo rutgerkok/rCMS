@@ -77,6 +77,11 @@ class PageRenderer {
             $params = array_slice($pagePath, 1);
         }
 
+        // Start installation when necessary
+        if (!$this->website->getConfig()->isDatabaseUpToDate()) {
+            $pageName = "install";
+        }
+
         // Populate fiels
         $this->request = new Request($params);
         $this->page = $this->loadPage($pageName);
@@ -137,7 +142,7 @@ class PageRenderer {
             exit;
         }
 
-        // Set password cookie
+        // Set/renew password cookie
         $sitePassword = $website->getConfig()->get("password");
         if (!empty($sitePassword)) {
             setCookie("key", $sitePassword, time() + 3600 * 24 * 365, "/");

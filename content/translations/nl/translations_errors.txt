@@ -31,7 +31,3 @@ invalid_login_credentials=Deze inloggegevens zijn helaas onjuist. Probeer het no
 invalid_request_token=Deze pagina is helaas verlopen. Probeer het nogmaals.
 404_page.title=Pagina niet gevonden
 404_page.body=Helaas, deze pagina bestaat niet. Mogelijk is de pagina verplaatst of verwijderd.
-site.not_installed=De website is nog niet geïnstalleerd.
-site.not_updated=De database is nog niet bijgewerkt.
-site.install=Installeer
-site.update=Werk bij

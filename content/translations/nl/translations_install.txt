@@ -1,0 +1,9 @@
+installing_database=Database installeren
+no_database_connection=Kan de database niet bereiken: {0}
+no_database_connection_explained=De website kan de database niet bereiken. Zorg ervoor dat de databaseinstellingen in <code>config.php</code> goed ingesteld staan.
+retry_connection=Opnieuw proberen
+no_tables_yet=De site is met succes verbonden met de database. Echter, de database is nog vrij leeg: de tabellen, waar deze website de gegevens in zal opslaan, bestaan nog niet. Klik op onderstaande knop om die aan te maken.
+create_tables=Maak de databasetabellen aan
+completed=Gefeliciteerd! U heeft de installatie voltooid.
+thanks_for_updating=Bedankt voor het bijwerken van de websitesoftware. De indeling van de tabellen in de database hebben wij zojuist voor u bijgewerkt. U hoeft verder niets te doen.
+database_version_from_future=Het databaseschema hoort bij een nieuwere versie van de websitesoftware. Werk de websitesoftware bij, of zet een oudere backup terug van de database.

@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use PDO;
+
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
@@ -15,7 +17,7 @@ class CategoryRepository extends Repository {
     protected $idField;
     protected $nameField;
 
-    public function __construct(Website $website, Database $oDatabase = null) {
+    public function __construct(Website $website, PDO $oDatabase = null) {
         parent::__construct($oDatabase? : $website->getDatabase());
 
         $this->website = $website;

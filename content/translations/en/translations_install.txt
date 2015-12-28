@@ -1,0 +1,9 @@
+installing_database=Installing database
+no_database_connection=Cannot connect to the database: {0}
+no_database_connection_explained=The website cannot reach the database. Please make sure the database settings in <code>config.php</code> are correct.
+retry_connection=Try again
+no_tables_yet=The website has connected to the database successfully. However, the tables in which the data of this website is stored, don't exist yet. Simply press the button below to create them.
+create_tables=Create the database tables
+completed=Congratulations! You have completed the installation.
+thanks_for_updating=Thank you for updating the website software. The database scheme has been updated automatically. No further action is required.
+database_version_from_future=The database scheme is of a newer version of the website software. Update the website software, or restore an older backup of the database.

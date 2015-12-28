@@ -31,7 +31,3 @@ invalid_login_credentials=Username, email or password is incorrect. Please try a
 invalid_request_token=This page has expired. Please try again.
 404_page.title=Page not found
 404_page.body=Sorry, this page was not found. Either you mistyped the URL or the content has been moved or deleted.
-site.not_installed=The website is not yet installed.
-site.not_updated=The database is outdated and needs to be updated.
-site.install=Install
-site.update=Update

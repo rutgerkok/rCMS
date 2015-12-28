@@ -2,6 +2,10 @@
 
 namespace Rcms\Core;
 
+use PDO;
+use PDOException;
+
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Widget\InstalledWidgets;
 
 class Website {
@@ -10,7 +14,7 @@ class Website {
     const CONFIG_FILE = "config.php";
     const BASE_NAMESPACE = "Rcms\\";
 
-    /** @var Database The main database */
+    /** @var TablePrefixedPDO The main database */
     protected $databaseObject;
 
     /** @var Themes Themes object */
@@ -43,12 +47,26 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(self::CONFIG_FILE);
-        $this->text = new Text($this->getConfig()->get('url'),
-                $this->getUriTranslations(Config::DEFAULT_LANGUAGE),
-                $this->getUrlJavaScripts());
+        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
 
         // Connect to database, read settings
-        $this->databaseObject = new Database($this);
+        try {
+            $dataSource = "mysql:dbname={$this->config->get(Config::OPTION_DATABASE_NAME)};host={$this->config->get(Config::OPTION_DATABASE_HOST)}";
+            $this->databaseObject = new TablePrefixedPDO($dataSource,
+                    $this->config->get(Config::OPTION_DATABASE_USER),
+                    $this->config->get(Config::OPTION_DATABASE_PASSWORD),
+                    array("table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)));
+            $this->databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->databaseObject->prefixTables(array("categorie", "users",
+                "links", "artikel", "comments", "menus", "widgets", "documents",
+                "settings", "gebruikers", "reacties"));
+            
+        } catch (PDOException $e) {
+            // No database connection - safe to ignore this error, as the page
+            // renderer will start the installation procedure, based on the lack
+            // of settings
+            $this->text->addError($this->text->tReplaced("install.no_database_connection", $e->getMessage()));
+        }
         $this->config->readFromDatabase($this->databaseObject);
 
         // Set updated properties of Text object, now that settings are read
@@ -57,7 +75,11 @@ class Website {
         $this->text->setUrlRewrite($this->config->get("url_rewrite"));
 
         // Init other objects
-        $this->authenticationObject = new Authentication($this, new UserRepository($this->databaseObject));
+        if ($this->databaseObject == null) {
+            $this->authenticationObject = new Authentication($this, null);
+        } else {
+            $this->authenticationObject = new Authentication($this, new UserRepository($this->databaseObject));
+        }
         $this->themesObject = new Themes($this);
 
         // Workarounds for older PHP versions (5.3)
@@ -70,8 +92,8 @@ class Website {
      * @param $functions string[] The functions to load.
      */
     private function requireFunctions($functions) {
-        $functions = func_get_args();
-        foreach ($functions as $function) {
+        $arguments = func_get_args();
+        foreach ($arguments as $function) {
             if (!function_exists($function)) {
                 require_once ($this->getUriLibraries() . $function . '.function.php');
             }
@@ -90,9 +112,13 @@ class Website {
 
     /**
      * Returns the database of this site
-     * @return Database The database
+     * @return TablePrefixedPDO The database.
+     * @throws NotFoundException When not connected.
      */
     public function getDatabase() {
+        if ($this->databaseObject == null) {
+            throw new NotFoundException();
+        }
         return $this->databaseObject;
     }
 

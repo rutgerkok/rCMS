@@ -3,6 +3,7 @@
 namespace Rcms\Core;
 
 use DateTime;
+
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Page\View\LoginView;
 
@@ -20,12 +21,19 @@ class Authentication {
     const AUTHENTIATION_COOKIE = "remember_me";
 
     /**
+     * Password used for the admin account when the site is created. The site
+     * will complain until the admin no longer uses this password.
+     */
+    const DEFAULT_ADMIN_PASSWORD = "admin";
+
+    /**
      * @var Website The website object.
      */
     protected $website;
 
     /**
-     * @var UserRepository The user repository.
+     * @var UserRepository|null The user repository, or null when the website is
+     * not connected to a database.
      */
     protected $userRepo;
 
@@ -42,14 +50,22 @@ class Authentication {
     /**
      * Creates a new authentication checker.
      * @param Website $website The website object.
-     * @param UserRepository $userRepo The user repository. Omitting
-     * this parameter is deprecated. When this parameter is omitted, the default
-     * database is used for creating one.
+     * @param UserRepository $userRepo The user repository, or null if the
+     * website is not connected to a database (happens when the website is not
+     * installed yet).
+     *
+     * For backwards compatibility, if this parameter is null, it is tried to
+     * create a UserRepository instance anyways if the website reports that it
+     * is connected to a database. This behaviour will be removed in a future
+     * version.
      */
     public function __construct(Website $website,
             UserRepository $userRepo = null) {
         $this->website = $website;
-        $this->userRepo = $userRepo? : new UserRepository($website->getDatabase());
+        
+        if ($website->getConfig()->isDatabaseUpToDate()) {
+            $this->userRepo = $userRepo? : new UserRepository($website->getDatabase());
+        }
 
         // Check session and cookie
         if (isSet($_SESSION["user_id"])) {
@@ -60,16 +76,11 @@ class Authentication {
         } else {
             // Try to log in with cookie
             $user = $this->getUserFromCookie();
-            if ($user != null) {
+            if ($user != null && $this->setCurrentUser($user)) {
                 // Log in and refresh cookie
-                if ($this->setCurrentUser($user)) {
-                    $this->setLoginCookie();
-                } else {
-                    // User account is banned or deleted
-                    $this->deleteLoginCookie();
-                }
+                $this->setLoginCookie();
             } else {
-                // Cookie is corrupted
+                // Cookie is corrupted/account is deleted
                 $this->deleteLoginCookie();
             }
         }
@@ -78,8 +89,13 @@ class Authentication {
     /**
      * Gets the user repository being used for this authentication object.
      * @return UserRepository The user repository.
+     * @throws NotFoundException If the website is not connected to a database
+     * (for example when the site is being installed).
      */
     public function getUserRepository() {
+        if ($this->userRepo == null) {
+            throw new NotFoundException();
+        }
         return $this->userRepo;
     }
 
@@ -95,7 +111,7 @@ class Authentication {
             return false;
         }
         try {
-            $user = $this->userRepo->getById($userId);
+            $user = $this->getUserRepository()->getById($userId);
             return $this->setCurrentUser($user);
         } catch (NotFoundException $e) {
             return false;
@@ -143,7 +159,7 @@ class Authentication {
      */
     public function logIn($usernameOrEmail, $password) {
         try {
-            $user = $this->userRepo->getByNameOrEmail($usernameOrEmail);
+            $user = $this->getUserRepository()->getByNameOrEmail($usernameOrEmail);
 
             if ($this->loginCheck($user, $password)) {
                 // Matches!
@@ -166,6 +182,11 @@ class Authentication {
      * @param string $password_unhashed The password entered by the user.
      */
     protected function loginCheck(User $user, $password_unhashed) {
+        if ($this->userRepo == null) {
+            // Unable to log in when userRepo is not present
+            return false;
+        }
+
         $password_hashed = $user->getPasswordHashed();
         $loggedIn = false;
         if (strLen($password_hashed) == 32 && $password_hashed[0] != '$') {
@@ -192,8 +213,8 @@ class Authentication {
 
             // Check whether the account is banned
             if ($status == Authentication::STATUS_BANNED) {
-                $website = $this->website;
-                $website->addError($website->tReplaced("users.status.banned.your_account", $user->getStatusText()));
+                $text = $this->website->getText();
+                $text->addError($text->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
             }
 
@@ -392,7 +413,7 @@ class Authentication {
         }
 
         try {
-            $user = $this->userRepo->getById($cookie_split[0]);
+            $user = $this->getUserRepository()->getById($cookie_split[0]);
         } catch (NotFoundException $e) {
             // Invalid user id
             return null;

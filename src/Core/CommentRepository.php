@@ -14,7 +14,7 @@ class CommentRepository extends Repository {
     /* @var $website Website */
 
     protected $website;
-    /* @var $databaseObject Database */
+    /* @var $databaseObject \PDO */
     protected $databaseObject;
     /* @var $authenticationObject Authentication */
     protected $authenticationObject;

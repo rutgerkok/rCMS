@@ -2,6 +2,8 @@
 
 namespace Rcms\Page;
 
+use PDOException;
+
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -20,9 +22,9 @@ class HomePage extends Page {
 
     /**
      *
-     * @var InstalledWidgets Loaded widget cache.
+     * @var InstalledWidgets Widgets installed on the website.
      */
-    private $loadedWidgets;
+    private $installedWidgets;
 
     /**
      * @var boolean Whether edit/delete links are shown.
@@ -30,11 +32,10 @@ class HomePage extends Page {
     private $editLinks;
 
     public function init(Website $website, Request $request) {
-        $this->loadedWidgets = $website->getWidgets();
+        $this->installedWidgets = $website->getWidgets();
 
         $widgetsRepo = new WidgetRepository($website);
         $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(self::DOCUMENT_ID);
-
         $this->editLinks = $website->isLoggedInAsStaff(true);
     }
 
@@ -47,7 +48,7 @@ class HomePage extends Page {
     }
 
     public function getView(Text $text) {
-        return new WidgetsColumnView($text, self::DOCUMENT_ID, $this->loadedWidgets, $this->widgets, $this->editLinks);
+        return new WidgetsColumnView($text, self::DOCUMENT_ID, $this->installedWidgets, $this->widgets, $this->editLinks);
     }
 
     public function getPageType() {
