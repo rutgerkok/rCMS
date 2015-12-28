@@ -1,0 +1,13 @@
+{
+    "name": "rcms/rcms",
+    "description": "Yet another content management system",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {"Rcms\\": "src/"}
+    },
+    "require": {
+        "php": ">=5.3.0",
+        "ext-pdo": "*"
+    }
+}

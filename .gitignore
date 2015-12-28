@@ -10,3 +10,9 @@ Desktop.ini
 
 # Netbeans
 /nbproject/
+
+# Composer
+/vendor/
+
+# Config file
+/config.php
