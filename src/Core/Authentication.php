@@ -62,7 +62,7 @@ class Authentication {
     public function __construct(Website $website,
             UserRepository $userRepo = null) {
         $this->website = $website;
-        
+
         if ($website->getConfig()->isDatabaseUpToDate()) {
             $this->userRepo = $userRepo? : new UserRepository($website->getDatabase());
         }
@@ -216,6 +216,13 @@ class Authentication {
                 $text = $this->website->getText();
                 $text->addError($text->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
+            }
+
+            // Check password strength
+            if ($user->isWeakPassword($password_unhashed)) {
+                $text = $this->website->getText();
+                $text->addError($text->t("users.your_password_is_insecure"), Link::of(
+                                html_entity_decode($text->getUrlPage("edit_password")), $text->t("users.password.edit")));
             }
 
             // Update last login date (and possibly password hash, see above) if successfull

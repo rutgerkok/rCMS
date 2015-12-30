@@ -136,6 +136,28 @@ class User extends Entity {
             return (crypt($passwordUnhashed, $passwordHashed) === $passwordHashed);
         }
     }
+    
+    
+    /**
+     * Checks if the given password would be too weak for the user. Password
+     * requirements are a little more strict for admins.
+     * @param User $user The user.
+     * @param string $password The (plain-text) password.
+     * @return boolean True if the password would be too weak.
+     */
+    public function isWeakPassword($password) {
+        if ($this->getRank() === Authentication::RANK_ADMIN) {
+            // Admins shouldn't use the default password
+            if ($password === "admin") {
+                return true;
+            }
+        }
+        if (!Validate::password($password, $password)) {
+            // Password wouldn't pass current validation
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Hashes the password using blowfish, or something weaker if blowfish is
