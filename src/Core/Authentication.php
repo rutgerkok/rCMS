@@ -222,7 +222,7 @@ class Authentication {
             if ($user->isWeakPassword($password_unhashed)) {
                 $text = $this->website->getText();
                 $text->addError($text->t("users.your_password_is_insecure"), Link::of(
-                                html_entity_decode($text->getUrlPage("edit_password")), $text->t("users.password.edit")));
+                                $text->getUrlPage("edit_password"), $text->t("users.password.edit")));
             }
 
             // Update last login date (and possibly password hash, see above) if successfull

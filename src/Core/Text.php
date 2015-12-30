@@ -5,6 +5,7 @@ namespace Rcms\Core;
 use BadMethodCallException;
 use DateTime;
 use Exception;
+use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
 /**
@@ -15,7 +16,8 @@ class Text {
     const DEBUG_MODE = true;
 
     /**
-     * @var string URL of the site, like http://www.example.com/ .
+     * @var UriInterface URL of the site, like http://www.example.com/ .
+     * Trailing slash is required.
      */
     private $siteUrl;
     protected $translations;
@@ -23,24 +25,28 @@ class Text {
     private $errors;
     private $confirmations;
     private $rewriteUrls;
+    /**
+     * @var UriInterface URL of the directory where the JavaScripts of the site
+     * are stored. Trailing slash is required.
+     */
     private $javascriptsUrl;
 
     /**
      * Creates a new Text instance.
-     * @param string $siteUrl URL of the site, like "http://www.example.com/".
+     * @param UriInterface $siteUrl URL of the site, like "http://www.example.com/".
      * Trailing slash must be included.
      * @param string $translationsDir Path to the directory with the
      * translation files for the language of the site.
-     * @param string $javascriptsUrl Url of the directory that contains all
+     * @param UriInterface $javascriptsUrl Url of the directory that contains all
      * scripts.
      */
-    public function __construct($siteUrl, $translationsDir, $javascriptsUrl) {
-        $this->siteUrl = (string) $siteUrl;
+    public function __construct(UriInterface $siteUrl, $translationsDir, UriInterface $javascriptsUrl) {
+        $this->siteUrl = $siteUrl;
         $this->translations = array();
         $this->errors = array();
         $this->confirmations = array();
         $this->rewriteUrls = false;
-        $this->javascriptsUrl = (string) $javascriptsUrl;
+        $this->javascriptsUrl = $javascriptsUrl;
 
         $this->setTranslationsDirectory($translationsDir);
     }
@@ -259,34 +265,35 @@ class Text {
      * also pass null to skip this parameter.
      * @param array $args Array of key/value pairs that should be used as the
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
-     * @return string The url.
+     * @return UriInterface The url.
      */
     public function getUrlPage($pageName, $params = null, $args = array()) {
         $url = $this->getUrlMain();
         if (!$this->rewriteUrls) {
-            $url.= "index.php/";
+            $url = $url->withPath($url->getPath() . "index.php/{$pageName}/");
+        } else {
+            $url = $url->withPath($url->getPath() . $pageName . '/');
         }
-        $url.= $pageName;
         if ($params !== null) {
             if (is_array($params)) {
-                $url.= '/' . implode('/', $params);
+                $url = $url->withPath($url->getPath() . implode('/', $params));
             } else {
-                $url.= '/' . $params;
+                $url = $url->withPath($url->getPath() . $params);
             }
         }
         if (count($args) > 0) {
-            $separator = '?';
+            $queryParts = array();
             foreach ($args as $key => $value) {
-                $url.= $separator . urlEncode($key) . '=' . urlEncode($value);
-                $separator = "&amp;";
+                $queryParts[] = urlencode($key) . '=' . urlencode($value);
             }
+            $url = $url->withQuery(implode('&', $queryParts));
         }
         return $url;
     }
 
     /**
      * Gets the main site URL, like "http://www.example.com/".
-     * @return string The main site url.
+     * @return UriInterface The main site url.
      */
     public function getUrlMain() {
         return $this->siteUrl;
@@ -295,10 +302,11 @@ class Text {
     /**
      * Gets the URL to the specified JavaScript file.
      * @param string $name Name of the script, without the .js.
-     * @return string The url.
+     * @return UriInterface The url.
      */
     public function getUrlJavascript($name) {
-        return $this->javascriptsUrl . $name . ".js";
+        return $this->javascriptsUrl->withPath(
+                $this->javascriptsUrl->getPath() . $name . ".js");
     }
 
     /**

@@ -2,9 +2,8 @@
 
 namespace Rcms\Core;
 
-use BadMethodCallException;
+use Psr\Http\Message\UriInterface;
 use Rcms\Core\Repository\Entity;
-use Rcms\Core\Repository\Field;
 
 /**
  * Represents a link. A link has an id, url, description and is
@@ -13,6 +12,10 @@ use Rcms\Core\Repository\Field;
 class Link extends Entity {
 
     protected $id;
+
+    /**
+     * @var UriInterface
+     */
     protected $url;
     protected $text;
     protected $menuId;
@@ -23,13 +26,13 @@ class Link extends Entity {
      * This link will not be part of a menu and therefore cannot be saved to
      * the link repository.
      *
-     * @param string $url Url of the link.
+     * @param UriInterface $url Url of the link.
      * @param string $text Text of the link.
      * @return Link The link.
      */
-    public static function of($url, $text) {
+    public static function of(UriInterface $url, $text) {
         $link = new Link();
-        $link->url = (string) $url;
+        $link->url = $url;
         $link->text = (string) $text;
         return $link;
     }
@@ -38,11 +41,12 @@ class Link extends Entity {
      * Creates a link that can be saved to the database.
      * @param int $linkId Id of the link, 0 for new links.
      * @param int $menuId Id of the menu.
-     * @param string $url Url of the link.
+     * @param UriInterface $url Url of the link.
      * @param string $text Text of the link.
      * @return Link The link.
      */
-    public static function createSaveable($linkId, $menuId, $url, $text) {
+    public static function createSaveable($linkId, $menuId, UriInterface $url,
+            $text) {
         $link = static::of($url, $text);
         $link->id = (int) $linkId;
         $link->menuId = (int) $menuId;
@@ -51,7 +55,7 @@ class Link extends Entity {
 
     /**
      * Gets the url of the link.
-     * @return string The url.
+     * @return UriInterface The url.
      */
     public function getUrl() {
         return $this->url;
@@ -81,13 +85,8 @@ class Link extends Entity {
         return $this->id;
     }
 
-    public function getField(Field $field) {
-        // Make sure links created with createTemporary cannot be saved
-        if ($field->getName() === "menuId" && $this->menuId === 0) {
-            throw new BadMethodCallException("Cannot save links without a menu");
-        }
-
-        return parent::getField($field);
+    public function canBeSaved() {
+        return parent::canBeSaved() && $this->menuId !== 0;
     }
 
 }

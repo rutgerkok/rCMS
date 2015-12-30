@@ -3,8 +3,8 @@
 namespace Rcms\Core\Repository;
 
 use DateTime;
-
 use Rcms\Core\JsonHelper;
+use Zend\Diactoros\Uri;
 
 /**
  * A field in the database. This class defines the name in the database, the
@@ -19,6 +19,7 @@ class Field {
     const TYPE_JSON = 5;
     const TYPE_PRIMARY_KEY = 6;
     const TYPE_STRING_LOWERCASE = 7;
+    const TYPE_URI = 8;
 
     /** @var int Type of the field. */
     private $type;
@@ -106,6 +107,8 @@ class Field {
                 return (boolean) $string;
             case self::TYPE_JSON:
                 return JsonHelper::stringToArray($string);
+            case self::TYPE_URI:
+                return new Uri($string);
         }
     }
 

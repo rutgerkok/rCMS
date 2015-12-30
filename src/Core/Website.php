@@ -4,9 +4,9 @@ namespace Rcms\Core;
 
 use PDO;
 use PDOException;
-
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Widget\InstalledWidgets;
+use Zend\Diactoros\Uri;
 
 class Website {
 
@@ -47,15 +47,12 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(self::CONFIG_FILE);
-        $this->text = new Text($this->getConfig()->get('url'), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
+        $this->text = new Text(new Uri($this->getConfig()->get('url')), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
 
         // Connect to database, read settings
         try {
             $dataSource = "mysql:dbname={$this->config->get(Config::OPTION_DATABASE_NAME)};host={$this->config->get(Config::OPTION_DATABASE_HOST)}";
-            $this->databaseObject = new TablePrefixedPDO($dataSource,
-                    $this->config->get(Config::OPTION_DATABASE_USER),
-                    $this->config->get(Config::OPTION_DATABASE_PASSWORD),
-                    array("table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)));
+            $this->databaseObject = new TablePrefixedPDO($dataSource, $this->config->get(Config::OPTION_DATABASE_USER), $this->config->get(Config::OPTION_DATABASE_PASSWORD), array("table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)));
             $this->databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->databaseObject->prefixTables(array("categorie", "users",
                 "links", "artikel", "comments", "menus", "widgets", "documents",
@@ -186,7 +183,7 @@ class Website {
 
     /** Returns the main site url. Other urls start with this */
     public function getUrlMain() {
-        return $this->getConfig()->get('url');
+        return new Uri($this->getConfig()->get('url'));
     }
 
     /** Returns the site root directory */
@@ -194,12 +191,18 @@ class Website {
         return $this->getConfig()->get('uri');
     }
 
-    /** Returns the url of the public content directory of this site */
+    /**
+     * Gets the url of the public content directory.
+     * @return UriInterface The url (with a trailing slash).
+     */
     public function getUrlContent() {
-        return $this->getConfig()->get('url') . "content/";
+        return new Uri($this->getConfig()->get('url') . "content/");
     }
 
-    /** Returns the internal uri of the public content directory */
+    /**
+     * Gets the interal uri of the public content directory.
+     * @return string The url (with a trailing slash).
+     */
     public function getUriContent() {
         return $this->getConfig()->get('uri') . "content/";
     }
@@ -218,37 +221,59 @@ class Website {
      * also pass null to skip this parameter.
      * @param array $args Array of key/value pairs that should be used as the
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
-     * @return string The url.
+     * @return UriInterface The url.
      */
     public function getUrlPage($pageName, $params = null, $args = array()) {
         return $this->text->getUrlPage($pageName, $params, $args);
     }
 
-    //Geeft de map van alle thema's terug als url
+    /**
+     * Gets the (web-accessible) url of the themes directory.
+     * @return UriInterface The url (with a trailing slash).
+     */
     public function getUrlThemes() {
-        return $this->getUrlContent() . "themes/";
+        $contentUrl = $this->getUrlContent();
+        return $contentUrl->withPath($contentUrl->getPath() . "themes/");
     }
 
-    //Geeft de map van alle thema's terug als uri
+    /**
+     * Gets the uri of the themes directory.
+     * @return string The uri (with a trailing slash).
+     */
     public function getUriThemes() {
         return $this->getUriContent() . "themes/";
     }
 
-    //Geeft de map van alle widgets terug als uri
+    /**
+     * Gets the uri of the widgets directory.
+     * @return UriInterface The uri (with a trailing slash).
+     */
     public function getUriWidgets() {
         return $this->getUriContent() . "widgets/";
     }
 
+    /**
+     * Gets the URI of either the root translations directory, or the
+     * translations directory of a specific language.
+     * @param string|null $languageCode When present, the directory of this
+     * specific language is returned.
+     * @return UriInterface The uri (with a trailing slash).
+     */
     public function getUriTranslations($languageCode = null) {
+        $path = $this->getUriContent() . "translations/";
         if ($languageCode !== null) {
-            return $this->getUriContent() . "translations/" . $languageCode . '/';
-        } else {
-            return $this->getUriContent() . "translations/";
+            $path.= $languageCode . '/';
         }
+        return $path;
     }
 
+    /**
+     * Gets the directory where the JavaScript files are stored.
+     * @return UriInterface The directory (so URL path has a trailing slash)
+     */
     public function getUrlJavaScripts() {
-        return $this->getUrlContent() . "scripts/";
+        $contentUrl = $this->getUrlContent();
+        return $contentUrl->withPath($contentUrl->getPath() . "scripts/");
     }
 
 //Einde paden

@@ -2,6 +2,8 @@
 
 namespace Rcms\Core;
 
+use BadMethodCallException;
+
 class Theme extends InfoFile {
 
     private $name;

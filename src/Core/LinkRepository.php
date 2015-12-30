@@ -26,7 +26,7 @@ class LinkRepository extends Repository {
 
         $this->linkIdField = new Field(Field::TYPE_PRIMARY_KEY, "id", "link_id");
         $this->linkTextField = new Field(Field::TYPE_STRING, "text", "link_text");
-        $this->linkUrlField = new Field(Field::TYPE_STRING, "url", "link_url");
+        $this->linkUrlField = new Field(Field::TYPE_URI, "url", "link_url");
         $this->menuIdField = new Field(Field::TYPE_INT, "menuId", "menu_id");
     }
 

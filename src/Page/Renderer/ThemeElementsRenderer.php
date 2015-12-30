@@ -245,8 +245,7 @@ EOT;
                     continue; // Don't display "No categories"
                 }
                 $links[] = Link::of(
-                                // Decode url, it will be encoded again by get_as_html
-                                html_entity_decode($website->getUrlPage("category", $category->getId())), $category->getName()
+                                $website->getUrlPage("category", $category->getId()), $category->getName()
                 );
             }
         }

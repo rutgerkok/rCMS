@@ -3,12 +3,11 @@
 namespace Rcms\Core\Document;
 
 use DateTime;
-use InvalidArgumentException;
+use Psr\Http\Message\UriInterface;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 use Rcms\Core\Text;
 use Rcms\Core\User;
-use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 
 /**
@@ -173,7 +172,7 @@ final class Document extends Entity {
     /**
      * Gets the (html escaped) URL for this document.
      * @param Text $text The text object, for URL structure.
-     * @return string The URL.
+     * @return UriInterface The URL.
      */
     public function getUrl(Text $text) {
         if ($this->isForWidgetArea()) {
