@@ -2,13 +2,14 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\UriInterface;
+
 use Rcms\Core\Article;
 use Rcms\Core\ArticleEditor;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Exception\NotFoundException;
-use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -20,6 +21,8 @@ use Rcms\Core\Website;
 use Rcms\Page\View\ArticleEditView;
 use Rcms\Page\View\Support\CKEditor;
 
+use Zend\Diactoros\Response\RedirectResponse;
+
 class EditArticlePage extends Page {
 
     /** @var ArticleEditor $article_editor */
@@ -28,6 +31,12 @@ class EditArticlePage extends Page {
     /** @var Category[] All categories on the site. */
     protected $allCategories;
     protected $token; // Token, always set
+    
+    /**
+     * @var UriInterface|null Page to redirect to. Usually there is no
+     * redirect, so this value is null.
+     */
+    private $redirectUrl = null;
 
     public function init(Website $website, Request $request) {
         $text = $website->getText();
@@ -68,8 +77,7 @@ class EditArticlePage extends Page {
 
                 // Check for redirect
                 if ($request->getRequestString("submit") == $website->t("editor.save_and_quit")) {
-                    $urlRaw = htmlspecialchars_decode($website->getUrlPage("article", $article->getId()));
-                    throw new RedirectException($urlRaw);
+                    $this->redirectUrl = $website->getUrlPage("article", $article->getId());
                 }
             }
         }
@@ -117,6 +125,14 @@ class EditArticlePage extends Page {
     public function getView(Text $text) {
         return new ArticleEditView($text, $this->articleEditor->getArticle(),
                 $this->token, $this->richEditor, $this->allCategories);
+    }
+    
+    public function getResponse(Website $website, Request $request) {
+        if ($this->redirectUrl != null) {
+            return new RedirectResponse($this->redirectUrl);
+        }
+        // Calling the parent method drives the call to getView
+        return parent::getResponse($website, $request);
     }
 
     public function getPageType() {

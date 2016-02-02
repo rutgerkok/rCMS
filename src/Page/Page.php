@@ -2,10 +2,16 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\ResponseInterface;
+
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
+
+use Rcms\Page\Renderer\PageRenderer;
+
+use Zend\Diactoros\Response\HtmlResponse;
 
 /**
  * Represents a page on the website.
@@ -98,7 +104,7 @@ abstract class Page {
      * @return View[] Array of views. May be empty if this page is not using
      * views (deprecated).
      */
-    public function getViews(Text $text) {
+    protected function getViews(Text $text) {
         // Fall back on method to get a single view
         $view = $this->getView($text);
 
@@ -122,6 +128,21 @@ abstract class Page {
             $returnValue.= $view->getText();
         }
         return $returnValue;
+    }
+
+    /**
+     * Gets the HTTP response for this page.
+     * @param Website $website The website.
+     * @param Request $request The request.
+     * @return ResponseInterface The response.
+     */
+    public function getResponse(Website $website, Request $request) {
+        $pageRenderer = new PageRenderer($website, $request, $this);
+        ob_start();
+        $pageRenderer->render();
+        $html = ob_get_contents();
+        ob_end_clean();
+        return new HtmlResponse($html);
     }
 
 }

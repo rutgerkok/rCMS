@@ -2,7 +2,9 @@
 
 namespace Rcms\Core;
 
-use Rcms\Page\Renderer\PageRenderer;
+use Rcms\Page\Renderer\ResponseFactory;
+use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\Response\SapiEmitter;
 
 // Setup environment
 require("environment.php");
@@ -12,5 +14,7 @@ session_start();
 
 // Display site
 $website = new Website();
-$pageRenderer = new PageRenderer($website, PageRenderer::getPagePath());
-$pageRenderer->render();
+$responseFactory = new ResponseFactory($website);
+$response = $responseFactory(ServerRequestFactory::fromGlobals());
+$responseEmitter = new SapiEmitter();
+$responseEmitter->emit($response);

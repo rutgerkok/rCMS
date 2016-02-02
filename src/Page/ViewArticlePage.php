@@ -2,12 +2,11 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\EmptyView;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * This class exists to redirect any old view_article
@@ -15,19 +14,22 @@ use Rcms\Page\View\EmptyView;
  */
 class ViewArticlePage extends Page {
 
+    /**
+     * @var UriInterface The URL where the article is currently located.
+     */
+    private $articleUrl;
+
     public function init(Website $website, Request $request) {
         $id = $request->getParamInt(0, 0);
-        $rawUrl = urldecode($website->getUrlPage("article", $id));
-
-        throw new RedirectException($rawUrl, RedirectException::TYPE_ALWAYS);
+        $this->articleUrl = $website->getUrlPage("article", $id);
     }
 
     public function getPageTitle(Text $text) {
         return "";
     }
 
-    public function getView(Text $text) {
-        return new EmptyView($text);
+    public function getResponse(Website $website, Request $request) {
+        return new RedirectResponse($this->articleUrl, 301);
     }
 
 }

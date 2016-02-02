@@ -3,7 +3,6 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Exception\RedirectException;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -14,6 +13,8 @@ use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\View\WidgetDetailView;
+
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Page that moves a widget and then redirects to the document edit page.
@@ -35,12 +36,24 @@ final class MoveWidgetPage extends Page {
      */
     private $moveLink;
 
+    /**
+     * @var UriInterface|null When a widget is moved, this will contain the url to redirect to.
+     */
+    private $redirectUrl = null;
+
     public function getPageTitle(Text $text) {
         return $text->t("widgets.moving_a_widget");
     }
 
     public function getView(Text $text) {
         return new WidgetDetailView($text, $this->installedWidgets, $this->placedWidget, $this->moveLink);
+    }
+    
+    public function getResponse(Website $website, Request $request) {
+        if ($this->redirectUrl != null) {
+            return new RedirectResponse($this->redirectUrl);
+        }
+        return parent::getResponse($website, $request);
     }
 
     public function init(Website $website, Request $request) {
@@ -56,7 +69,7 @@ final class MoveWidgetPage extends Page {
         if (Validate::requestToken($request)) {
             // move
             $this->moveWidget($widgetRepository, $moveUp);
-            throw new RedirectException($text->getUrlPage("edit_document", $this->placedWidget->getDocumentId()));
+            $this->redirectUrl = $text->getUrlPage("edit_document", $this->placedWidget->getDocumentId());
         } else {
             $text->addError(Validate::getLastError($text));
             

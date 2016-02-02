@@ -14,8 +14,10 @@ class LoginPage extends Page {
     private $loggedIn;
     private $loggedInAsAdmin;
     private $errorMessage;
+    private $request;
 
     public function init(Website $website, Request $request) {
+        $this->request = $request;
 
         // Handle login ourselves
         // (Using the provided getMinimumRank helper gives an ugly
@@ -59,7 +61,7 @@ class LoginPage extends Page {
         } else {
             // Return a login view, but without the "Must be logged in" message
             // at the top.
-            return new LoginView($text, $this->errorMessage);
+            return new LoginView($text, $this->request, $this->errorMessage);
         }
     }
 

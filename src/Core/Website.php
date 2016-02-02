@@ -80,6 +80,9 @@ class Website {
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");
+
+        // Locales
+        setLocale(LC_ALL, explode("|", $this->text->t("main.locales")));
     }
 
     /**

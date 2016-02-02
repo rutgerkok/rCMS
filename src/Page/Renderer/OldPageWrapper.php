@@ -38,9 +38,19 @@ class OldPageWrapper extends Page {
     }
 
     public function getPageContent(Website $website, Request $request) {
+        // Emulate some old superglobals
+        $_GET["id"] = $request->getParamString(0);
+        $_GET["p"] = $request->getPageName();
+        $_POST["id"] = $_GET["id"];
+        $_POST["p"] = $_GET["p"];
+        $_REQUEST["id"] = $_GET["id"];
+        $_REQUEST["p"] = $_GET["p"];
+ 
         ob_start();
         $website->execute($this->file);
-        return ob_get_clean();
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
     }
 
     public function getPageType() {

@@ -2,17 +2,55 @@
 
 namespace Rcms\Core;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
- * Represents a HTTP request to a page. Provides access to the Website object
- * and the request parameters.
+ * Simplified variant of {@link ServerRequestInterface}.
  */
 class Request {
 
-    /** @var string[] Parameters given to the path of the request. */
-    private $params;
+    /**
+     * @var ServerRequestInterface The PSR request interface.
+     */
+    private $serverRequest;
 
-    public function __construct(array $params = array()) {
-        $this->params = $params;
+    /** @var string[] The parts that exist in the path.. */
+    private $pathParts = array();
+
+    public function __construct(ServerRequestInterface $serverRequest) {
+        $this->serverRequest = $serverRequest;
+
+        // Parse the URL path
+        $serverParams = $serverRequest->getServerParams();
+        if (isSet($serverParams["PATH_INFO"])) {
+            $path = $serverRequest->getServerParams()["PATH_INFO"];
+            $this->pathParts = explode('/', trim($path, '/'));
+        }
+
+        // Support old index.php?page=foo&id=3
+        if (empty($this->pathParts) && $this->hasRequestValue("p")) {
+
+            $pageName = $this->getRequestString("p");
+            
+            if ($this->hasRequestValue("id")) {
+                $pageId = $this->getRequestInt("id");
+                $this->pathParts = array($pageName, (string) $pageId);
+            } else {
+                $this->pathParts = array($pageName);
+            }
+        }
+    }
+
+    /**
+     * Gets the name of the requested page. The name is an empty string if no
+     * page name was specified in the request.
+     * @return string The name.
+     */
+    public function getPageName() {
+        if (empty($this->pathParts)) {
+            return "";
+        }
+        return $this->pathParts[0];
     }
 
     /**
@@ -23,32 +61,28 @@ class Request {
      * @return string The parameter.
      */
     public function getParamString($paramNr, $defaultValue = "") {
-        $paramNr = (int) $paramNr;
         if (!$this->hasParameter($paramNr)) {
             return $defaultValue;
         }
-        return $this->params[$paramNr];
+        return $this->pathParts[$paramNr + 1];
     }
 
     /**
-     * Gets a string from the $_REQUEST array, without extra "magic quotes" 
-     * (even if the server is running PHP 5.3 and has them enabled) and with a
-     * default option if the $_REQUEST array doesn't contain the variable.
-     * @param string $key Key in the $_REQUEST array.
+     * Gets a string from either the query parameters or from the request body.
+     * @param string $key The key.
      * @param string $defaultValue Default option, if value is not found.
-     * @return string The value in the $_REQUEST array, or the default value.
+     * @return string The value, or the default value if not found.
      */
     public function getRequestString($key, $defaultValue = "") {
-        // Note: logic is the same as in the Website class - keep them in sync!
-        if (isSet($_REQUEST[$key]) && is_scalar($_REQUEST[$key])) {
-            if (ini_get("magic_quotes_gpc")) {
-                return stripSlashes((string) $_REQUEST[$key]);
-            } else {
-                return (string) $_REQUEST[$key];
-            }
-        } else {
-            return $defaultValue;
+        $postData = $this->serverRequest->getParsedBody();
+        if (isSet($postData[$key]) && is_scalar($postData[$key])) {
+            return (string) $postData[$key];
         }
+        $getData = $this->serverRequest->getQueryParams();
+        if (isSet($getData[$key]) && is_scalar($getData[$key])) {
+            return (string) $getData[$key];
+        }
+        return $defaultValue;
     }
 
     /**
@@ -60,16 +94,17 @@ class Request {
         if ($paramNr < 0) {
             return false;
         }
-        return count($this->params) > $paramNr;
+        return count($this->pathParts) - 1 > $paramNr;
     }
 
     /**
-     * Gets whether a request parameter with the given name exists.
-     * @param string $key The key in the $_REQUEST array.
+     * Gets whether a parameter exists in either the query parameters or the
+     * request body.
+     * @param string $key The key.
      * @return boolean True if a value exists (even if it's empty), false otherwise.
      */
     public function hasRequestValue($key) {
-        return isSet($_REQUEST[$key]);
+        return isSet($this->serverRequest->getQueryParams()[$key]) || isSet($this->serverRequest->getParsedBody()[$key]);
     }
 
     /**
@@ -83,33 +118,35 @@ class Request {
      * @return int The int.
      */
     public function getParamInt($paramNr, $defaultValue = 0) {
-        $value = $this->getParamString($paramNr, (int) $defaultValue);
-
-        // Check value type
-        if (is_numeric($value)) {
-            return (int) $value;
+        $stringValue = $this->getParamString($paramNr, "");
+        if (is_numeric($defaultValue)) {
+            return (int) $stringValue;
         }
-
-        return (int) $defaultValue;
+        return $defaultValue;
     }
 
     /**
-     * Gets an int from the $_REQUEST array. Returns the default value if there
-     * was no valid integer provided.
+     * Gets an int from either the query parameters or from the request body.
      *
      * Note: negative integers are still valid integers.
-     * @param string $key Key in the $_REQUEST array.
+     * @param string $key The key.
      * @param int $defaultValue Default option.
-     * @return int The int.
+     * @return int The int, or the default option if value exists for the given key.
      */
     public function getRequestInt($key, $defaultValue = 0) {
-        // Note: logic is the same as in the Website class - keep them in sync!
-        if (isSet($_REQUEST[$key])) {
-            if (is_numeric($_REQUEST[$key])) {
-                return (int) $_REQUEST[$key];
-            }
+        $stringValue = $this->getRequestString($key, "");
+        if (is_numeric($defaultValue)) {
+            return (int) $stringValue;
         }
-        return (int) $defaultValue;
+        return $defaultValue;
+    }
+    
+    /**
+     * Gets this request as a PSR ServerRequestInterface.
+     * @return ServerRequestInterface The PSR-request.
+     */
+    public function toPsr() {
+        return $this->serverRequest;
     }
 
 }
