@@ -11,7 +11,8 @@ $loggedIn = $oAuth->check(Authentication::RANK_ADMIN, true);
 unset($oAuth);
 
 if ($loggedIn) {
-    $oMenus = new LinkRepository($this);
+    $oMenus = new MenuRepository($this->getDatabase());
+    $oLinks = new LinkRepository($this);
     $menu_id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
     $menu_name = $oMenus->getMenuName($menu_id);
     if ($menu_name != null) {
@@ -26,7 +27,7 @@ if ($loggedIn) {
             }
         } else {
             // Confirm deletion
-            $linkCount = $oMenus->getLinkCountByMenu($menu_id);
+            $linkCount = $oLinks->getLinkCountByMenu($menu_id);
             $textToDisplay.= <<<EOT
                 <p>{$this->t("links.menu.delete.confirm")}</p>
                 <p>
