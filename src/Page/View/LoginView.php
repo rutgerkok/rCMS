@@ -39,7 +39,7 @@ class LoginView extends View {
 EOT;
         }
         $returnValue.= <<<EOT
-            <form method="post" action="{$text->getUrlMain()}">
+            <form method="post" action="{$text->e($text->getUrlMain())}">
                 <h3>$loginText</h3>
                 <p>
                     <label for="user">{$text->t('users.username_or_email')}:</label> <br />

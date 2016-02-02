@@ -48,7 +48,7 @@ class ArticleEditView extends View {
         // Create form
         return <<<ARTICLE_FORM
             <script type="text/javascript" src="{$text->getUrlJavaScript("datepicker")}"></script>
-            <form action="{$text->getUrlPage("edit_article", $article->getId())}" method="post">
+            <form action="{$text->e($text->getUrlPage("edit_article", $article->getId()))}" method="post">
                 <p>
                     <label for="article_title">{$text->t("articles.title")}:<span class="required">*</span></label>
                     <br />
@@ -104,7 +104,7 @@ ARTICLE_FORM;
         return <<<BUTTONS
             <input type="submit" name="submit" class="button primary_button" value="{$text->t("editor.save")}" />
             <input type="submit" name="submit" class="button" value="{$text->t("editor.save_and_quit")}" />
-            <a class="button" href="{$text->getUrlPage("article", $article->getId())}">{$text->t("editor.quit")}</a>
+            <a class="button" href="{$text->e($text->getUrlPage("article", $article->getId()))}">{$text->t("editor.quit")}</a>
 BUTTONS;
     }
 

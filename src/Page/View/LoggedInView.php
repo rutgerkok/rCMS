@@ -28,9 +28,9 @@ class LoggedInView extends View {
         if ($this->showAdminLinks) {
             $adminLinks = <<<EOT
                     <br />
-                    <a href="{$text->getUrlPage("account_management")}" class="arrow">{$text->t("main.account_management")}</a>
+                    <a href="{$text->e($text->getUrlPage("account_management"))}" class="arrow">{$text->t("main.account_management")}</a>
                     <br />
-                    <a href="{$text->getUrlPage("admin")}" class="arrow">{$text->t("main.admin")}</a>
+                    <a href="{$text->e($text->getUrlPage("admin"))}" class="arrow">{$text->t("main.admin")}</a>
 EOT;
         }
 
@@ -38,9 +38,9 @@ EOT;
                 <h3>{$text->t('users.loggedIn')}</h3>
                 <p>{$text->t('users.succesfully_loggedIn')}</p>
                 <p>
-                    <a href="{$text->getUrlMain()}" class="arrow">{$text->t("main.home")}</a>
+                    <a href="{$text->e($text->getUrlMain())}" class="arrow">{$text->t("main.home")}</a>
                     <br />
-                    <a href="{$text->getUrlPage("account")}" class="arrow">{$text->t("main.my_account")}</a>
+                    <a href="{$text->e($text->getUrlPage("account"))}" class="arrow">{$text->t("main.my_account")}</a>
                     $adminLinks
                 </p>
 EOT;

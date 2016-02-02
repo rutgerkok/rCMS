@@ -57,7 +57,7 @@ START;
 YEAR;
             } else {
                 $returnValue.= <<<YEAR
-                     <a href="{$text->getUrlPage("calendar", $i)}">$i</a> 
+                     <a href="{$text->e($text->getUrlPage("calendar", $i))}">$i</a> 
 YEAR;
             }
         }

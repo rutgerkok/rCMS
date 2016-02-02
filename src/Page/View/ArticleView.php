@@ -77,12 +77,12 @@ class ArticleView extends View {
 
         // Category
         $returnValue.= " <br /> " . $text->t('main.category') . ': ';
-        $returnValue.= '<a href="' . $text->getUrlPage("category", $article->categoryId) . '">';
+        $returnValue.= '<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">';
         $returnValue.= htmlSpecialChars($article->category) . '</a>';
 
         // Author
         $returnValue.= " <br /> " . $text->t('articles.author') . ': ';
-        $returnValue.= '<a href="' . $text->getUrlPage("account", $article->authorId) . '">';
+        $returnValue.= '<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">';
         $returnValue.= htmlSpecialChars($article->author) . '</a>';
 
         // Pinned, hidden, comments
@@ -100,8 +100,8 @@ class ArticleView extends View {
         $returnValue.= '</p>';
         if ($loggedIn) {
             $returnValue.= "<p style=\"clear:both\">";
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->getUrlPage("edit_article", $id) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $id) . '">' . $text->t('main.delete') . '</a>'; //delete
+            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $id)) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
+                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $id)) . '">' . $text->t('main.delete') . '</a>'; //delete
             $returnValue.= "</p>";
         }
         $returnValue.= '</div>';
@@ -131,7 +131,7 @@ class ArticleView extends View {
             }
 
             // Comment add link
-            $returnValue.= '<p><a class="button primary_button" href="' . $text->getUrlPage("add_comment", $id) . '">' . $text->t("comments.add") . "</a></p>";
+            $returnValue.= '<p><a class="button primary_button" href="' . $text->e($text->getUrlPage("add_comment", $id)) . '">' . $text->t("comments.add") . "</a></p>";
 
             // Show comments
             $commentTreeView = new CommentsTreeView($text, $comments, false, $this->userViewingComments);

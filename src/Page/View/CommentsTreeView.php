@@ -65,7 +65,7 @@ class CommentsTreeView extends View {
 
         // Add link and rank to author when linked to account
         if ($comment->getUserId() > 0) {
-            $author = '<a href="' . $text->getUrlPage("account", $comment->getUserId()) . '">' . $author . '</a>';
+            $author = '<a href="' . $text->e($text->getUrlPage("account", $comment->getUserId())) . '">' . $author . '</a>';
         }
 
         // Edit and delete links
@@ -74,7 +74,7 @@ class CommentsTreeView extends View {
         // Reply and context links
         if ($this->viewedOutOfContext) {
             $replyOrContextLink = <<<EOT
-                <a class="arrow" href="{$text->getUrlPage("article", $comment->getArticleId())}#comment_$id">
+                <a class="arrow" href="{$text->e($text->getUrlPage("article", $comment->getArticleId()))}#comment_$id">
                     {$text->t("comments.view_context")}
                 </a>
 EOT;
@@ -114,10 +114,10 @@ COMMENT;
             $returnValue.= '<a class="comment_email" href="mailto:' . $email . '">' . $email . '</a>';
         }
         $returnValue.= <<<EOT
-            <a class="arrow" href="{$text->getUrlPage("edit_comment", $id)}">
+            <a class="arrow" href="{$text->e($text->getUrlPage("edit_comment", $id))}">
                 {$text->t("main.edit")}
             </a>
-            <a class="arrow" href="{$text->getUrlPage("delete_comment", $id)}">
+            <a class="arrow" href="{$text->e($text->getUrlPage("delete_comment", $id))}">
                 {$text->t("main.delete")}
             </a>
 EOT;

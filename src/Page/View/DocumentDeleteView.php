@@ -30,19 +30,20 @@ class DocumentDeleteView extends View {
     }
     
     public function getText() {
-        $titleHtml = htmlSpecialChars($this->document->getTitle());
-        $introHtml = htmlSpecialChars($this->document->getIntro());
-        $deleteUrlHtml = $this->text->getUrlPage("delete_document", $this->document->getId(),
+        $text = $this->text;
+        $title = $this->document->getTitle();
+        $intro = $this->document->getIntro();
+        $deleteUrl = $text->getUrlPage("delete_document", $this->document->getId(),
                 array(RequestToken::FIELD_NAME => $this->requestToken->getTokenString()));
         return <<<HTML
-            <p>{$this->text->t("documents.delete.are_you_sure")}</p>
+            <p>{text->t("documents.delete.are_you_sure")}</p>
             <blockquote>
-                <h3 class="notable">{$titleHtml}</h3>
-                <p class="intro">{$introHtml}</p>
+                <h3 class="notable">{$text->e($title)}</h3>
+                <p class="intro">{$text->e($intro)}</p>
             </blockquote>
             <p>
-                <a class="button primary_button" href="{$deleteUrlHtml}">{$this->text->t("editor.delete_permanently")}</a>
-                <a class="button" href="{$this->document->getUrl($this->text)}">{$this->text->t("main.cancel")}</a>
+                <a class="button primary_button" href="{$text->e($deleteUrl)}">{$text->t("editor.delete_permanently")}</a>
+                <a class="button" href="{$text->e($this->document->getUrl($text))}">{$text->t("main.cancel")}</a>
             </p>
 HTML;
     }

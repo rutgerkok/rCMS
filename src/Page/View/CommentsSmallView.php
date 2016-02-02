@@ -37,7 +37,7 @@ class CommentsSmallView extends View {
     protected function getSingleComment(Comment $comment) {
         $text = $this->text;
         $id = $comment->getId();
-        $contextUrl = $text->getUrlPage("article", $comment->getArticleId()) . '#comment_' . $id;
+        $contextUrl = $text->e($text->getUrlPage("article", $comment->getArticleId())->withFragment('comment_' . $id));
         $returnValue = '<article class="comment_preview">';
 
         // Get author name (and link) and use it as the title
@@ -45,7 +45,7 @@ class CommentsSmallView extends View {
         $authorId = $comment->getUserId();
         if ($authorId > 0) {
             // Add link to author profile
-            $authorName = '<a href="' . $text->getUrlPage("account", $authorId) . '">' . $authorName . "</a>";
+            $authorName = '<a href="' . $text->e($text->getUrlPage("account", $authorId)) . '">' . $authorName . "</a>";
         }
         $returnValue.= '<header><h3 class="comment_title">' . $authorName . "</h3></header>\n";
 

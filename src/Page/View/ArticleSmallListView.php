@@ -68,13 +68,13 @@ class ArticleSmallListView extends View {
 
         // Add article link
         if ($this->editLinks) {
-            $returnValue .= '<p><a class="arrow" href="' . $text->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId));
+            $returnValue .= '<p><a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId)));
             $returnValue .= '">' . $text->t("articles.create") . "</a></p>\n";
         }
 
         // Archive link
         if ($archive) {
-            $returnValue.= '<p><a href="' . $text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
+            $returnValue.= '<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId) ). '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
         }
 
         return $returnValue;
@@ -83,7 +83,8 @@ class ArticleSmallListView extends View {
     /** Returns a single article enclosed in li tags */
     public function getArticleTextListEntry(Article $article,
             $displayImage = false) {
-        $returnValue = '<li><a href="' . $this->text->getUrlPage("article", $article->getId()) . '"';
+        $text = $this->text;
+        $returnValue = '<li><a href="' . $text->e($text->getUrlPage("article", $article->getId())) . '"';
         $returnValue.= 'title="' . htmlSpecialChars($article->getIntro()) . '">';
         if ($displayImage && !empty($article->featuredImage)) {
             $returnValue.= '<div class="linklist_icon_image"><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" /></div>';

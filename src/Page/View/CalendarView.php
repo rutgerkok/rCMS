@@ -216,9 +216,9 @@ CELL;
         if ($this->editLinks) {
             $tooltip.= <<<TOOLTIP_END
                 <p>
-                    <a class="arrow" href="{$text->getUrlPage("edit_article", null, array(
+                    <a class="arrow" href="{$text->e($text->getUrlPage("edit_article", null, array(
                         "article_eventdate" => $date->format("Y-m-d"),
-                        "article_eventtime" => "12:00"))}">
+                        "article_eventtime" => "12:00")))}">
                         {$text->t("articles.create")}
                     </a>
                 </p>
@@ -249,7 +249,7 @@ TOOLTIP_END;
             $intro = htmlSpecialChars($article->getIntro());
             $tooltip.= <<<TOOLTIP_ELEMENT
                 <li title="{$intro}">
-                    <a href="{$text->getUrlPage("article", $article->getId())}">
+                    <a href="{$text->e($text->getUrlPage("article", $article->getId()))}">
                         {$title}
                     </a>
                 </li>

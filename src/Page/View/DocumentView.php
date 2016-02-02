@@ -43,14 +43,15 @@ INTRO;
 
     private function getEditDeleteHtml() {
         $id = $this->document->getId();
+        $text = $this->text;
 
         return <<<EDIT
             <p>
-                <a class="arrow" href="{$this->text->getUrlPage("edit_document", $id)}">
-                    {$this->text->t("main.edit")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_document", $id))}">
+                    {$text->t("main.edit")}
                 </a>
-                <a class="arrow" href="{$this->text->getUrlPage("delete_document", $id)}">
-                    {$this->text->t("main.delete")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("delete_document", $id))}">
+                    {$text->t("main.delete")}
                 </a>
             </p>
 EDIT;

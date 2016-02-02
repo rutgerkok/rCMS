@@ -37,7 +37,7 @@ class LoggedInOtherView extends View {
                 {$text->t('users.account')} {$text->t('errors.not_found')}
             </p>
             <p>
-                <a class="arrow" href="{$text->getUrlMain()}">{$text->t("main.home")}</a>
+                <a class="arrow" href="{$text->e($text->getUrlMain())}">{$text->t("main.home")}</a>
             </p>
 MESSAGE;
     }
@@ -51,7 +51,7 @@ MESSAGE;
                 {$text->tReplaced('users.succesfully_loggedIn.other', htmlSpecialChars($user->getDisplayName()))}
             </p>
             <p>
-                <a class="arrow" href="{$text->getUrlMain()}">{$text->t("main.home")}</a>
+                <a class="arrow" href="{$text->e($text->getUrlMain())}">{$text->t("main.home")}</a>
             </p>
 MESSAGE;
     }

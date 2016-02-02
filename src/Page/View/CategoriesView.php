@@ -17,7 +17,7 @@ class CategoriesView extends View {
         $text = $this->text;
         $output = '<ul class="no_bullets">';
         foreach ($this->categories as $id => $name) {
-            $output.= '<li><a href="' . $text->getUrlPage("category", $id);
+            $output.= '<li><a href="' . $text->e($text->getUrlPage("category", $id));
             $output.= '" class="arrow">' . htmlSpecialChars($name) . "</a></li>\n";
         }
         $output.= "</ul>";

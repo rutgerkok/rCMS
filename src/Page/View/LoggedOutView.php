@@ -13,7 +13,7 @@ class LoggedOutView extends View {
             <h3>{$text->t('users.logged_out')}</h3>
             <p>{$text->t('users.succesfully_logged_out')}</p>
             <p>
-                <a href="{$text->getUrlMain()}" class="arrow">{$text->t("main.home")}</a>
+                <a href="{$text->e($text->getUrlMain())}" class="arrow">{$text->t("main.home")}</a>
             </p>
 EOT;
     }

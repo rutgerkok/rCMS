@@ -32,17 +32,18 @@ final class MenuView extends View{
     }
 
     public function getText() {
+        $text = $this->text;
         $returnValue = "";
 
         foreach ($this->links as $link) {
-            $returnValue.= '<li><a href="' . htmlSpecialChars($link->getUrl()) . '"';
+            $returnValue.= '<li><a href="' . $text->e($link->getUrl()) . '"';
             if ($this->openInNewWindow) {
                 $returnValue.= ' target="_blank"';
             }
-            $returnValue.= ">" . htmlSpecialChars($link->getText()) . "</a>";
+            $returnValue.= ">" . $text->e($link->getText()) . "</a>";
             if ($this->editLinks) {
-                $returnValue.=' <a class="arrow" href="' . $this->text->getUrlPage("edit_link", $link->getId()) . '">' . $this->text->t("main.edit") . "</a>";
-                $returnValue.=' <a class="arrow" href="' . $this->text->getUrlPage("delete_link", $link->getId()) . '">' . $this->text->t("main.delete") . "</a>";
+                $returnValue.=' <a class="arrow" href="' . $text->e($text->getUrlPage("edit_link", $link->getId())) . '">' . $text->t("main.edit") . "</a>";
+                $returnValue.=' <a class="arrow" href="' . $text->e($text->getUrlPage("delete_link", $link->getId())) . '">' . $text->t("main.delete") . "</a>";
             }
             $returnValue.= "</li>\n";
         }

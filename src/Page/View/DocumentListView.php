@@ -56,10 +56,11 @@ class DocumentListView extends View {
     }
 
     private function getCreateNewDocumentLink() {
+        $text = $this->text;
         return <<<CREATE_NEW
             <p>
-                <a class="arrow" href="{$this->text->getUrlPage("edit_document", 0)}">
-                    {$this->text->t("documents.create")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_document", 0))}">
+                    {$text->t("documents.create")}
                 </a>
             </p>
 CREATE_NEW;
@@ -81,7 +82,7 @@ ERROR;
                 <h3>$titleHtml</h3>
                 <p>$introHtml</p>
                 <p>
-                    <a class="arrow" href="{$document->getUrl($this->text)}">
+                    <a class="arrow" href="{$this->e($document->getUrl($this->text))}">
                         {$this->text->t("documents.view")}
                     </a>
                     {$this->getDocumentEditLinks($document)}
@@ -94,12 +95,13 @@ DOCUMENT;
         if (!$this->editLinks) {
             return "";
         }
+        $text = $this->text;
         return <<<HTML
-            <a class="arrow" href="{$this->text->getUrlPage("edit_document", $document->getId())}">
-                {$this->text->t("main.edit")}
+            <a class="arrow" href="{$text->e($text->getUrlPage("edit_document", $document->getId()))}">
+                {$text->t("main.edit")}
             </a>
-            <a class="arrow" href="{$this->text->getUrlPage("delete_document", $document->getId())}">
-                {$this->text->t("main.delete")}
+            <a class="arrow" href="{$text->e($text->getUrlPage("delete_document", $document->getId()))}">
+                {$text->t("main.delete")}
             </a>
 HTML;
     }

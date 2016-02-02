@@ -14,19 +14,20 @@ final class InstallationCompletedView extends View {
     }
     
     public function getText() {
+        $text = $this->text;
         return <<<HTML
-            <p>{$this->text->t("install.completed")}</p>
+            <p>{$text->t("install.completed")}</p>
             <table>
                 <tr>
-                    <th>{$this->text->t("users.username")}</th>
+                    <th>{$text->t("users.username")}</th>
                     <td>admin</td>
                 </tr>
                 <tr>
-                    <th>{$this->text->t("users.password")}</th>
+                    <th>{$text->t("users.password")}</th>
                     <td>admin</td>
                 </tr>
             </table>
-            <p><a class="arrow" href="{$this->text->getUrlPage("login")}">{$this->text->t("main.log_in")}</p>
+            <p><a class="arrow" href="{$text->e($text->getUrlPage("login"))}">{$text->t("main.log_in")}</p>
 HTML;
     }
 }

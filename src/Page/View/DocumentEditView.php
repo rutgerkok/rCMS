@@ -68,7 +68,7 @@ HTML;
         if ($this->document->isForWidgetArea()) {
             return $this->getDocumentTitleAndIntro();
         }
-        $documentUrlHtml = $this->text->getUrlPage("edit_document", $this->document->getId());
+        $documentUrlHtml = $this->text->e($this->text->getUrlPage("edit_document", $this->document->getId()));
         $titleHtml = htmlSpecialChars($this->document->getTitle());
         $introHtml = nl2br(htmlSpecialChars($this->document->getIntro()), true);
         $tokenNameHtml = htmlSpecialChars(RequestToken::FIELD_NAME);
@@ -97,7 +97,7 @@ HTML;
                 <p>
                     <input type="hidden" name="{$tokenNameHtml}" value="{$tokenHtml}" />
                     <input type="submit" class="button primary_button" value="{$this->text->t("editor.save")}" />
-                    <a href="{$this->text->getUrlPage("document", $this->document->getId())}" class="button">
+                    <a href="{$this->text->e($this->text->getUrlPage("document", $this->document->getId()))}" class="button">
                         {$this->text->t("main.cancel")}
                     </a>
                 </p>
@@ -116,6 +116,8 @@ HTML;
     }
 
     private function getWidgetHtml(PlacedWidget $placedWidget, $widgetNumber) {
+        $text = $this->text;
+
         $id = $placedWidget->getId();
         $widgetInfo = $placedWidget->getWidgetInfo();
         $widgetData = $placedWidget->getData();
@@ -123,34 +125,29 @@ HTML;
         $tokenName = RequestToken::FIELD_NAME;
         $token = $this->requestToken->getTokenString();
 
-        $nameHtml = htmlSpecialChars($widgetInfo->getName());
-        if (isSet($widgetData["title"])) {
-            $nameHtml.= htmlSpecialChars(": " . $widgetData["title"]);
-        }
-
         $output = <<<HTML
             <blockquote>
                  {$this->installedWidgets->getOutput($placedWidget)}
             </blockquote>
             <p>
-                <a class="arrow" href="{$this->text->getUrlPage("edit_widget", $id)}">
-                    {$this->text->t("main.edit")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_widget", $id))}">
+                    {$text->t("main.edit")}
                 </a>
-                <a class="arrow" href="{$this->text->getUrlPage("delete_widget", $id)}">
-                    {$this->text->t("main.delete")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("delete_widget", $id))}">
+                    {$text->t("main.delete")}
                 </a>
 HTML;
         if ($widgetNumber != 0) {
             $output.= <<<HTML
-                <a class="arrow" href="{$this->text->getUrlPage("move_widget", $id, array("direction" => "up", $tokenName => $token))}">
-                    {$this->text->t("widgets.move_up")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, array("direction" => "up", $tokenName => $token)))}">
+                    {$text->t("widgets.move_up")}
                 </a>   
 HTML;
         }
         if ($widgetNumber < count($this->placedWidgets) - 1) {
             $output.= <<<HTML
-                <a class="arrow" href="{$this->text->getUrlPage("move_widget", $id, array("direction" => "down", $tokenName => $token))}">
-                    {$this->text->t("widgets.move_down")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, array("direction" => "down", $tokenName => $token)))}">
+                    {$text->t("widgets.move_down")}
                 </a>  
 HTML;
         }
@@ -185,8 +182,8 @@ HTML;
             $authorNameHtml = htmlSpecialChars($installedWidget->getAuthor());
             $authorUrlHtml = htmlSpecialChars($installedWidget->getAuthorWebsite());
 
-            $addToDocumentUrlHtml = $this->text->getUrlPage("edit_widget", null, array("directory_name" => $installedWidget->getDirectoryName(),
-                "document_id" => $this->document->getId()));
+            $addToDocumentUrlHtml = $this->text->e($this->text->getUrlPage("edit_widget", null, array("directory_name" => $installedWidget->getDirectoryName(),
+                "document_id" => $this->document->getId())));
 
             $returnValue.= <<<HTML
                 <h3>{$widgetNameHtml}</h3>

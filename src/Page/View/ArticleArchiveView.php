@@ -66,7 +66,7 @@ class ArticleArchiveView extends View {
         if ($this->selectedCategory == 0) {
             $textToDisplay.= '<strong>' . $text->t("categories.all") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay.= '<a href="' . $text->getUrlPage("archive", 0, array("year" => $this->selectedYear)) . '">';
+            $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", 0, array("year" => $this->selectedYear))) . '">';
             $textToDisplay.= $text->t("categories.all") . "</a>&nbsp;&nbsp;\n";
         }
         // Other categories
@@ -74,7 +74,7 @@ class ArticleArchiveView extends View {
             if ($id == $this->selectedCategory) {
                 $textToDisplay.= '<strong>' . $categoryName . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $text->getUrlPage("archive", $id, array("year" => $this->selectedYear)) . '">';
+                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $id, array("year" => $this->selectedYear))) . '">';
                 $textToDisplay.= $categoryName . "</a>&nbsp;&nbsp;\n";
             }
         }
@@ -92,7 +92,7 @@ class ArticleArchiveView extends View {
         if ($this->selectedYear == 0) {
             $textToDisplay = '<br /><strong>' . $text->t("articles.archive.any_year") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay = '<br /><a href="' . $text->getUrlPage("archive", $this->selectedCategory, array("year" => 0)) . '">';
+            $textToDisplay = '<br /><a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, array("year" => 0))) . '">';
             $textToDisplay.= $text->t("articles.archive.any_year") . "</a>&nbsp;&nbsp;\n";
         }
 
@@ -101,7 +101,7 @@ class ArticleArchiveView extends View {
             if ($year == $this->selectedYear) {
                 $textToDisplay.= '<strong>' . $year . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $text->getUrlPage("archive", $this->selectedCategory, array("year" => $year)) . '">';
+                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, array("year" => $year))) . '">';
                 $textToDisplay.= $year . "</a>&nbsp;&nbsp;\n";
             }
         }
@@ -133,14 +133,14 @@ MENUBAR;
     protected function getTableRow(Article $article, $loggedIn) {
         $text = $this->text;
 
-        $textToDisplay = '<tr><td><a href="' . $text->getUrlPage("article", $article->getId());
+        $textToDisplay = '<tr><td><a href="' . $text->e($text->getUrlPage("article", $article->getId()));
         $textToDisplay.= '">' . htmlSpecialChars($article->getTitle()) . "</a>";
         if ($loggedIn) {
             // Display edit links in new cell
             $textToDisplay.= '</td><td style="width:20%">';
-            $textToDisplay.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->getId());
+            $textToDisplay.= '<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $article->getId()));
             $textToDisplay.= '">' . $text->t("main.edit") . "</a>";
-            $textToDisplay.= ' <a class="arrow" href="' . $text->getUrlPage("delete_article", $article->getId());
+            $textToDisplay.= ' <a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $article->getId()));
             $textToDisplay.= '">' . $text->t("main.delete") . "</a>";
         }
         $textToDisplay.= "</td></tr>\n";

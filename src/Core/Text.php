@@ -90,7 +90,7 @@ class Text {
     private function toHtmlLinks($links) {
         $returnValue = "";
         foreach ($links as $link) {
-            $returnValue.= ' <a class="arrow" href="' . $link->getUrl() . '">' . $link->getText() . '</a>';
+            $returnValue.= ' <a class="arrow" href="' . $this->e($link->getUrl()) . '">' . $this->e($link->getText()) . '</a>';
         }
         return $returnValue;
     }
@@ -254,6 +254,18 @@ class Text {
         }
 
         return $translated;
+    }
+
+    /**
+     * Escapes the string for HTML. Single quotes are escaped too.
+     *
+     * Note: spaces are not escaped. The code `<input value=$text>` is
+     * still unsafe, use `<input value="$text">` instead.
+     * @param string $string Plain text string.
+     * @return string String that can be inserted in HTML>
+     */
+    public function e($string) {
+        return htmlspecialchars($string, ENT_QUOTES);
     }
 
     /**

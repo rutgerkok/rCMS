@@ -170,7 +170,7 @@ final class Document extends Entity {
     }
 
     /**
-     * Gets the (html escaped) URL for this document.
+     * Gets the URL for this document.
      * @param Text $text The text object, for URL structure.
      * @return UriInterface The URL.
      */

@@ -17,12 +17,11 @@ class SearchFormView extends View {
     }
 
     public function getText() {
-        $keywordEsc = htmlSpecialChars($this->keyword);
         $text = $this->text;
         return <<<SEARCHFORM
             <p>
-                <form action="{$text->getUrlPage("search")}" method="GET">
-                    <input name="searchbox" id="searchbox-big" value="$keywordEsc" />
+                <form action="{$text->e($text->getUrlPage("search"))}" method="GET">
+                    <input name="searchbox" id="searchbox-big" value="$text->e($this->keyword)}" />
                     <input type="submit" class="button primary_button" value="{$text->t("main.search")}" />
                 </form>
             </p>

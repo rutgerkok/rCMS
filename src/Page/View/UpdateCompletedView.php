@@ -14,11 +14,12 @@ final class UpdateCompletedView extends View {
     }
     
     public function getText() {
+        $text = $this->text;
         return <<<HTML
-            <p>{$this->text->t("install.thanks_for_updating")}</p>
+            <p>{text->t("install.thanks_for_updating")}</p>
             <p>         
-                <a href="{$this->text->getUrlMain()}" class="arrow">
-                {$this->text->t("main.home")}
+                <a href="{$text->e($text->getUrlMain())}" class="arrow">
+                {$text->t("main.home")}
                 </a>
             </p>
 HTML;

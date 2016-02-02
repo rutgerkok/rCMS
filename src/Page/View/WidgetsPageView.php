@@ -53,14 +53,16 @@ final class WidgetsPageView extends View {
         if (!$this->editLinks) {
             return "";
         }
+
         $id = $widget->getId();
+        $text = $this->text;
         return <<<HTML
             <p>
-                <a class="arrow" href="{$this->text->getUrlPage("edit_widget", $id)}">
-                    {$this->text->t("widgets.edit")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_widget", $id))}">
+                    {$text->t("widgets.edit")}
                 </a>
-                <a class="arrow" href="{$this->text->getUrlPage("delete_widget", $id)}">
-                    {$this->text->t("widgets.delete")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("delete_widget", $id))}">
+                    {$text->t("widgets.delete")}
                 </a>
             </p>
 HTML;
@@ -70,10 +72,12 @@ HTML;
         if (!$this->editLinks) {
             return "";
         }
+
+        $text = $this->text;
         return <<<EDIT_LINK
             <p>
-                <a class="arrow" href="{$this->text->getUrlPage("edit_document", $this->documentId)}">
-                    {$this->text->t("widgets.edit_page_layout")}
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_document", $this->documentId))}">
+                    {$text->t("widgets.edit_page_layout")}
                 </a>
             </p>
 EDIT_LINK;

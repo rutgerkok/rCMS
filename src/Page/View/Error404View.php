@@ -20,15 +20,15 @@ class Error404View extends View {
             {$text->t("errors.404_page.body")}
         </p>
         <p>
-            <a href="{$text->getUrlMain()}" class="arrow">
+            <a href="{$text->e($text->getUrlMain())}" class="arrow">
                 {$text->t("main.home")}
             </a>
             <br />
-            <a href="{$text->getUrlPage("search")}" class="arrow">
+            <a href="{$text->e($text->getUrlPage("search"))}" class="arrow">
                 {$text->t("main.search")}
             </a>
             <br />
-            <a href="{$text->getUrlPage("archive")}" class="arrow">
+            <a href="{$text->e($text->getUrlPage("archive"))}" class="arrow">
                 {$text->t("articles.archive")}
             </a>
         </p>

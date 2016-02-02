@@ -43,7 +43,7 @@ class ArticleListView extends View {
 
         // Link to creat new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
         }
 
         // All articles
@@ -57,12 +57,12 @@ class ArticleListView extends View {
 
         // Another link to create new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId)) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
+            $output.= '<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
         }
 
         // Archive link
         if ($this->archive) {
-            $output.= '<p><a href="' . $text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
+            $output.= '<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive')) . '</a></p>';
         }
 
         return $output;
@@ -92,11 +92,11 @@ class ArticleListView extends View {
             }
             // Category
             $returnValue.= $text->t('main.category') . ": ";
-            $returnValue.= '<a href="' . $text->getUrlPage("category", $article->categoryId) . '">';
+            $returnValue.= '<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">';
             $returnValue.= htmlSpecialChars($article->category) . '</a>';
             // Author
             $returnValue.= " - " . $text->t('articles.author') . ": ";
-            $returnValue.= '<a href="' . $text->getUrlPage("account", $article->authorId) . '">';
+            $returnValue.= '<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">';
             $returnValue.= htmlSpecialChars($article->author) . "</a>";
             // Pinned
             if ($article->pinned) {
@@ -122,10 +122,10 @@ class ArticleListView extends View {
         $returnValue.= '</p>';
         $returnValue.= '<p class="article_teaser_links">';
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' .  $text->getUrlPage("article", $article->getId()) . '">' . $text->t('main.read') . '</a>';
+        $returnValue.= '<a class="arrow" href="' .  $text->e($text->getUrlPage("article", $article->getId())) . '">' . $text->t('main.read') . '</a>';
         if ($show_edit_delete_links) {
-            $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("edit_article", $article->getId()) . '">' . $text->t('main.edit') . '</a>' . //edit
-                    '<a class="arrow" href="' . $text->getUrlPage("delete_article", $article->getId()) . '">' . $text->t('main.delete') . '</a>'; //delete
+            $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $article->getId())) . '">' . $text->t('main.edit') . '</a>' . //edit
+                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $article->getId())) . '">' . $text->t('main.delete') . '</a>'; //delete
         }
         $returnValue.= "</p>";
         $returnValue.= "</div>";
@@ -143,8 +143,9 @@ class ArticleListView extends View {
      * @return string The linked HTML.
      */
     private function encloseInArticleLink(Article $article, $html) {
+        $text = $this->text;
         return <<<LINKED
-            <a class="disguised_link" href="{$this->text->getUrlPage("article", $article->getId())}">
+            <a class="disguised_link" href="{$text->e($text->getUrlPage("article", $article->getId()))}">
                 $html
             </a>
 LINKED;

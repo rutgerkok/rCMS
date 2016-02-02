@@ -62,9 +62,9 @@ class ArticleDeleteView extends View {
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
-        $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.home") . '</a> ';
+        $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlMain()) . '">' . $text->t("main.home") . '</a> ';
         if ($this->showAdminPageLink) {
-            $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
+            $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlMain()) . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";
         return $returnValue;
@@ -78,9 +78,9 @@ class ArticleDeleteView extends View {
         $returnValue.= "</p>\n";
 
         $returnValue.= "<p>";
-        $returnValue.= '<a class="arrow" href="' . $text->getUrlPage("article", $article->getId()) . '">' . $text->t("articles.view") . '</a> ';
+        $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlPage("article", $article->getId())) . '">' . $text->t("articles.view") . '</a> ';
         if ($this->showAdminPageLink) {
-            $returnValue.= '<a class="arrow" href="' . $text->getUrlMain() . '">' . $text->t("main.admin") . '</a> ';
+            $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlMain()) . '">' . $text->t("main.admin") . '</a> ';
         }
         $returnValue.= "</p>";
         return $returnValue;
@@ -93,7 +93,7 @@ class ArticleDeleteView extends View {
         $returnValue = <<<EOT
             <p>{$text->t('articles.delete.confirm')}</p>
             <p>
-                <a class="button primary_button" href="{$text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams)}">
+                <a class="button primary_button" href="{$text->e($text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams))}">
                     {$text->t("main.yes")}
                 </a>
 EOT;
@@ -102,13 +102,13 @@ EOT;
             // Option to hide article is only relevant when the article
             // isn't already hidden
             $returnValue.= <<<EOT
-                <a class="button" href="{$text->getUrlPage("delete_article", $article->getId(), $hideUrlParams)}">
+                <a class="button" href="{$text->e($text->getUrlPage("delete_article", $article->getId(), $hideUrlParams))}">
                     {$text->t("articles.delete.make_hidden_instead")}
                 </a>
 EOT;
         }
         $returnValue.= <<<EOT
-                <a class="button" href="{$text->getUrlPage("article", $article->getId())}">
+                <a class="button" href="{$text->e($text->getUrlPage("article", $article->getId()))}">
                     {$text->t("main.no")}
                 </a>
             </p>
