@@ -1,4 +1,7 @@
-<?php namespace Rcms\Core; ?>
+<?php namespace Rcms\Core;
+
+use Zend\Diactoros\Uri;
+?>
 
 <h2><?php echo $this->t("links.edit") ?></h2>
 <?php
@@ -37,7 +40,7 @@ if ($loggedIn) {
             }
             if ($valid) {
                 // Validated, update
-                if ($oMenus->updateLink($link_id, $link_url, $link_text)) {
+                if ($oMenus->updateLink($link_id, new Uri($link_url), $link_text)) {
                     $textToDisplay.="<p><em>" . $this->t("main.link") . " " . $this->t("editor.is_edited") . "</em></p>";
                 } else {
                     // System error

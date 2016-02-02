@@ -3,6 +3,9 @@
 namespace Rcms\Core;
 
 use PDOException;
+
+use Psr\Http\Message\UriInterface;
+
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
@@ -120,10 +123,10 @@ class LinkRepository extends Repository {
      * Adds a link to a menu. Returns whether successfull. Show an error when
      * there was an error.
      * @param int $menu_id Id of the menu. The id is not checked, only casted.
-     * @param string $link_url Url of the link.
+     * @param UriInterface $link_url Url of the link.
      * @param string $link_text Display text of the link.
      */
-    public function addLink($menu_id, $link_url, $link_text) {
+    public function addLink($menu_id, UriInterface $link_url, $link_text) {
         $link = Link::createSaveable(0, $menu_id, $link_url, $link_text);
         try {
             $this->saveEntity($link);

@@ -1,4 +1,7 @@
-<?php namespace Rcms\Core; ?>
+<?php namespace Rcms\Core;
+
+use Zend\Diactoros\Uri;
+?>
 
 <h2><?php echo $this->t("links.create") ?></h2>
 <?php
@@ -36,7 +39,7 @@ if ($loggedIn) {
         }
         if ($valid) {
             // Save
-            if ($oMenus->addLink($menu_id, $link_url, $link_text)) {
+            if ($oMenus->addLink($menu_id, new Uri($link_url), $link_text)) {
                 $show_form = false; // Don't show form on success
 
                 $textToDisplay.= "<p>" . $this->t("main.link") . " " . $this->t("editor.is_created") . "</p>";
