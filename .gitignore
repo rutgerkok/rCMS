@@ -14,5 +14,10 @@ Desktop.ini
 # Composer
 /vendor/
 
+# Eclipse
+/.project
+/.buildpath
+/.settings/
+
 # Config file
 /config.php
