@@ -62,7 +62,7 @@ class ArticleListView extends View {
 
         // Archive link
         if ($this->archive) {
-            $output.= '<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId) . '" class="arrow">' . $text->t('articles.archive')) . '</a></p>';
+            $output.= '<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId)) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
         }
 
         return $output;
