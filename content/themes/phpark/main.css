@@ -40,11 +40,11 @@ li {
 
 /* Login screen */
 #login {
-    background:#e4f2e9;
+    background: white;
     width: 50%;
     margin: 100px auto auto auto;
     padding: 25px;
-    box-shadow: white 0 0 20px;
+    box-shadow: #9a9a79 0 0 20px;
 }
 /* body and container */
 body {

@@ -564,9 +564,8 @@ p.intro {
  * Site login screen
  */
 #login {
-    background:#eeeeee;
+    background: #f4f4f4;
     width: 50%;
-    margin: 100px auto auto auto;
+    margin: 100px auto;
     padding:25px;
-    box-shadow: white 0 0 20px;
 }
