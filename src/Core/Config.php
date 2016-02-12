@@ -30,6 +30,8 @@ class Config {
     const OPTION_DATABASE_TABLE_PREFIX = "database_table_prefix";
     const OPTION_DATABASE_VERSION = "database_version";
 
+    const OPTION_ACCESS_CODE = "password";
+
     private $config = array();
 
     /**

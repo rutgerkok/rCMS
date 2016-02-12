@@ -1,0 +1,5 @@
+_=Vertalingen voor de toegangscode van de site
+key_request=Vul de code in om toegang te krijgen tot deze site.
+key_required=Toeganscode vereist
+access_granted=Deze toegangscode is correct. U heeft nu toegang tot de site.
+entered_wrong_key=Deze toegangscode is incorrect. Probeer het nogmaals.

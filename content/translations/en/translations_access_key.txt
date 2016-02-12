@@ -1,0 +1,5 @@
+_=Translations for the site access key
+key_request=Fill in the code to get access to the site.
+key_required=Access key required
+access_granted=The key you entered was correct. You now have access to the site.
+entered_wrong_key=That key is incorrect. Please try again.

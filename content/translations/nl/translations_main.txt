@@ -32,7 +32,6 @@ ok=OK
 cancel=Annuleren
 fields_required=Velden met een <span class="required">*</span> zijn verplicht.
 site_settings=Siteinstellingen
-code_request=Vul de code in om toegang te krijgen tot deze site.
 widget=Widget
 widgets=Widgets
 welcome_user=Hallo, {0}!

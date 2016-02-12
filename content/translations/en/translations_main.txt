@@ -32,7 +32,6 @@ ok=OK
 cancel=Cancel
 fields_required=Fields with a <span class="required">*</span> are required.
 site_settings=Site settings
-code_request=Fill in the code to get access to the site.
 widget=Widget
 widgets=Widgets
 welcome_user=Welcome, {0}!
