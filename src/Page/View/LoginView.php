@@ -52,15 +52,16 @@ class LoginView extends View {
 EOT;
         }
         $returnValue.= <<<EOT
-            <form method="post" action="{$text->e($formUrl)}">
-                <h3>$loginText</h3>
-                <p>
-                    <label for="user">{$text->t('users.username_or_email')}:</label> <br />
-                    <input type="text" name="user" id="user" autofocus="autofocus" /> <br />
-                    <label for="pass">{$text->t('users.password')}:</label> <br />
-                    <input type="password" name="pass" id="pass" /> <br />
+            <div id="login">
+                <form method="post" action="{$text->e($formUrl)}">
+                    <h3>$loginText</h3>
+                    <p>
+                        <label for="user">{$text->t('users.username_or_email')}:</label> <br />
+                        <input type="text" name="user" id="user" autofocus="autofocus" /> <br />
+                        <label for="pass">{$text->t('users.password')}:</label> <br />
+                        <input type="password" name="pass" id="pass" /> <br />
 
-                    <input type="submit" value="{$text->t('main.log_in')}" class="button primary_button" />
+                        <input type="submit" value="{$text->t('main.log_in')}" class="button primary_button" />
 
 EOT;
         // Repost all POSTed variables (GET variables will be part of the URL above)
@@ -73,8 +74,9 @@ EOT;
 
         // End form and return it
         $returnValue.= <<<EOT
-                </p>
-            </form>
+                    </p>
+                </form>
+            </div>
 EOT;
         return $returnValue;
     }
