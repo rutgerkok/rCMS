@@ -231,7 +231,7 @@ EOT;
 EOT;
         // Nog de laatste link?
         if (!($this->page instanceof HomePage)) {
-            $title = $page->getShortPageTitle();
+            $title = $this->page->getShortPageTitle($this->website->getText());
             echo '<a href="#">' . $title . '</a>';
         }
     }
