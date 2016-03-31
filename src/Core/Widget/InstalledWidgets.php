@@ -3,8 +3,7 @@
 namespace Rcms\Core\Widget;
 
 use LogicException;
-use Rcms\Core\Document\Document;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\InfoFile;
 use Rcms\Core\Website;
 
 /**
@@ -64,7 +63,7 @@ class InstalledWidgets {
                 continue;
             }
 
-            $widgets[] = new WidgetInfoFile($file, $directoryToScan . $file . "/info.txt");
+            $widgets[] = new WidgetInfoFile($file, new InfoFile($directoryToScan . $file . "/info.txt"));
         }
 
         return $widgets;

@@ -17,8 +17,8 @@ class WidgetRepository extends Repository {
 
     const TABLE_NAME = "widgets";
 
-    // Reference to the Website.
-    private $website;
+    private $widgetDirectory;
+
     private $documentIdField;
     private $widgetDataField;
     private $widgetIdField;
@@ -27,7 +27,7 @@ class WidgetRepository extends Repository {
 
     public function __construct(Website $website) {
         parent::__construct($website->getDatabase());
-        $this->website = $website;
+        $this->widgetDirectory = $website->getUriWidgets();
 
         $this->documentIdField = new Field(Field::TYPE_INT, "documentId", "sidebar_id");
         $this->widgetDataField = new Field(Field::TYPE_JSON, "widgetData", "widget_data");
@@ -37,7 +37,7 @@ class WidgetRepository extends Repository {
     }
 
     public function createEmptyObject() {
-        return new PlacedWidget($this->website->getUriWidgets());
+        return new PlacedWidget($this->widgetDirectory);
     }
 
     public function getTableName() {
@@ -52,34 +52,6 @@ class WidgetRepository extends Repository {
         return array($this->widgetIdField, $this->widgetDataField,
             $this->widgetNameField, $this->widgetPriorityField,
             $this->documentIdField);
-    }
-
-    /**
-     * Gets a list of all installed widgets.
-     * @return WidgetInfoFile[] List of all installed widgets.
-     * @deprecated Use the method on InstalledWidgets instead.
-     */
-    public function getInstalledWidgets() {
-        $widgets = array();
-        $directoryToScan = $this->website->getUriWidgets();
-
-        // Check directory
-        if (!is_dir($directoryToScan)) {
-            return;
-        }
-
-        // Scan it
-        $files = scanDir($directoryToScan);
-        foreach ($files as $file) {
-            if ($file[0] != '.') {
-                // Ignore hidden files and directories above this one
-                if (is_dir($directoryToScan . $file)) {
-                    $widgets[] = new WidgetInfoFile($file, $directoryToScan . $file . "/info.txt");
-                }
-            }
-        }
-
-        return $widgets;
     }
 
     /**

@@ -6,14 +6,14 @@ namespace Rcms\Core;
  * An InfoFile is a file that contains information about a piece of software on
  * the site, like a file describing a widget.
  */
-abstract class InfoFile {
+class InfoFile {
 
     private $inited;
     protected $infoFile;
     protected $settingsMap;
 
-    protected function __construct($file) {
-        $this->infoFile = $file;
+    public function __construct($file) {
+        $this->infoFile = (string) $file;
     }
 
     /**

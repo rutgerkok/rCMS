@@ -5,6 +5,7 @@ namespace Rcms\Core\Widget;
 use InvalidArgumentException;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\InfoFile;
 use Rcms\Core\Repository\Entity;
 
 /**
@@ -106,10 +107,10 @@ class PlacedWidget extends Entity {
 
     /**
      * Gets the file where the widget metadata is stored.
-     * @return string The file.
+     * @return InfoFile The file.
      */
     public function getWidgetInfoFile() {
-        return $this->baseDirectory . '/' . $this->widgetName . "/info.txt";
+        return new InfoFile($this->baseDirectory . '/' . $this->widgetName . "/info.txt");
     }
 
     /**

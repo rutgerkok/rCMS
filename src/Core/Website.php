@@ -355,16 +355,6 @@ class Website {
         }
     }
 
-    /**
-     * Returns the number of sidebars that this theme supports. Won't work
-     * if echoPage is not yet called.
-     * @return int The number of sidebars.
-     */
-    public function getThemeWidgetAreaCount() {
-        // Defined sidebars plus one for the homepage
-        return count($this->getThemeManager()->getCurrentTheme()->getWidgetAreas($this)) + 1;
-    }
-
     // Translations, see documentation is Messages class.
     public function t($key) {
         return $this->text->t($key);

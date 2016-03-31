@@ -7,21 +7,25 @@ use Rcms\Core\InfoFile;
 /**
  * Stores metadata about a widget definition, comes from a widget info file.
  */
-class WidgetInfoFile extends InfoFile {
+final class WidgetInfoFile {
 
     private $widgetName;
+    /**
+     * @var InfoFile File with metadata of the widget.
+     */
+    private $infoFile;
 
-    public function __construct($widgetName, $infoFile) {
-        parent::__construct($infoFile);
+    public function __construct($widgetName, InfoFile $infoFile) {
         $this->widgetName = $widgetName;
+        $this->infoFile = $infoFile;
     }
 
     public function getName() {
-        return $this->getString("name", $this->widgetName);
+        return $this->infoFile->getString("name", $this->widgetName);
     }
 
     public function getDescription() {
-        return $this->getString("description", "No description given");
+        return $this->infoFile->getString("description", "No description given");
     }
 
     public function getDirectoryName() {
@@ -29,7 +33,7 @@ class WidgetInfoFile extends InfoFile {
     }
 
     public function getVersion() {
-        return $this->getString("version", "0.0.1");
+        return $this->infoFile->getString("version", "0.0.1");
     }
 
     public function getAuthor() {
@@ -37,11 +41,11 @@ class WidgetInfoFile extends InfoFile {
     }
 
     public function getAuthorWebsite() {
-        return $this->getString("author.website");
+        return $this->infoFile->getString("author.website");
     }
 
     public function getWidgetWebsite() {
-        return $this->getString("website");
+        return $this->infoFile->getString("website");
     }
 
 }

@@ -4,22 +4,23 @@ namespace Rcms\Core;
 
 use BadMethodCallException;
 
-class Theme extends InfoFile {
+final class Theme {
 
     private $name;
+    /**
+     * @var InfoFile File with metadata of the theme.
+     */
+    private $infoFile;
 
     /**
      * Loads a theme.
      * @param string $name Name of the (directory of the) theme.
-     * @param string $file Path to the info.txt file of the theme.
+     * @param InfoFile $infoFile Path to the info.txt file of the theme.
      * @throws BadMethodCallException If the info.txt file doesn't exist.
      */
-    public function __construct($name, $file) {
-        parent::__construct($file);
-        if (!file_exists($file)) {
-            throw new BadMethodCallException("The file " . htmlSpecialChars($file) . " doesn't exist.");
-        }
+    public function __construct($name, InfoFile $infoFile) {
         $this->name = $name;
+        $this->infoFile = $infoFile;
     }
 
     /**
@@ -62,7 +63,7 @@ class Theme extends InfoFile {
      * @return string The color, in the format #aaaaaa.
      */
     public function getTextEditorColor() {
-        return $this->getString("editor_color", "#cccccc");
+        return $this->infoFile->getString("editor_color", "#cccccc");
     }
 
     /**
@@ -71,7 +72,7 @@ class Theme extends InfoFile {
      * still possible to load the theme, this stylesheet is used for that page.
      */
     public function getErrorPageStylesheet() {
-        return $this->getString("styles.error_page", "main.css");
+        return $this->infoFile->getString("styles.error_page", "main.css");
     }
 
 }

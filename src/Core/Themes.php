@@ -24,7 +24,7 @@ class Themes {
      */
     private function loadTheme($themeName) {
         $themeDirectory = $this->website->getUriThemes() . $themeName . "/";
-        $themeInfoFile = $themeDirectory . self::THEME_INFO_FILE_NAME;
+        $themeInfoFile = new InfoFile($themeDirectory . self::THEME_INFO_FILE_NAME);
         return new Theme($themeName, $themeInfoFile);
     }
 
