@@ -3,9 +3,9 @@
 namespace Rcms\Page\Renderer;
 
 use Rcms\Core\CategoryRepository;
+use Rcms\Core\Config;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
-use Rcms\Core\ThemeMeta;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
 
@@ -23,8 +23,8 @@ class PageRenderer {
     /** @var Website The website instance. */
     private $website;
 
-    /** @var ThemeMeta The theme used to render the page. */
-    private $theme;
+    /** @var string The theme used to render the page. */
+    private $themeDirectoryName;
 
     /** @var Page The renderer of the page. */
     private $page;
@@ -41,7 +41,7 @@ class PageRenderer {
     public function __construct(Website $website, Request $request, Page $page) {
         $this->website = $website;
         $this->request = $request;
-        $this->theme = $website->getThemeManager()->getCurrentTheme();
+        $this->themeDirectoryName = $website->getConfig()->get(Config::OPTION_THEME);
         $this->page = $page;
     }
 
@@ -50,7 +50,7 @@ class PageRenderer {
      * @param string $file Path to the file.
      */
     public function render() {
-        require($this->website->getThemeManager()->getThemeFile($this->theme));
+        require $this->website->getThemeManager()->getMainFile($this->themeDirectoryName);
     }
 
     /**
@@ -58,7 +58,7 @@ class PageRenderer {
      * @return The url.
      */
     public function getUrlTheme() {
-        return $this->website->getThemeManager()->getUrlTheme($this->theme);
+        return $this->website->getThemeManager()->getUrlTheme($this->themeDirectoryName);
     }
 
     /**

@@ -55,7 +55,7 @@ class SiteSettingsPage extends Page {
     }
 
     public function getPageContent(Website $website, Request $request) {
-        $themes = $this->get_sub_directory_names($website->getUriThemes());
+        $themes = $website->getThemeManager()->getAllThemeNames();
         $languages = $this->get_sub_directory_names($website->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';
         $top_message = $website->t("site_settings.editing_site_settings.explained");
@@ -170,7 +170,7 @@ EOT;
 
         // Theme
         $theme = $website->getRequestString("option_theme", $this->theme);
-        if (is_dir($website->getUriThemes() . $theme . '/')) {
+        if ($website->getThemeManager()->themeExists($theme)) {
             $this->theme = $theme;
             $config->set($database, "theme", $theme);
         } else {

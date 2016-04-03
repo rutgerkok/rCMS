@@ -31,6 +31,7 @@ class Config {
     const OPTION_DATABASE_VERSION = "database_version";
 
     const OPTION_ACCESS_CODE = "password";
+    const OPTION_THEME = "theme";
 
     private $config = array();
 

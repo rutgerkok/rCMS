@@ -2,18 +2,44 @@
 
 namespace Rcms\Core;
 
+use BadMethodCallException;
+
 class Themes {
 
     const THEME_INFO_FILE_NAME = "info.txt";
 
-    private $website; //bewaart het website-object
-    private $theme;
+    /**
+     * @var Website The website object.
+     */
+    private $website;
 
     public function __construct(Website $website) {
         $this->website = $website;
+    }
 
-        // Load theme info file
-        $this->theme = $this->getThemeMeta($website->getConfig()->get("theme"));
+    /**
+     * Gets the directory name of all themes that exist. In other words, this
+     * method returns all possible values for which self::themeExists returns
+     * true.
+     * @return string[] All theme directory names.
+     */
+    public function getAllThemeNames() {
+        $themesDir = $this->website->getUriThemes();
+
+        $rawFiles = scanDir($themesDir);
+        return array_filter($rawFiles, function ($fileName) use ($themesDir) {
+            if ($fileName[0] === '.') {
+                // Directories starting with . should be ignored. This includes
+                //  "./", "../", ".somehiddentheme/"
+                return false;
+            }
+            if (!is_dir($themesDir . $fileName)) {
+                // Only include directories
+                return false;
+            }
+
+            return true;
+        });
     }
 
     /**
@@ -24,6 +50,9 @@ class Themes {
      */
     private function getThemeMeta($themeName) {
         $themeDirectory = $this->website->getUriThemes() . $themeName . "/";
+        if (!is_dir($themeDirectory)) {
+            throw new BadMethodCallException("Theme {$themeName} doesn't exist");
+        }
         $themeInfoFile = new InfoFile($themeDirectory . self::THEME_INFO_FILE_NAME);
         return new ThemeMeta($themeName, $themeInfoFile);
     }
@@ -39,11 +68,11 @@ class Themes {
     }
 
     /**
-     * Gets the main.php file that echoes the whole page.
-     * @param ThemeMeta $theme The theme.
+     * Gets the main theme file.
+     * @param string $themeDirectoryName The theme directory name.
      */
-    public function getThemeFile(ThemeMeta $theme) {
-        return $this->getUriTheme($theme) . "main.php";
+    public function getMainFile($themeDirectoryName) {
+        return $this->getUriTheme($themeDirectoryName) . "main.php";
     }
 
     /**
@@ -51,33 +80,25 @@ class Themes {
      * @return ThemeMeta The theme.
      */
     public function getCurrentTheme() {
-        return $this->theme;
+        return $this->getThemeMeta($website->getConfig()->get(Config::OPTION_THEME));
     }
 
     /**
      * Gets the uri of theme directory.
-     * @param ThemeMeta $theme The theme to get the uri for, use null for the
-     *  current theme.
+     * @param string $themeDirectoryName The theme directory name.
      * @return string The uri.
      */
-    public function getUriTheme($theme = null) {
-        if ($theme == null) {
-            $theme = $this->theme;
-        }
-        return $this->website->getUriThemes() . $theme->getName() . "/";
+    private function getUriTheme($themeDirectoryName) {
+        return $this->website->getUriThemes() . $themeDirectoryName . "/";
     }
 
     /**
      * Gets the url of theme directory.
-     * @param ThemeMeta $theme The theme to get the url for, use null for the
-     *  current theme.
-     * @return string The uri.
+     * @param string $themeDirectoryName The theme directory name.
+     * @return string The url.
      */
-    public function getUrlTheme($theme = null) {
-        if ($theme == null) {
-            $theme = $this->theme;
-        }
-        return $this->website->getUrlThemes() . $theme->getName() . "/";
+    public function getUrlTheme($themeDirectoryName) {
+        return $this->website->getUrlThemes() . $themeDirectoryName . "/";
     }
 
 }
