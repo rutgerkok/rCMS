@@ -13,35 +13,19 @@ class Themes {
         $this->website = $website;
 
         // Load theme info file
-        $this->theme = $this->loadTheme($website->getConfig()->get("theme"));
+        $this->theme = $this->getThemeMeta($website->getConfig()->get("theme"));
     }
 
     /**
      * Loads the theme with the given directory name.
      * @param string $themeName The directory name, like "my_theme".
-     * @return Theme The loaded theme.
+     * @return ThemeMeta The loaded theme.
      * @throws BadMethodCallException If no theme with that name exists.
      */
-    private function loadTheme($themeName) {
+    private function getThemeMeta($themeName) {
         $themeDirectory = $this->website->getUriThemes() . $themeName . "/";
         $themeInfoFile = new InfoFile($themeDirectory . self::THEME_INFO_FILE_NAME);
-        return new Theme($themeName, $themeInfoFile);
-    }
-
-    /**
-     * Gets the theme with the given name.
-     * @param string $directoryName Name of the directory of the theme,
-     *  like "my_theme".
-     * @return Theme|null The theme, or null if not found.
-     */
-    public function getTheme($directoryName) {
-        if ($this->theme->getName() == $directoryName) {
-            return $this->theme;
-        }
-        if ($this->themeExists($directoryName)) {
-            return loadTheme($directoryName);
-        }
-        return null;
+        return new ThemeMeta($themeName, $themeInfoFile);
     }
 
     /**
@@ -56,15 +40,15 @@ class Themes {
 
     /**
      * Gets the main.php file that echoes the whole page.
-     * @param Theme $theme The theme.
+     * @param ThemeMeta $theme The theme.
      */
-    public function getThemeFile(Theme $theme) {
+    public function getThemeFile(ThemeMeta $theme) {
         return $this->getUriTheme($theme) . "main.php";
     }
 
     /**
      * Gets the theme currently used on the site.
-     * @return Theme The theme.
+     * @return ThemeMeta The theme.
      */
     public function getCurrentTheme() {
         return $this->theme;
@@ -72,7 +56,7 @@ class Themes {
 
     /**
      * Gets the uri of theme directory.
-     * @param Theme $theme The theme to get the uri for, use null for the
+     * @param ThemeMeta $theme The theme to get the uri for, use null for the
      *  current theme.
      * @return string The uri.
      */
@@ -85,7 +69,7 @@ class Themes {
 
     /**
      * Gets the url of theme directory.
-     * @param Theme $theme The theme to get the url for, use null for the
+     * @param ThemeMeta $theme The theme to get the url for, use null for the
      *  current theme.
      * @return string The uri.
      */

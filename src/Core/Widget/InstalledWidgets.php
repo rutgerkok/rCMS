@@ -39,7 +39,7 @@ class InstalledWidgets {
 
     /**
      * Gets a list of all installed widgets.
-     * @return WidgetInfoFile[] List of all installed widgets.
+     * @return WidgetMeta[] List of all installed widgets.
      */
     public function getInstalledWidgets() {
         $widgets = array();
@@ -63,7 +63,7 @@ class InstalledWidgets {
                 continue;
             }
 
-            $widgets[] = new WidgetInfoFile($file, new InfoFile($directoryToScan . $file . "/info.txt"));
+            $widgets[] = new WidgetMeta($file, new InfoFile($directoryToScan . $file . "/info.txt"));
         }
 
         return $widgets;

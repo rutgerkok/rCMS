@@ -4,7 +4,7 @@ namespace Rcms\Core;
 
 use BadMethodCallException;
 
-final class Theme {
+final class ThemeMeta {
 
     private $name;
     /**

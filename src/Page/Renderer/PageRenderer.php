@@ -5,7 +5,7 @@ namespace Rcms\Page\Renderer;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
-use Rcms\Core\Theme;
+use Rcms\Core\ThemeMeta;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
 
@@ -23,7 +23,7 @@ class PageRenderer {
     /** @var Website The website instance. */
     private $website;
 
-    /** @var Theme The theme used to render the page. */
+    /** @var ThemeMeta The theme used to render the page. */
     private $theme;
 
     /** @var Page The renderer of the page. */

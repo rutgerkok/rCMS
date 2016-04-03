@@ -123,10 +123,10 @@ class PlacedWidget extends Entity {
 
     /**
      * Returns info about this widget provided by the author.
-     * @return WidgetInfoFile Info about the widget.
+     * @return WidgetMeta Info about the widget.
      */
     public function getWidgetInfo() {
-        return new WidgetInfoFile($this->widgetName, $this->getWidgetInfoFile());
+        return new WidgetMeta($this->widgetName, $this->getWidgetInfoFile());
     }
 
     /**

@@ -7,7 +7,7 @@ use Rcms\Core\InfoFile;
 /**
  * Stores metadata about a widget definition, comes from a widget info file.
  */
-final class WidgetInfoFile {
+final class WidgetMeta {
 
     private $widgetName;
     /**
