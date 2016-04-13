@@ -11,7 +11,7 @@ use Rcms\Core\Website;
 
 use Rcms\Theme\PageRenderer;
 
-use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Stream;
 
 /**
  * Represents a page on the website.
@@ -129,20 +129,18 @@ abstract class Page {
         }
         return $returnValue;
     }
+    
+    public function getResponse() {
+        
+    }
 
     /**
-     * Gets the HTTP response for this page.
-     * @param Website $website The website.
-     * @param Request $request The request.
-     * @return ResponseInterface The response.
+     * Modifies the details of the HTTP response for this page.
+     * @param ResponseInterface $response The response.
+     * @return ResponseInterface The modified response.
      */
-    public function getResponse(Website $website, Request $request) {
-        $pageRenderer = new PageRenderer($website, $request, $this);
-        ob_start();
-        $pageRenderer->render();
-        $html = ob_get_contents();
-        ob_end_clean();
-        return new HtmlResponse($html);
+    public function modifyResponse(ResponseInterface $response) {
+        return $response;
     }
 
 }

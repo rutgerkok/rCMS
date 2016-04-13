@@ -2,9 +2,11 @@
 
 namespace Rcms\Core;
 
-use Rcms\Page\Renderer\ResponseFactory;
+use Rcms\Page\Renderer\AccessKeyCheck;
+use Rcms\Page\Renderer\PageResponder;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\Response\HtmlResponse;
 
 // Setup environment
 require("environment.php");
@@ -14,7 +16,14 @@ session_start();
 
 // Display site
 $website = new Website();
-$responseFactory = new ResponseFactory($website);
-$response = $responseFactory(ServerRequestFactory::fromGlobals());
+$pageResponder = new PageResponder($website);
+$accessKeyCheck = new AccessKeyCheck($website);
+$sessionHeadersHandler = new SessionHeadersHandler();
+
+$request = ServerRequestFactory::fromGlobals();
+$response = new HtmlResponse("");
+
+$response = $accessKeyCheck($request, $response, $pageResponder);
+
 $responseEmitter = new SapiEmitter();
 $responseEmitter->emit($response);

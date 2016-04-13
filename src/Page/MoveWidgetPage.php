@@ -12,9 +12,8 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
+use Rcms\Page\Renderer\Responses;
 use Rcms\Page\View\WidgetDetailView;
-
-use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Page that moves a widget and then redirects to the document edit page.
@@ -49,11 +48,11 @@ final class MoveWidgetPage extends Page {
         return new WidgetDetailView($text, $this->installedWidgets, $this->placedWidget, $this->moveLink);
     }
     
-    public function getResponse(Website $website, Request $request) {
+    public function modifyResponse(ResponseInterface $response) {
         if ($this->redirectUrl != null) {
-            return new RedirectResponse($this->redirectUrl);
+            $response = Responses::withTemporaryRedirect($response, $this->redirectUrl);
         }
-        return parent::getResponse($website, $request);
+        return $response;
     }
 
     public function init(Website $website, Request $request) {

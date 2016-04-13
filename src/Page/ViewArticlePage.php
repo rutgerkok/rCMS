@@ -2,11 +2,11 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\ResponseInterface;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-
-use Zend\Diactoros\Response\RedirectResponse;
+use Rcms\Page\Renderer\Responses;
 
 /**
  * This class exists to redirect any old view_article
@@ -28,8 +28,8 @@ class ViewArticlePage extends Page {
         return "";
     }
 
-    public function getResponse(Website $website, Request $request) {
-        return new RedirectResponse($this->articleUrl, 301);
+    public function modifyResponse(ResponseInterface $response) {
+        return Responses::withPermanentRedirect($response, $this->articleUrl);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
 use Rcms\Core\Article;
@@ -18,10 +19,9 @@ use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
+use Rcms\Page\Renderer\Responses;
 use Rcms\Page\View\ArticleEditView;
 use Rcms\Page\View\Support\CKEditor;
-
-use Zend\Diactoros\Response\RedirectResponse;
 
 class EditArticlePage extends Page {
 
@@ -127,12 +127,11 @@ class EditArticlePage extends Page {
                 $this->token, $this->richEditor, $this->allCategories);
     }
     
-    public function getResponse(Website $website, Request $request) {
+    public function modifyResponse(ResponseInterface $response) {
         if ($this->redirectUrl != null) {
-            return new RedirectResponse($this->redirectUrl);
+            $response = Responses::withTemporaryRedirect($response, $this->redirectUrl);
         }
-        // Calling the parent method drives the call to getView
-        return parent::getResponse($website, $request);
+        return $response;
     }
 
     public function getPageType() {

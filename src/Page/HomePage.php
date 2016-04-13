@@ -2,8 +2,6 @@
 
 namespace Rcms\Page;
 
-use PDOException;
-
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -18,7 +16,7 @@ class HomePage extends Page {
     /**
      * @var PlacedWidget[] The widgets to display. 
      */
-    private $placedWidgets;
+    private $widgets;
 
     /**
      *
