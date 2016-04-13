@@ -4,6 +4,7 @@ namespace Rcms\Core;
 
 use Rcms\Page\Renderer\AccessKeyCheck;
 use Rcms\Page\Renderer\PageResponder;
+use Relay\Middleware\SessionHeadersHandler;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -23,7 +24,10 @@ $sessionHeadersHandler = new SessionHeadersHandler();
 $request = ServerRequestFactory::fromGlobals();
 $response = new HtmlResponse("");
 
-$response = $accessKeyCheck($request, $response, $pageResponder);
+$response = $sessionHeadersHandler($request, $response, function($request, $response)
+        use ($accessKeyCheck, $pageResponder) {
+    return $accessKeyCheck($request, $response, $pageResponder);
+});
 
 $responseEmitter = new SapiEmitter();
 $responseEmitter->emit($response);
