@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Widget\InstalledWidgets;
+use Rcms\Theme\ThemeManager;
 use Zend\Diactoros\Uri;
 
 class Website {
@@ -17,7 +18,7 @@ class Website {
     /** @var TablePrefixedPDO The main database */
     protected $databaseObject;
 
-    /** @var Themes Themes object */
+    /** @var ThemeManager Themes object */
     protected $themesObject;
 
     /** @var Config Settings of the site. */
@@ -76,7 +77,7 @@ class Website {
         } else {
             $this->authenticationObject = new Authentication($this, new UserRepository($this->databaseObject));
         }
-        $this->themesObject = new Themes($this);
+        $this->themesObject = new ThemeManager($this);
 
         // Workarounds for older PHP versions (5.3)
         $this->requireFunctions("http_response_code");
@@ -124,7 +125,7 @@ class Website {
     /**
      * Gets the theme manager. Returns null if the theme hasn't been loaded yet
      * (before echo_page is called).
-     * @return Themes The theme manager.
+     * @return ThemeManager The theme manager.
      */
     public function getThemeManager() {
         return $this->themesObject;

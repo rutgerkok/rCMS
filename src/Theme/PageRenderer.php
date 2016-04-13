@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcms\Page\Renderer;
+namespace Rcms\Theme;
 
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Config;

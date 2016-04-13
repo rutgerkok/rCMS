@@ -1,6 +1,8 @@
 <?php
 
-namespace Rcms\Core;
+namespace Rcms\Theme;
+
+use Rcms\Core\InfoFile;
 
 use BadMethodCallException;
 

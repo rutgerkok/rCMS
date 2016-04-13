@@ -25,7 +25,7 @@ class CKEditor implements RichEditor {
     /** @var Themes The theme manager of the website. */
     private $themes;
 
-    public function __construct(Text $text, Config $config, Themes $themes) {
+    public function __construct(Text $text, Config $config, ThemeManager $themes) {
         $this->text = $text;
         $this->config = $config;
         $this->themes = $themes;

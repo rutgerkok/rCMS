@@ -9,7 +9,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\Renderer\PageRenderer;
+use Rcms\Theme\PageRenderer;
 
 use Zend\Diactoros\Response\HtmlResponse;
 

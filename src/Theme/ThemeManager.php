@@ -1,10 +1,13 @@
 <?php
 
-namespace Rcms\Core;
+namespace Rcms\Theme;
+
+use Rcms\Core\InfoFile;
+use Rcms\Core\Website;
 
 use BadMethodCallException;
 
-class Themes {
+class ThemeManager {
 
     const THEME_INFO_FILE_NAME = "info.txt";
 
