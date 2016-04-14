@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use DateTime;
 use DateInterval;
 use Rcms\Core\Text;
@@ -86,15 +87,16 @@ class CalendarView extends View {
         return $weekDayNames;
     }
 
-    public function getText() {
-        return <<<CALENDAR
+    public function writeText(StreamInterface $stream) {
+        $stream->write(<<<CALENDAR
             <table style="width:97%;max-width:291px">
                 <tr>
                     {$this->getTableHeader()}
                 </tr>
                 {$this->getTableBody()}
             </table>
-CALENDAR;
+CALENDAR
+        );
     }
 
     /**

@@ -1,77 +1,91 @@
 <?php
+
+namespace Rcms\Extend\Theme;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Page\Page;
+use Rcms\Theme\Theme;
+use Rcms\Theme\ThemeElements;
 
-?>
+class DatascienceTheme extends Theme {
+
+     public function render(StreamInterface $stream, ThemeElements $elements) {
+        $contentId = 'content';
+        if ($elements->getPageType() === Page::TYPE_BACKSTAGE) {
+            $contentId = 'contentadmin';
+        } else if ($elements->getPageType() === Page::TYPE_NORMAL) {
+            $contentId = 'contentwide';
+        }
+
+        $stream->write('
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-        <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" >
+
+        <link href="' . $elements->getUrlTheme() . 'main.css" rel="stylesheet" type="text/css" />
+        <script src="' . $elements->getUrlJavaScripts() . 'tooltip.js"></script>
         <!--[if lte IE 8]>
-            <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
+            <script src="' . $elements->getUrlJavaScripts() . 'html5.js"></script>
         <![endif]-->
-        <title><?php echo $this->getHeaderTitle(); ?></title>
+        <title>' . $elements->getHeaderTitle() . '</title>
     </head>
     <body>
         <div id="container">
             <div id="containerwrapper">
                 <div id="breadcrumbs">
-<?php $this->echoBreadcrumbs(); ?>
+                    '); $elements->writeBreadcrumbs($stream); $stream->write('
                     <ul id="accountlinks">
-                    <?php $this->echoAccountsMenu(); ?>
+                        '); $elements->writeAccountsMenu($stream); $stream->write('
                     </ul>
                 </div>
                 <div id="header">
                     <div id="search">
-<?php $this->echoSearchForm(); ?>
+                        '); $elements->writeSearchForm($stream); $stream->write('
                     </div>
-                    <h1>
-<?php echo $this->getHeaderTitle(); ?>
-                    </h1>
-                </div>
+                    <h1>' . $elements->getHeaderTitle() . '</h1>
+                </div> <!-- id="header" -->
                 <div id="hornav">
                     <ul>
-<?php $this->echoTopMenu(); ?>
+                        '); $elements->writeTopMenu($stream); $stream->write('
                     </ul>
-                </div>
-                <div <?php
-if ($this->getPageType() === Page::TYPE_HOME) {
-    echo 'id="content"';
-} elseif ($this->getPageType() === Page::TYPE_BACKSTAGE) {
-    echo 'id="contentadmin"';
-} else { // so $this->get_page_type() === Page::TYPE_NORMAL
-    echo 'id="contentwide"';
-}
-?> >
+                </div> <!-- id="hornav" -->
+                <div id="' . $contentId . '" >
                     <!-- Einde header -->
 
-<?php $this->echoPageContent(); ?>
+                    '); $elements->writePageContent($stream); $stream->write('
 
                     <!-- Begin footer -->
 
                 </div><!-- id="content"/"contentwide" -->
-
-<?php if ($this->getPageType() === Page::TYPE_HOME) { ?>
+                ');
+                if ($elements->getPageType() == Page::TYPE_HOME) {
+                    $stream->write('
                     <div id="homepage_sidebar_1">
-                    <?php $this->echoWidgets(2); ?>
-                        &nbsp;
+                        '); $elements->writeWidgets($stream, 2); $stream->write('
                     </div>
                     <div id="homepage_sidebar_2">
-    <?php $this->echoWidgets(3); ?>
-                        &nbsp;
+                        '); $elements->writeWidgets($stream, 3); $stream->write('
                     </div>
-<?php } ?>
+                    ');
+                }
 
+                $stream->write('
                 <div id="footer">
-<?php $this->echoCopyright(); ?>
+                    ' . $elements->getCopyright() . '
                 </div>
             </div><!-- id="containerwrapper" -->
         </div><!-- id="container" -->
     </body>
-</html>	
+</html>
+        ');
+    }
+}
+
+return new DatascienceTheme();

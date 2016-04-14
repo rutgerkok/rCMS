@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 
@@ -36,22 +37,22 @@ class LoginView extends View {
         $this->errorMessage = $errorMessage;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $errorMessage = $this->errorMessage;
         
         $formUrl = $this->request->toPsr()->getUri();
 
         $loginText = $text->t("users.please_log_in");
-        $returnValue = "";
         if (!empty($errorMessage)) {
-            $returnValue.= <<<EOT
+            $stream->write(<<<EOT
                 <div class="error">
                     <p>$errorMessage</p>
                 </div>
-EOT;
+EOT
+            );
         }
-        $returnValue.= <<<EOT
+        $stream->write(<<<EOT
             <div id="login">
                 <form method="post" action="{$text->e($formUrl)}">
                     <h3>$loginText</h3>
@@ -63,22 +64,23 @@ EOT;
 
                         <input type="submit" value="{$text->t('main.log_in')}" class="button primary_button" />
 
-EOT;
+EOT
+        );
         // Repost all POSTed variables (GET variables will be part of the URL above)
         $postedVars = (array) $this->request->toPsr()->getParsedBody();
         foreach ($postedVars as $key => $value) {
             if ($key != "user" && $key != "pass") {
-                $returnValue.= '<input type="hidden" name="' . htmlSpecialChars($key) . '" value="' . htmlSpecialChars($value) . '" />';
+                $stream->write('<input type="hidden" name="' . $text->e($key) . '" value="' . $text->e($value) . '" />');
             }
         }
 
         // End form and return it
-        $returnValue.= <<<EOT
+        $stream->write(<<<EOT
                     </p>
                 </form>
             </div>
-EOT;
-        return $returnValue;
+EOT
+        );
     }
 
 }

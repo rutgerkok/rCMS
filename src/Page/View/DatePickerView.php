@@ -3,7 +3,7 @@
 namespace Rcms\Page\View;
 
 use DateTime;
-use Rcms\Core\Article;
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -70,10 +70,8 @@ CELL;
         return $monthList;
     }
 
-    public function getText() {
-        $table = parent::getText();
-
-        return <<<TEXT
+    public function writeText(StreamInterface $stream) {
+        $stream->write(<<<TEXT
             <script type="text/javascript">
                 {$this->getSendAndCloseFunction()}
             </script>
@@ -84,8 +82,9 @@ CELL;
                     {$this->getYearSelector()}
                 </p>
             </form>
-            {$table}
-TEXT;
+TEXT
+        );
+        parent::writeText($stream);
     }
 
     /**

@@ -2,14 +2,16 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * Renders the admin page.
  */
 class AdminPageView extends View {
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<EOT
+        $stream->write(<<<EOT
                 
             <p>
                 <a href="{$text->e($text->getUrlPage("site_settings"))}" class="arrow">{$text->t("main.site_settings")}</a><br />
@@ -50,7 +52,8 @@ class AdminPageView extends View {
                 <a href="{$text->e($text->getUrlPage("rename_category"))}" class="arrow">{$text->t("categories.rename")}</a><br />
                 <a href="{$text->e($text->getUrlPage("delete_category"))}" class="arrow">{$text->t("categories.delete")}</a>
             </p>   
-EOT;
+EOT
+        );
     }
 
 }

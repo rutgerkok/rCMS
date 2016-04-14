@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
@@ -38,18 +39,14 @@ final class WidgetsColumnView extends View {
         $this->editLinks = (boolean) $editLinks;
     }
 
-    public function getText() {
-        $output = "";
-
+    public function writeText(StreamInterface $stream) {
         // Link to manage widgets
-        $output.= $this->getWidgetsEditLinks();
+        $stream->write($this->getWidgetsEditLinks());
 
         // Output widgets
         foreach ($this->placedWidgets as $widget) {
-            $output.= $this->widgetLoader->getOutput($widget);
+            $this->widgetLoader->writeOutput($stream, $widget);
         }
-
-        return $output;
     }
 
     private function getWidgetsEditLinks() {

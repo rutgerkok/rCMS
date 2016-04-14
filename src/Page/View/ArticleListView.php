@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 use Rcms\Core\Article;
 
@@ -35,37 +36,34 @@ class ArticleListView extends View {
         $this->editLinks = (boolean) $editLinks;
     }
 
-    public function getText() {
-        $output = '';
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $loggedInStaff = $this->editLinks;
         $mainCategoryId = $this->mainCategoryId;
 
         // Link to creat new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
+            $stream->write('<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>');
         }
 
         // All articles
         if (count($this->articles) > 0) {
             foreach ($this->articles as $article) {
-                $output.= $this->getArticleTextSmall($article, $this->metainfo, $loggedInStaff);
+                $stream->write($this->getArticleTextSmall($article, $this->metainfo, $loggedInStaff));
             }
         } else {
-            $output.= "<p>" . $text->t("errors.nothing_found") . "</p>";
+            $stream->write("<p>" . $text->t("errors.nothing_found") . "</p>");
         }
 
         // Another link to create new article
         if ($loggedInStaff) {
-            $output.= '<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>';
+            $stream->write('<p><a href="' . $text->e($text->getUrlPage("edit_article", null, array("article_category" => $mainCategoryId))) . '" class="arrow">' . $text->t('articles.create') . '</a></p>');
         }
 
         // Archive link
         if ($this->archive) {
-            $output.= '<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId)) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>';
+            $stream->write('<p><a href="' . $text->e($text->getUrlPage("archive", $mainCategoryId)) . '" class="arrow">' . $text->t('articles.archive') . '</a></p>');
         }
-
-        return $output;
     }
 
     public function getArticleTextSmall(Article $article, $show_metainfo,

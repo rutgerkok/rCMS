@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Article;
 use Rcms\Core\Text;
 
@@ -200,17 +201,15 @@ NOT_FOUND;
         return $textToDisplay;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         // Archive description
-        $textToDisplay = "<p>{$this->text->t("articles.archive.explained")}</p>";
+        $stream->write("<p>{$this->text->t("articles.archive.explained")}</p>");
 
         // Menu bar
-        $textToDisplay.= $this->getMenubar();
+        $stream->write($this->getMenubar());
 
         // Display table with articles
-        $textToDisplay.= $this->getArticlesTable();
-
-        return $textToDisplay;
+        $stream->write($this->getArticlesTable());
     }
 
 }

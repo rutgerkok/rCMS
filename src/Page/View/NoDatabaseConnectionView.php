@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,16 +14,17 @@ final class NoDatabaseConnectionView extends View {
         parent::__construct($text);
     }
     
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
 
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>{$text->t("install.no_database_connection_explained")}</p>
             <p>
                 <a class="button primary_button" href="{$text->e($text->getUrlPage("install"))}">
                     {$text->t("install.retry_connection")}
                 </a>
             </p>
-HTML;
+HTML
+        );
     }
 }

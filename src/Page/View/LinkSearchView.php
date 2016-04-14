@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
 
@@ -23,27 +24,27 @@ class LinkSearchView extends View {
         $this->links = $links;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $result = "";
         if (!$this->links) {
-            return "";
+            return;
         }
 
         // Header and list start
-        $result.= '<h3 class="notable">' . $this->text->t('articles.search.results_in_links') . "</h3>\n";
-        $result.= '<ul class="linklist">';
+        $stream->write('<h3 class="notable">' . $this->text->t('articles.search.results_in_links') . "</h3>\n");
+        $stream->write('<ul class="linklist">');
 
         // Add each link
+        $text = $this->text;
         foreach ($this->links as $link) {
-            $result.= "<li>";
-            $result.= '<a href="' . htmlSpecialChars($link->getUrl()) . '">';
-            $result.= htmlSpecialChars($link->getText());
-            $result.= "</a></li>\n";
+            $stream->write("<li>");
+            $stream->write('<a href="' . $text->e($link->getUrl()) . '">');
+            $stream->write($text->e($link->getText()));
+            $stream->write("</a></li>\n");
         }
 
         // Close list and return the result
-        $result.= "</ul>\n";
-        return $result;
+        $stream->write("</ul>\n");
     }
 
 }

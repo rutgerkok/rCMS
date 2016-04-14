@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Validate;
@@ -24,7 +25,7 @@ class WidgetArticles extends WidgetDefinition {
     const SORT_NEWEST_TOP = 1;
     const SORT_OLDEST_TOP = 0;
 
-    public function getText(Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
         // Check variables
         if (!isSet($data["title"]) || !isSet($data["count"])
                 || !isSet($data["display_type"]) || !isSet($data["categories"])) {
@@ -33,12 +34,9 @@ class WidgetArticles extends WidgetDefinition {
             return;
         }
 
-        $titleHTML = "";
-
-
         // Title
         if (strLen($data["title"]) > 0) {
-            $titleHTML.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
+            $stream->write("<h2>" . htmlSpecialChars($data["title"]) . "</h2>");
         }
 
         // Get options
@@ -69,7 +67,7 @@ class WidgetArticles extends WidgetDefinition {
             $oArticlesView = new ArticleListView($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $website->isLoggedInAsStaff());
         }
 
-        return $titleHTML . $oArticlesView->getText();
+        $oArticlesView->writeText($stream);
     }
 
     public function getEditor(Website $website, $widget_id, $data) {

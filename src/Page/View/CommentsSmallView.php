@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 use Rcms\Core\Comment;
 
@@ -20,18 +21,14 @@ class CommentsSmallView extends View {
         $this->comments = $comments;
     }
 
-    public function getText() {
-        $returnValue = "";
-
+    public function writeText(StreamInterface $stream) {
         foreach ($this->comments as $comment) {
-            $returnValue.= $this->getSingleComment($comment);
+            $stream->write($this->getSingleComment($comment));
         }
 
         if (count($this->comments) == 0) {
-            $returnValue.= "<p><em>" . $this->text->t("errors.nothing_found") . "</em></p>\n";
+            $stream->write("<p><em>" . $this->text->t("errors.nothing_found") . "</em></p>\n");
         }
-
-        return $returnValue;
     }
 
     protected function getSingleComment(Comment $comment) {

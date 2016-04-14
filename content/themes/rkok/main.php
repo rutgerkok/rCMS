@@ -1,74 +1,124 @@
 <?php
+
+namespace Rcms\Extend\Theme;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Page\Page;
+use Rcms\Theme\Theme;
+use Rcms\Theme\ThemeElements;
 
-?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" >
+class RkokTheme extends Theme {
 
-            <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-            <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
-            <!--[if lte IE 8]>
-                <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
-            <![endif]-->
-            <title><?php echo $this->getHeaderTitle(); ?></title>
-    </head>
-    <body <?php
-    if ($this->isLoggedIn()) {
-        echo 'class="logged_in"';
+    private function renderHead(StreamInterface $stream, ThemeElements $elements) {
+        $stream->write(<<<HTML
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" >
+
+                    <link href="{$elements->getUrlTheme()}main.css" rel="stylesheet" type="text/css" />
+                    <script src="{$elements->getUrlJavaScripts()}tooltip.js"></script>
+                    <!--[if lte IE 8]>
+                        <script src="{$elements->getUrlJavaScripts()}html5.js"></script>
+                    <![endif]-->
+                    <title>{$elements->getHeaderTitle()}</title>
+            </head>
+HTML
+        );
     }
-    ?>>
-        <header id="site_header">
-            <div class="site_container">
-                <h1> <?php echo $this->getHeaderTitle(); ?> </h1>
-                <nav>
-                    <ul id="main_menu">
-                        <?php $this->echoTopMenu(); ?>
-                    </ul>
-                </nav>
-                <div id="search">
-                    <?php $this->echoSearchForm(); ?>
-                </div>
-                <div id="account_label">
-                    <?php $this->echoAccountLabel(); ?>
-                    <div id="account_box">
-                        <?php $this->echoAccountBox(); ?>
-                        <div style="clear:both"></div>
+
+    private function renderBody(StreamInterface $stream, ThemeElements $elements) {
+        $bodyClass = $elements->isLoggedIn() ? "logged_in" : "";
+
+        $stream->write('<body class="' . $bodyClass . '">');
+
+        $this->renderHeader($stream, $elements);
+
+        $stream->write('<div class="site_container">');
+        $this->renderMainContent($stream, $elements);
+        $this->renderWidgetsSidebar($stream, $elements);
+        $stream->write('<div style="clear:both"></div>');
+        $stream->write('</div>');
+
+        $this->renderFooter($stream, $elements);
+
+        $stream->write('</body>');
+    }
+
+    private function renderHeader(StreamInterface $stream,
+            ThemeElements $elements) {
+        $stream->write('
+            <header id="site_header">
+                <div class="site_container">
+                    <h1>' . $elements->getHeaderTitle() . '</h1>
+                    <nav>
+                        <ul id="main_menu">
+                            ');
+                            $elements->writeTopMenu($stream);
+                            $stream->write('
+                        </ul>
+                    </nav>
+                    <div id="search">
+                        ');
+                        $elements->writeSearchForm($stream);
+                        $stream->write('
+                    </div>
+                    <div id="account_label">
+                        ');
+                        $elements->writeAccountLabel($stream);
+                        $stream->write('
+                        <div id="account_box">
+                            ');
+                            $elements->writeAccountBox($stream);
+                            $stream->write('
+                            <div style="clear:both"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </header>
-        <div class="site_container">
-            <div <?php
-            if ($this->getPageType() === Page::TYPE_HOME) {
-                echo 'id="contenthome"';
-            } else {
-                echo 'id="content"';
-            }
-            ?>>
+            </header>
+        ');
+    }
 
-                <?php $this->echoPageContent(); ?>
-            </div>
-            <?php if ($this->getPageType() == Page::TYPE_HOME) { ?>
-                <div id="sidebar">
-                    <?php $this->echoWidgets(2); ?>
+    private function renderFooter(StreamInterface $stream,
+            ThemeElements $elements) {
+        $stream->write(<<<HTML
+            <footer id="site_footer">
+                <div class="site_container">
+                    {$elements->getCopyright()}
                 </div>
-            <?php } ?>
-            <div style="clear:both"></div>
-        </div>
+            </footer>
+HTML
+        );
+    }
 
+    private function renderMainContent(StreamInterface $stream,
+            ThemeElements $elements) {
+        $contentId = ($elements->getPageType() === Page::TYPE_HOME) ? "contenthome" : "content";
 
-        <footer id="site_footer">
-            <div class="site_container">
-                <?php $this->echoCopyright(); ?>
-            </div>
-        </footer>
-    </body>
-</html>	
+        $stream->write("<div id=\"{$contentId}\">");
+        $elements->writePageContent($stream);
+        $stream->write("</div>");
+    }
+
+    private function renderWidgetsSidebar(StreamInterface $stream,
+            ThemeElements $elements) {
+        if ($elements->getPageType() == Page::TYPE_HOME) {
+            $stream->write('<div id="sidebar">');
+            $elements->writeWidgets($stream, 2);
+            $stream->write('</div>');
+        }
+    }
+
+    public function render(StreamInterface $stream, ThemeElements $elements) {
+        $stream->write('<!DOCTYPE html><html>');
+        $this->renderHead($stream, $elements);
+        $this->renderBody($stream, $elements);
+        $stream->write('</html>');
+    }
+}
+
+return new RkokTheme();

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Text;
 
@@ -33,18 +34,16 @@ class DocumentListView extends View {
         $this->editLinks = (boolean) $editLinks;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         if (empty($this->documents)) {
-            $returnValue = $this->getEmptyPage();
+            $stream->write($this->getEmptyPage());
         } else {
-            $returnValue = $this->getDocumentIntros($this->documents);
+            $stream->write($this->getDocumentIntros($this->documents));
         }
 
         if ($this->editLinks) {
-            $returnValue.= $this->getCreateNewDocumentLink();
+            $stream->write($this->getCreateNewDocumentLink());
         }
-
-        return $returnValue;
     }
 
     private function getDocumentIntros(array $documents) {

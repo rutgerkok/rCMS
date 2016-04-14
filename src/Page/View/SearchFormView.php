@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -16,9 +17,9 @@ class SearchFormView extends View {
         $this->keyword = $keyword;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<SEARCHFORM
+        $stream->write(<<<SEARCHFORM
             <p>
                 <form action="{$text->e($text->getUrlPage("search"))}" method="GET">
                     <input name="searchbox" id="searchbox-big" value="$text->e($this->keyword)}" />
@@ -26,7 +27,8 @@ class SearchFormView extends View {
                 </form>
             </p>
             <p>{$text->t("articles.search.explained")}</p>
-SEARCHFORM;
+SEARCHFORM
+        );
     }
 
 }

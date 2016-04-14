@@ -1,83 +1,102 @@
 <?php
+
+namespace Rcms\Extend\Theme;
+
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
     die();
 }
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Page\Page;
+use Rcms\Theme\Theme;
+use Rcms\Theme\ThemeElements;
 
-?>
+class PhpTheme extends Theme {
+    
+     public function render(StreamInterface $stream, ThemeElements $elements) {
+        $contentId = 'content';
+        if ($elements->getPageType() === Page::TYPE_BACKSTAGE) {
+            $contentId = 'contentadmin';
+        } else if ($elements->getPageType() === Page::TYPE_NORMAL) {
+            $contentId = 'contentwide';
+        }
+
+        $stream->write('
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" >
 
-        <link href="<?php echo $this->getUrlTheme() . "main.css" ?>" rel="stylesheet" type="text/css" />
-        <script src="<?php echo $this->getUrlJavaScripts() ?>tooltip.js"></script>
+        <link href="' . $elements->getUrlTheme() . 'main.css" rel="stylesheet" type="text/css" />
+        <script src="' . $elements->getUrlJavaScripts() . 'tooltip.js"></script>
         <!--[if lte IE 8]>
-            <script src="<?php echo $this->getUrlJavaScripts() ?>html5.js"></script>
+            <script src="' . $elements->getUrlJavaScripts() . 'html5.js"></script>
         <![endif]-->
-        <title><?php echo $this->getHeaderTitle(); ?></title>
+        <title>' . $elements->getHeaderTitle() . '</title>
     </head>
     <body>
         <div id="container">
             <div id="header">
-                <h1>
-<?php echo $this->getHeaderTitle(); ?>
-                </h1>
+                <h1>' . $elements->getHeaderTitle() . '</h1>
                 <div id="search">
-<?php $this->echoSearchForm(); ?>
+                    '); $elements->writeSearchForm($stream); $stream->write('
                 </div>
-                    <?php if ($this->isLoggedIn()) { ?>
-                    <div id="account_label">
-                    <?php $this->echoAccountLabel(); ?>
-                        <div id="account_box">
-                        <?php $this->echoAccountBox(80); ?>
-                            <div style="clear:both"></div>
-                        </div>
-                    </div>
-<?php } ?>
+
+                ');
+                if ($elements->isLoggedIn()) {
+                    $stream->write('<div id="account_label">');
+                    $elements->writeAccountLabel($stream);
+                    $stream->write('<div id="account_box">');
+                    $elements->writeAccountBox($stream, 80); 
+                    $stream->write('<div style="clear:both"></div>');
+                    $stream->write('</div>');
+                    $stream->write('</div>');
+                }
+                $stream->write('
             </div> <!-- id="header" -->
             <div id="hornav">
                 <ul>
-<?php $this->echoTopMenu(); ?>
+                    '); $elements->writeTopMenu($stream); $stream->write('
                 </ul>
-                    <?php if (!$this->isLoggedIn()) { ?>
-                    <ul id="accountlinks">
-                    <?php $this->echoAccountsMenu(); ?>
-                    </ul>
-                    <?php } ?>
+                ');
+                if (!$elements->isLoggedIn()) {
+                    $stream->write('<ul id="accountlinks">');
+                    $elements->writeAccountsMenu($stream);
+                    $stream->write('</ul>');
+                }
+                $stream->write('
             </div> <!-- id="hornav" -->
-            <div <?php
-                    if ($this->getPageType() === Page::TYPE_HOME) {
-                        echo 'id="content"';
-                    } elseif ($this->getPageType() === Page::TYPE_BACKSTAGE) {
-                        echo 'id="contentadmin"';
-                    } else { // dus $this->get_page_type() === Page::TYPE_NORMAL
-                        echo 'id="contentwide"';
-                    }
-                    ?> >
+            <div id="' . $contentId . '" >
                 <!-- Einde header -->
-
-<?php $this->echoPageContent(); ?>
+                
+                '); $elements->writePageContent($stream); $stream->write('
 
                 <!-- Begin footer -->
 
             </div><!-- id="content"/"contentwide" -->
-
-<?php if ($this->getPageType() == Page::TYPE_HOME) { ?>
+            ');
+            if ($elements->getPageType() == Page::TYPE_HOME) {
+                $stream->write('
                 <div id="sidebar">
-                <?php $this->echoWidgets(2); ?>
+                    '); $elements->writeWidgets($stream, 2); $stream->write('
                 </div>
                 <div id="nav">
-<?php $this->echoWidgets(3); ?>
+                    '); $elements->writeWidgets($stream, 3); $stream->write('
                 </div>
-                <?php } ?>
+                ');
+            }
 
+            $stream->write('
             <div id="footer">
-<?php $this->echoCopyright(); ?>
+                ' . $elements->getCopyright() . '
             </div>
         </div><!-- id="container" -->
     </body>
-</html>	
+</html>
+        ');
+    }
+}
+
+return new PhpTheme();

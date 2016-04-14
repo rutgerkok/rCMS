@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\MenuRepository;
 use Rcms\Core\Website;
@@ -16,33 +17,30 @@ class WidgetRkokLinks extends WidgetDefinition {
 
     const TITLE_MAX_LENGTH = 40;
 
-    public function getText(Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
         if (!isSet($data["menu_id"]) || !isSet($data["title"])) {
             return;
         }
 
-        $returnValue = "";
         $loggedInStaff = $website->isLoggedInAsStaff(true);
         $menu_id = (int) $data["menu_id"];
 
         // Title
         if (strLen($data["title"]) > 0) {
-            $returnValue.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>\n";
+            $stream->write("<h2>" . htmlSpecialChars($data["title"]) . "</h2>\n");
         }
 
         // Links
         $oMenu = new LinkRepository($website);
-        $returnValue.= '<ul class="linklist">';
-        $returnValue.= $oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff);
-        $returnValue.= "</ul>";
+        $stream->write('<ul class="linklist">');
+        $stream->write($oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff));
+        $stream->write("</ul>");
 
         // Link to add link
         if ($loggedInStaff) {
-            $returnValue.= '<p><a class="arrow" href="' . $website->getUrlPage("create_link", $menu_id);
-            $returnValue.= '">' . $website->t("links.create") . '</a></p>';
+            $stream->write('<p><a class="arrow" href="' . $website->getUrlPage("create_link", $menu_id));
+            $stream->write('">' . $website->t("links.create") . '</a></p>');
         }
-
-        return $returnValue;
     }
 
     public function getEditor(Website $website, $id, $data) {

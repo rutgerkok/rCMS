@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 use Rcms\Core\Article;
 
@@ -48,8 +49,8 @@ class ArticleSmallListView extends View {
         $this->archive = (boolean) $archive;
     }
 
-    public function getText() {
-        return $this->getArticlesList($this->articles, $this->mainCategoryId, $this->images, $this->archive);
+    public function writeText(StreamInterface $stream) {
+        $stream->write($this->getArticlesList($this->articles, $this->mainCategoryId, $this->images, $this->archive));
     }
 
     public function getArticlesList($articles, $mainCategoryId, $images = false,

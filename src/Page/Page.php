@@ -3,15 +3,11 @@
 namespace Rcms\Page;
 
 use Psr\Http\Message\ResponseInterface;
-
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-
-use Rcms\Theme\PageRenderer;
-
-use Zend\Diactoros\Stream;
+use Rcms\Page\View\View;
 
 /**
  * Represents a page on the website.
@@ -104,34 +100,25 @@ abstract class Page {
      * @return View[] Array of views. May be empty if this page is not using
      * views (deprecated).
      */
-    protected function getViews(Text $text) {
+    public function getViews(Text $text) {
         // Fall back on method to get a single view
         $view = $this->getView($text);
 
         if ($view === null) {
             // No view found, return empty array
-            return array();
+            return [];
         }
 
-        return array($view);
+        return [$view];
     }
 
     /**
-     * Gets the HTML content of this page. Overriding this method is deprecated,
-     * you should provide a view instead using {@link #getView(Request)}.
+     * Gets the HTML content of this page. This method is deprecated, use
+     * getViews instead.
      * @return string The HTML content of this page.
      */
     public function getPageContent(Website $website, Request $request) {
-        $returnValue = "";
-        $views = $this->getViews($website->getText());
-        foreach ($views as $view) {
-            $returnValue.= $view->getText();
-        }
-        return $returnValue;
-    }
-    
-    public function getResponse() {
-        
+        return "";
     }
 
     /**

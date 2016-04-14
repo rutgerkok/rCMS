@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\User;
 use Rcms\Core\Text;
 
@@ -21,11 +22,11 @@ class LoggedInOtherView extends View {
         $this->newUser = $newUser;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         if ($this->newUser === null) {
-            return $this->getErrorText();
+            $stream->write($this->getErrorText());
         } else {
-            return $this->getSuccessText();
+            $stream->write($this->getSuccessText());
         }
     }
 

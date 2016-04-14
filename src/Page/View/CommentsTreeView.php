@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Comment;
 use Rcms\Core\Text;
 use Rcms\Core\User;
@@ -33,8 +34,8 @@ class CommentsTreeView extends View {
         $this->viewerId = $viewer ? $viewer->getId() : 0;
     }
 
-    public function getText() {
-        return $this->getCommentTree($this->comments);
+    public function writeText(StreamInterface $stream) {
+        $stream->write($this->getCommentTree($this->comments));
     }
 
     /**

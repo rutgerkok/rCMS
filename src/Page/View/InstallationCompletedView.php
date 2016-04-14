@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,9 +14,9 @@ final class InstallationCompletedView extends View {
         parent::__construct($text);
     }
     
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>{$text->t("install.completed")}</p>
             <table>
                 <tr>
@@ -28,6 +29,7 @@ final class InstallationCompletedView extends View {
                 </tr>
             </table>
             <p><a class="arrow" href="{$text->e($text->getUrlPage("login"))}">{$text->t("main.log_in")}</p>
-HTML;
+HTML
+        );
     }
 }

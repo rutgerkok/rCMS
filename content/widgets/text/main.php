@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Page\View\Support\CKEditor;
@@ -12,21 +13,15 @@ if (!defined("WEBSITE")) {
 }
 
 class WidgetRkokText extends WidgetDefinition {
-    /*
-     * Implementation detail:
-     * (HTML) tags are saved unfiltered in the database, but filtered when displayed.
-     */
 
-    public function getText(Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
         if (!isSet($data["text"]) || !isSet($data["title"])) {
-            return "";
+            return;
         }
-        $returnValue = "";
         if (strLen($data["title"]) > 0) {
-            $returnValue.= "<h2>" . htmlSpecialChars($data["title"]) . "</h2>\n";
+            $stream->write("<h2>" . htmlSpecialChars($data["title"]) . "</h2>\n");
         }
-        $returnValue.= $data["text"];
-        return $returnValue;
+        $stream->write($data["text"]);
     }
 
     public function getEditor(Website $website, $id, $data) {

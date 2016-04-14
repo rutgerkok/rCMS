@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Article;
 use Rcms\Core\Category;
 use Rcms\Core\RequestToken;
@@ -35,7 +36,7 @@ class ArticleEditView extends View {
         $this->availableCategories = $availableCategories;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $article = $this->article;
         $title = htmlSpecialChars($article->getTitle());
@@ -46,7 +47,7 @@ class ArticleEditView extends View {
         $tokenHtml = htmlSpecialChars($this->requestToken->getTokenString());
 
         // Create form
-        return <<<ARTICLE_FORM
+        $stream->write(<<<ARTICLE_FORM
             <script type="text/javascript" src="{$text->getUrlJavaScript("datepicker")}"></script>
             <form action="{$text->e($text->getUrlPage("edit_article", $article->getId()))}" method="post">
                 <p>
@@ -95,7 +96,8 @@ class ArticleEditView extends View {
 
                 <div style="clear:both"></div>
             </form>
-ARTICLE_FORM;
+ARTICLE_FORM
+        );
     }
 
     private function getButtons() {

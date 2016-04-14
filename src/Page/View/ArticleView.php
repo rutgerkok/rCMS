@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Article;
 use Rcms\Core\Text;
 use Rcms\Core\User;
@@ -43,104 +44,97 @@ class ArticleView extends View {
         $this->userViewingComments = $viewingComments;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         if ($this->article) {
-            return $this->getArticleTextFull($this->article, $this->comments);
-        } else {
-            return "";
+            $this->writeArticleTextFull($stream, $this->article, $this->comments);
         }
     }
 
-    public function getArticleTextFull(Article $article,
-            array $comments = array()) {
+    private function writeArticleTextFull(StreamInterface $stream, Article $article, array $comments) {
         // Store some variables for later use
         $text = $this->text;
         $id = $article->getId();
 
-        $returnValue = '';
         $loggedIn = $this->editLink;
 
         // Echo the sidebar
-        $returnValue.= '<div id="sidebar_page_sidebar">';
+        $stream->write('<div id="sidebar_page_sidebar">');
 
         // Featured image
         if (!empty($article->featuredImage)) {
-            $returnValue.= '<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" /></p>';
+            $stream->write('<p><img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" /></p>');
         }
-        $returnValue.= '<p class="meta">';
+        $stream->write('<p class="meta">');
 
         // Created and last edited
-        $returnValue.= $text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateCreated());
+        $stream->write($text->t('articles.created') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateCreated()));
         if ($article->getDateLastEdited()) {
-            $returnValue.= " <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateLastEdited());
+            $stream->write(" <br />  " . $text->t('articles.last_edited') . " <br />&nbsp;&nbsp;&nbsp;" . $text->formatDateTime($article->getDateLastEdited()));
         }
 
         // Category
-        $returnValue.= " <br /> " . $text->t('main.category') . ': ';
-        $returnValue.= '<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">';
-        $returnValue.= htmlSpecialChars($article->category) . '</a>';
+        $stream->write(" <br /> " . $text->t('main.category') . ': ');
+        $stream->write('<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">');
+        $stream->write($text->e($article->category) . '</a>');
 
         // Author
-        $returnValue.= " <br /> " . $text->t('articles.author') . ': ';
-        $returnValue.= '<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">';
-        $returnValue.= htmlSpecialChars($article->author) . '</a>';
+        $stream->write(" <br /> " . $text->t('articles.author') . ': ');
+        $stream->write('<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">');
+        $stream->write($text->e($article->author) . '</a>');
 
         // Pinned, hidden, comments
         if ($article->pinned) {
-            $returnValue.= "<br />" . $text->t('articles.pinned') . " ";
+            $stream->write("<br />" . $text->t('articles.pinned') . " ");
         }
         if ($article->isHidden()) {
-            $returnValue.= "<br />" . $text->t('articles.hidden');
+            $stream->write("<br />" . $text->t('articles.hidden'));
         }
         if ($loggedIn && $article->showComments) {
-            $returnValue.= "<br />" . $text->t('comments.allowed');
+            $stream->write("<br />" . $text->t('comments.allowed'));
         }
 
         // Edit, delete
-        $returnValue.= '</p>';
+        $stream->write('</p>');
         if ($loggedIn) {
-            $returnValue.= "<p style=\"clear:both\">";
-            $returnValue.= '&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $id)) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' . //edit
-                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $id)) . '">' . $text->t('main.delete') . '</a>'; //delete
-            $returnValue.= "</p>";
+            $stream->write("<p style=\"clear:both\">");
+            $stream->write('&nbsp;&nbsp;&nbsp;<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $id)) . '">' . $text->t('main.edit') . '</a>&nbsp;&nbsp;' .
+                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $id)) . '">' . $text->t('main.delete') . '</a>');
+            $stream->write("</p>");
         }
-        $returnValue.= '</div>';
+        $stream->write('</div>');
 
         // Article
-        $returnValue.= '<div id="sidebar_page_content">';
+        $stream->write('<div id="sidebar_page_content">');
         if ($loggedIn && $article->isHidden()) {
-            $returnValue.= '<p class="meta">' . $text->t('articles.is_hidden') . "<br /> \n" . $text->t('articles.hidden.explained') . '</p>';
+            $stream->write('<p class="meta">' . $text->t('articles.is_hidden') . "<br /> \n" . $text->t('articles.hidden.explained') . '</p>');
         }
-        $returnValue.= '<p class="intro">' . htmlSpecialChars($article->getIntro()) . '</p>';
-        $returnValue.= $article->getBody();
+        $stream->write('<p class="intro">' . $text->e($article->getIntro()) . '</p>');
+        $stream->write($article->getBody());
 
         // Comments
         if ($article->showComments) {
             $commentCount = count($comments);
 
             // Title
-            $returnValue.= '<h3 class="notable">' . $text->t("comments.comments");
+            $stream->write('<h3 class="notable">' . $text->t("comments.comments"));
             if ($commentCount > 0) {
-                $returnValue.= ' (' . $commentCount . ')';
+                $stream->write(' (' . $commentCount . ')');
             }
-            $returnValue.= "</h3>\n\n";
+            $stream->write("</h3>\n\n");
 
             // "No comments found" if needed
             if ($commentCount == 0) {
-                $returnValue.= '<p><em>' . $text->t("comments.no_comments_found") . '</em></p>';
+                $stream->write('<p><em>' . $text->t("comments.no_comments_found") . '</em></p>');
             }
 
             // Comment add link
-            $returnValue.= '<p><a class="button primary_button" href="' . $text->e($text->getUrlPage("add_comment", $id)) . '">' . $text->t("comments.add") . "</a></p>";
+            $stream->write('<p><a class="button primary_button" href="' . $text->e($text->getUrlPage("add_comment", $id)) . '">' . $text->t("comments.add") . "</a></p>");
 
             // Show comments
             $commentTreeView = new CommentsTreeView($text, $comments, false, $this->userViewingComments);
-            $returnValue .= $commentTreeView->getText();
+            $commentTreeView->writeText($stream);
         }
-        $returnValue.= '</div>';
-
-
-        return $returnValue;
+        $stream->write('</div>');
     }
 
 }

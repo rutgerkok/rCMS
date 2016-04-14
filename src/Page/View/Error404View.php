@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,9 +14,9 @@ class Error404View extends View {
         parent::__construct($text);
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<PAGE
+        $stream->write(<<<PAGE
         <p>
             {$text->t("errors.404_page.body")}
         </p>
@@ -32,7 +33,8 @@ class Error404View extends View {
                 {$text->t("articles.archive")}
             </a>
         </p>
-PAGE;
+PAGE
+        );
     }
 
 }

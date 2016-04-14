@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -23,28 +24,25 @@ class ArticleSearchView extends ArticleListView {
         $this->highestPageNumber = (int) $highestPageNumber;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $resultcount = $this->totalNumberOfArticles;
 
-        $returnValue = '';
         if (count($this->articles) > 0) {
             // Display result count
             if ($resultcount == 1) {
-                $returnValue.= "<p>" . $text->t('articles.search.result_found') . "</p>";
+                $stream->write("<p>" . $text->t('articles.search.result_found') . "</p>");
             } else {
-                $returnValue.= "<p>" . $text->tReplaced('articles.search.results_found', $resultcount) . "</p>";
+                $stream->write("<p>" . $text->tReplaced('articles.search.results_found', $resultcount) . "</p>");
             }
 
             // Display articles
-            $returnValue.= $this->getMenuBar();
-            $returnValue.= parent::getText();
-            $returnValue.= $this->getMenuBar();
+            $stream->write($this->getMenuBar());
+            parent::writeText($stream);
+            $stream->write($this->getMenuBar());
         } else {
-            $returnValue.='<p><em>' . $text->t('articles.search.no_results_found') . '</em></p>'; //niets gevonden
+            $stream->write('<p><em>' . $text->t('articles.search.no_results_found') . '</em></p>');
         }
-
-        return $returnValue;
     }
 
     protected function getMenuBar() {

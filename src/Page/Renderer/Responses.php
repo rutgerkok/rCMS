@@ -25,13 +25,9 @@ final class Responses {
         }
 
         $pageRenderer = new PageRenderer($website, $request, $page);
-        ob_start();
-        $pageRenderer->render();
-        $html = ob_get_contents();
-        ob_end_clean();
-
         $body = new Stream('php://temp', 'wb+');
-        $body->write($html);
+        $pageRenderer->render($body);
+
         $body->rewind();
 
         return $page->modifyResponse($response->withBody($body));

@@ -3,6 +3,7 @@
 namespace Rcms\Core\Widget;
 
 use LogicException;
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\InfoFile;
 use Rcms\Core\Website;
 
@@ -107,12 +108,13 @@ class InstalledWidgets {
 
     /**
      * Gets the HTML output of the widget.
+     * @param StreamInterface $stream The stream to write to
      * @param PlacedWidget $placedWidget The widget.
      * @return string The HTML output.
      */
-    public function getOutput(PlacedWidget $placedWidget) {
+    public function writeOutput(StreamInterface $stream, PlacedWidget $placedWidget) {
         $widgetDefinition = $this->getDefinition($placedWidget);
-        return $widgetDefinition->getText($this->website, $placedWidget->getId(), $placedWidget->getData());
+        $widgetDefinition->writeText($stream, $this->website, $placedWidget->getId(), $placedWidget->getData());
     }
 
     /**

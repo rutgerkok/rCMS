@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,15 +14,16 @@ class DocumentDeletedView extends View {
         parent::__construct($text);
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>
                 <a class="arrow" href="{$text->e($text->getUrlMain())}">{$text->t("main.home")}</a><br />
                 <a href="{$text->e($text->getUrlPage("document_list"))}" class="arrow">{$text->t("documents.list.title")}</a><br />
                 <a href="{$text->e($text->getUrlPage("admin"))}" class="arrow">{$text->t("main.admin")}</a>
             </p>
-HTML;
+HTML
+        );
     }
 
 }

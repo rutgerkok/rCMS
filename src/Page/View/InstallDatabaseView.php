@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,13 +14,14 @@ final class InstallDatabaseView extends View {
         parent::__construct($text);
     }
     
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>{$text->t("install.no_tables_yet")}</p>
             <a href="{$text->e($text->getUrlPage("install", null, array("action" => "install_database")))}" class="button primary_button">
                 {$text->t("install.create_tables")}
             </a>
-HTML;
+HTML
+        );
     }
 }

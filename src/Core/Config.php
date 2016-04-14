@@ -32,6 +32,7 @@ class Config {
 
     const OPTION_ACCESS_CODE = "password";
     const OPTION_THEME = "theme";
+    const OPTION_COPYRIGHT = "copyright";
 
     private $config = array();
 

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Text;
 
@@ -27,18 +28,19 @@ class DocumentView extends View {
         $this->editLinks = (boolean) $editLinks;
     }
 
-    public function getText() {
-        $introHtml = nl2br(htmlSpecialChars($this->document->getIntro()), true);
+    public function writeText(StreamInterface $stream) {
+        $introHtml = nl2br($this->text->e($this->document->getIntro()), true);
         $editDeleteHtml = "";
         if ($this->editLinks) {
             $editDeleteHtml = $this->getEditDeleteHtml();
         }
-        return <<<INTRO
+        $stream->write(<<<INTRO
             <p class="intro">
                 $introHtml
             </p>
             {$editDeleteHtml}
-INTRO;
+INTRO
+        );
     }
 
     private function getEditDeleteHtml() {

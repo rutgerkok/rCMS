@@ -2,6 +2,7 @@
 
 namespace Rcms\Extend\Widget;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
@@ -19,7 +20,7 @@ class WidgetComments extends WidgetDefinition {
     const MAX_COMMENTS = 30;
     const DEFAULT_COMMENTS = 4;
 
-    public function getText(Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
         $title = htmlSpecialChars($data["title"]);
         $amount = (int) $data["amount"];
         
@@ -27,9 +28,8 @@ class WidgetComments extends WidgetDefinition {
         $latestComments = $commentLookup->getCommentsLatest($amount);
         $view = new CommentsSmallView($website->getText(), $latestComments);
 
-        $textToDisplay = '<h2>' . $title . "</h2>\n";
-        $textToDisplay.= $view->getText();
-        return $textToDisplay;
+        $stream->write('<h2>' . $title . "</h2>\n");
+        $view->writeText($stream);
     }
 
     public function getEditor(Website $website, $id, $data) {

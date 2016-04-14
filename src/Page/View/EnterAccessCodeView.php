@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,9 +14,9 @@ class EnterAccessCodeView extends View {
         parent::__construct($text);
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<PAGE
+        $stream->write(<<<PAGE
         <div id="login">
             <form action="" method="post">
                 <p>
@@ -29,7 +30,8 @@ class EnterAccessCodeView extends View {
                 </p>
             </form>
         </div>
-PAGE;
+PAGE
+        );
     }
 
 }

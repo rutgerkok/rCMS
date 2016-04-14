@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
 
@@ -31,22 +32,21 @@ final class MenuView extends View{
         $this->openInNewWindow = (boolean) $openInNewWindow;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        $returnValue = "";
 
         foreach ($this->links as $link) {
-            $returnValue.= '<li><a href="' . $text->e($link->getUrl()) . '"';
+            $stream->write('<li><a href="' . $text->e($link->getUrl()) . '"');
             if ($this->openInNewWindow) {
-                $returnValue.= ' target="_blank"';
+                $stream->write(' target="_blank"');
             }
-            $returnValue.= ">" . $text->e($link->getText()) . "</a>";
+            $stream->write(">" . $text->e($link->getText()) . "</a>");
             if ($this->editLinks) {
-                $returnValue.=' <a class="arrow" href="' . $text->e($text->getUrlPage("edit_link", $link->getId())) . '">' . $text->t("main.edit") . "</a>";
-                $returnValue.=' <a class="arrow" href="' . $text->e($text->getUrlPage("delete_link", $link->getId())) . '">' . $text->t("main.delete") . "</a>";
+                $stream->write(' <a class="arrow" href="' . $text->e($text->getUrlPage("edit_link", $link->getId())) . '">' . $text->t("main.edit") . "</a>");
+                $stream->write(' <a class="arrow" href="' . $text->e($text->getUrlPage("delete_link", $link->getId())) . '">' . $text->t("main.delete") . "</a>");
             }
-            $returnValue.= "</li>\n";
+            $stream->write("</li>\n");
         }
-        return $returnValue;
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Article;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
@@ -32,16 +33,16 @@ class ArticleDeleteView extends View {
         $this->showAdminPageLink = (boolean) $showAdminPageLink;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         switch ($this->state) {
             case self::STATE_CONFIRMATION:
-                return $this->getConfirmationText();
+                $stream->write($this->getConfirmationText());
             case self::STATE_ERROR:
-                return $this->getErrorText();
+                $stream->write($this->getErrorText());
             case self::STATE_HIDDEN:
-                return $this->getMadeHiddenText();
+                $stream->write($this->getMadeHiddenText());
             case self::STATE_DELETED:
-                return $this->getDeletedText();
+                $stream->write($this->getDeletedText());
         }
         throw new BadMethodCallException("Unknown display state " . $this->state);
     }

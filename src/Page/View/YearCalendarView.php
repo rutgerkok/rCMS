@@ -3,6 +3,7 @@
 namespace Rcms\Page\View;
 
 use DateTime;
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -30,14 +31,11 @@ class YearCalendarView extends View {
         $this->createLinks = (boolean) $createLinks;
     }
 
-    public function getText() {
-        return <<<CALENDAR_PAGE
-            {$this->getYearSelector()}
-                
-            <div>
-                {$this->getCalendars()}
-            </div>
-CALENDAR_PAGE;
+    public function writeText(StreamInterface $stream) {
+        $stream->write($this->getYearSelector());
+        $stream->write('<div');
+        
+        $stream->write('</div');
     }
 
     protected function getYearSelector() {
@@ -67,24 +65,21 @@ END;
         return $returnValue;
     }
 
-    protected function getCalendars() {
+    protected function writeCalendars(StreamInterface $stream) {
         $text = $this->text;
 
         $returnValue = "";
         for ($i = 1; $i <= 12; $i++) {
             $month = DateTime::createFromFormat("Y n", $this->year->format("Y") . ' ' . $i);
             $calendarView = new CalendarView($text, $month, $this->articlesInYear, $this->createLinks);
-            $table = $calendarView->getText();
 
             $monthName = ucFirst($calendarView->getMonthName($month));
             $yearNumber = $month->format("Y");
 
-            $returnValue.= <<<MONTH
-                <div class="calender_month_wrapper">
-                    <h3>$monthName $yearNumber</h3>
-                    $table
-                </div>
-MONTH;
+            $stream->write('<div class="calender_month_wrapper">');
+            $stream->write("<h3>$monthName $yearNumber</h3>");
+            $calendarView->writeText($stream);
+            $stream->write('</div>');
         }
         return $returnValue;
     }

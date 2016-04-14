@@ -2,6 +2,7 @@
 
 namespace Rcms\Core\Widget;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Website;
 
 /**
@@ -28,8 +29,8 @@ class NullWidget extends WidgetDefinition {
         return array("valid" => false);
     }
 
-    public function getText(Website $website, $id, $data) {
-        return $this->getNotice($website);
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+        $stream->write($this->getNotice($website));
     }
 
     private function getNotice(Website $website) {

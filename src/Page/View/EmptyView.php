@@ -2,14 +2,16 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
- * Used on empty pages. There should be an error on the top, created using
- * Website->addError(..).
+ * A view that outputs nothing. This can be useful when there is already other
+ * output in the form of an error (see Text->addError).
  */
 class EmptyView extends View {
 
-    public function getText() {
-        return "";
+    public function writeText(StreamInterface $stream) {
+        // Empty!
     }
 
 }

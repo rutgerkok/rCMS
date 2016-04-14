@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
@@ -29,13 +30,13 @@ class DocumentDeleteView extends View {
         $this->requestToken = $requestToken;
     }
     
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $title = $this->document->getTitle();
         $intro = $this->document->getIntro();
         $deleteUrl = $text->getUrlPage("delete_document", $this->document->getId(),
                 array(RequestToken::FIELD_NAME => $this->requestToken->getTokenString()));
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>{text->t("documents.delete.are_you_sure")}</p>
             <blockquote>
                 <h3 class="notable">{$text->e($title)}</h3>
@@ -45,6 +46,7 @@ class DocumentDeleteView extends View {
                 <a class="button primary_button" href="{$text->e($deleteUrl)}">{$text->t("editor.delete_permanently")}</a>
                 <a class="button" href="{$text->e($this->document->getUrl($text))}">{$text->t("main.cancel")}</a>
             </p>
-HTML;
+HTML
+        );
     }
 }

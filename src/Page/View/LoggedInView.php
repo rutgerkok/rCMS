@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -22,7 +23,7 @@ class LoggedInView extends View {
         $this->showAdminLinks = (boolean) $showAdminLinks;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $adminLinks = "";
         if ($this->showAdminLinks) {
@@ -34,7 +35,7 @@ class LoggedInView extends View {
 EOT;
         }
 
-        return <<<EOT
+        $stream->write(<<<EOT
                 <h3>{$text->t('users.loggedIn')}</h3>
                 <p>{$text->t('users.succesfully_loggedIn')}</p>
                 <p>
@@ -43,7 +44,8 @@ EOT;
                     <a href="{$text->e($text->getUrlPage("account"))}" class="arrow">{$text->t("main.my_account")}</a>
                     $adminLinks
                 </p>
-EOT;
+EOT
+        );
     }
 
 }

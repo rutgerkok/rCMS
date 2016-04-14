@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
 use Rcms\Core\Widget\InstalledWidgets;
@@ -36,16 +37,21 @@ final class WidgetDetailView extends View {
         $this->link = $link;
     }
 
-    public function getText() {
-        $widgetHtml = $this->installedWidgets->getOutput($this->placedWidget);
-        $buttonTextHtml = htmlSpecialChars($this->link->getText());
-        $buttonUrl = $this->link->getUrl();
-        return <<<HTML
-            <blockquote>{$widgetHtml}</blockquote>
+    public function writeText(StreamInterface $stream) {
+        $text = $this->text;
+        
+        $stream->write("<blockquote>");
+        $this->installedWidgets->writeOutput($stream, $this->placedWidget);
+        $stream->write("</blockquote>");
+
+        $buttonTextHtml = $text->e($this->link->getText());
+        $buttonUrl = $text->e($this->link->getUrl());
+        $stream->write(<<<HTML
             <p>
                 <a href="{$buttonUrl}" class="button primary_button">{$buttonTextHtml}</a>
             </p>
-HTML;
+HTML
+        );
     }
 
 }

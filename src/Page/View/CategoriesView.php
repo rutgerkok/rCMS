@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 class CategoriesView extends View {
@@ -13,17 +14,15 @@ class CategoriesView extends View {
         $this->categories = $categories;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        $output = '<ul class="no_bullets">';
+        $stream->write('<ul class="no_bullets">');
         foreach ($this->categories as $id => $name) {
-            $output.= '<li><a href="' . $text->e($text->getUrlPage("category", $id));
-            $output.= '" class="arrow">' . htmlSpecialChars($name) . "</a></li>\n";
+            $stream->write('<li><a href="' . $text->e($text->getUrlPage("category", $id)));
+            $stream->write('" class="arrow">' . htmlSpecialChars($name) . "</a></li>\n");
         }
-        $output.= "</ul>";
-        return $output;
+        $stream->write("</ul>");
     }
 
 }
 
-?>

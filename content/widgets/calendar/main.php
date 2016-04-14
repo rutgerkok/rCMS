@@ -4,6 +4,7 @@ namespace Rkok\Extend\Widget;
 
 use DateTime;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
@@ -18,32 +19,37 @@ class WidgetCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
 
-    public function getText(Website $website, $id, $data) {
-
+    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
 
         // Title
         $title = "";
         if (isSet($data["title"]) && strLen($data["title"]) > 0) {
             $title = "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
         }
+        $stream->write($title);
 
         $now = new DateTime();
         $oArticles = new ArticleRepository($website);
         $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
         $calendar = new CalendarView($website->getText(), $now, $articlesInMonth, $website->isLoggedInAsStaff());
 
+        // Date
         $monthName = ucFirst($calendar->getMonthName($now));
         $year = $now->format('Y');
-        return <<<WIDGET
-            $title
-            <h3>$monthName $year</h3>
-            {$calendar->getText()}
+        $stream->write("<h3>$monthName $year</h3>");
+        
+        // Calendar
+        $calendar->writeText($stream);
+
+        // Footer
+        $stream->write(<<<WIDGET
             <p>
                 <a class="arrow" href="{$website->getUrlPage("calendar", $year)}">
                     {$website->tReplaced("calendar.calendar_for_year", $year)}
                 </a>
             </p>
-WIDGET;
+WIDGET
+        );
     }
 
     public function getEditor(Website $website, $id, $data) {

@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Widget\InstalledWidgets;
@@ -35,7 +36,7 @@ class WidgetEditView extends View {
         $this->requestToken = $requestToken;
     }
 
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
 
         $editorHtml = $this->installedWidgets->getEditor($this->editWidget);
@@ -45,7 +46,7 @@ class WidgetEditView extends View {
         $tokenName = RequestToken::FIELD_NAME;
         $tokenValue = $this->requestToken->getTokenString();
 
-        return <<<EDITOR
+        $stream->write(<<<EDITOR
             <p>{$this->text->t("main.fields_required")}</p>
             <form method="POST" action="{$text->e($actionUrl)}">
                 {$editorHtml}
@@ -63,7 +64,8 @@ class WidgetEditView extends View {
                     </a>
                 </p>
             </form>
-EDITOR;
+EDITOR
+        );
     }
 
 }

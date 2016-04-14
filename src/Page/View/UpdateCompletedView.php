@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
 
 /**
@@ -13,15 +14,16 @@ final class UpdateCompletedView extends View {
         parent::__construct($text);
     }
     
-    public function getText() {
+    public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        return <<<HTML
+        $stream->write(<<<HTML
             <p>{text->t("install.thanks_for_updating")}</p>
             <p>         
                 <a href="{$text->e($text->getUrlMain())}" class="arrow">
                 {$text->t("main.home")}
                 </a>
             </p>
-HTML;
+HTML
+        );
     }
 }

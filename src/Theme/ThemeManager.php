@@ -7,6 +7,7 @@ use Rcms\Core\InfoFile;
 use Rcms\Core\Website;
 
 use BadMethodCallException;
+use RuntimeException;
 
 class ThemeManager {
 
@@ -72,11 +73,23 @@ class ThemeManager {
     }
 
     /**
-     * Gets the main theme file.
+     * Gets the {@link Theme} instance of the theme with the given name.
      * @param string $themeDirectoryName The theme directory name.
+     * @return Theme The theme file.
+     * @throws RuntimeException If no valid theme with that name exists.
      */
-    public function getMainFile($themeDirectoryName) {
-        return $this->getUriTheme($themeDirectoryName) . "main.php";
+    public function getTheme($themeDirectoryName) {
+        $themeFile = $this->getUriTheme($themeDirectoryName) . "main.php";
+        if (!file_exists($themeFile)) {
+            throw new RuntimeException("Theme file does not exist");
+        }
+
+        $theme = require $themeFile;
+        if (!($theme instanceof Theme)) {
+            throw new RuntimeException("Theme file doesn't return a Theme instance");
+        }
+ 
+        return $theme;
     }
 
     /**
@@ -102,7 +115,8 @@ class ThemeManager {
      * @return string The url.
      */
     public function getUrlTheme($themeDirectoryName) {
-        return $this->website->getUrlThemes() . $themeDirectoryName . "/";
+        $themesUrl = $this->website->getUrlThemes();
+        return $themesUrl->withPath($themesUrl->getPath() . $themeDirectoryName . "/");
     }
 
 }

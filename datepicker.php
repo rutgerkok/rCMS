@@ -4,6 +4,7 @@ namespace Rcms\Core;
 
 use DateTime;
 use Rcms\Page\View\DatePickerView;
+use Zend\Diactoros\Stream;
 
 // Setup environment
 require("environment.php");
@@ -33,7 +34,9 @@ $calendarView = new DatePickerView($website->getText(), $dateTime, $articles);
     <body>
         <div>
             <?php
-                echo $calendarView->getText();
+                $stream = new Stream("php://output", 'w');
+                $calendarView->writeText($stream);
+                $stream->close();
             ?>
         </div>
     </body>
