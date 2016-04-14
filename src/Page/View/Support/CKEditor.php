@@ -4,7 +4,7 @@ namespace Rcms\Page\View\Support;
 
 use Rcms\Core\Config;
 use Rcms\Core\Text;
-use Rcms\Core\Themes;
+use Rcms\Theme\ThemeManager;
 
 /**
  * Rich editor based on CKEditor and CKFinder.
@@ -22,7 +22,7 @@ class CKEditor implements RichEditor {
     /** @var Config The website configuration. */
     private $config;
 
-    /** @var Themes The theme manager of the website. */
+    /** @var ThemeManager The theme manager of the website. */
     private $themes;
 
     public function __construct(Text $text, Config $config, ThemeManager $themes) {

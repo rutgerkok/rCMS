@@ -2,6 +2,7 @@
 
 namespace Rcms\Theme;
 
+use Rcms\Core\Config;
 use Rcms\Core\InfoFile;
 use Rcms\Core\Website;
 
@@ -83,7 +84,7 @@ class ThemeManager {
      * @return ThemeMeta The theme.
      */
     public function getCurrentTheme() {
-        return $this->getThemeMeta($website->getConfig()->get(Config::OPTION_THEME));
+        return $this->getThemeMeta($this->website->getConfig()->get(Config::OPTION_THEME));
     }
 
     /**

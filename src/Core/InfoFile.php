@@ -23,7 +23,7 @@ class InfoFile {
      * @param string $default Default value of the setting.
      * @return string The value of the setting, or the default.
      */
-    protected function getString($key, $default = "") {
+    public function getString($key, $default = "") {
         $this->readFile();
         if (isSet($this->settingsMap[$key])) {
             return $this->settingsMap[$key];
@@ -39,7 +39,7 @@ class InfoFile {
      * @param int $default Default value of the setting.
      * @return int The integer, or the default value.
      */
-    protected function getInteger($key, $default = 0) {
+    public function getInteger($key, $default = 0) {
         $string = $this->getString($key, $default);
         $number = (int) $string;
         if ($string != $number) {
