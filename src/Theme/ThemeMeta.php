@@ -44,15 +44,15 @@ final class ThemeMeta {
 
         if ($areas == 0) {
             // No widgets in this theme
-            return array();
+            return [];
         } elseif ($areas == 1) {
             // One widget area on position 2
-            return array(
+            return [
                 2 => $website->t("widgets.sidebar")
-            );
+            ];
         } else {
             // More widget areas, starting on position 2
-            $widgetAreas = array();
+            $widgetAreas = [];
             for ($i = 0; $i < $areas; $i++) {
                 $widgetAreas[$i + 2] = $website->t("widgets.sidebar") . " " . ($i + 1);
             }

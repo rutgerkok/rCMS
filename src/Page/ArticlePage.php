@@ -32,7 +32,7 @@ class ArticlePage extends Page {
             $oComments = new CommentRepository($website);
             $this->comments = $oComments->getCommentsArticle($this->article->getId());
         } else {
-            $this->comments = array();
+            $this->comments = [];
         }
     }
 

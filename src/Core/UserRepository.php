@@ -48,9 +48,9 @@ class UserRepository extends Repository {
     }
 
     public function getStandardFields() {
-        return array($this->usernameField, $this->displayNameField,
+        return [$this->usernameField, $this->displayNameField,
             $this->idField, $this->emailField,
-            $this->rankField, $this->statusField);
+            $this->rankField, $this->statusField];
     }
 
     public function getAllFields() {

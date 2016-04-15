@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
@@ -45,14 +46,10 @@ final class DocumentEditView extends View {
         $this->placedWidgets = $placedWidgets;
     }
 
-    public function getText() {
-        return <<<HTML
-            {$this->getDocumentTitleAndIntroEditor()}
-
-            {$this->getWidgetsHtml()}
-
-            {$this->getNewWidgetChoicesHtml()}
-HTML;
+    public function writeText(StreamInterface $stream) {
+        $stream->write($this->getDocumentTitleAndIntroEditor());
+        $this->writeWidgetsHtml($stream);
+        $stream->write($this->getNewWidgetChoicesHtml());
     }
 
     private function getDocumentTitleAndIntro() {
@@ -105,30 +102,27 @@ HTML;
 HTML;
     }
 
-    private function getWidgetsHtml() {
-        $output = "";
+    private function writeWidgetsHtml(StreamInterface $stream) {
         $placedWidgets = array_values($this->placedWidgets);
         for ($i = 0; $i < count($placedWidgets); $i++) {
             $placedWidget = $placedWidgets[$i];
-            $output.= $this->getWidgetHtml($placedWidget, $i);
+            $this->writeWidgetHtml($stream, $placedWidget, $i);
         }
-        return $output;
     }
 
-    private function getWidgetHtml(PlacedWidget $placedWidget, $widgetNumber) {
+    private function writeWidgetHtml(StreamInterface $stream, PlacedWidget $placedWidget, $widgetNumber) {
         $text = $this->text;
 
         $id = $placedWidget->getId();
-        $widgetInfo = $placedWidget->getWidgetInfo();
-        $widgetData = $placedWidget->getData();
 
         $tokenName = RequestToken::FIELD_NAME;
         $token = $this->requestToken->getTokenString();
 
-        $output = <<<HTML
-            <blockquote>
-                 {$this->installedWidgets->getOutput($placedWidget)}
-            </blockquote>
+        $stream->write("<blockquote>");
+        $this->installedWidgets->writeOutput($stream, $placedWidget);
+        $stream->write("</blockquote>");
+        
+        $stream->write(<<<HTML
             <p>
                 <a class="arrow" href="{$text->e($text->getUrlPage("edit_widget", $id))}">
                     {$text->t("main.edit")}
@@ -136,26 +130,29 @@ HTML;
                 <a class="arrow" href="{$text->e($text->getUrlPage("delete_widget", $id))}">
                     {$text->t("main.delete")}
                 </a>
-HTML;
+HTML
+        );
         if ($widgetNumber != 0) {
-            $output.= <<<HTML
-                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, array("direction" => "up", $tokenName => $token)))}">
+            $stream->write(<<<HTML
+                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, ["direction" => "up", $tokenName => $token]))}">
                     {$text->t("widgets.move_up")}
                 </a>   
-HTML;
+HTML
+            );
         }
         if ($widgetNumber < count($this->placedWidgets) - 1) {
-            $output.= <<<HTML
-                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, array("direction" => "down", $tokenName => $token)))}">
+            $stream->write(<<<HTML
+                <a class="arrow" href="{$text->e($text->getUrlPage("move_widget", $id, ["direction" => "down", $tokenName => $token]))}">
                     {$text->t("widgets.move_down")}
                 </a>  
-HTML;
+HTML
+            );
         }
-        $output.= <<<HTML
+        $stream->write(<<<HTML
             </p>
             <hr />
-HTML;
-        return $output;
+HTML
+        );
     }
 
     private function getNewWidgetChoicesHtml() {
@@ -182,8 +179,8 @@ HTML;
             $authorNameHtml = htmlSpecialChars($installedWidget->getAuthor());
             $authorUrlHtml = htmlSpecialChars($installedWidget->getAuthorWebsite());
 
-            $addToDocumentUrlHtml = $this->text->e($this->text->getUrlPage("edit_widget", null, array("directory_name" => $installedWidget->getDirectoryName(),
-                "document_id" => $this->document->getId())));
+            $addToDocumentUrlHtml = $this->text->e($this->text->getUrlPage("edit_widget", null, ["directory_name" => $installedWidget->getDirectoryName(),
+                "document_id" => $this->document->getId()]));
 
             $returnValue.= <<<HTML
                 <h3>{$widgetNameHtml}</h3>

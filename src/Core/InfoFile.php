@@ -68,7 +68,7 @@ class InfoFile {
         }
 
         // Initialise settings map
-        $this->settingsMap = array();
+        $this->settingsMap = [];
 
         // Read all lines
         $lines = file($this->infoFile);

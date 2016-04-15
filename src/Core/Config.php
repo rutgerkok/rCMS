@@ -34,7 +34,7 @@ class Config {
     const OPTION_THEME = "theme";
     const OPTION_COPYRIGHT = "copyright";
 
-    private $config = array();
+    private $config = [];
 
     /**
      * Creates a new Config instance. The settings will be read from the 
@@ -124,12 +124,12 @@ class Config {
             $sql = "UPDATE `settings` SET ";
             $sql.= "`setting_value` = :value ";
             $sql.= "WHERE `setting_name` = :name";
-            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
+            $database->prepare($sql)->execute([":name" => $name, ":value" => $value]);
         } else {
             // New setting
             $sql = "INSERT INTO `settings` (`setting_name`, `setting_value`) ";
             $sql.= " VALUES (:name, :value)";
-            $database->prepare($sql)->execute(array(":name" => $name, ":value" => $value));
+            $database->prepare($sql)->execute([":name" => $name, ":value" => $value]);
         }
     }
 

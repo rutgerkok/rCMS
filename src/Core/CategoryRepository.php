@@ -44,7 +44,7 @@ class CategoryRepository extends Repository {
      */
     public function getCategoriesArray() {
         $categoryArray = $this->getCategories();
-        $returnArray = array();
+        $returnArray = [];
         foreach ($categoryArray as $category) {
             $returnArray[$category->getId()] = $category->getName();
         }
@@ -52,7 +52,7 @@ class CategoryRepository extends Repository {
     }
 
     public function getAllFields() {
-        return array($this->idField, $this->nameField);
+        return [$this->idField, $this->nameField];
     }
 
     public function getTableName() {
@@ -103,7 +103,7 @@ class CategoryRepository extends Repository {
             <p>A new category has been created named 'New category'.</p>
             <p>
                     <a href="{$website->getUrlPage('rename_category', $id)}">Rename</a>|
-                    <a href="{$website->getUrlPage('delete_category', $id, array('confirm' => 1))}">Undo</a>
+                    <a href="{$website->getUrlPage('delete_category', $id, ['confirm' => 1])}">Undo</a>
             </p>	
 EOT;
     }
@@ -213,7 +213,7 @@ EOT;
             if (!empty($cat_name)) {
                 $returnValue = '<p>Are you sure you want to remove the category \'' . $cat_name . '\'?';
                 $returnValue.= ' This action cannot be undone. Please note that some articles might get uncatogorized.</p>';
-                $returnValue.= '<p><a href="' . $website->getUrlPage("delete_category", $id, array("confirm" => 1)) . '">Yes</a>|';
+                $returnValue.= '<p><a href="' . $website->getUrlPage("delete_category", $id, ["confirm" => 1]) . '">Yes</a>|';
                 $returnValue.= '<a href="' . $website->getUrlPage("delete_category") . '">No</a></p>';
                 return $returnValue;
             } else {

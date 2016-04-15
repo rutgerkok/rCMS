@@ -74,12 +74,12 @@ class CommentRepository extends Repository {
     }
 
     public function getAllFields() {
-        return array($this->primaryField, $this->articleIdField,
+        return [$this->primaryField, $this->articleIdField,
             $this->userIdField, $this->userDisplayNameField,
             $this->userNameField, $this->userEmailField, $this->userRankField,
             $this->commentUserNameField, $this->commentEmailField,
             $this->createdField, $this->lastEditedField, $this->bodyField,
-            $this->statusField);
+            $this->statusField];
     }
 
     public function createEmptyObject() {
@@ -136,14 +136,14 @@ class CommentRepository extends Repository {
             }
         }
 
-        return Comment::getByArray($comment_id, array(
+        return Comment::getByArray($comment_id, [
                     "article_id" => $article_id,
                     "user_id" => $account_id,
                     "comment_name" => $author_name,
                     "comment_email" => $author_email,
                     "comment_body" => $comment_body,
                     "comment_status" => Comment::NORMAL_STATUS
-        ));
+        ]);
     }
 
     /**

@@ -136,7 +136,7 @@ class Comment extends Entity {
      */
     public function getChildComments() {
         if (!isSet($this->childComments)) {
-            return array();
+            return [];
         }
         return $this->childComments;
     }

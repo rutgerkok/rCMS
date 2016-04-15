@@ -18,7 +18,7 @@ final class InstallDatabaseView extends View {
         $text = $this->text;
         $stream->write(<<<HTML
             <p>{$text->t("install.no_tables_yet")}</p>
-            <a href="{$text->e($text->getUrlPage("install", null, array("action" => "install_database")))}" class="button primary_button">
+            <a href="{$text->e($text->getUrlPage("install", null, ["action" => "install_database"]))}" class="button primary_button">
                 {$text->t("install.create_tables")}
             </a>
 HTML

@@ -15,7 +15,7 @@ class Request {
     private $serverRequest;
 
     /** @var string[] The parts that exist in the path.. */
-    private $pathParts = array();
+    private $pathParts = [];
 
     public function __construct(ServerRequestInterface $serverRequest) {
         $this->serverRequest = $serverRequest;
@@ -34,9 +34,9 @@ class Request {
             
             if ($this->hasRequestValue("id")) {
                 $pageId = $this->getRequestInt("id");
-                $this->pathParts = array($pageName, (string) $pageId);
+                $this->pathParts = [$pageName, (string) $pageId];
             } else {
-                $this->pathParts = array($pageName);
+                $this->pathParts = [$pageName];
             }
         }
     }

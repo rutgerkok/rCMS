@@ -87,7 +87,7 @@ EOT;
     }
 
     public function parseData(Website $website, $id) {
-        $data = array();
+        $data = [];
         $data["title"] = isSet($_REQUEST["title_" . $id]) ? trim($_REQUEST["title_" . $id]) : "";
         if (strLen($data["title"]) > self::TITLE_MAX_LENGTH) {
             $website->addError($website->t("widgets.title") . " " . $website->tReplaced("errors.too_long_num", self::TITLE_MAX_LENGTH));

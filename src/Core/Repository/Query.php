@@ -54,7 +54,7 @@ class Query {
     /**
      * @var string[] Things to order the results by.
      */
-    private $orderByStrings = array();
+    private $orderByStrings = [];
 
     function __construct(PDO $pdo, Repository $repository, $whereRaw,
             array $params) {
@@ -233,7 +233,7 @@ class Query {
      * database.
      */
     private function toFieldMap(array $fields) {
-        $map = array();
+        $map = [];
         foreach ($fields as $field) {
             $map[$field->getNameInDatabase()] = $field;
         }
@@ -270,7 +270,7 @@ class Query {
     }
 
     private function getJoinString() {
-        $joinedTables = array();
+        $joinedTables = [];
         $joins = "";
         foreach ($this->fieldMap as $field) {
             if (!$field->needsJoin()) {
@@ -306,7 +306,7 @@ class Query {
     }
 
     private function toObjects(PDOStatement $statement, array $fieldMap) {
-        $objects = array();
+        $objects = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $object = $this->repository->createEmptyObject();

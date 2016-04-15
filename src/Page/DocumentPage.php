@@ -58,10 +58,10 @@ class DocumentPage extends Page {
     }
 
     public function getViews(Text $text) {
-        return array(
+        return [
             new DocumentView($text, $this->document, $this->editLinks),
             new WidgetsPageView($text, $this->document->getId(), $this->widgetLoader, $this->widgets, false)
-            );
+            ];
     }
 
 }

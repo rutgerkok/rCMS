@@ -26,7 +26,7 @@ class NullWidget extends WidgetDefinition {
 
     public function parseData(Website $website, $id) {
         $website->addError($website->t("widgets.missing_definition.edit"));
-        return array("valid" => false);
+        return ["valid" => false];
     }
 
     public function writeText(StreamInterface $stream, Website $website, $id, $data) {

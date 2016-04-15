@@ -20,7 +20,7 @@ class User extends Entity {
     protected $lastLogin;
     protected $status = Authentication::STATUS_NORMAL;
     protected $statusText = "";
-    protected $extraData = array();
+    protected $extraData = [];
 
     /**
      * Creates a new user with the given username, display name and password.
@@ -307,12 +307,12 @@ class User extends Entity {
      */
     public function setExtraData($extra_data) {
         if ($extra_data === null) {
-            $this->extraData = array();
+            $this->extraData = [];
             return;
         }
         if (is_string($extra_data)) {
             if (empty($extra_data)) {
-                $this->extraData = array();
+                $this->extraData = [];
                 return;
             }
             $this->extraData = JsonHelper::stringToArray($extra_data);

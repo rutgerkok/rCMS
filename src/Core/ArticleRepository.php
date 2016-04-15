@@ -76,11 +76,11 @@ class ArticleRepository extends Repository {
     }
 
     public function getStandardFields() {
-        return array($this->primaryField, $this->titleField, $this->createdField,
+        return [$this->primaryField, $this->titleField, $this->createdField,
             $this->editedField, $this->introField, $this->featuredImageField,
             $this->categoryIdField, $this->categoryNameField, $this->authorIdField,
             $this->authorNameField, $this->pinnedField, $this->hiddenField,
-            $this->calendarField);
+            $this->calendarField];
     }
 
     public function getAllFields() {
@@ -191,8 +191,8 @@ SQL;
         $limit = ($year == 0) ? 50 : 500;
 
         // Add where clausules
-        $whereClausules = array();
-        $params = array();
+        $whereClausules = [];
+        $params = [];
         if ($year != 0) {
             $whereClausules[] = "YEAR(`artikel_gemaakt`) = :year";
             $params[":year"] = $year;
@@ -223,7 +223,7 @@ SQL;
     public function getArticlesDataCalendarMonth(DateTime $month) {
         $monthNumber = (int) $month->format('n');
         $yearNumber = (int) $month->format('Y');
-        return $this->whereRaw("YEAR(`artikel_verwijsdatum`) = :yearNumber AND MONTH(`artikel_verwijsdatum`) = :monthNumber", array(":yearNumber" => $yearNumber, ":monthNumber" => $monthNumber))
+        return $this->whereRaw("YEAR(`artikel_verwijsdatum`) = :yearNumber AND MONTH(`artikel_verwijsdatum`) = :monthNumber", [":yearNumber" => $yearNumber, ":monthNumber" => $monthNumber])
                         ->limit(99)->select();
     }
 
@@ -234,7 +234,7 @@ SQL;
      */
     public function getArticlesDataCalendarYear(DateTime $year) {
         $yearNumber = (int) $year->format('Y');
-        return $this->whereRaw("YEAR(`artikel_verwijsdatum`) = :yearNumber", array(":yearNumber" => $yearNumber))->limit(300)->select();
+        return $this->whereRaw("YEAR(`artikel_verwijsdatum`) = :yearNumber", [":yearNumber" => $yearNumber])->limit(300)->select();
     }
 
     /**
@@ -256,8 +256,8 @@ SQL;
             }
         } else {
             // Multiple categories
-            $pieces = array();
-            $params = array();
+            $pieces = [];
+            $params = [];
             $i = 0;
             foreach ($categoryIds as $categoryId) {
                 $categoryId = (int) $categoryId;
@@ -294,7 +294,7 @@ SQL;
         }
         $sql.= "GROUP BY YEAR(`artikel_gemaakt`)";
         $result = $this->pdo->query($sql);
-        $byYear = array();
+        $byYear = [];
         while (list($year, $count) = $result->fetch(PDO::FETCH_NUM)) {
             $byYear[$year] = $count;
         }
@@ -316,7 +316,7 @@ SQL;
      * @return Query The query.
      */
     protected function searchQuery($keyword) {
-        return $this->whereRaw("(`artikel_titel` LIKE CONCAT('%', :keyword, '%') OR `artikel_intro` LIKE CONCAT('%', :keyword, '%') OR `artikel_inhoud` LIKE CONCAT('%', :keyword, '%'))", array(":keyword" => $keyword));
+        return $this->whereRaw("(`artikel_titel` LIKE CONCAT('%', :keyword, '%') OR `artikel_intro` LIKE CONCAT('%', :keyword, '%') OR `artikel_inhoud` LIKE CONCAT('%', :keyword, '%'))", [":keyword" => $keyword]);
     }
 
     /**

@@ -17,7 +17,7 @@ class PlacedWidget extends Entity {
 
     protected $id;
     protected $documentId;
-    protected $widgetData = array();
+    protected $widgetData = [];
     protected $priority = 0;
     protected $widgetName;
     protected $baseDirectory;
@@ -70,7 +70,7 @@ class PlacedWidget extends Entity {
      */
     public function setData($data) {
         if ($data == null) {
-            $this->widgetData = array();
+            $this->widgetData = [];
         } else if (is_array($data)) {
             if (!isSet($data["valid"]) || $data["valid"]) {
                 $this->widgetData = $data;

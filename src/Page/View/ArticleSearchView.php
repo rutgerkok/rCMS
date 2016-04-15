@@ -55,7 +55,7 @@ class ArticleSearchView extends ArticleListView {
         // Link to previous page
         if ($page > 0) {
             $returnValue.= ' <a class="arrow" href="';
-            $returnValue.= $text->e($text->getUrlPage("search", 0, array("searchbox" => $keywordHtml, "page" => $page - 1)));
+            $returnValue.= $text->e($text->getUrlPage("search", 0, ["searchbox" => $keywordHtml, "page" => $page - 1]));
             $returnValue.= '">' . $text->t('articles.page.previous') . '</a> ';
         }
 
@@ -65,7 +65,7 @@ class ArticleSearchView extends ArticleListView {
         // Next page
         if ($page < $this->highestPageNumber) {
             $returnValue.= ' <a class="arrow" href="';
-            $returnValue.= $text->e($text->getUrlPage("search", 0, array("searchbox" => $keywordHtml, "page" => $page + 1)));
+            $returnValue.= $text->e($text->getUrlPage("search", 0, ["searchbox" => $keywordHtml, "page" => $page + 1]));
             $returnValue.= '">' . $text->t('articles.page.next') . '</a>';
         }
 

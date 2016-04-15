@@ -53,9 +53,9 @@ class DocumentRepository extends Repository {
     }
 
     public function getAllFields() {
-        return array($this->primaryField, $this->titleField, $this->introField,
+        return [$this->primaryField, $this->titleField, $this->introField,
             $this->hiddenField, $this->createdField, $this->editedField,
-            $this->userIdField, $this->parentIdField);
+            $this->userIdField, $this->parentIdField];
     }
 
     public function createEmptyObject() {

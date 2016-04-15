@@ -53,7 +53,10 @@ class Website {
         // Connect to database, read settings
         try {
             $dataSource = "mysql:dbname={$this->config->get(Config::OPTION_DATABASE_NAME)};host={$this->config->get(Config::OPTION_DATABASE_HOST)}";
-            $this->databaseObject = new TablePrefixedPDO($dataSource, $this->config->get(Config::OPTION_DATABASE_USER), $this->config->get(Config::OPTION_DATABASE_PASSWORD), array("table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)));
+            $this->databaseObject = new TablePrefixedPDO($dataSource,
+                    $this->config->get(Config::OPTION_DATABASE_USER),
+                    $this->config->get(Config::OPTION_DATABASE_PASSWORD),
+                    ["table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)]);
             $this->databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->databaseObject->prefixTables(array("categorie", "users",
                 "links", "artikel", "comments", "menus", "widgets", "documents",
@@ -227,7 +230,7 @@ class Website {
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return UriInterface The url.
      */
-    public function getUrlPage($pageName, $params = null, $args = array()) {
+    public function getUrlPage($pageName, $params = null, $args = []) {
         return $this->text->getUrlPage($pageName, $params, $args);
     }
 

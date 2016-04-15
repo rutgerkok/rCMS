@@ -42,9 +42,9 @@ class Text {
      */
     public function __construct(UriInterface $siteUrl, $translationsDir, UriInterface $javascriptsUrl) {
         $this->siteUrl = $siteUrl;
-        $this->translations = array();
-        $this->errors = array();
-        $this->confirmations = array();
+        $this->translations = [];
+        $this->errors = [];
+        $this->confirmations = [];
         $this->rewriteUrls = false;
         $this->javascriptsUrl = $javascriptsUrl;
 
@@ -279,7 +279,7 @@ class Text {
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return UriInterface The url.
      */
-    public function getUrlPage($pageName, $params = null, $args = array()) {
+    public function getUrlPage($pageName, $params = null, $args = []) {
         $url = $this->getUrlMain();
         if (!$this->rewriteUrls) {
             $url = $url->withPath($url->getPath() . "index.php/{$pageName}/");
@@ -294,7 +294,7 @@ class Text {
             }
         }
         if (count($args) > 0) {
-            $queryParts = array();
+            $queryParts = [];
             foreach ($args as $key => $value) {
                 $queryParts[] = urlencode($key) . '=' . urlencode($value);
             }

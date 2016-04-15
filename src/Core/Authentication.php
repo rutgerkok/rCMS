@@ -314,8 +314,8 @@ class Authentication {
      * @return array The highest id in use for a rank.
      */
     public function getRanks() {
-        $rankIds = array(self::RANK_USER, self::RANK_MODERATOR, self::RANK_ADMIN);
-        $ranks = array();
+        $rankIds = [self::RANK_USER, self::RANK_MODERATOR, self::RANK_ADMIN];
+        $ranks = [];
         foreach ($rankIds as $rankId) {
             $ranks[$rankId] = $this->getRankName($rankId);
         }

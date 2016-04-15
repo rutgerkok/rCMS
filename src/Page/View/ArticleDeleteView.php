@@ -90,7 +90,7 @@ class ArticleDeleteView extends View {
     protected function getConfirmationText() {
         $text = $this->text;
         $article = $this->article;
-        $deleteUrlParams = array("action" => "delete", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
+        $deleteUrlParams = ["action" => "delete", RequestToken::FIELD_NAME => $this->requestToken->getTokenString()];
         $returnValue = <<<EOT
             <p>{$text->t('articles.delete.confirm')}</p>
             <p>
@@ -99,7 +99,7 @@ class ArticleDeleteView extends View {
                 </a>
 EOT;
         if (!$article->isHidden()) {
-            $hideUrlParams = array("action" => "make_private", RequestToken::FIELD_NAME => $this->requestToken->getTokenString());
+            $hideUrlParams = ["action" => "make_private", RequestToken::FIELD_NAME => $this->requestToken->getTokenString()];
             // Option to hide article is only relevant when the article
             // isn't already hidden
             $returnValue.= <<<EOT

@@ -42,7 +42,7 @@ class LinkRepository extends Repository {
     }
 
     public function getStandardFields() {
-        return array($this->linkIdField, $this->linkTextField, $this->linkUrlField);
+        return [$this->linkIdField, $this->linkTextField, $this->linkUrlField];
     }
 
     public function getAllFields() {
@@ -75,7 +75,7 @@ class LinkRepository extends Repository {
     }
 
     public function getLinksBySearch($keyword) {
-        return $this->whereRaw("`link_url` LIKE :keyword OR `link_text` LIKE :keyword", array(":keyword" => "%$keyword%"))->select();
+        return $this->whereRaw("`link_url` LIKE :keyword OR `link_text` LIKE :keyword", [":keyword" => "%$keyword%"])->select();
     }
 
     /**
@@ -142,7 +142,7 @@ class LinkRepository extends Repository {
         try {
             // Don't save menu id, we used a temporary id because this method
             // doesn't know the real id.
-            $this->saveEntity($link, array($this->linkTextField, $this->linkUrlField));
+            $this->saveEntity($link, [$this->linkTextField, $this->linkUrlField]);
             return true;
         } catch (PDOException $e) {
             $this->website->getText()->logException("Failed to update link", $e);

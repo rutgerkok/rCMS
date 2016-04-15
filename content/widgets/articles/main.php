@@ -72,7 +72,7 @@ class WidgetArticles extends WidgetDefinition {
 
     public function getEditor(Website $website, $widget_id, $data) {
         $title = isSet($data["title"]) ? $data["title"] : "";
-        $categories = isSet($data["categories"]) ? $data["categories"] : array();
+        $categories = isSet($data["categories"]) ? $data["categories"] : [];
         $count = isSet($data["count"]) ? $data["count"] : 4;
         $display_type = isSet($data["display_type"]) ? $data["display_type"] : self::TYPE_WITHOUT_METADATA;
         $order = isSet($data["order"]) ? $data["order"] : self::SORT_NEWEST_TOP;
@@ -158,7 +158,7 @@ EOT;
     }
 
     public function parseData(Website $website, $id) {
-        $data = array();
+        $data = [];
 
         // Title
         $data["title"] = trim($website->getRequestString("title_" . $id, ""));
@@ -168,15 +168,15 @@ EOT;
         }
 
         // Categories
-        $categories = isSet($_REQUEST["categories_" . $id]) ? $_REQUEST["categories_" . $id] : array();
+        $categories = isSet($_REQUEST["categories_" . $id]) ? $_REQUEST["categories_" . $id] : [];
         if (!is_array($categories)) {
             // Check for valid array
             $website->addError($website->tReplacedKey("errors.none_set", "main.categories", true));
             $data["valid"] = false;
-            $categories = array();
+            $categories = [];
         }
         // Add all categories to the real array
-        $data["categories"] = array();
+        $data["categories"] = [];
         foreach ($categories as $category_id) {
             $category_id = (int) $category_id;
             if ($category_id > 0) {

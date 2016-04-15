@@ -64,7 +64,7 @@ EOT;
     }
 
     public function parseData(Website $website, $id) {
-        $data = array();
+        $data = [];
         $data["title"] = $website->getRequestString("title_" . $id, "");
         if (strLen($data["title"]) > self::MAX_TITLE_LENGTH) {
             // Limit title length

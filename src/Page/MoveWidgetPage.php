@@ -79,10 +79,10 @@ final class MoveWidgetPage extends Page {
 
             // Generate new request token, allowing user to perform action again
             $newRequestToken = RequestToken::generateNew();
-            $this->moveLink = Link::of($text->getUrlPage("move_widget", $widgetId, array(
+            $this->moveLink = Link::of($text->getUrlPage("move_widget", $widgetId, [
                                 "direction" => $moveUp? "up" : "down",
                                 RequestToken::FIELD_NAME => $newRequestToken->getTokenString()
-                            )), $linkText);
+                                ]), $linkText);
             $newRequestToken->saveToSession();
         }
     }

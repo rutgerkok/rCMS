@@ -44,7 +44,7 @@ class CalendarView extends View {
 
         // Index by day in month (but only for articles actually in this month)
         $monthNumber = $month->format('n');
-        $this->articlesByDay = array();
+        $this->articlesByDay = [];
         foreach ($articlesInMonth as $article) {
             if ($article->onCalendar !== null && $article->onCalendar->format('n') === $monthNumber) {
                 $dayNumber = (int) $article->onCalendar->format('j');
@@ -79,8 +79,8 @@ class CalendarView extends View {
      */
     protected function getWeekDayNames() {
         $text = $this->text;
-        $weekDayCodes = array("mon", "tue", "wed", "thu", "fri", "sat", "sun");
-        $weekDayNames = array();
+        $weekDayCodes = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+        $weekDayNames = [];
         foreach ($weekDayCodes as $weekDayCode) {
             $weekDayNames[] = $text->t("calendar.weekday." . $weekDayCode);
         }
@@ -218,9 +218,9 @@ CELL;
         if ($this->editLinks) {
             $tooltip.= <<<TOOLTIP_END
                 <p>
-                    <a class="arrow" href="{$text->e($text->getUrlPage("edit_article", null, array(
+                    <a class="arrow" href="{$text->e($text->getUrlPage("edit_article", null, [
                         "article_eventdate" => $date->format("Y-m-d"),
-                        "article_eventtime" => "12:00")))}">
+                        "article_eventtime" => "12:00"]))}">
                         {$text->t("articles.create")}
                     </a>
                 </p>

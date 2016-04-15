@@ -171,7 +171,7 @@ EOT;
         }
 
         // Add all account edit links
-        $edit_links = array();
+        $edit_links = [];
 
         if (!$is_viewing_themselves && $is_viewing_as_moderator) {
             // Accessed by a moderator that isn't viewing his/her own account

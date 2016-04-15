@@ -72,7 +72,7 @@ class SearchPage extends Page {
     }
 
     public function getViews(Text $text) {
-        $views = array();
+        $views = [];
         if (isSet($this->displayedArticles)) {
             $views[] = new ArticleSearchView($text, $this->keyword, $this->displayedArticles, 
                     $this->pageNumber, $this->totalResults, $this->highestPageNumber, $this->showEditLinks);

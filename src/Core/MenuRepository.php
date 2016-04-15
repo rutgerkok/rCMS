@@ -35,7 +35,7 @@ class MenuRepository extends Repository {
     }
 
     public function getAllFields() {
-        return array($this->menuIdField, $this->menuNameField);
+        return [$this->menuIdField, $this->menuNameField];
     }
 
     public function createEmptyObject() {

@@ -52,7 +52,7 @@ FORM;
     }
 
     public function parseData(Website $website, $id) {
-        $settingsArray = array();
+        $settingsArray = [];
 
         // Title
         $settingsArray["title"] = trim($website->getRequestString("title_" . $id, ""));

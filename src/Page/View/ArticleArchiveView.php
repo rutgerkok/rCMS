@@ -67,7 +67,7 @@ class ArticleArchiveView extends View {
         if ($this->selectedCategory == 0) {
             $textToDisplay.= '<strong>' . $text->t("categories.all") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", 0, array("year" => $this->selectedYear))) . '">';
+            $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", 0, ["year" => $this->selectedYear])) . '">';
             $textToDisplay.= $text->t("categories.all") . "</a>&nbsp;&nbsp;\n";
         }
         // Other categories
@@ -75,7 +75,7 @@ class ArticleArchiveView extends View {
             if ($id == $this->selectedCategory) {
                 $textToDisplay.= '<strong>' . $categoryName . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $id, array("year" => $this->selectedYear))) . '">';
+                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $id, ["year" => $this->selectedYear])) . '">';
                 $textToDisplay.= $categoryName . "</a>&nbsp;&nbsp;\n";
             }
         }
@@ -93,7 +93,7 @@ class ArticleArchiveView extends View {
         if ($this->selectedYear == 0) {
             $textToDisplay = '<br /><strong>' . $text->t("articles.archive.any_year") . "</strong>&nbsp;&nbsp;\n";
         } else {
-            $textToDisplay = '<br /><a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, array("year" => 0))) . '">';
+            $textToDisplay = '<br /><a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, ["year" => 0])) . '">';
             $textToDisplay.= $text->t("articles.archive.any_year") . "</a>&nbsp;&nbsp;\n";
         }
 
@@ -102,7 +102,7 @@ class ArticleArchiveView extends View {
             if ($year == $this->selectedYear) {
                 $textToDisplay.= '<strong>' . $year . "</strong>&nbsp;&nbsp;\n";
             } else {
-                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, array("year" => $year))) . '">';
+                $textToDisplay.= '<a href="' . $text->e($text->getUrlPage("archive", $this->selectedCategory, ["year" => $year])) . '">';
                 $textToDisplay.= $year . "</a>&nbsp;&nbsp;\n";
             }
         }

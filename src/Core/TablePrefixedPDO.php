@@ -111,7 +111,7 @@ final class TablePrefixedPDO extends PDO {
      * Emulated prepared statements does not communicate with the database server
      * so <b>PDO::prepare</b> does not check the statement.
      */
-    public function prepare($sql, $driverOptions = array()) {
+    public function prepare($sql, $driverOptions = []) {
         $replacedSql = str_replace($this->tableNamesToReplace, $this->replacingTableNames, $sql);
         return parent::prepare($replacedSql, $driverOptions);
     }

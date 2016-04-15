@@ -196,7 +196,7 @@ EOT;
      * @return \string The file names, without the path.
      */
     protected function get_sub_directory_names($directory_to_scan) {
-        $results = array();
+        $results = [];
         if (is_dir($directory_to_scan)) {
             $files = scanDir($directory_to_scan);
             foreach ($files as $file_name) {

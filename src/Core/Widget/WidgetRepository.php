@@ -49,9 +49,9 @@ class WidgetRepository extends Repository {
     }
 
     public function getAllFields() {
-        return array($this->widgetIdField, $this->widgetDataField,
+        return [$this->widgetIdField, $this->widgetDataField,
             $this->widgetNameField, $this->widgetPriorityField,
-            $this->documentIdField);
+            $this->documentIdField];
     }
 
     /**

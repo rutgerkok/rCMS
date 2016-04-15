@@ -47,7 +47,7 @@ class WidgetRkokText extends WidgetDefinition {
     }
 
     public function parseData(Website $website, $id) {
-        $return_array = array();
+        $return_array = [];
 
         // Title
         $return_array["title"] = $website->getRequestString("title_" . $id, "");

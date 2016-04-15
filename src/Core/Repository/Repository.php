@@ -44,7 +44,7 @@ abstract class Repository {
      */
     protected function where(Field $field, $operator, $value) {
         if ($operator === '=' || $operator === '<' || $operator === '>') {
-            return $this->whereRaw('`' . $field->getNameInDatabase() . '` ' . $operator . ' :value', array(":value" => $field->serializeValue($value)));
+            return $this->whereRaw('`' . $field->getNameInDatabase() . '` ' . $operator . ' :value', [":value" => $field->serializeValue($value)]);
         }
         throw new InvalidArgumentException("Invalid operator: " . $operator);
     }
@@ -54,7 +54,7 @@ abstract class Repository {
      * @return Query The query.
      */
     protected function all() {
-        return $this->whereRaw("", array());
+        return $this->whereRaw("", []);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class Repository {
      * @throws NotFoundException If the id is larger than 0 and no entity with
      * the given id exists in the database.
      */
-    protected function saveEntity(Entity $entity, array $fields = array()) {
+    protected function saveEntity(Entity $entity, array $fields = []) {
         if (!$entity->canBeSaved()) {
             throw new InvalidArgumentException("entity cannot be saved yet");
         }
@@ -151,7 +151,7 @@ abstract class Repository {
 
         $i = 0;
         $fieldInstructions = "";
-        $params = array();
+        $params = [];
         foreach ($fields as $field) {
             if ($field->needsJoin() || $field == $primaryKey) {
                 continue;
@@ -182,9 +182,9 @@ abstract class Repository {
             return !$field->needsJoin() && $field != $primaryKey;
         });
 
-        $fieldNames = array();
-        $fieldMarkers = array();
-        $fieldValues = array();
+        $fieldNames = [];
+        $fieldMarkers = [];
+        $fieldValues = [];
         foreach ($fields as $field) {
             $fieldNames[] = "`{$field->getNameInDatabase()}`";
             $fieldMarkers[] = '?';

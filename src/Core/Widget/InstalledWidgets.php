@@ -22,7 +22,7 @@ class InstalledWidgets {
      * @var WidgetDefinition[] All widget defintions, to avoid loading the code
      * twice.
      */
-    private $loadedWidgets = array();
+    private $loadedWidgets = [];
 
     /**
      * @var string Name of the widget that is currently being loaded. Variable
@@ -43,7 +43,7 @@ class InstalledWidgets {
      * @return WidgetMeta[] List of all installed widgets.
      */
     public function getInstalledWidgets() {
-        $widgets = array();
+        $widgets = [];
         $directoryToScan = $this->website->getUriWidgets();
 
         // Check directory

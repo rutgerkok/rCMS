@@ -242,7 +242,7 @@ EOT
         $website = $this->website;
         $text = $website->getText();
 
-        $links = array();
+        $links = [];
         $links[] = Link::of($text->getUrlMain(), $text->t("main.home"));
 
         if ($website->getConfig()->isDatabaseUpToDate()) {

@@ -69,7 +69,7 @@ class ArticleSmallListView extends View {
 
         // Add article link
         if ($this->editLinks) {
-            $returnValue .= '<p><a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", 0, array("article_category" => $mainCategoryId)));
+            $returnValue .= '<p><a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", 0, ["article_category" => $mainCategoryId]));
             $returnValue .= '">' . $text->t("articles.create") . "</a></p>\n";
         }
 

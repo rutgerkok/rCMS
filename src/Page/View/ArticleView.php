@@ -36,7 +36,7 @@ class ArticleView extends View {
      * of the comment, or if the user is a moderator.
      */
     public function __construct(Text $text, Article $article, $editLink,
-            array $comments = array(), User $viewingComments = null) {
+            array $comments = [], User $viewingComments = null) {
         parent::__construct($text);
         $this->article = $article;
         $this->comments = $comments;
