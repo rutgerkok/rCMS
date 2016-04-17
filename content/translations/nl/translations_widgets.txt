@@ -8,6 +8,7 @@ homepage=Hoofdpagina
 title=Titel
 edit=Bewerk widget
 delete=Verwijder widget
+delete.confirm=Weet u zeker dat u deze widget wil verwijderen?
 missing_definition=De broncode van de widget {0} is niet (meer) geïnstalleerd.
 missing_definition.edit=De widget kan niet bewerkt worden, want de broncode is niet (meer) geïnstalleerd.
 view_in_document=Bekijk in document

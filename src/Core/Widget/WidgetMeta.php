@@ -37,7 +37,7 @@ final class WidgetMeta {
     }
 
     public function getAuthor() {
-        return $this->getString("author", "Unknown");
+        return $this->infoFile->getString("author", "Unknown");
     }
 
     public function getAuthorWebsite() {

@@ -5,7 +5,7 @@ use Rcms\Core\Widget\WidgetRepository;
 
 ?>
 
-<h2><?php echo $this->t("editor.widget.delete") ?></h2>
+<h2><?php echo $this->t("widgets.delete") ?></h2>
 <?php
 // AUTHENTICATION
 $oAuth = new Authentication($this);
@@ -30,7 +30,7 @@ if ($loggedIn) {
             $textToDisplay.= '<p><a class="arrow" href="' . $this->getUrlPage("edit_document", $widget->getDocumentId()) . '">' . $this->t("main.ok") . '</a></p>';
         } else {
             // Show confirmation message
-            $textToDisplay.= '<p>' . $this->t("editor.widget.delete.confirm") . '</p>';
+            $textToDisplay.= '<p>' . $this->t("widgets.delete.confirm") . '</p>';
 
             //en laat daarbij de comment zien
             $widget_info = $widget->getWidgetInfo();
