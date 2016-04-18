@@ -85,8 +85,4 @@ class Link extends Entity {
         return $this->id;
     }
 
-    public function canBeSaved() {
-        return parent::canBeSaved() && ($this->menuId > 0 || $this->id > 0);
-    }
-
 }

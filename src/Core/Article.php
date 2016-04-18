@@ -174,15 +174,19 @@ class Article extends Entity {
         }
     }
 
-    public function canBeSaved() {
-        return parent::canBeSaved()
-                && strLen($this->title) >= self::MIN_TITLE_LENGTH
-                && strLen($this->title) <= self::MAX_TITLE_LENGTH
-                && strLen($this->body) >= self::MIN_BODY_LENGTH
-                && strLen($this->body) <= self::MAX_BODY_LENGTH
-                && strLen($this->intro) >= self::MIN_INTRO_LENGTH
-                && strLen($this->intro) <= self::MAX_INTRO_LENGTH
-                && strLen($this->featuredImage) <= self::MAX_FEATURED_IMAGE_URL_LENGTH
+    /**
+     * Gets whether this is a complete article: all parts have been filled out
+     * and are of the appropriate length.
+     * @return boolean True if this article is complete, false otherwise.
+     */
+    public function isComplete() {
+        return strLen($this->title) >= Article::MIN_TITLE_LENGTH
+                && strLen($this->title) <= Article::MAX_TITLE_LENGTH
+                && strLen($this->body) >= Article::MIN_BODY_LENGTH
+                && strLen($this->body) <= Article::MAX_BODY_LENGTH
+                && strLen($this->intro) >= Article::MIN_INTRO_LENGTH
+                && strLen($this->intro) <= Article::MAX_INTRO_LENGTH
+                && strLen($this->featuredImage) <= Article::MAX_FEATURED_IMAGE_URL_LENGTH
                 && $this->authorId > 0;
     }
 

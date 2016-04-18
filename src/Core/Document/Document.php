@@ -200,8 +200,4 @@ final class Document extends Entity {
         return $this->isWidgetArea;
     }
 
-    public function canBeSaved() {
-        return parent::canBeSaved() && !$this->isWidgetArea && self::isValidIntro($this->intro) && self::isValidTitle($this->title);
-    }
-
 }

@@ -66,12 +66,12 @@ class ArticleTest extends PHPUnit_Framework_TestCase {
     public function testValidation() {
         $article = $this->getNewTestArticle();
         
-        $this->assertFalse($article->canBeSaved()); // no title, body, intro yet
+        $this->assertFalse($article->isComplete()); // no title, body, intro yet
 
         $article->setTitle("Test Title");
         $article->setIntro("Test Intro");
         $article->setBody("Test Body.");
 
-        $this->assertTrue($article->canBeSaved());
+        $this->assertTrue($article->isComplete());
     }
 }

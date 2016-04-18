@@ -50,27 +50,27 @@ class DocumentTest extends PHPUnit_Framework_TestCase {
     public function testInvalidTitleInSetter() {
         $document = Document::createNew("Test Title", "Test Intro", $this->getTestUser());
 
-        $this->assertTrue($document->canBeSaved());
+        $this->assertTrue(Document::isValidTitle($document->getTitle()));
         $document->setTitle("");
-        $this->assertFalse($document->canBeSaved());
+        $this->assertFalse(Document::isValidTitle($document->getTitle()));
     }
 
     public function testInvalidTitleInConstructor() {
         $document = Document::createNew("", "Test Intro", $this->getTestUser());
-        $this->assertFalse($document->canBeSaved());
+        $this->assertFalse(Document::isValidTitle($document->getTitle()));
     }
 
     public function testInvalidIntroInSetter() {
         $document = Document::createNew("Test Title", "Test Intro", $this->getTestUser());
 
-        $this->assertTrue($document->canBeSaved());
+        $this->assertTrue(Document::isValidIntro($document->getIntro()));
         $document->setIntro(str_repeat("t", Document::INTRO_MAX_LENGTH + 1));
-        $this->assertFalse($document->canBeSaved());
+        $this->assertFalse(Document::isValidIntro($document->getIntro()));
     }
 
     public function testInvalidIntroInConstructor() {
         $invalidIntro = str_repeat("t", Document::INTRO_MAX_LENGTH + 1);
         $document = Document::createNew("Test Title", $invalidIntro, $this->getTestUser());
-        $this->assertFalse($document->canBeSaved());
+        $this->assertFalse(Document::isValidIntro($document->getIntro()));
     }
 }

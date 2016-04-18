@@ -7,6 +7,7 @@ use PDOException;
 use Psr\Http\Message\UriInterface;
 
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 
@@ -135,6 +136,14 @@ class LinkRepository extends Repository {
             $this->website->getText()->logException("Failed to add link", $e);
             return false;
         }
+    }
+    
+    protected function canBeSaved(Entity $link) {
+        if (!($link instanceof Link)) {
+            return false;
+        }
+
+        return parent::canBeSaved($link) && ($link->getMenuId() > 0 || $link->getId() > 0);
     }
 
     public function updateLink($link_id, $link_url, $link_text) {

@@ -123,7 +123,7 @@ abstract class Repository {
      * the given id exists in the database.
      */
     protected function saveEntity(Entity $entity, array $fields = []) {
-        if (!$entity->canBeSaved()) {
+        if (!$this->canBeSaved($entity)) {
             throw new InvalidArgumentException("entity cannot be saved yet");
         }
         if (empty($fields)) {
@@ -137,6 +137,20 @@ abstract class Repository {
             // Insert
             $this->insertEntity($entity, $fields);
         }
+    }
+    
+    /**
+     * Gets whether all conditions are met to safely place this object in the
+     * database. When this method returns false, required fields are not yet
+     * filled in, or fields have invalid contents.
+     *
+     * Subclasses should override this method to do validation.
+     * @param Entity $entity The entity to check.
+     * @return boolean True if the object can safely be persisted, false
+     * otherwise.
+     */
+    protected function canBeSaved(Entity $entity) {
+        return $entity->isConstructed();
     }
 
     /**

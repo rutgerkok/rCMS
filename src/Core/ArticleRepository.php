@@ -6,6 +6,7 @@ use DateTime;
 use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 use Rcms\Core\Repository\Query;
@@ -139,6 +140,14 @@ class ArticleRepository extends Repository {
             $website->getText()->logException("Error saving article", $e);
             return false;
         }
+    }
+
+    protected function canBeSaved(Entity $article) {
+        if (!($article instanceof Article)) {
+            return false;
+        }
+
+        return parent::canBeSaved($article) && $article->isComplete();
     }
 
     /**

@@ -66,18 +66,5 @@ abstract class Entity {
     public final function isConstructed() {
         return $this->state != self::INTERNAL_STATE_SETTING;
     }
-    
-    /**
-     * Gets whether all conditions are met to safely place this object in the
-     * database. When this method returns false, required fields are not yet
-     * filled in, or fields have invalid contents.
-     *
-     * Subclasses should override this method to do validation.
-     * @return boolean True if the object can safely be persisted, false
-     * otherwise.
-     */
-    public function canBeSaved() {
-        return $this->isConstructed();
-    }
 
 }

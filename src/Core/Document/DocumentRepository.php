@@ -5,6 +5,7 @@ namespace Rcms\Core\Document;
 use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 use Rcms\Core\Text;
@@ -102,7 +103,8 @@ class DocumentRepository extends Repository {
                         ->selectOneOrFail();
     }
 
-    public function getDocumentOrWidgetArea(InstalledWidgets $installedWidgets, Text $text, $id) {
+    public function getDocumentOrWidgetArea(InstalledWidgets $installedWidgets,
+            Text $text, $id) {
         try {
             return $this->getDocument($id);
         } catch (NotFoundException $ex) {
@@ -119,13 +121,25 @@ class DocumentRepository extends Repository {
         $this->saveEntity($document);
     }
 
+    protected function canBeSaved(Entity $document) {
+        if (!($document instanceof Document)) {
+            return false;
+        }
+
+        return parent::canBeSaved($document) 
+                && !$document->isForWidgetArea() 
+                && Document::isValidIntro($document->getIntro()) 
+                && Document::isValidTitle($document->getTitle());
+    }
+
     /**
      * Deletes a document from the database.
      * @param Document $document The document to delete.
      * @throws NotFoundException If the document was already deleted or never saved.
      * @throws PDOException If a database error occurs.
      */
-    public function deleteDocument(Document $document, WidgetRepository $widgetRepo) {
+    public function deleteDocument(Document $document,
+            WidgetRepository $widgetRepo) {
         $this->where($this->primaryField, '=', $document->getId())->deleteOneOrFail();
         $widgetRepo->deleteAllPlacedWidgetsInDocument($document->getId());
     }
