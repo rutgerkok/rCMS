@@ -86,7 +86,7 @@ final class AccessKeyCheck {
         $siteKey = $this->website->getConfig()->get(Config::OPTION_ACCESS_CODE);
         if (empty($siteKey)) {
             // The website doesn't use an access key
-            return;
+            return $response;
         }
 
         $now = new DateTimeImmutable();
