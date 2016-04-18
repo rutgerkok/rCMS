@@ -81,8 +81,8 @@ class Validate {
     public static function displayName($displayName) {
         $valid = true;
 
-        if (strLen($displayName) < 4) {
-            Validate::setError("is_too_short_num", "4");
+        if (strLen($displayName) < 2) {
+            Validate::setError("is_too_short_num", "2");
             $valid = false;
         }
         if (strLen($displayName) > 20) {
