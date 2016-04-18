@@ -4,11 +4,12 @@ namespace Rcms\Page\Renderer;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
+use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Website;
 use Rcms\Core\Request;
+use Rcms\Page\Error404Page;
 use Rcms\Page\Page;
 use Rcms\Theme\PageRenderer;
-use Zend\Diactoros\Stream;
 
 /**
  * Description of PageToResponse

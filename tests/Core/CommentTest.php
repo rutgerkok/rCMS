@@ -10,6 +10,7 @@ use Zend\Diactoros\Uri;
 
 class CommentTest extends PHPUnit_Framework_TestCase {
 
+    // Tests the basics of a comment created by a visitor
     public function testVisitorComment() {
         $article = new Article();
         $comment = Comment::createForVisitor("Rutger", "rutger@example.com", $article, "Eloquent reply");
@@ -33,6 +34,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $this->assertNull($comment->getDateLastEdited());
     }
 
+    // Test updating the text of comments
     public function testCommentUpdate() {
         $article = new Article();
         $comment = Comment::createForVisitor("Rutger", "rutger@example.com", $article, "Initial body");
@@ -55,6 +57,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($comment->getDateLastEdited() instanceof \DateTimeInterface);
     }
 
+    // Basic tests for a comment created by a registered user
     public function testUserComment() {
         $user = $this->getTestUser();
         $article = Article::createArticle($user);
@@ -70,6 +73,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($user->getRank(), $comment->getUserRank());
     }
 
+    // Tests setting and getting of child comments
     public function testChildComments() {
         $article = new Article();
         $parent = Comment::createForVisitor("Bob", "", $article, "Parent comment");
@@ -80,6 +84,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals([$child], $parent->getChildComments());
     }
 
+    // Tests if a valid URL is returned by $comment->getUrl
     public function testUrl() {
         $article = new Article();
         $comment = Comment::createForVisitor("John", "", $article, "Some comment");
@@ -89,6 +94,15 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $comment->setField(new Field(Field::TYPE_PRIMARY_KEY, "id", "id"), 12);
 
         $this->assertTrue($comment->getUrl($text) instanceof UriInterface);
+    }
+    
+    public function testChangeVisitor() {
+        $article = new Article();
+        $comment = Comment::createForVisitor("Bob", "", $article, "Some reply");
+        
+        $comment->setByVisitor("Alice", "alice@example.com");
+        $this->assertEquals("Alice", $comment->getUserDisplayName());
+        $this->assertEquals("alice@example.com", $comment->getUserEmail());
     }
 
     private function getTestUser() {

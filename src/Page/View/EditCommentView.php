@@ -8,9 +8,9 @@ use Rcms\Core\Text;
 use Rcms\Core\RequestToken;
 
 /**
- * A form for adding comments.
+ * A form for editing comments.
  */
-class AddCommentView extends View {
+class EditCommentView extends View {
 
     private $comment;
 
@@ -28,7 +28,7 @@ class AddCommentView extends View {
 
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        $submitUrlHtml = $text->e($text->getUrlPage("add_comment", $this->comment->getArticleId()));
+        $submitUrlHtml = $text->e($text->getUrlPage("edit_comment", $this->comment->getId()));
 
         $stream->write(<<<HTML
             <p>
@@ -39,16 +39,15 @@ HTML
         );
 
         if ($this->comment->getUserId() === 0) {
-            // Visitor, ask for name and e-mail
+            // Visitor, allow to edit name and e-mail
             $this->writeNameAndEmailForm($stream);
         }
 
         // Write comment form
-        $articleId = $this->comment->getArticleId();
         $commentHtml = $text->e($this->comment->getBodyRaw());
         $tokenNameHtml = RequestToken::FIELD_NAME;
         $tokenValueHtml = $text->e($this->requestToken->getTokenString());
-        $articleUrlHtml = $text->e($text->getUrlPage("article", $articleId));
+        $commentUrlHtml = $text->e($this->comment->getUrl($text));
         $stream->write(<<<HTML
             <p>	
                 {$text->t("comments.comment")}<span class="required">*</span>:<br />
@@ -56,8 +55,8 @@ HTML
             </p>
             <p>
                 <input type="hidden" name="{$tokenNameHtml}" value="{$tokenValueHtml}" />
-                <input type="submit" name="submit" value="{$text->t('comments.add')}" class="button primary_button" />
-                <a href="{$articleUrlHtml}" class="button">{$text->t("editor.quit")}</a>
+                <input type="submit" name="submit" value="{$text->t('editor.save')}" class="button primary_button" />
+                <a href="{$commentUrlHtml}" class="button">{$text->t("editor.quit")}</a>
             </p>
             </form>
 HTML
@@ -75,8 +74,7 @@ HTML
             </p>
             <p>
                 {$text->t("users.email")}:<br />
-                <input type="email" name="email" id="email" style="width:98%" value="{$emailHtml}" /><br />
-                <em>{$text->t("comments.email_explained")}</em>
+                <input type="email" name="email" id="email" style="width:98%" value="{$emailHtml}" />
             </p>
 HTML
         );

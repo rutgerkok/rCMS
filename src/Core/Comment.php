@@ -164,9 +164,30 @@ class Comment extends Entity {
                 ->withFragment("comment_" . $this->getId());
     }
 
+    /**
+     * Sets the comment contents to the given string.
+     * @param string $text The contents of the comment.
+     */
     public function setBodyRaw($text) {
         $this->body = $text;
 
+        $this->markEdited();
+    }
+
+    /**
+     * Sets the comment as created by the given visitor.
+     * @param string $name Name of the visitor.
+     * @param string $email E-mail address of the visitor.
+     */
+    public function setByVisitor($name, $email) {
+        $this->userDisplayName = null;
+        $this->userId = 0;
+        $this->userRank = null;
+        $this->userName = null;
+        
+        $this->commentName = (string) $name;
+        $this->commentEmail = (string) $email;
+        
         $this->markEdited();
     }
 

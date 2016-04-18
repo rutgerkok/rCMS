@@ -88,6 +88,12 @@ class CommentRepository extends Repository {
         return new Comment();
     }
 
+    /**
+     * Validates a comment for saving to the database.
+     * @param Comment $comment The comment.
+     * @param Text $text Errors go here.
+     * @return boolean True if the comment is valid, false otherwise.
+     */
     public function validateComment(Comment $comment, Text $text) {
         $valid = true;
         if (!Validate::stringLength($comment->getBodyRaw(), Comment::BODY_MIN_LENGTH, Comment::BODY_MAX_LENGTH)) {
@@ -111,11 +117,7 @@ class CommentRepository extends Repository {
     }
 
     /**
-     * Sets the body of the comment. Displays errors if there are errors.
-     * (Use Website->errorCount())
-     * @param array $comment The comment.
-     * @param type $text The new text for the comment.
-     * @return array[] The comment with the text.
+     * @deprecated Use $this->validateComment and $comment->setBody
      */
     function setBody(Comment $comment, $text) {
         $this->checkCommentBody($text);
@@ -123,6 +125,9 @@ class CommentRepository extends Repository {
         return $comment;
     }
 
+    /**
+     * @deprecated Use $this->validateComment
+     */
     function checkCommentBody($comment_body) {
         $website = $this->website;
         $valid = true;
@@ -151,7 +156,24 @@ class CommentRepository extends Repository {
         return $valid;
     }
 
-    public function save(Comment $comment) {
+    /**
+     * @deprecated Use saveComment
+     */
+    function save(Comment $comment) {
+        try {
+            $this->saveComment($comment);
+            return true;
+        } catch (PDOException $ex) {
+            return false;
+        }
+    }
+
+    /**
+     * Saves a comment to the databse.
+     * @param Comment $comment The comment to save.
+     * @throws PDOException If saving fails.
+     */
+    public function saveComment(Comment $comment) {
         $this->saveEntity($comment);
     }
 
@@ -175,11 +197,7 @@ class CommentRepository extends Repository {
     }
 
     /**
-     * Echoes the standard comment editor. You'll need to provide the <form>
-     * tags by yourself, as well as hidden fields id and p, and the submit button.
-     * @param type $article_id
-     * @param type $comment The comment to edit can be null.
-     * @return boolean
+     * @deprecated Use views
      */
     function echoEditor($comment) {
         // $comment can be null
@@ -197,6 +215,9 @@ class CommentRepository extends Repository {
         return true;
     }
 
+    /**
+     * @deprecated Use views
+     */
     function echoEditorLoggedIn($comment) {
         $website = $this->website;
         $comment_body = ($comment == null) ? "" : htmlSpecialChars($comment->getBodyRaw());
@@ -212,6 +233,9 @@ class CommentRepository extends Repository {
 EOT;
     }
 
+    /**
+     * @deprecated Use views
+     */
     function echoEditorNormal($comment) {
         $website = $this->website;
 
@@ -250,15 +274,26 @@ EOT;
 
     /**
      * Gets the comment with the given id.
-     * @param $commentId Id of the comment.
+     * @param int $commentId Id of the comment.
      * @return Comment|null The comment, or null if not found.
+     * @deprecated Use getCommentOrFail
      */
     public function getComment($commentId) {
         try {
-            return $this->where($this->primaryField, '=', $commentId)->selectOneOrFail();
+            return $this->getCommentOrFail($commentId);
         } catch (NotFoundException $e) {
             return null;
         }
+    }
+
+    /**
+     * Gets the comment with the given id.
+     * @param int $commentId Id of the comment.
+     * @return Comment The comment.
+     * @throws NotFoundException If no comment with that id exists.
+     */
+    public function getCommentOrFail($commentId) {
+        return $this->where($this->primaryField, '=', $commentId)->selectOneOrFail(); 
     }
 
     /**
@@ -266,7 +301,7 @@ EOT;
      * @param int $articleId The article of the comments.
      * @return Comment[] The comments.
      */
-    function getCommentsArticle($articleId) {
+    public function getCommentsArticle($articleId) {
         return $this->where($this->articleIdField, '=', $articleId)->orderDescending($this->primaryField)->select();
     }
 
