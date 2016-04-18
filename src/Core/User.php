@@ -176,7 +176,7 @@ class User extends Entity {
     }
 
     public function isStaff() {
-        return $this->rank == Authentication::RANK_MODERATOR || Authentication::RANK_ADMIN;
+        return $this->rank == Authentication::RANK_MODERATOR || $this->rank == Authentication::RANK_ADMIN;
     }
 
     public function getRank() {
