@@ -3,6 +3,7 @@
 namespace Rcms\Theme;
 
 use Rcms\Core\InfoFile;
+use Rcms\Core\Website;
 
 use BadMethodCallException;
 
@@ -40,7 +41,7 @@ final class ThemeMeta {
      */
     public function getWidgetAreas(Website $website) {
         // Get the number of widgets
-        $areas = $this->getInteger("widget_areas", 1);
+        $areas = $this->infoFile->getInteger("widget_areas", 1);
 
         if ($areas == 0) {
             // No widgets in this theme
