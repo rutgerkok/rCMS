@@ -25,12 +25,12 @@ final class Responses {
         }
 
         $pageRenderer = new PageRenderer($website, $request, $page);
-        $body = new Stream('php://temp', 'wb+');
+        $body = $response->getBody();
         $pageRenderer->render($body);
 
         $body->rewind();
 
-        return $page->modifyResponse($response->withBody($body));
+        return $page->modifyResponse($response);
     }
     
     /**
