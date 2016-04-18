@@ -49,7 +49,7 @@ class ArticleListView extends View {
         // All articles
         if (count($this->articles) > 0) {
             foreach ($this->articles as $article) {
-                $stream->write($this->getArticleTextSmall($article, $this->metainfo, $loggedInStaff));
+                $this->writeArticleTextSmall($stream, $article, $this->metainfo, $loggedInStaff);
             }
         } else {
             $stream->write("<p>" . $text->t("errors.nothing_found") . "</p>");
@@ -66,72 +66,70 @@ class ArticleListView extends View {
         }
     }
 
-    public function getArticleTextSmall(Article $article, $show_metainfo,
+    public function writeArticleTextSmall(StreamInterface $stream, Article $article, $show_metainfo,
             $show_edit_delete_links) {
         $text = $this->text;
         
 
-        $returnValue = "\n\n" . '<div class="article_teaser ';
+        $stream->write("\n\n" . '<article class="article_teaser ');
         if (!empty($article->featuredImage)) {
-            $returnValue.= "with_featured_image";
+            $stream->write("with_featured_image");
         }
-        $returnValue.= '">';
+        $stream->write('">');
 
         // Title
-        $titleHtml = htmlSpecialChars($article->getTitle());
-        $returnValue.= "<h3>" . $this->encloseInArticleLink($article, $titleHtml) . "</h3>";
+        $titleHtml = $text->e($article->getTitle());
+        $stream->write("<header>");
+        $stream->write("<h3>" . $this->encloseInArticleLink($article, $titleHtml) . "</h3>");
 
         if ($show_metainfo) {
-            $returnValue.= '<p class="meta">';
+            $stream->write('<p class="meta">');
             // Created and last edited
-            $returnValue.= $text->t('articles.created') . " " . $text->formatDateTime($article->getDateCreated()) . ' - ';
+            $stream->write($text->t('articles.created') . " " . $text->formatDateTime($article->getDateCreated()) . ' - ');
             if ($article->getDateLastEdited()) {
-                $returnValue.= lcFirst($text->t('articles.last_edited')) . " " . $text->formatDateTime($article->getDateLastEdited()) . '<br />';
+                $stream->write(lcFirst($text->t('articles.last_edited')) . " " . $text->formatDateTime($article->getDateLastEdited()) . '<br />');
             }
             // Category
-            $returnValue.= $text->t('main.category') . ": ";
-            $returnValue.= '<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">';
-            $returnValue.= htmlSpecialChars($article->category) . '</a>';
+            $stream->write($text->t('main.category') . ": ");
+            $stream->write('<a href="' . $text->e($text->getUrlPage("category", $article->categoryId)) . '">');
+            $stream->write($text->e($article->category) . '</a>');
             // Author
-            $returnValue.= " - " . $text->t('articles.author') . ": ";
-            $returnValue.= '<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">';
-            $returnValue.= htmlSpecialChars($article->author) . "</a>";
+            $stream->write(" - " . $text->t('articles.author') . ": ");
+            $stream->write('<a href="' . $text->e($text->getUrlPage("account", $article->authorId)) . '">');
+            $stream->write($text->e($article->author) . "</a>");
             // Pinned
             if ($article->pinned) {
-                $returnValue.= " - " . $text->t('articles.pinned');
+                $stream->write(" - " . $text->t('articles.pinned'));
             }
             // Hidden
             if ($article->isHidden()) {
-                $returnValue.= " - " . $text->t('articles.hidden');
+                $stream->write(" - " . $text->t('articles.hidden'));
             }
-            $returnValue.= '</p>';
+            $stream->write('</p>');
         }
+        $stream->write("</header>");
 
         // Featured image
         if (!empty($article->featuredImage)) {
             $imageHtml = '<img src="' . htmlSpecialChars($article->featuredImage) . '" alt="' . htmlSpecialChars($article->getTitle()) . '" />';
-            $returnValue.= $this->encloseInArticleLink($article, $imageHtml);
+            $stream->write($this->encloseInArticleLink($article, $imageHtml));
         }
 
         // Intro
-        $returnValue.= '<div class="article_teaser_text">';
-        $returnValue.= '<p>';
-        $returnValue.= $this->encloseInArticleLink($article, htmlSpecialChars($article->getIntro()));
-        $returnValue.= '</p>';
-        $returnValue.= '<p class="article_teaser_links">';
+        $stream->write('<p class="article_teaser_text">');
+        $stream->write($this->encloseInArticleLink($article, htmlSpecialChars($article->getIntro())));
+        $stream->write('</p>');
+        $stream->write('<footer class="article_teaser_links"><p>');
         // Edit and delete links
-        $returnValue.= '<a class="arrow" href="' .  $text->e($text->getUrlPage("article", $article->getId())) . '">' . $text->t('main.read') . '</a>';
+        $stream->write('<a class="arrow" href="' .  $text->e($text->getUrlPage("article", $article->getId())) . '">' . $text->t('main.read') . '</a>');
         if ($show_edit_delete_links) {
-            $returnValue.= '<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $article->getId())) . '">' . $text->t('main.edit') . '</a>' . //edit
-                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $article->getId())) . '">' . $text->t('main.delete') . '</a>'; //delete
+            $stream->write('<a class="arrow" href="' . $text->e($text->getUrlPage("edit_article", $article->getId())) . '">' . $text->t('main.edit') . '</a>' .
+                    '<a class="arrow" href="' . $text->e($text->getUrlPage("delete_article", $article->getId())) . '">' . $text->t('main.delete') . '</a>');
         }
-        $returnValue.= "</p>";
-        $returnValue.= "</div>";
+        $stream->write("</p></footer>");
 
-        $returnValue.= '<p style="clear:both"></p>';
-        $returnValue.= "</div>";
-
-        return $returnValue;
+        $stream->write('<p style="clear:both"></p>');
+        $stream->write("</article>");
     }
 
     /**

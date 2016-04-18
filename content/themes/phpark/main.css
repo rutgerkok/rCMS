@@ -1,4 +1,4 @@
-/* HTML5 FIXES FOR IE8 */
+a/* HTML5 FIXES FOR IE8 */
 header, article, footer, figure, figcaption {
     display: block;
 }
@@ -459,7 +459,7 @@ div.error, div.confirmation {
 }
 
 /*Pagina's met artikellijsten */
-div.article_teaser {
+article.article_teaser {
     min-height: 5em;
     margin: 0 0 0.7em 0;
 }
@@ -469,13 +469,13 @@ p.meta {
     font-family: verdana, sans-serif;
     font-size: 81%;
 }
-div.article_teaser img {
+article.article_teaser img {
     width: 130px;
     max-width: 40%;
     float: left;
     margin: 0.3em 0.7em 0.7em 1px;
 }
-div.article_teaser p.article_teaser_links {
+article.article_teaser .article_teaser_links {
     clear: both;
 }
 

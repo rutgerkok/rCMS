@@ -401,20 +401,15 @@ div.error {
 }
 
 /* Article lists */
-div.article_teaser img {
+article.article_teaser img {
     width: 26%;
     float: left;
     padding: 2px;
     margin: 2%;
     border: 1px solid #ccc;
 }
-div.article_teaser p.article_teaser_links {
+article.article_teaser p.article_teaser_links {
     clear: both;
-}
-
-div.with_featured_image div.article_teaser_text {
-    width: 66%;
-    float: left;
 }
 
 /* Link lists */
