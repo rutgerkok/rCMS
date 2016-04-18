@@ -26,7 +26,7 @@ class User extends Entity {
      * Creates a new user with the given username, display name and password.
      * @param string $username The username.
      * @param string $displayName The display name.
-     * @param stirng $password The password (plaintext).
+     * @param string $password The password (plaintext).
      * @return User The newly created user. Needs to be saved to a
      * {@link UserRepository}.
      */

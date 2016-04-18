@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\View;
 
+use BadMethodCallException;
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Article;
 use Rcms\Core\RequestToken;
@@ -37,14 +38,19 @@ class ArticleDeleteView extends View {
         switch ($this->state) {
             case self::STATE_CONFIRMATION:
                 $stream->write($this->getConfirmationText());
+                break;
             case self::STATE_ERROR:
                 $stream->write($this->getErrorText());
+                break;
             case self::STATE_HIDDEN:
                 $stream->write($this->getMadeHiddenText());
+                break;
             case self::STATE_DELETED:
                 $stream->write($this->getDeletedText());
+                break;
+            default:
+                throw new BadMethodCallException("Unknown display state " . $this->state);
         }
-        throw new BadMethodCallException("Unknown display state " . $this->state);
     }
 
     protected function getErrorText() {

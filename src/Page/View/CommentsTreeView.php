@@ -75,7 +75,7 @@ class CommentsTreeView extends View {
         // Reply and context links
         if ($this->viewedOutOfContext) {
             $replyOrContextLink = <<<EOT
-                <a class="arrow" href="{$text->e($text->getUrlPage("article", $comment->getArticleId()))}#comment_$id">
+                <a class="arrow" href="{$text->e($comment->getUrl($text))}">
                     {$text->t("comments.view_context")}
                 </a>
 EOT;

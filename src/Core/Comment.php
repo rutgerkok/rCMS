@@ -4,15 +4,16 @@ namespace Rcms\Core;
 
 use DateTime;
 use Rcms\Core\Repository\Entity;
-use Rcms\Core\Repository\Field;
 
 class Comment extends Entity {
 
-    const NORMAL_STATUS = 0;
-    const DELETED_STATUS = 2;
-
     // Kept in sync with the constants in Authentication to avoid 
     // confusion when using the wrong constant
+    const NORMAL_STATUS = 0;
+    const DELETED_STATUS = 2;
+    
+    const BODY_MIN_LENGTH = 10;
+    const BODY_MAX_LENGTH = 65565;
 
     protected $id;
     protected $articleId;
@@ -33,27 +34,45 @@ class Comment extends Entity {
 
     public function __construct($id = 0) {
         $this->id = (int) $id;
+        $this->status = self::NORMAL_STATUS;
     }
 
     /**
-     * Creates a commment with the given parameters. Make sure that the array
-     * has the keys present as field names in the database.
-     * @param int $commentId The comment id.
-     * @param array $commentArray The comment array.
+     * Creates a new comment for the given user. This method will succeed even
+     * if the given article doesn't allow comments.
+     * @param User $user The author of the comment.
+     * @param Article $article The article that is commented on.
+     * @param string $text The comment of the user.
      * @return Comment The comment.
      */
-    public static function getByArray($commentId, $commentArray) {
-        $comment = new Comment($commentId);
-        $comment->articleId = (int) $commentArray["article_id"];
-        $comment->userId = (int) $commentArray["user_id"];
-        $comment->userName = isSet($commentArray["user_login"]) ? $commentArray["user_login"] : $commentArray["comment_name"];
-        $comment->userDisplayName = isSet($commentArray["user_display_name"]) ? $commentArray["user_display_name"] : $commentArray["comment_name"];
-        $comment->userEmail = isSet($commentArray["user_email"]) ? $commentArray["user_email"] : $commentArray["comment_email"];
-        $comment->userRank = isSet($commentArray["user_rank"]) ? (int) $commentArray["user_rank"] : Authentication::RANK_LOGGED_OUT;
-        $comment->created = isSet($commentArray["comment_created"]) ? new DateTime($commentArray["comment_created"]) : new DateTime();
-        $comment->lastEdited = isSet($commentArray["comment_last_edited"]) ? new DateTime($commentArray["comment_last_edited"]) : null;
-        $comment->body = $commentArray["comment_body"];
-        $comment->status = (int) $commentArray["comment_status"];
+    public static function createForUser(User $user, Article $article, $text) {
+        $comment = new Comment(0);
+        $comment->articleId = $article->getId();
+        $comment->userId = $user->getId();
+        $comment->userName = $user->getUsername();
+        $comment->userDisplayName = $user->getDisplayName();
+        $comment->userEmail = $user->getEmail();
+        $comment->userRank = $user->getRank();
+        $comment->created = new DateTime();
+        $comment->body = (string) $text;
+        return $comment;
+    }
+
+    /**
+     * Creates a new comment for a visitor.
+     * @param string $displayName Name of the visitor.
+     * @param string $email E-mail of the visitor, may be empty.
+     * @param Article $article The article that is commented on.
+     * @param string $text The text of the comment.
+     * @return Comment The comment.
+     */
+    public static function createForVisitor($displayName, $email, Article $article, $text) {
+        $comment = new Comment(0);
+        $comment->articleId = $article->getId();
+        $comment->commentName = (string) $displayName;
+        $comment->commentEmail = (string) $email;
+        $comment->body = (string) $text;
+        $comment->created = new DateTime();
         return $comment;
     }
 
@@ -65,23 +84,53 @@ class Comment extends Entity {
         return $this->articleId;
     }
 
-    public function getUserId() {
-        return isSet($this->userId) ? $this->userId : 0;
+    /**
+     * Gets whether this comment was made by a visitor. If yes, there is no
+     * account associated to this comment.
+     * @return boolean Whether this comment was made by a visitor.
+     */
+    public function isByVisitor() {
+        return $this->getUserId() === 0;
     }
 
-    /** Returns username. Empty for comments without an user id */
-    public function getUserName() {
+    /**
+     * Gets the account id of the commenter, or 0 if the comment was made by a
+     * visitor.
+     * @return int The account id.
+     */
+    public function getUserId() {
+        return isSet($this->userId) ? (int) $this->userId : 0;
+    }
+
+    /**
+     * Gets the username of commenter. For comments created by a visitor, this is
+     * always equal to the display name.
+     * @return string The username.
+     */
+    public function getUsername() {
         return isSet($this->userName) ? $this->userName : $this->commentName;
     }
 
+    /**
+     * Gets the display name of the commenter.
+     * @return string The display name.
+     */
     public function getUserDisplayName() {
         return isSet($this->userDisplayName) ? $this->userDisplayName : $this->commentName;
     }
 
+    /**
+     * Gets the e-mail of the commenter, may be empty.
+     * @return string The email of the commenter.
+     */
     public function getUserEmail() {
         return isSet($this->userEmail) ? $this->userEmail : $this->commentEmail;
     }
 
+    /**
+     * Gets the rank of the commenter, or the logged out rank for visitors.
+     * @return int The rank.
+     */
     public function getUserRank() {
         return isSet($this->userRank) ? $this->userRank : Authentication::RANK_LOGGED_OUT;
     }
@@ -110,22 +159,15 @@ class Comment extends Entity {
         return $this->status;
     }
 
-    public function setUser(User $user) {
-        $this->userId = $user->getId();
-        $this->userName = $user->getUsername();
-        $this->userDisplayName = $user->getDisplayName();
-        $this->userEmail = $user->getEmail();
-        $this->userRank = $user->getRank();
-
-        // Update last edited date
-        $this->lastEdited = new DateTime();
+    public function getUrl(Text $text) {
+        return $text->getUrlPage("article", $this->getArticleId())
+                ->withFragment("comment_" . $this->getId());
     }
 
     public function setBodyRaw($text) {
         $this->body = $text;
 
-        // Update last edited date
-        $this->lastEdited = new DateTime();
+        $this->markEdited();
     }
 
     /**
@@ -148,6 +190,15 @@ class Comment extends Entity {
      */
     public function setChildComments($childComments) {
         $this->childComments = $childComments;
+    }
+
+    /**
+     * Updates the date and time of when this comment was last edited.
+     */
+    private function markEdited() {
+        if ($this->id !== 0) {
+            $this->lastEdited = new DateTime();
+        }
     }
 
 }

@@ -3,9 +3,11 @@
 namespace Rcms\Core;
 
 use PDOException;
+use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Text;
 
 class CommentRepository extends Repository {
 
@@ -86,64 +88,26 @@ class CommentRepository extends Repository {
         return new Comment();
     }
 
-    /**
-     * Create a new comment array. Doesn't save.
-     * @param type $validate Whether or not to validate the input
-     * @param type $comment_id The id of the comment. 0 for new comments.
-     * @param type $author_name Name of the author, for logged out users.
-     * @param type $author_email Email of the author, for logged out users.
-     * @param type $comment_body Body of the comment.
-     * @param type $author_id Id of the author, for logged in users.
-     * @param type $article_id Id of the article to comment on.
-     * @return type
-     */
-    function makeComment($validate, $comment_id, $author_name, $author_email,
-            $comment_body, $account_id, $article_id) {
-        if ($validate) {
-            $website = $this->website;
-            $loggedIn = $website->isLoggedIn();
-            $valid = true;
-            if (!$loggedIn) {
-                // Author name
-                if (strLen(trim($author_name)) === 0) {
-                    // Name not found
-                    $website->addError($website->t("users.name") . ' ' . $website->t("errors.not_entered"));
-                    $valid = false;
-                } else {
-                    $author_name = htmlSpecialChars(trim($author_name));
-                    if (!Validate::displayName($author_name)) {
-                        $website->addError($website->t("users.name") . ' ' . Validate::getLastError($website));
-                        $valid = false;
-                    }
-                }
+    public function validateComment(Comment $comment, Text $text) {
+        $valid = true;
+        if (!Validate::stringLength($comment->getBodyRaw(), Comment::BODY_MIN_LENGTH, Comment::BODY_MAX_LENGTH)) {
+            $text->addError($text->t("comments.comment") . " " . Validate::getLastError($text));
+            $valid = false;
+        }
 
-                // Author email
-                if (strLen(trim($author_email)) === 0) {
-                    // Email not found, that's ok
-                    $author_email = "";
-                } else {
-                    $author_email = trim($author_email);
-                    if (!Validate::email($author_email)) {
-                        $website->addError($website->t("users.email") . ' ' . Validate::getLastError($website));
-                        $valid = false;
-                    }
-                }
+        if ($comment->isByVisitor()) {
+            if (!Validate::email($comment->getUserEmail())) {
+                $text->addError($text->t("users.email") . " " . Validate::getLastError($text));
+                $valid = false;
             }
 
-            // Comment
-            if (!$this->checkCommentBody($comment_body)) {
+            if (!Validate::displayName($comment->getUserDisplayName())) {
+                $text->addError($text->t("users.name") . " " . Validate::getLastError($text));
                 $valid = false;
             }
         }
 
-        return Comment::getByArray($comment_id, [
-                    "article_id" => $article_id,
-                    "user_id" => $account_id,
-                    "comment_name" => $author_name,
-                    "comment_email" => $author_email,
-                    "comment_body" => $comment_body,
-                    "comment_status" => Comment::NORMAL_STATUS
-        ]);
+        return $valid;
     }
 
     /**
@@ -187,16 +151,17 @@ class CommentRepository extends Repository {
         return $valid;
     }
 
-    function save(Comment $comment) {
-        try {
-            $this->saveEntity($comment);
-            return true;
-        } catch (PDOException $e) {
-            $website = $this->website;
-            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_saved")); //reactie is niet opgeslagen
-            $website->getText()->logException("Saving comment", $e);
+    public function save(Comment $comment) {
+        $this->saveEntity($comment);
+    }
+
+    protected function canBeSaved(Entity $comment) {
+        if (!($comment instanceof Comment)) {
             return false;
         }
+        return parent::canBeSaved($comment)
+                && strLen($comment->getBodyRaw()) >= Comment::BODY_MIN_LENGTH
+                && strLen($comment->getBodyRaw()) <= Comment::BODY_MAX_LENGTH;
     }
 
     function deleteComment($id) {
