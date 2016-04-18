@@ -58,9 +58,9 @@ class Website {
                     $this->config->get(Config::OPTION_DATABASE_PASSWORD),
                     ["table_prefix" => $this->config->get(Config::OPTION_DATABASE_TABLE_PREFIX)]);
             $this->databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->databaseObject->prefixTables(array("categorie", "users",
+            $this->databaseObject->prefixTables(["categorie", "users",
                 "links", "artikel", "comments", "menus", "widgets", "documents",
-                "settings", "gebruikers", "reacties"));
+                "settings", "gebruikers", "reacties"]);
             $this->config->readFromDatabase($this->databaseObject);
         } catch (PDOException $e) {
             // No database connection - safe to ignore this error, as the page
