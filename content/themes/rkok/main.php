@@ -22,7 +22,7 @@ class RkokTheme extends Theme {
 
                 <link href="{$elements->getUrlTheme()}main.css" rel="stylesheet" type="text/css" />
                 <script src="{$elements->getUrlJavaScripts()}tooltip.js"></script>
-                <title>{$elements->getHeaderTitle()}</title>
+                <title>{$elements->getHeadTitle()}</title>
             </head>
 HTML
         );

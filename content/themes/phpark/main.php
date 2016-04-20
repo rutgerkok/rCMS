@@ -34,7 +34,7 @@ class PhpTheme extends Theme {
         <!--[if lte IE 8]>
             <script src="' . $elements->getUrlJavaScripts() . 'html5.js"></script>
         <![endif]-->
-        <title>' . $elements->getHeaderTitle() . '</title>
+        <title>' . $elements->getHeadTitle() . '</title>
     </head>
     <body>
         <div id="container">

@@ -16,7 +16,8 @@ use Rcms\Page\View\MenuView;
 use Rcms\Page\View\WidgetsPageView;
 
 /**
- * The elements that appear inside a theme.
+ * The elements that appear inside a theme. All elements already escape their
+ * text for use in HTML.
  */
 final class ThemeElements {
 
@@ -77,10 +78,22 @@ final class ThemeElements {
         $title = $this->website->getSiteTitle();
         if ($this->website->getConfig()->get("append_page_title", false)) {
             if (!($this->page instanceof HomePage)) {
-                $title.= " - " . $this->page->getShortPageTitle();
+                $title.= " - " . $this->page->getShortPageTitle($this->website->getText());
             }
         }
-        return $title;
+        return $this->website->getText()->e($title);
+    }
+    
+    /**
+     * Gets the title for the &lt;title&gt; tag.
+     * @return string The title.
+     */
+    public function getHeadTitle() {
+        $title = $this->page->getPageTitle($this->website->getText());
+        if (empty($title)) {
+            $title = $this->page->getShortPageTitle($this->website->getText());
+        }
+        return $this->website->getText()->e($title);
     }
 
     /**
