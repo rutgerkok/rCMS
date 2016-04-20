@@ -312,54 +312,23 @@ class Website {
         return $access;
     }
 
-    /**
-     * Checks if the current user viewing the site has the rank.
-     * @param int $neededRank The needed rank.
-     * @return boolean Whether the user has that rank.
-     */
-    public function userHasRank($neededRank) {
-        $oAuth = $this->getAuth();
-        $user = $oAuth->getCurrentUser();
-        if ($user) {
-            $userRank = $user->getRank();
-            if ($oAuth->isHigherOrEqualRank($userRank, $neededRank)) {
-                return true;
-            } else {
-                return false;
-            }
-        } elseif (!$oAuth->isValidRankForAccounts($neededRank)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public function isLoggedIn() {
         return $this->getAuth()->getCurrentUser() != null;
     }
 
     public function isLoggedInAsStaff($admin = false) {
-        $neededRank = Authentication::RANK_MODERATOR;
-        if ($admin) {
-            $neededRank = Authentication::RANK_ADMIN;
-        }
-        return $this->userHasRank($neededRank);
-    }
-
-    /**
-     * Returns the id of the user currently logged in. Returns -1 if the user isn't logged in.
-     * @return int The id of the user currently logged in.
-     */
-    public function getCurrentUserId() {
         $user = $this->getAuth()->getCurrentUser();
-        if ($user == null) {
-            return -1;
+        if ($user === null) {
+            return false;
+        }
+        if ($admin) {
+            return $user->hasRank(Authentication::RANK_ADMIN);
         } else {
-            return $user->getId();
+            return $user->hasRank(Authentication::RANK_MODERATOR);
         }
     }
 
-    // Translations, see documentation is Messages class.
+    // Translations, see documentation is Text class.
     public function t($key) {
         return $this->text->t($key);
     }

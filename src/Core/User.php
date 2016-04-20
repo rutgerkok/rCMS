@@ -170,15 +170,33 @@ class User extends Entity {
     public static function hashPassword($password) {
         return HashHelper::hash($password);
     }
-
-    public function isAdmin() {
-        return ($this->rank == Authentication::RANK_ADMIN);
+    
+    /**
+     * Gets whether the rank of the user is at least the given rank.
+     * @param int $rank The minimum rank.
+     * @return boolean True if the user has at least the given rank, false
+     * otherwise.
+     * @throws InvalidArgumentException When an invalid rank is provided.
+     */
+    public function hasRank($rank) {
+        switch ($rank) {
+            case Authentication::RANK_ADMIN:
+                return $this->rank == Authentication::RANK_ADMIN;
+            case Authentication::RANK_MODERATOR:
+                return $this->rank == Authentication::RANK_MODERATOR
+                    || $this->rank == Authentication::RANK_ADMIN;
+            case Authentication::RANK_USER:
+            case Authentication::RANK_LOGGED_OUT:
+                return true;
+            default:
+                throw new InvalidArgumentException("Invalid rank: " . $rank);
+        }
     }
 
-    public function isStaff() {
-        return $this->rank == Authentication::RANK_MODERATOR || $this->rank == Authentication::RANK_ADMIN;
-    }
-
+    /**
+     * Gets the rank of the user.
+     * @return int The rank.
+     */
     public function getRank() {
         return $this->rank;
     }
@@ -266,8 +284,8 @@ class User extends Entity {
     }
 
     /**
-     * Change the status of the user
-     * @param int $admin
+     * Change the rank of the user.
+     * @param int $rank The new rank.
      */
     public function setRank($rank) {
         $this->rank = (int) $rank;

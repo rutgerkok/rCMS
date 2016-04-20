@@ -140,7 +140,7 @@ class Authentication {
         }
 
         $_SESSION['user_id'] = $user->getId();
-        if ($this->isHigherOrEqualRank($user->getRank(), self::RANK_MODERATOR)) {
+        if ($user->hasRank(self::RANK_MODERATOR)) {
             // This session vars are purely used for CKEditor.
             // In rCMS there are much better, easier and safer ways to check this.
             $_SESSION['moderator'] = true;
@@ -259,7 +259,7 @@ class Authentication {
             }
         }
 
-        if ($currentUser !== null && $this->isHigherOrEqualRank($currentUser->getRank(), $minimumRank)) {
+        if ($currentUser !== null && $currentUser->hasRank($minimumRank)) {
             // Logged in with enough rights
             return true;
         } else {
@@ -284,7 +284,7 @@ class Authentication {
         if ($this->hasLoginFailed()) {
             return $website->t("errors.invalid_login_credentials");
         }
-        if ($this->isHigherOrEqualRank($minimumRank, Authentication::RANK_MODERATOR)) {
+        if ($minimumRank == self::RANK_MODERATOR || $minimumRank == self::RANK_ADMIN) {
             return $website->t("users.must_be_logged_in_as_administrator");
         }
         return $website->t("users.must_be_logged_in");
@@ -375,29 +375,6 @@ class Authentication {
             case self::STATUS_DELETED: return $website->t("users.status.deleted");
             case self::STATUS_NORMAL: return $website->t("users.status.allowed");
             default: return $website->t("users.status.unknown");
-        }
-    }
-
-    public function isHigherOrEqualRank($rankId, $compareTo) {
-        if ($compareTo == self::RANK_LOGGED_OUT) {
-            // Comparing to logged out user
-            return true;
-        }
-        if ($compareTo == self::RANK_USER) {
-            // Comparing to normal user
-            return $rankId != self::RANK_LOGGED_OUT;
-        }
-        if ($compareTo == self::RANK_MODERATOR) {
-            // Comparing to moderator
-            if ($rankId == self::RANK_USER || $rankId == self::RANK_LOGGED_OUT) {
-                // Normal and logged out users aren't higher or equal
-                return false;
-            }
-            return true;
-        }
-        if ($compareTo == self::RANK_ADMIN) {
-            // Only other admins have the same rank
-            return $rankId == self::RANK_ADMIN;
         }
     }
 

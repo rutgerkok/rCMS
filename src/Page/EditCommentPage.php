@@ -60,7 +60,7 @@ final class EditCommentPage extends Page {
         $this->comment = $repo->getComment($commentId);
 
         if ($user->getId() !== $this->comment->getUserId() &&
-                !$auth->isHigherOrEqualRank($user->getRank(), Authentication::RANK_MODERATOR)) {
+                !$user->hasRank(Authentication::RANK_MODERATOR)) {
             // Can only edit own comment unless moderator
             throw new NotFoundException();
         }

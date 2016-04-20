@@ -3,6 +3,7 @@
 namespace Rcms\Page\View;
 
 use Psr\Http\Message\StreamInterface;
+use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
 use Rcms\Core\Text;
 use Rcms\Core\User;
@@ -29,7 +30,7 @@ class CommentsTreeView extends View {
             User $viewer = null) {
         parent::__construct($text);
         $this->comments = $comments;
-        $this->viewedByStaff = $viewer === null?  false : $viewer->isStaff();
+        $this->viewedByStaff = $viewer === null?  false : $viewer->hasRank(Authentication::RANK_MODERATOR);
         $this->viewedOutOfContext = $viewedOutOfContext;
         $this->viewerId = $viewer ? $viewer->getId() : 0;
     }
