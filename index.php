@@ -31,3 +31,4 @@ $response = $sessionHeadersHandler($request, $response, function($request, $resp
 
 $responseEmitter = new SapiEmitter();
 $responseEmitter->emit($response);
+$response->getBody()->close();
