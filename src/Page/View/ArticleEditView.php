@@ -39,12 +39,12 @@ class ArticleEditView extends View {
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $article = $this->article;
-        $title = htmlSpecialChars($article->getTitle());
-        $intro = htmlSpecialChars($article->getIntro());
+        $title = $text->e($article->getTitle());
+        $intro = $text->e($article->getIntro());
         $body = $article->getBody(); // Will be escaped by the get_editor method
 
-        $tokenName = RequestToken::FIELD_NAME;
-        $tokenHtml = htmlSpecialChars($this->requestToken->getTokenString());
+        $tokenNameHtml = $text->e(RequestToken::FIELD_NAME);
+        $tokenHtml = $text->e($this->requestToken->getTokenString());
 
         // Create form
         $stream->write(<<<ARTICLE_FORM
@@ -89,7 +89,7 @@ class ArticleEditView extends View {
                         {$this->richEditor->getEditor("article_body", $body)}
                     </p>
                     <p>
-                        <input type="hidden" name="{$tokenName}" value="{$tokenHtml}" />
+                        <input type="hidden" name="{$tokenNameHtml}" value="{$tokenHtml}" />
                         {$this->getButtons()}
                     </p>
                 </div>

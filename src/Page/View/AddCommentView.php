@@ -46,7 +46,7 @@ HTML
         // Write comment form
         $articleId = $this->comment->getArticleId();
         $commentHtml = $text->e($this->comment->getBodyRaw());
-        $tokenNameHtml = RequestToken::FIELD_NAME;
+        $tokenNameHtml = $text->e(RequestToken::FIELD_NAME);
         $tokenValueHtml = $text->e($this->requestToken->getTokenString());
         $articleUrlHtml = $text->e($text->getUrlPage("article", $articleId));
         $stream->write(<<<HTML

@@ -43,8 +43,8 @@ class WidgetEditView extends View {
         $actionUrl = $text->getUrlPage("edit_widget", $this->editWidget->getId());
         $documentEditUrl = $text->getUrlPage("edit_document", $this->editWidget->getDocumentId());
 
-        $tokenName = RequestToken::FIELD_NAME;
-        $tokenValue = $this->requestToken->getTokenString();
+        $tokenNameHtml = $text->e(RequestToken::FIELD_NAME);
+        $tokenValueHtml = $text->e($this->requestToken->getTokenString());
 
         $stream->write(<<<EDITOR
             <p>{$this->text->t("main.fields_required")}</p>
@@ -52,7 +52,7 @@ class WidgetEditView extends View {
                 {$editorHtml}
 
                 <p>
-                    <input type="hidden" name="{$tokenName}" value="{$text->e($tokenValue)}" />
+                    <input type="hidden" name="{$tokenNameHtml}" value="{$tokenValueHtml}" />
                     <input type="hidden" name="document_id" value="{$this->editWidget->getDocumentId()}" />
                     <input type="hidden" name="directory_name" value="{$this->editWidget->getDirectoryName()}" />
                     <input class="button primary_button" 
