@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\ResponseInterface;
 use Rcms\Core\Authentication;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
@@ -13,6 +14,7 @@ use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\Renderer\Responses;
+use Rcms\Page\View\EmptyView;
 use Rcms\Page\View\WidgetDetailView;
 
 /**
@@ -45,6 +47,9 @@ final class MoveWidgetPage extends Page {
     }
 
     public function getView(Text $text) {
+        if ($this->moveLink == null) {
+            return new EmptyView($text);
+        }
         return new WidgetDetailView($text, $this->installedWidgets, $this->placedWidget, $this->moveLink);
     }
     
