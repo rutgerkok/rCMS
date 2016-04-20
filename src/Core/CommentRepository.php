@@ -2,6 +2,7 @@
 
 namespace Rcms\Core;
 
+use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
@@ -13,13 +14,6 @@ class CommentRepository extends Repository {
 
     const TABLE_NAME = "comments";
 
-    /* @var $website Website */
-
-    protected $website;
-    /* @var $databaseObject \PDO */
-    protected $databaseObject;
-    /* @var $authenticationObject Authentication */
-    protected $authenticationObject;
     protected $primaryField;
     protected $articleIdField;
     protected $userIdField;
@@ -35,18 +29,11 @@ class CommentRepository extends Repository {
     protected $statusField;
 
     /**
-     * Constructs a new comment object.
-     * @param Website $website The website.
-     * @param Authentication $oAuth Unneeded, provided for backwards compability.
+     * Constructs a new comment repository.
+     * @param PDO The database to retrieve comments from, and save comments to.
      */
-    public function __construct(Website $website, Authentication $oAuth = null) {
-        parent::__construct($website->getDatabase());
-        $this->databaseObject = $website->getDatabase();
-        $this->website = $website;
-        $this->authenticationObject = $oAuth;
-        if ($this->authenticationObject == null) {
-            $this->authenticationObject = $website->getAuth();
-        }
+    public function __construct(PDO $database) {
+        parent::__construct($database);
 
         $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "comment_id");
         $this->articleIdField = new Field(Field::TYPE_INT, "articleId", "article_id");
@@ -117,58 +104,6 @@ class CommentRepository extends Repository {
     }
 
     /**
-     * @deprecated Use $this->validateComment and $comment->setBody
-     */
-    function setBody(Comment $comment, $text) {
-        $this->checkCommentBody($text);
-        $comment->setBodyRaw($text);
-        return $comment;
-    }
-
-    /**
-     * @deprecated Use $this->validateComment
-     */
-    function checkCommentBody($comment_body) {
-        $website = $this->website;
-        $valid = true;
-
-        if (!isSet($comment_body) || strLen(trim($comment_body)) === 0) {
-            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_entered"));
-            $valid = false;
-        } else {
-            if ($comment_body != strip_tags($comment_body)) {
-                $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.contains_html"));
-                $valid = false;
-            }
-            if (strLen($comment_body) < 10) {
-                // WAY too long
-                $website->addError($website->t("comments.comment") . ' ' . $website->tReplaced("errors.is_too_short_num", 10));
-                $valid = false;
-            }
-
-            $comment_body = htmlSpecialChars($comment_body);
-            if (strLen($comment_body) > 65565) {
-                // WAY too long
-                $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.is_too_long"));
-                $valid = false;
-            }
-        }
-        return $valid;
-    }
-
-    /**
-     * @deprecated Use saveComment
-     */
-    function save(Comment $comment) {
-        try {
-            $this->saveComment($comment);
-            return true;
-        } catch (PDOException $ex) {
-            return false;
-        }
-    }
-
-    /**
      * Saves a comment to the databse.
      * @param Comment $comment The comment to save.
      * @throws PDOException If saving fails.
@@ -186,104 +121,13 @@ class CommentRepository extends Repository {
                 && strLen($comment->getBodyRaw()) <= Comment::BODY_MAX_LENGTH;
     }
 
-    function deleteComment($id) {
-        try {
-            $this->where($this->primaryField, '=', $id)->deleteOneOrFail();
-            return true;
-        } catch (PDOException $e) {
-            $website->addError($website->t("comments.comment") . ' ' . $website->t("errors.not_found"));
-            return false;
-        }
-    }
-
     /**
-     * @deprecated Use views
+     * Deletes the comment with the given id.
+     * @param int $id Id of the comment.
+     * @throws PDOException If deleting the comment failed.
      */
-    function echoEditor($comment) {
-        // $comment can be null
-        $website = $this->website;
-        if (!isSet($_REQUEST['id']) || ((int) $_REQUEST['id']) == 0) {
-            $website->addError($website->t("main.article") . ' ' . $website->t("errors.not_found")); //Artikel niet gevonden
-            return false;
-        }
-
-        if ($website->isLoggedIn()) {
-            $this->echoEditorLoggedIn($comment);
-        } else {
-            $this->echoEditorNormal($comment);
-        }
-        return true;
-    }
-
-    /**
-     * @deprecated Use views
-     */
-    function echoEditorLoggedIn($comment) {
-        $website = $this->website;
-        $comment_body = ($comment == null) ? "" : htmlSpecialChars($comment->getBodyRaw());
-        echo <<<EOT
-            <p>
-                <em>{$website->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
-            </p>
-            <p>	
-                <!-- reactie -->
-                {$website->t("comments.comment")}<span class="required">*</span>:<br />
-                <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
-            </p>	
-EOT;
-    }
-
-    /**
-     * @deprecated Use views
-     */
-    function echoEditorNormal($comment) {
-        $website = $this->website;
-
-        if ($comment == null) {
-            $name = "";
-            $email = "";
-            $comment_body = "";
-        } else {
-            $name = htmlSpecialChars($comment->getUserDisplayName());
-            $email = htmlSpecialChars($comment->getUserEmail());
-            $comment_body = htmlSpecialChars($comment->getBodyRaw());
-        }
-
-        echo <<<EOT
-            <p>
-                <em>{$website->t("main.fields_required")}</em> <!-- velden met een * zijn verplicht -->
-            </p>
-            <p>
-                <!-- naam -->
-                {$website->t("users.name")}<span class="required">*</span>:<br />
-                <input type="text" name="name" id="name" maxlength="20" style="width:98%" value="$name" /><br />
-            </p>
-            <p>
-                <!-- email -->
-                {$website->t("users.email")}:<br />
-                <input type="email" name="email" id="email" style="width:98%" value="$email" /><br />
-                <em>{$website->t("comments.email_explained")}</em><br />
-            </p>
-            <p>	
-                <!-- reactie -->
-                {$website->t("comments.comment")}<span class="required">*</span>:<br />
-                <textarea name="comment" id="comment" rows="10" cols="60" style="width:98%">$comment_body</textarea>
-            </p>
-EOT;
-    }
-
-    /**
-     * Gets the comment with the given id.
-     * @param int $commentId Id of the comment.
-     * @return Comment|null The comment, or null if not found.
-     * @deprecated Use getCommentOrFail
-     */
-    public function getComment($commentId) {
-        try {
-            return $this->getCommentOrFail($commentId);
-        } catch (NotFoundException $e) {
-            return null;
-        }
+    public function deleteComment($id) {
+        $this->where($this->primaryField, '=', $id)->deleteOneOrFail();
     }
 
     /**
@@ -321,27 +165,6 @@ EOT;
      */
     public function getCommentsUser($userId) {
         return $this->where($this->userIdField, '=', $userId)->limit(10)->select();
-    }
-
-    /**
-     * @deprecated Use $comment->getUserId()
-     */
-    function getUserId(Comment $comment) {
-        return $comment->getUserId();
-    }
-
-    /**
-     * @deprecated Use $comment->getArticleId()
-     */
-    function getArticleId(Comment $comment) {
-        return $comment->getArticleId();
-    }
-
-    /**
-     * @deprecated Use $comment->getId()
-     */
-    function getCommentId(Comment $comment) {
-        return $comment->getId();
     }
 
 }

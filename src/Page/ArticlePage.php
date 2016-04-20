@@ -29,7 +29,7 @@ class ArticlePage extends Page {
         $this->editLinks = $website->isLoggedInAsStaff();
         $this->currentUser = $website->getAuth()->getCurrentUser();
         if ($this->article->showComments) {
-            $oComments = new CommentRepository($website);
+            $oComments = new CommentRepository($website->getDatabase());
             $this->comments = $oComments->getCommentsArticle($this->article->getId());
         } else {
             $this->comments = [];

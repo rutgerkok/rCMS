@@ -56,8 +56,8 @@ final class EditCommentPage extends Page {
         $auth = $website->getAuth();
         $user = $auth->getCurrentUser();
 
-        $repo = new CommentRepository($website);
-        $this->comment = $repo->getComment($commentId);
+        $repo = new CommentRepository($website->getDatabase());
+        $this->comment = $repo->getCommentOrFail($commentId);
 
         if ($user->getId() !== $this->comment->getUserId() &&
                 !$user->hasRank(Authentication::RANK_MODERATOR)) {
@@ -99,6 +99,10 @@ final class EditCommentPage extends Page {
             return Responses::withTemporaryRedirect($response, $this->redirectLink);
         }
         return $response;
+    }
+    
+    public function getPageType() {
+        return Page::TYPE_BACKSTAGE;
     }
 
 }

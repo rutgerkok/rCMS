@@ -41,7 +41,7 @@ final class DeleteCommentPage extends Page {
     public function init(Website $website, Request $request) {
         $commentId = $request->getParamInt(0, 0);
 
-        $repo = new CommentRepository($website);
+        $repo = new CommentRepository($website->getDatabase());
         $this->comment = $repo->getCommentOrFail($commentId);
 
         $user = $website->getAuth()->getCurrentUser();
@@ -69,6 +69,10 @@ final class DeleteCommentPage extends Page {
             return new EmptyView($text);
         }
         return new CommentDeleteView($text, $this->requestToken, $this->comment);
+    }
+    
+    public function getPageType() {
+        return Page::TYPE_BACKSTAGE;
     }
 
 }

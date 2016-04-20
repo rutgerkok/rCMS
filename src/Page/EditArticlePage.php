@@ -98,7 +98,13 @@ class EditArticlePage extends Page {
             $article->setAuthor($currentUser);
             return $article;
         } else {
-            return $repository->getArticleOrFail($id);
+            $article = $repository->getArticleOrFail($id);
+            if ($article->authorId === 0) {
+                // There was a bug in previous versions of the CMS where the
+                // author wasn't saved
+                $article->setAuthor($currentUser);
+            }
+            return $article;
         }
     }
 

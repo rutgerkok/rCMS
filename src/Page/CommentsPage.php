@@ -21,7 +21,7 @@ class CommentsPage extends Page {
     private $viewingUser;
 
     public function init(Website $website, Request $request) {
-        $oComments = new CommentRepository($website);
+        $oComments = new CommentRepository($website->getDatabase());
         $this->comments = $oComments->getCommentsLatest();
         $this->viewingUser = $website->getAuth()->getCurrentUser();
     }

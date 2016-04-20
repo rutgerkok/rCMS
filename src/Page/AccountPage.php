@@ -222,7 +222,7 @@ EOT;
 
     /** Returns the HTML of the comments of the user, including the header */
     public function get_comments_html(Website $website) {
-        $oComments = new CommentRepository($website);
+        $oComments = new CommentRepository($website->getDatabase());
         $comments = $oComments->getCommentsUser($this->user->getId());
         
         $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";

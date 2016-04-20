@@ -58,7 +58,7 @@ final class AddCommentPage extends Page {
         
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {
             // Validate and save comment
-            $repo = new CommentRepository($website);
+            $repo = new CommentRepository($website->getDatabase());
             if ($repo->validateComment($this->comment, $text)) {
                 $repo->saveComment($this->comment);
                 $this->redirectLink = $this->comment->getUrl($text);
@@ -91,6 +91,10 @@ final class AddCommentPage extends Page {
             return Responses::withTemporaryRedirect($response, $this->redirectLink);
         }
         return $response;
+    }
+    
+    public function getPageType() {
+        return Page::TYPE_BACKSTAGE;
     }
 
 }

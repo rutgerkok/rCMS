@@ -22,7 +22,7 @@ class SearchFormView extends View {
         $stream->write(<<<SEARCHFORM
             <p>
                 <form action="{$text->e($text->getUrlPage("search"))}" method="GET">
-                    <input name="searchbox" id="searchbox-big" value="$text->e($this->keyword)}" />
+                    <input name="searchbox" id="searchbox-big" value="{$text->e($this->keyword)}" />
                     <input type="submit" class="button primary_button" value="{$text->t("main.search")}" />
                 </form>
             </p>

@@ -24,7 +24,7 @@ class WidgetComments extends WidgetDefinition {
         $title = htmlSpecialChars($data["title"]);
         $amount = (int) $data["amount"];
         
-        $commentLookup = new CommentRepository($website);
+        $commentLookup = new CommentRepository($website->getDatabase());
         $latestComments = $commentLookup->getCommentsLatest($amount);
         $view = new CommentsSmallView($website->getText(), $latestComments);
 
