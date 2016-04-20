@@ -20,19 +20,22 @@ class RkokTheme extends Theme {
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" >
 
-                    <link href="{$elements->getUrlTheme()}main.css" rel="stylesheet" type="text/css" />
-                    <script src="{$elements->getUrlJavaScripts()}tooltip.js"></script>
-                    <!--[if lte IE 8]>
-                        <script src="{$elements->getUrlJavaScripts()}html5.js"></script>
-                    <![endif]-->
-                    <title>{$elements->getHeaderTitle()}</title>
+                <link href="{$elements->getUrlTheme()}main.css" rel="stylesheet" type="text/css" />
+                <script src="{$elements->getUrlJavaScripts()}tooltip.js"></script>
+                <title>{$elements->getHeaderTitle()}</title>
             </head>
 HTML
         );
     }
 
     private function renderBody(StreamInterface $stream, ThemeElements $elements) {
-        $bodyClass = $elements->isLoggedIn() ? "logged_in" : "";
+        $bodyClass = "";
+        if ($elements->isLoggedIn()) {
+            $bodyClass.= " logged_in";
+        }
+        if ($elements->getPageType() == Page::TYPE_BACKSTAGE) {
+            $bodyClass.= " backstage";
+        }
 
         $stream->write('<body class="' . $bodyClass . '">');
 
@@ -62,6 +65,7 @@ HTML
                             $stream->write('
                         </ul>
                     </nav>
+                    <div id="after_menu"></div>
                     <div id="search">
                         ');
                         $elements->writeSearchForm($stream);
@@ -97,20 +101,19 @@ HTML
 
     private function renderMainContent(StreamInterface $stream,
             ThemeElements $elements) {
-        $contentId = ($elements->getPageType() === Page::TYPE_HOME) ? "contenthome" : "content";
-
-        $stream->write("<div id=\"{$contentId}\">");
+        $stream->write('<div id="content">');
         $elements->writePageContent($stream);
         $stream->write("</div>");
     }
 
     private function renderWidgetsSidebar(StreamInterface $stream,
             ThemeElements $elements) {
-        if ($elements->getPageType() == Page::TYPE_HOME) {
-            $stream->write('<div id="sidebar">');
-            $elements->writeWidgets($stream, 2);
-            $stream->write('</div>');
+        if ($elements->getPageType() == Page::TYPE_BACKSTAGE) {
+            return;
         }
+        $stream->write('<aside id="sidebar">');
+        $elements->writeWidgets($stream, 2);
+        $stream->write('</aside>');
     }
 
     public function render(StreamInterface $stream, ThemeElements $elements) {

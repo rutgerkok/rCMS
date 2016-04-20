@@ -3,53 +3,48 @@
  * Fonts, colors and margins of common elements
  */
 body {
-    font-size: 85%;
-    margin: 0;
-    padding: 0;
-}
-p, h1, h2, h3, h4, ul {
-    font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+    background-color: rgb(254, 252, 241);
     color: #454545;
 }
+body.backstage {
+    background-color: rgb(230, 230, 230);
+}
+
+p, h1, h2, h3, h4, ul {
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+    line-height: 1.4;
+}
 p, h1, h2, h3, h4 {
-    margin: 1px 3px 10px 3px;
+    margin: 0 0 1em 0;
     padding: 1px;
 }
 h2 {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
     font-size: 164%;
     font-weight: normal;
-    margin: 23px 3px 10px 3px;
+    margin: 23px 0 10px 0;
 }
 h3 {
     font-size: 100%;
     font-weight: bold;
-    margin: 12px 3px 2px 3px;
+    margin: 12px 0 2px 0;
 }
-div {
+body, div, section, article {
     margin: 0;
     padding: 0;
 }
 
-/* HTML5 fixes for IE8 */
-header, article, footer {
-    display: block;
-}
-
-
-
 /*
  * Main page structure
  */
-
-/* Body */
-body {
-    background: white;
+* {
+    box-sizing: border-box;
 }
+
 
 /* Main building block, ensures consistent site width */
 .site_container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -57,7 +52,7 @@ body {
 #site_header {
     background: #f4f4f4;
     position: relative;
-    margin-bottom: 20px;
+    padding: 0;
     box-shadow: 0 0 16px black;
 }
 @media all and (max-width : 59em) {
@@ -74,20 +69,19 @@ body {
 }
 #site_header h1 {
     margin: 0;
-    padding: 0;
-    padding-top: 40px;
+    padding: 40px 0 5px 0;
     font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    font-size: 3em;
+    font-size: 2.55em;
     font-weight: normal;
     color: #494949;
 }
 ul#main_menu {
+    font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+    font-size: 0.85em;
     margin: 0;
     padding-right: 0;
     padding-left: 0.2em;
-    padding-top: 0.5em;
-    padding-bottom: 0.2em;
-    height: 2.5em;
+    padding-top: 0;
     list-style-type: none;
 }
 ul#main_menu li {
@@ -101,13 +95,17 @@ ul#main_menu li {
 ul#main_menu li a {
     text-decoration: none;
     text-transform: uppercase;
-    font-size: 100%;
+    padding: 5px 0;
     color: #494949;
     border: 0;
 }
 ul#main_menu li a:hover {
     text-decoration: none;
     color: #999;
+}
+div#after_menu {
+    clear: both;
+    height: 2em;
 }
 
 /* Account box and label (inside header box) */
@@ -155,36 +153,35 @@ input#searchbutton {
 
 /* Main content area */
 div#content {
-    width: 93%;
-    padding-right: 5%;
-    padding-left: 2%;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    position: relative;
-}
-div#contenthome {
-    width: 58%;
-    margin-right: 9%;
-    margin-left: 2%;
+    margin: 2em 0;
+    padding: 2em 0;
+    width: calc(100% - 22em);
     clear: left;
     float: left;
     position: relative;
+    text-align: justify;
     overflow: hidden;
+}
+body.backstage div#content {
+    width: 100%;
 }
 
 /* Sidebar on the right of the page */
-div#sidebar {
-    width: 30%;
-    float: left;
+#sidebar {
+    width: 20em;
+    float: right;
+    background-color: #f4f4f4;
+    padding: 2em;
+    margin: 2em 0;
 }
 @media all and (max-width : 50em) {
     /* No sidebar at lower resolutions */
-    div#content, div#contenthome
+    div#content
     {
         float: none;
         width: auto;
     }
-    div#sidebar
+    #sidebar
     {
         width: auto;
         float: none;
@@ -194,21 +191,17 @@ div#sidebar {
 /* Pages with an extra sidebar on the left */
 div#sidebar_page_content
 {	/*gebruikt bij de artikelpagina*/
-    float:left;
-    padding-left: 1%;
-    width:69%;
-    margin-left:0;
-    margin-right:0;
+    float: left;
+    width: 69%;
 }
 div#sidebar_page_sidebar {
     float: left;
-    width: 27%;
-    padding-right: 2px;
+    width: 30%;
+    padding-right: 2em;
 }
 div#sidebar_page_sidebar img {
     width: 100%; /* Define standard width, Firefox needs this */
     max-width: 100%;
-    margin: 1px;
 }
 @media all and (max-width: 40em) {
     /* No sidebar on smaller screens */
@@ -347,37 +340,34 @@ div.cke_editable {
 
 /* Links */
 a {
-    text-decoration: none;
     color: #00ccff;
 }
 a:link {
-    text-decoration: none;
+    
 }
 a:hover {
-    text-decoration: none;
+    
     color: #5252ff;
 }
 a:active {
-    text-decoration: none;
+    
 }
 a.disguised_link {
     color: inherit;
+    text-decoration: none;
 }
 a.arrow {
-    margin-left: 10px;
-    text-transform: uppercase;
-    font-size: 85%;
+    margin-right: 0.5em;
+    text-decoration: none;
 }
 a.arrow-disabled {
-    margin-left: 10px;
-    text-transform: uppercase;
+    margin-right: 0.5em;
+    text-decoration: none;
     color:gray;
-    font-size:85%;
 }
 
 /* Images */
 img {
-    margin: 3px;
     max-width: 100%;
     height: auto !important; /* Overrides fixed width added by CKEditor */
 }
@@ -403,21 +393,22 @@ div.confirmation {
 }
 
 /* Lists of articles */
-div.article_teaser {
-    margin:10px;
-    margin-left: 0;
+article.article_teaser {
+    margin: 0 0 2em 0;
+    padding: 0 0 2em 0;
+    border-bottom: 1px solid #ddd;
     min-height: 8em;
 }
 p.meta {
     color: #bbb;
-    font-style: italic;
 }
-div.article_teaser img {
+article.article_teaser img {
     max-height: 250px;
     width: 20%;
     max-width: 140px;
     min-width: 60px;
     float: left;
+    margin: 0 2em 0 0;
 }
 
 /* Lists of links */
@@ -442,6 +433,13 @@ ul.linklist li div.linklist_icon_image {
     min-width: 32px;
     margin: -5px 0 0 0;
     padding: 0;
+}
+/* Links in link lists are styled differently */
+ul.linklist a {
+    text-decoration: none;
+}
+ul.linklist a.arrow {
+    font-size: 0.8em;
 }
 
 /* Comments */
