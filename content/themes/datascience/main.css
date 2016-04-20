@@ -318,6 +318,7 @@ legend {
     text-decoration: none;
     color: black;
     padding: 3px;
+    margin: 0 3px;
     border: 0;
     cursor: pointer;
 }
@@ -328,11 +329,11 @@ legend {
 .button:focus, button:focus {
     background: #eee; /*geen andere achtergrond */
 }
-.primary_button {
+.primary_button, .dangerous_button {
     background: #990000;
     color: white;
 }
-.primary_button:hover {
+.primary_button:hover, .dangerous_button:hover {
     background: #bb0000;
     color: white;
 }

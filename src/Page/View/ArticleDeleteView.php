@@ -100,7 +100,7 @@ class ArticleDeleteView extends View {
         $returnValue = <<<EOT
             <p>{$text->t('articles.delete.confirm')}</p>
             <p>
-                <a class="button primary_button" href="{$text->e($text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams))}">
+                <a class="button dangerous_button" href="{$text->e($text->getUrlPage("delete_article", $article->getId(), $deleteUrlParams))}">
                     {$text->t("main.yes")}
                 </a>
 EOT;

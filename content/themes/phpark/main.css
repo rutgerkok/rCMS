@@ -394,6 +394,13 @@ legend {
 .primary_button:hover {
     background: #b4b488;
 }
+.dangerous_button {
+    background: #990000;
+    color: white;
+}
+.dangerous_button:hover {
+    background: #bb0000;
+}
 .checkbox {
     background:white;
     padding:0;

@@ -43,7 +43,7 @@ class DocumentDeleteView extends View {
                 <p class="intro">{$text->e($intro)}</p>
             </blockquote>
             <p>
-                <a class="button primary_button" href="{$text->e($deleteUrl)}">{$text->t("editor.delete_permanently")}</a>
+                <a class="button dangerous_button" href="{$text->e($deleteUrl)}">{$text->t("editor.delete_permanently")}</a>
                 <a class="button" href="{$text->e($this->document->getUrl($text))}">{$text->t("main.cancel")}</a>
             </p>
 HTML

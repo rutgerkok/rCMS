@@ -46,7 +46,7 @@ class CommentDeleteView extends View {
              <form method="post" action="{$deleteUrlHtml}">
                 <input type="hidden" name="{$tokenNameHtml}" value="{$tokenValueHtml}" />
                 <input type="submit" name="confirm" value="{$text->t("editor.delete_permanently")}"
-                    class="button primary_button" />
+                    class="button dangerous_button" />
                 <a class="button">{$text->t("main.cancel")}</a>
              </form>
 HTML
