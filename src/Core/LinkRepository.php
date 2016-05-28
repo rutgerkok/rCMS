@@ -3,9 +3,7 @@
 namespace Rcms\Core;
 
 use PDOException;
-
 use Psr\Http\Message\UriInterface;
-
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
@@ -16,7 +14,6 @@ class LinkRepository extends Repository {
     const TABLE_NAME = "links";
     const MAX_URL_LENGTH = 200;
     const MAX_LINK_TEXT_LENGTH = 50;
-    const MAX_MENU_NAME_LENGTH = 50;
 
     protected $website;
     protected $linkIdField;
@@ -73,6 +70,28 @@ class LinkRepository extends Repository {
      */
     public function getLinkCountByMenu($id) {
         return $this->where($this->menuIdField, '=', $id)->count();
+    }
+
+    /**
+     * Gets all links for every menu that are stored in the database.
+     * @return Link[] All links.
+     */
+    public function getAllLinks() {
+        return $this->all()->withAllFields()->select();
+    }
+    
+    /**
+     * Gets an array of int=>Link[], where int is the menu id and Link[] the
+     * links in that menu.
+     * @return Link[][] The link lists by menu id.
+     */
+    public function getAllLinksByMenu() {
+        $returnValue = [];
+        $allLinks = $this->getAllLinks();
+        foreach ($allLinks as $link) {
+            $returnValue[$link->getMenuId()][] = $link;
+        }
+        return $returnValue;
     }
 
     public function getLinksBySearch($keyword) {

@@ -23,8 +23,8 @@ if ($loggedIn) {
             if (strLen($menu_name) < 1) {
                 $this->addError($this->t("links.menu.name") . " " . $this->t("errors.not_entered"));
                 $valid = false;
-            } elseif (strLen($menu_name) > LinkRepository::MAX_MENU_NAME_LENGTH) {
-                $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", LinkRepository::MAX_MENU_NAME_LENGTH));
+            } elseif (strLen($menu_name) > MenuRepository::MAX_MENU_NAME_LENGTH) {
+                $this->addError($this->t("links.menu.name") . " " . $this->tReplaced("errors.too_long_num", MenuRepository::MAX_MENU_NAME_LENGTH));
                 $valid = false;
             }
             if ($valid) {
@@ -43,7 +43,7 @@ if ($loggedIn) {
         }
 
         if ($show_form) {
-            $menu_name_maxlength = LinkRepository::MAX_MENU_NAME_LENGTH;
+            $menu_name_maxlength = MenuRepository::MAX_MENU_NAME_LENGTH;
             $textToDisplay.=<<<EOT
                 <form method="post" action="{$this->getUrlMain()}">
                     <p>

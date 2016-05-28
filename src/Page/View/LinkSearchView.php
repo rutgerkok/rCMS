@@ -25,7 +25,6 @@ class LinkSearchView extends View {
     }
 
     public function writeText(StreamInterface $stream) {
-        $result = "";
         if (!$this->links) {
             return;
         }

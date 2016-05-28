@@ -444,6 +444,20 @@ ul.linklist li a:hover {
     text-decoration: underline;
 }
 
+/* Menu editor */
+.menu_editor p {
+    float: left;
+}
+.menu_editor article {
+    clear: both;
+}
+.menu_editor:after {
+    /* clearfix */
+    content: "";
+    display: table;
+    clear: both;
+}
+
 /* Comments */
 article.comment {
     position: relative; /* For email field */

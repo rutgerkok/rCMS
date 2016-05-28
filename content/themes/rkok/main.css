@@ -46,6 +46,7 @@ body, div, section, article {
 .site_container {
     max-width: 1100px;
     margin: 0 auto;
+    padding: 0 2em;
 }
 
 /* Header menu */
@@ -203,7 +204,7 @@ div#sidebar_page_sidebar img {
     width: 100%; /* Define standard width, Firefox needs this */
     max-width: 100%;
 }
-@media all and (max-width: 40em) {
+@media all and (max-width: 60em) {
     /* No sidebar on smaller screens */
     div#sidebar_page_content, div#sidebar_page_sidebar
     {
@@ -369,13 +370,15 @@ a.disguised_link {
     text-decoration: none;
 }
 a.arrow {
-    margin-right: 0.5em;
+    display: inline-block; /* Keeps text together */
+    margin-right: 1em;
     text-decoration: none;
 }
 a.arrow-disabled {
-    margin-right: 0.5em;
+    display: inline-block; /* Keeps text together */
+    margin-right: 1em;
     text-decoration: none;
-    color:gray;
+    color: gray;
 }
 
 /* Images */
@@ -452,6 +455,35 @@ ul.linklist a {
 }
 ul.linklist a.arrow {
     font-size: 0.8em;
+}
+
+/* Menu editor */
+@media all and (min-width: 40em) {
+    .menu_editor article {
+        display: flex;
+        min-height: 2em;
+    }
+    .menu_editor header {
+        flex-shrink: 0;
+    }
+    .menu_editor h3 {
+        margin: 0;
+        font-weight: normal;
+    }
+    .menu_editor .url_box {
+        flex-grow: 1;
+        flex-shrink: 1;
+        text-align: right;
+        padding: 0 1em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .menu_editor p {
+        margin: 0;
+    }
+    .menu_editor footer {
+        flex-shrink: 0;
+    }
 }
 
 /* Comments */
@@ -533,8 +565,7 @@ span.required {
     font-size:110%;
 }
 h3.notable {
-    font-size: 200%;
-    font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 140%;
     font-weight: normal;
 }
 span.username{

@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use PDO;
 use PDOException;
 use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 
@@ -15,6 +16,8 @@ use Rcms\Core\Repository\Repository;
 class MenuRepository extends Repository {
 
     const TABLE_NAME = "menus";
+    
+    const MAX_MENU_NAME_LENGTH = 50;
 
     private $menuIdField;
     private $menuNameField;
@@ -41,16 +44,26 @@ class MenuRepository extends Repository {
     public function createEmptyObject() {
         return new Menu();
     }
+    
+    protected function canBeSaved(Entity $menu) {
+        if (!($menu instanceof Menu)) {
+            return false;
+        }
+        return parent::canBeSaved($menu)
+                && strLen($menu->getName()) > 0
+                && strLen($menu->getName()) <= self::MAX_MENU_NAME_LENGTH;
+    }
 
     /**
      * Adds a new menu.
      * @param string $menuName Name of the menu.
+     * @return int The id of the newly created menu.
      * @throws PDOException If the menu could not be saved.
      */
     public function addMenu($menuName) {
         $menu = Menu::createMenu(0, $menuName);
         $this->saveEntity($menu);
-        return true;
+        return $menu->getId();
     }
 
     /**
@@ -64,11 +77,17 @@ class MenuRepository extends Repository {
     }
 
     /**
-     * Gets all menus.
+     * Gets all menus, indexed by the menu id.
      * @return Menu[] All menus.
      */
     public function getAllMenus() {
-        return $this->all()->select();
+        $menus = $this->all()->select();
+        
+        $returnValue = [];
+        foreach ($menus as $menu) {
+            $returnValue[$menu->getId()] = $menu;
+        }
+        return $returnValue;
     }
 
     /**

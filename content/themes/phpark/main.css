@@ -512,6 +512,36 @@ ul.linklist li div.linklist_icon_image {
     padding: 0;
 }
 
+/* Menu editor */
+@media all and (min-width: 40em) {
+    .menu_editor article {
+        display: flex;
+        min-height: 2em;
+    }
+    .menu_editor header {
+        flex-shrink: 0;
+    }
+    .menu_editor h3 {
+        margin: 0;
+        font-weight: normal;
+        font-size: inherit;
+    }
+    .menu_editor .url_box {
+        flex-grow: 1;
+        flex-shrink: 1;
+        text-align: right;
+        padding: 0 1em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .menu_editor p {
+        margin: 0;
+    }
+    .menu_editor footer {
+        flex-shrink: 0;
+    }
+}
+
 /* Calendar */
 div.calender_month_wrapper {
     height: 14em;
