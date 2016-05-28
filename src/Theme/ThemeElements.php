@@ -105,7 +105,7 @@ final class ThemeElements {
         // Title
         $title = $this->page->getPageTitle($this->website->getText());
         if (!empty($title)) {
-            $stream->write("<h2>" . htmlSpecialChars($title) . "</h2>\n");
+            $stream->write("<h2>" . $text->e($title) . "</h2>\n");
         }
         
         // Fetch page content using deprecated method
