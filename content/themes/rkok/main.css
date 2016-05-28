@@ -267,10 +267,12 @@ table.layout th,table.layout td {
 /* Forms */
 input, textarea, div.cke_editable {
     font-family: verdana, sans-serif;
+    font-size: 0.9em;
     color: #4a7180;
     background: #fafafa;
     border: 1px solid #c9c9c9;
-    padding: 3px;
+    padding: 0.25em 0.5em;
+    line-height: 1.5em;
     margin: 2px;
 }
 input:focus, textarea:focus, select:focus, div.cke_focus {
@@ -298,13 +300,13 @@ legend {
     border-radius: 3px;
     text-decoration: none;
     color: black;
-    padding: 4px;
+    font-size: 0.9em;
     margin: 2px;
+    padding: 0.25em 0.5em;
+    line-height: 1.5em;
     cursor: pointer;
     text-align: center;
     min-width: 120px;
-    font-size: 100%;
-    font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
     transition: background-color 0.1s ease-in-out, background-image 0.1s ease-in-out, border-color 0.1s ease-in-out;
 }
 .button:hover, button:hover {
