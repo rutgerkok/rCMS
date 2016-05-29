@@ -26,7 +26,7 @@ if ($articles) {
     foreach ($articles as $article) {
         $pubdate = $article->getDateCreated()->format(DateTime::RSS);
         $textToDisplay.="<item>\n";
-        $textToDisplay.="  <title>" . htmlSpecialChars($article->title) . "</title>\n";
+        $textToDisplay.="  <title>" . htmlSpecialChars($article->getTitle()) . "</title>\n";
         $textToDisplay.="  <link>" . $website->getUrlPage('article', $article->getId()) . "</link>\n";
         $textToDisplay.="  <description>" . htmlSpecialChars($article->getIntro()) . "</description>\n";
         $textToDisplay.="  <pubDate>" . htmlSpecialChars($pubdate) . "</pubDate>\n";
