@@ -33,6 +33,7 @@ class Config {
     const OPTION_ACCESS_CODE = "password";
     const OPTION_THEME = "theme";
     const OPTION_COPYRIGHT = "copyright";
+    const OPTION_MAIN_MENU_ID = "main_menu_id";
 
     private $config = [];
 
@@ -115,9 +116,6 @@ class Config {
             return;
         }
 
-        // Apply on current page
-        $this->config[$name] = $value;
-
         // Save to database
         if (isSet($this->config[$name])) {
             // Update setting
@@ -131,6 +129,9 @@ class Config {
             $sql.= " VALUES (:name, :value)";
             $database->prepare($sql)->execute([":name" => $name, ":value" => $value]);
         }
+
+        // Apply on current page
+        $this->config[$name] = $value;
     }
 
     /**

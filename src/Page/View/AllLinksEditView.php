@@ -45,6 +45,7 @@ class AllLinksEditView extends View {
     public function writeText(StreamInterface $stream) {
         $this->writeMenus($stream);
         $this->writeNewMenuForm($stream);
+        $this->writeFooter($stream);
     }
 
     private function writeMenus(StreamInterface $stream) {
@@ -82,6 +83,24 @@ HTML
         $view->writeText($stream);
 
         $stream->write("</article>");
+    }
+    
+    private function writeFooter(StreamInterface $stream) {
+        $text = $this->text;
+        
+        $stream->write(<<<HTML
+            <hr />
+            <p>
+                <a class="arrow" href="{$text->e($text->getUrlPage("edit_main_menu"))}">
+                    {$text->t("links.main_menu.edit")}
+                </a>
+                <br />
+                <a class="arrow" href="{$text->e($text->getUrlPage("admin"))}">
+                    {$text->t("main.admin")}
+                </a>  
+            </p>
+HTML
+        );
     }
 
 }

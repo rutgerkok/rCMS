@@ -32,14 +32,14 @@ class LinksPage extends Page {
      * @var RequestToken Token for adding menus.
      */
     private $requestToken;
-    
+
     public function init(Website $website, Request $request) {
         $linkRepo = new LinkRepository($website);
         $menuRepo = new MenuRepository($website->getDatabase());
-        
+
         $this->allLinks = $linkRepo->getAllLinksByMenu();
         $this->allMenus = $menuRepo->getAllMenus();
-        
+
         $this->requestToken = RequestToken::generateNew();
         $this->requestToken->saveToSession();
     }
@@ -55,7 +55,7 @@ class LinksPage extends Page {
     public function getMinimumRank(Request $request) {
         return Authentication::RANK_ADMIN;
     }
-    
+
     public function getView(Text $text) {
         return new AllLinksEditView($text, $this->requestToken, $this->allLinks, $this->allMenus);
     }

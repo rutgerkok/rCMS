@@ -7,6 +7,7 @@ use Psr\Http\Message\StreamInterface;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Config;
 use Rcms\Core\Link;
+use Rcms\Core\LinkRepository;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
@@ -254,20 +255,19 @@ EOT
     public function writeTopMenu(StreamInterface $stream) {
         $website = $this->website;
         $text = $website->getText();
+        $config = $website->getConfig();
 
         $links = [];
         $links[] = Link::of($text->getUrlMain(), $text->t("main.home"));
 
-        if ($website->getConfig()->isDatabaseUpToDate()) {
-            $categoriesRepo = new CategoryRepository($website);
-            $categories = $categoriesRepo->getCategories();
-            foreach ($categories as $category) {
-                if ($category->isStandardCategory()) {
-                    continue; // Don't display "No categories"
-                }
-                $links[] = Link::of(
-                                $text->getUrlPage("category", $category->getId()), $category->getName()
-                );
+        if ($config->isDatabaseUpToDate()) {
+            $menuId = (int) $config->get(Config::OPTION_MAIN_MENU_ID, 0);
+            if ($menuId === 0) {
+                $categoriesRepo = new CategoryRepository($website);
+                $links = array_merge($links, $categoriesRepo->getCategoryLinks($text));
+            } else {
+                $linkRepo = new LinkRepository($website);
+                $links = array_merge($links, $linkRepo->getLinksByMenu($menuId));
             }
         }
         $menuView = new MenuView($website->getText(), $links);

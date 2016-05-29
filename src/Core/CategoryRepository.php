@@ -37,6 +37,27 @@ class CategoryRepository extends Repository {
     public function getCategories() {
         return $this->all()->orderDescending($this->idField)->select();
     }
+    
+    /**
+     * Gets an array of links to all categories.
+     * @param Text $text The text object, of URL structure.
+     * @return Link[] The array of links.
+     */
+    public function getCategoryLinks(Text $text) {
+        $categories = $this->getCategories();
+
+        $links = [];
+        foreach ($categories as $category) {
+            if ($category->isStandardCategory()) {
+                continue; // Don't display "No categories"
+            }
+            $links[] = Link::of(
+                            $text->getUrlPage("category", $category->getId()), $category->getName()
+            );
+        }
+        
+        return $links;
+    }
 
     /**
      * Gets all catgories in an array, category id => category name.

@@ -1,6 +1,6 @@
 
 /*
- * Fonts, colors and margins of common elements
+ * Fonts, colors and margins of common elrements
  */
 body {
     background-color: rgb(254, 252, 241);
@@ -12,10 +12,10 @@ body.backstage {
 
 p, h1, h2, h3, h4, ul {
     font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
-    line-height: 1.4;
+    line-height: 1.4rem;
 }
 p, h1, h2, h3, h4 {
-    margin: 0 0 1em 0;
+    margin: 0 0 1rem 0;
     padding: 1px;
 }
 h2 {
@@ -46,7 +46,7 @@ body, div, section, article {
 .site_container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 0 2em;
+    padding: 0 2rem;
 }
 
 /* Header menu */
@@ -56,7 +56,7 @@ body, div, section, article {
     padding: 0;
     box-shadow: 0 0 16px black;
 }
-@media all and (max-width : 59em) {
+@media all and (max-width : 59rem) {
     #site_header
     {
         /*
@@ -70,23 +70,23 @@ body, div, section, article {
 }
 #site_header h1 {
     margin: 0;
-    padding: 40px 0 5px 0;
+    padding: 40px 0 25px 0;
     font-family: "Segoe UI Light", "Segoe UI", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    font-size: 2.55em;
+    font-size: 2.55rem;
     font-weight: normal;
     color: #494949;
 }
 ul#main_menu {
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
-    font-size: 0.85em;
+    font-size: 0.85rem;
     margin: 0;
     padding-right: 0;
-    padding-left: 0.2em;
+    padding-left: 0.2rem;
     padding-top: 0;
     list-style-type: none;
 }
 ul#main_menu li {
-    margin: 0 3em 0 0;
+    margin: 0 3rem 0 0;
     padding: 0;
     float: left;
     height: 100%;
@@ -106,7 +106,7 @@ ul#main_menu li a:hover {
 }
 div#after_menu {
     clear: both;
-    height: 2em;
+    height: 2rem;
 }
 
 /* Account box and label (inside header box) */
@@ -123,19 +123,19 @@ div#account_label {
 div#account_box {
     display: none;
     text-align: left;
-    min-height: 6em;
-    min-width: 18em;
+    min-height: 6rem;
+    min-width: 18rem;
 }
 body.logged_in div#account_label:hover div#account_box {
     display: block;
 }
 div#account_box img {
     float: left;
-    width: 5em;
-    margin: 1.1em;
+    width: 5rem;
+    margin: 1.1rem;
 }
 div#account_box ul {
-    padding: 1.1em;
+    padding: 1.1rem;
     margin-left: 10px;
     list-style-type: none;
     text-transform: uppercase;
@@ -145,7 +145,7 @@ div#account_box ul {
 div#search {
     position: absolute;
     right: 0;
-    top: 3em;
+    top: 3rem;
 }
 input#searchbutton {
     min-width: 80px;
@@ -154,9 +154,9 @@ input#searchbutton {
 
 /* Main content area */
 div#content {
-    margin: 2em 0;
-    padding: 2em 0;
-    width: calc(100% - 22em);
+    margin: 2rem 0;
+    padding: 2rem 0;
+    width: calc(100% - 22rem);
     clear: left;
     float: left;
     position: relative;
@@ -169,13 +169,13 @@ body.backstage div#content {
 
 /* Sidebar on the right of the page */
 #sidebar {
-    width: 20em;
+    width: 20rem;
     float: right;
     background-color: #f4f4f4;
-    padding: 2em;
-    margin: 2em 0;
+    padding: 2rem;
+    margin: 2rem 0;
 }
-@media all and (max-width : 50em) {
+@media all and (max-width : 50rem) {
     /* No sidebar at lower resolutions */
     div#content
     {
@@ -198,13 +198,13 @@ div#sidebar_page_content
 div#sidebar_page_sidebar {
     float: left;
     width: 30%;
-    padding-right: 2em;
+    padding-right: 2rem;
 }
 div#sidebar_page_sidebar img {
     width: 100%; /* Define standard width, Firefox needs this */
     max-width: 100%;
 }
-@media all and (max-width: 60em) {
+@media all and (max-width: 60rem) {
     /* No sidebar on smaller screens */
     div#sidebar_page_content, div#sidebar_page_sidebar
     {
@@ -213,15 +213,15 @@ div#sidebar_page_sidebar img {
     }
     div#sidebar_page_sidebar img
     {
-        max-width: 15em;
+        max-width: 15rem;
         float: right;
     }
 }
-@media all and (max-width: 30em) {
+@media all and (max-width: 30rem) {
     div#sidebar_page_sidebar img
     {
         width: 100%;
-        max-width: 15em;
+        max-width: 15rem;
         float: none;
     }
 }
@@ -265,15 +265,17 @@ table.layout th,table.layout td {
 }
 
 /* Forms */
-input, textarea, div.cke_editable {
-    font-family: verdana, sans-serif;
-    font-size: 0.9em;
+input, textarea, div.cke_editable, select {
+    font-size: 0.9rem;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
     color: #4a7180;
     background: #fafafa;
     border: 1px solid #c9c9c9;
-    padding: 0.25em 0.5em;
-    line-height: 1.5em;
-    margin: 2px;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.4rem;
+    min-height: 2rem;
+    vertical-align: middle;
+    margin: 2px 0;
 }
 input:focus, textarea:focus, select:focus, div.cke_focus {
     background: #efefef;
@@ -281,7 +283,8 @@ input:focus, textarea:focus, select:focus, div.cke_focus {
 fieldset {
     border: none;
     border-bottom: 1px solid #ccc;
-    margin: 3px;
+    margin: 3px 0;
+    padding: 0.5rem 0;
 }
 fieldset:last-of-type {
     border-bottom: none;
@@ -300,12 +303,15 @@ legend {
     border-radius: 3px;
     text-decoration: none;
     color: black;
-    font-size: 0.9em;
-    margin: 2px;
-    padding: 0.25em 0.5em;
-    line-height: 1.5em;
+    font-size: 0.9rem;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+    margin: 2px 0;
+    padding: 0.1rem 0.5rem;
+    line-height: 1.4rem;
+    min-height: 2rem;
     cursor: pointer;
     text-align: center;
+    vertical-align: middle;
     min-width: 120px;
     transition: background-color 0.1s ease-in-out, background-image 0.1s ease-in-out, border-color 0.1s ease-in-out;
 }
@@ -343,12 +349,13 @@ input.checkbox {
     border:0;
     border-radius:0;
     box-shadow:none;
+    min-height: 0;
 }
 input.full_width, textarea.full_width {
     width: 98%;
 }
 div.cke_editable {
-    min-height: 10em;
+    min-height: 10rem;
     /* Makes sure that editor buttons don't hide rest of form */
     margin-bottom: 70px;
 }
@@ -373,12 +380,12 @@ a.disguised_link {
 }
 a.arrow {
     display: inline-block; /* Keeps text together */
-    margin-right: 1em;
+    margin-right: 1rem;
     text-decoration: none;
 }
 a.arrow-disabled {
     display: inline-block; /* Keeps text together */
-    margin-right: 1em;
+    margin-right: 1rem;
     text-decoration: none;
     color: gray;
 }
@@ -411,10 +418,10 @@ div.confirmation {
 
 /* Lists of articles */
 article.article_teaser {
-    margin: 0 0 2em 0;
-    padding: 0 0 2em 0;
+    margin: 0 0 2rem 0;
+    padding: 0 0 2rem 0;
     border-bottom: 1px solid #ddd;
-    min-height: 8em;
+    min-height: 8rem;
 }
 p.meta {
     color: #bbb;
@@ -425,7 +432,7 @@ article.article_teaser img {
     max-width: 180px;
     min-width: 60px;
     float: left;
-    margin: 0.4em 2em 0 0;
+    margin: 0.4rem 2rem 0 0;
 }
 
 /* Lists of links */
@@ -456,14 +463,14 @@ ul.linklist a {
     text-decoration: none;
 }
 ul.linklist a.arrow {
-    font-size: 0.8em;
+    font-size: 0.8rem;
 }
 
 /* Menu editor */
-@media all and (min-width: 40em) {
+@media all and (min-width: 40rem) {
     .menu_editor article {
         display: flex;
-        min-height: 2em;
+        min-height: 2rem;
     }
     .menu_editor header {
         flex-shrink: 0;
@@ -476,7 +483,7 @@ ul.linklist a.arrow {
         flex-grow: 1;
         flex-shrink: 1;
         text-align: right;
-        padding: 0 1em;
+        padding: 0 1rem;
         overflow: hidden;
         text-overflow: ellipsis;
     }
@@ -490,7 +497,7 @@ ul.linklist a.arrow {
 
 /* Comments */
 article.comment {
-    min-height: 7em;
+    min-height: 7rem;
     margin-left: 10px;
     margin-bottom: 20px;
     margin-top: 20px;
@@ -534,7 +541,7 @@ blockquote {
 
 /* Calendar */
 div.calender_month_wrapper {
-    height: 14em;
+    height: 14rem;
     margin: 1%;
 }
 td.calendar_other_month {
@@ -546,7 +553,7 @@ td.calendar_active_date {
     text-decoration:underline;
 }
 /* On higher resulotions, multiple calendars can be placed next to each other */
-@media all and (min-width : 38em) {
+@media all and (min-width : 38rem) {
     div.calender_month_wrapper
     {
         float: left;

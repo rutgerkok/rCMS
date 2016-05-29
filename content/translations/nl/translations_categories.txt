@@ -1,8 +1,9 @@
 _=Vertalingen voor categorieën
-all=Alle categorie&euml;n
-search.all_in_year=Doorzoek alle categorie&euml;n in {0}
+all=Alle categorieën
+search.all_in_year=Doorzoek alle categorieën in {0}
 create=Maak nieuwe categorie
+edit=Bewerk de categorieën
 rename=Geef een categorie een andere naam
 delete=Verwijder een categorie
 articles_in_category=Artikelen in categorie
-show_all=Toon alle categorie&euml;n
+show_all=Toon alle categorieën

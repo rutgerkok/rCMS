@@ -352,8 +352,8 @@ input:focus, textarea:focus, select:focus, div.cke_focus {
 fieldset {
     border: none;
     border-bottom: 2px solid #9a9a79;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
+    padding: 0.5em 0;
 }
 fieldset:last-of-type {
     border-bottom: none;
@@ -366,7 +366,7 @@ legend {
     background: #ccc; 
     border:0;
     padding: 5px;
-    margin: 3px;
+    margin: 3px 0;
     border-radius: 4px;
     box-shadow: none;
     text-decoration:none;

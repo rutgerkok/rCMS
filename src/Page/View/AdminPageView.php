@@ -44,6 +44,7 @@ class AdminPageView extends View {
             <p>
                 <a href="{$text->e($text->getUrlPage("create_link"))}" class="arrow">{$text->t("links.create")}</a><br />
                 <a href="{$text->e($text->getUrlPage("links"))}" class="arrow">{$text->t("links.edit_or_delete")}</a><br />
+                <a href="{$text->e($text->getUrlPage("edit_main_menu"))}" class="arrow">{$text->t("links.main_menu.edit")}</a><br />
             </p>
 
             <h3>{$text->t("main.categories")}</h3>
