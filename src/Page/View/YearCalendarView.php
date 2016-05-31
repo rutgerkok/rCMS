@@ -33,8 +33,8 @@ class YearCalendarView extends View {
 
     public function writeText(StreamInterface $stream) {
         $stream->write($this->getYearSelector());
-        $stream->write('<div');
-        
+        $stream->write('<div>');
+        $this->writeCalendars($stream);
         $stream->write('</div');
     }
 
@@ -68,9 +68,8 @@ END;
     protected function writeCalendars(StreamInterface $stream) {
         $text = $this->text;
 
-        $returnValue = "";
         for ($i = 1; $i <= 12; $i++) {
-            $month = DateTime::createFromFormat("Y n", $this->year->format("Y") . ' ' . $i);
+            $month = DateTime::createFromFormat("Y n j", $this->year->format("Y") . ' ' . $i . ' 1');
             $calendarView = new CalendarView($text, $month, $this->articlesInYear, $this->createLinks);
 
             $monthName = ucFirst($calendarView->getMonthName($month));
@@ -81,7 +80,6 @@ END;
             $calendarView->writeText($stream);
             $stream->write('</div>');
         }
-        return $returnValue;
     }
 
 }
