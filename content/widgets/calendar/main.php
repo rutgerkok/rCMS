@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\CalendarView;
+use Rcms\Page\View\ArticleEventListView;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -20,36 +20,22 @@ class WidgetCalendar extends WidgetDefinition {
     const MAX_TITLE_LENGTH = 50;
 
     public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+        $text = $website->getText();
+        $editLinks = $website->isLoggedInAsStaff();
 
         // Title
         $title = "";
         if (isSet($data["title"]) && strLen($data["title"]) > 0) {
-            $title = "<h2>" . htmlSpecialChars($data["title"]) . "</h2>";
+            $title = "<h2>" . $text->e($data["title"]) . "</h2>";
         }
         $stream->write($title);
 
-        $now = new DateTime();
         $oArticles = new ArticleRepository($website);
-        $articlesInMonth = $oArticles->getArticlesDataCalendarMonth($now);
-        $calendar = new CalendarView($website->getText(), $now, $articlesInMonth, $website->isLoggedInAsStaff());
-
-        // Date
-        $monthName = ucFirst($calendar->getMonthName($now));
-        $year = $now->format('Y');
-        $stream->write("<h3>$monthName $year</h3>");
+        $articles = $oArticles->getArticlesDataUpcomingEvents();
+        $articlesView = new ArticleEventListView($text, $articles, $editLinks, 0, true);
         
-        // Calendar
-        $calendar->writeText($stream);
-
-        // Footer
-        $stream->write(<<<WIDGET
-            <p>
-                <a class="arrow" href="{$website->getUrlPage("calendar", $year)}">
-                    {$website->tReplaced("calendar.calendar_for_year", $year)}
-                </a>
-            </p>
-WIDGET
-        );
+        // Articles
+        $articlesView->writeText($stream);
     }
 
     public function getEditor(Website $website, $id, $data) {

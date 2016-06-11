@@ -3,7 +3,7 @@
 namespace Rcms\Core;
 
 use BadMethodCallException;
-use DateTime;
+use DateTimeInterface;
 use Exception;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
@@ -25,6 +25,7 @@ class Text {
     private $errors;
     private $confirmations;
     private $rewriteUrls;
+
     /**
      * @var UriInterface URL of the directory where the JavaScripts of the site
      * are stored. Trailing slash is required.
@@ -40,7 +41,8 @@ class Text {
      * @param UriInterface $javascriptsUrl Url of the directory that contains all
      * scripts.
      */
-    public function __construct(UriInterface $siteUrl, $translationsDir, UriInterface $javascriptsUrl) {
+    public function __construct(UriInterface $siteUrl, $translationsDir,
+            UriInterface $javascriptsUrl) {
         $this->siteUrl = $siteUrl;
         $this->translations = [];
         $this->errors = [];
@@ -134,8 +136,6 @@ class Text {
 
         $this->confirmations[] = $confirmation . $this->toHtmlLinks($links);
     }
-
-
 
     /**
      * Gets the errors that were posted using {@link #addError(string)}.
@@ -318,16 +318,37 @@ class Text {
      */
     public function getUrlJavascript($name) {
         return $this->javascriptsUrl->withPath(
-                $this->javascriptsUrl->getPath() . $name . ".js");
+                        $this->javascriptsUrl->getPath() . $name . ".js");
     }
 
     /**
-     * Gets a formatted date/time, ready for presenting to the user.
-     * @param DateTime $dateTime The date/time.
-     * @return string The formatted date/time.
+     * Gets a formatted date/time as HTML, ready for presenting to the user.
+     * @param DateTimeInterface $dateTime The date/time.
+     * @return string The formatted date/time as HTML.
      */
-    public function formatDateTime(DateTime $dateTime) {
-        return strFTime($this->t("calendar.format.date_time"), $dateTime->format('U'));
+    public function formatDateTime(DateTimeInterface $dateTime) {
+        $dateFormat = $this->getDateFormat("calendar.format.datetime");
+        return strFTime($dateFormat, $dateTime->format('U'));
+    }
+
+    /**
+     * Gets a formatted date/time as HTML, ready for presenting to the user.
+     * This format is more suitable for upcoming events, where the year doesn't
+     * really matter, but the weekday does.
+     * @param DateTimeInterface $dateTime The date/time.
+     * @return string The Formatted date/time as HTML.
+     */
+    public function formatEventDateTime(DateTimeInterface $dateTime) {
+        $dateFormat = $this->getDateFormat("calendar.format.eventdatetime");
+        return strFTime($dateFormat, $dateTime->format('U'));
+    }
+
+    private function getDateFormat($translationKey) {
+        $dateFormat = $this->t($translationKey);
+        if (strToUpper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            $dateFormat = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $dateFormat);
+        }
+        return $dateFormat;
     }
 
 }

@@ -237,6 +237,19 @@ SQL;
     }
 
     /**
+     * Gets the given amount of upcoming events.
+     * @param int $limit The amount.
+     * @return Article[] The events.
+     */
+    public function getArticlesDataUpcomingEvents($limit = 3) {
+        return $this
+                ->whereRaw("`artikel_verwijsdatum` >= NOW()", [])
+                ->orderAscending($this->calendarField)
+                ->limit($limit)
+                ->select();
+    }
+
+    /**
      * Gets all articles with the event date in the given year.
      * @param DateTime $year The year to look up.
      * @return Article[] All articles with an event date in that year.

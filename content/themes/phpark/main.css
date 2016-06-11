@@ -215,7 +215,7 @@ div#nav {
     padding: 0.7em;
     float: left;
 }
-@media all and (max-width : 52em) {
+@media all and (max-width : 64em) {
     /* Small screen, place one menu sidebar below */
     div#content {
         width: 59%;
@@ -486,7 +486,7 @@ article.article_teaser .article_teaser_links {
     clear: both;
 }
 
-/* Linklijsten */
+/* Link lists */
 ul.linklist {
     margin: 0;
     padding: 0;
@@ -510,6 +510,34 @@ ul.linklist li div.linklist_icon_image {
     min-width: 32px;
     margin: -5px 0 0 0;
     padding: 0;
+}
+
+/* Calendar lists (each item has a date box) */
+ul.calendar_list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+ul.calendar_list li {
+    margin: 0.5em 0;
+    padding: 0 0 0 7em;
+    font-family: verdana, sans-serif;
+}
+ul.calendar_list li:after {
+    /* Clearfix */
+    content: "";
+    display: table;
+    clear: both;
+}
+ul.calendar_list li .date {
+    display: block;
+    float: left;
+    width: 6em;
+    background-color: #e4f2e9;
+    text-align: center;
+    margin: 0 0 0 -7em;
+    padding: 0;
+    color: inherit;
 }
 
 /* Menu editor */
@@ -610,7 +638,7 @@ article.comment .comment_date {
 
 /* Quotes */
 blockquote {
-    background: #eee;
+    background: #e4f2e9;
     border: 1px solid #ccc;
     padding: 5px 10px;
     margin: 5px 5px 5px 25px;
