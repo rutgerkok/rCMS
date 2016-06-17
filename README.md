@@ -5,7 +5,7 @@ Simple CMS for my website. Requires CKEditor and CKFinder.
 ![Three screenshots](http://i.imgur.com/LZq5A78.png)
 
 ## Installation
-You'll need PHP (5.3+), MySQL and Composer. 
+You'll need PHP (5.5+), MySQL and Composer. 
 
 1. [Download][] or clone this repo. Place the files somewhere that is accessible from your browser.
 2. Make sure [Composer][] is installed. Run `composer install` in the root directory of this project.
