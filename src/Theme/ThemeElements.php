@@ -14,7 +14,7 @@ use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\HomePage;
 use Rcms\Page\Page;
 use Rcms\Page\View\MenuView;
-use Rcms\Page\View\WidgetsPageView;
+use Rcms\Page\View\WidgetsColumnView;
 
 /**
  * The elements that appear inside a theme. All elements already escape their
@@ -76,7 +76,7 @@ final class ThemeElements {
      * @return string The title.
      */
     public function getHeaderTitle() {
-        $title = $this->website->getSiteTitle();
+        $title = $this->website->getConfig()->get(Config::OPTION_SITE_TITLE);
         if ($this->website->getConfig()->get("append_page_title", false)) {
             if (!($this->page instanceof HomePage)) {
                 $title.= " - " . $this->page->getShortPageTitle($this->website->getText());
@@ -286,8 +286,7 @@ EOT
 
         // Echo the form
         $stream->write(<<<SEARCH
-            <form id="searchform" name="searchform" action="{$text->e($text->getUrlMain())}" method="get">
-                <input type="hidden" name="p" value="search" />
+            <form id="searchform" name="searchform" action="{$text->e($text->getUrlPage("search"))}" method="get">
                 <input type="search" size="21" name="searchbox" id="searchbox" value="{$keywordHtml}" />
                 <input type="submit" class="button" value="{$text->t("main.search")}" name="searchbutton" id="searchbutton" />
             </form>
@@ -302,7 +301,7 @@ SEARCH
         }
         $widgets = $this->widgetsRepo->getWidgetsInDocumentWithId($area);
 
-        $widgetsView = new WidgetsPageView($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
+        $widgetsView = new WidgetsColumnView($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
         $widgetsView->writeText($stream);
     }
 }
