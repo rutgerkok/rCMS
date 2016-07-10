@@ -4,6 +4,7 @@ namespace Rcms\Core;
 
 use BadMethodCallException;
 use DateTimeInterface;
+use InvalidArgumentException;
 use Exception;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
