@@ -15,7 +15,6 @@ class AdminPageView extends View {
                 
             <p>
                 <a href="{$text->e($text->getUrlPage("site_settings"))}" class="arrow">{$text->t("main.site_settings")}</a><br />
-                <a href="{$text->e($text->getUrlPage("widgets"))}" class="arrow">{$text->t("main.edit")} {$text->t("main.widgets")}</a>
             </p>
 
             <h3>{$text->t("main.articles")}</h3>
@@ -24,7 +23,7 @@ class AdminPageView extends View {
                 <a href="{$text->e($text->getUrlPage("archive"))}" class="arrow">{$text->t("articles.archive")}</a><br />
                 <a href="{$text->e($text->getUrlPage("comments"))}" class="arrow">{$text->t("comments.comments")}</a>
             </p>
-                
+
             <h3>{$text->t("main.documents")}</h3>
             <p>
                 <a href="{$text->e($text->getUrlPage("edit_document"))}" class="arrow">{$text->t("documents.create")}</a><br />
