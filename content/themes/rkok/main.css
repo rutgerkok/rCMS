@@ -10,13 +10,13 @@ body.backstage {
     background: #808080 url(images/background-dark.jpg);
 }
 
-p, h1, h2, h3, h4, ul {
+p, h1, h2, h3, h4, ul, figcaption {
     font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
     line-height: 1.4rem;
 }
-p, h1, h2, h3, h4 {
+p, h1, h2, h3, h4, figure {
     margin: 0 0 1rem 0;
-    padding: 1px;
+    padding: 0;
 }
 h2 {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
@@ -48,6 +48,19 @@ body, div, section, article {
     margin: 0 auto;
     padding: 0 2rem;
 }
+@media only screen and (max-width: 30rem) {
+    /* No margins around white box */
+    .site_container {
+        padding: 0;
+    }
+}
+@media print {
+    /* Paper has an automatic margin */
+    .site_container {
+        padding: 0;
+    }
+}
+
 
 /* Header menu */
 #site_header {
@@ -56,7 +69,7 @@ body, div, section, article {
     padding: 0;
     box-shadow: 0 0 16px black;
 }
-@media all and (max-width : 59rem) {
+@media only screen and (max-width : 60rem) {
     #site_header
     {
         /*
@@ -108,23 +121,36 @@ div#after_menu {
     clear: both;
     height: 2rem;
 }
+@media print {
+    ul#main_menu {
+        display: none;
+    }
+}
 
 /* Account box and label (inside header box) */
 div#account_label {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 2rem;
     text-align: right;
     background: white;
     box-shadow: 0 0 5px #aaa;
     font-family: verdana, sans-serif;
     padding: 3px;
 }
+div#account_label a {
+    text-decoration: none;
+}
 div#account_box {
     display: none;
     text-align: left;
     min-height: 6rem;
     min-width: 18rem;
+}
+@media print {
+    div#account_label {
+        display: none;
+    }
 }
 body.logged_in div#account_label:hover div#account_box {
     display: block;
@@ -144,18 +170,29 @@ div#account_box ul {
 /* Search box */
 div#search {
     position: absolute;
-    right: 0;
+    right: 2rem;
     top: 3rem;
 }
 input#searchbutton {
     min-width: 80px;
-    padding: 2px;
+}
+@media only screen and (max-width: 50em) {
+    input#searchbox {
+        display: none;
+    }
+}
+@media print {
+    div#search {
+        display: none;
+    }
 }
 
 /* Main content area */
-div#content {
+#content {
     margin: 2rem 0;
-    padding: 2rem 0;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0px 0px 16px black;
     width: calc(100% - 22rem);
     clear: left;
     float: left;
@@ -171,13 +208,13 @@ body.backstage div#content {
 #sidebar {
     width: 20rem;
     float: right;
-    background-color: #f4f4f4;
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 2rem;
     margin: 2rem 0;
 }
-@media all and (max-width : 50rem) {
+@media only screen and (max-width : 60rem) {
     /* No sidebar at lower resolutions */
-    div#content
+    #content
     {
         float: none;
         width: auto;
@@ -186,6 +223,17 @@ body.backstage div#content {
     {
         width: auto;
         float: none;
+    }
+}
+@media print {
+    #content {
+        float: none;
+        width: auto;
+        margin: 0;
+        padding: 0;
+    }
+    #sidebar {
+        display: none;
     }
 }
 
@@ -204,7 +252,7 @@ div#sidebar_page_sidebar img {
     width: 100%; /* Define standard width, Firefox needs this */
     max-width: 100%;
 }
-@media all and (max-width: 60rem) {
+@media screen and (max-width: 60rem), print {
     /* No sidebar on smaller screens */
     div#sidebar_page_content, div#sidebar_page_sidebar
     {
@@ -217,7 +265,7 @@ div#sidebar_page_sidebar img {
         float: right;
     }
 }
-@media all and (max-width: 30rem) {
+@media screen and (max-width: 30rem), print {
     div#sidebar_page_sidebar img
     {
         width: 100%;
@@ -343,6 +391,11 @@ legend {
     background-image: linear-gradient(rgba(247, 166, 181, 1), #ff6682);
     color: white;
 }
+@media print {
+    .button {
+        display: none;
+    }
+}
 input.checkbox {
     background:white;
     padding:0;
@@ -389,6 +442,15 @@ a.arrow-disabled {
     text-decoration: none;
     color: gray;
 }
+@media print {
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+    a.arrow, a.arrow-disabled {
+        display: none;
+    }
+}
 
 /* Images */
 img {
@@ -397,6 +459,9 @@ img {
 }
 a img {
     border:0;
+}
+figcaption {
+    font-style: italic;
 }
 
 /* Errors and confirmations */
@@ -497,7 +562,7 @@ ul.calendar_list .title {
 }
 
 /* Menu editor */
-@media all and (min-width: 40rem) {
+@media only screen and (min-width: 40rem) {
     .menu_editor article {
         display: flex;
         min-height: 2rem;
@@ -583,7 +648,7 @@ td.calendar_active_date {
     text-decoration:underline;
 }
 /* On higher resulotions, multiple calendars can be placed next to each other */
-@media all and (min-width : 38rem) {
+@media only screen and (min-width : 38rem) {
     div.calender_month_wrapper
     {
         float: left;
