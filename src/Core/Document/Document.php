@@ -124,14 +124,14 @@ final class Document extends Entity {
         // This is a valid widget area, so create a document for it
         $title = $widgetAreas[$widgetArea];
         if (strLen($title) > self::TITLE_MAX_LENGTH) {
-            $title = substr($title, 0, self::TITLE_MAX_LENGTH);
+            $title = subStr($title, 0, self::TITLE_MAX_LENGTH);
         }
         $intro = $text->tReplaced("documents.created_for_widgets", $title);
 
         $document = new Document();
         $document->isWidgetArea = true;
         $document->id = (int) $widgetArea;
-        $document->setTitle($title);
+        $document->setTitle(ucFirst($title));
         $document->setIntro($intro);
 
         return $document;
