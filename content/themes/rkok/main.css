@@ -3,11 +3,11 @@
  * Fonts, colors and margins of common elrements
  */
 body {
-    background-color: rgb(254, 252, 241);
+    background: #bcbcbc url(images/background.jpg);
     color: #454545;
 }
 body.backstage {
-    background-color: rgb(230, 230, 230);
+    background: #808080 url(images/background-dark.jpg);
 }
 
 p, h1, h2, h3, h4, ul {
