@@ -49,13 +49,13 @@ final class ThemeMeta {
         } elseif ($areas == 1) {
             // One widget area on position 2
             return [
-                2 => $website->t("widgets.sidebar")
+                2 => $website->t("widgets.the_sidebar")
             ];
         } else {
             // More widget areas, starting on position 2
             $widgetAreas = [];
             for ($i = 0; $i < $areas; $i++) {
-                $widgetAreas[$i + 2] = $website->t("widgets.sidebar") . " " . ($i + 1);
+                $widgetAreas[$i + 2] = $website->tReplaced("widgets.sidebar_n", $i + 1);
             }
             return $widgetAreas;
         }

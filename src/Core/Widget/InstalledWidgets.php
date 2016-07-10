@@ -134,7 +134,7 @@ class InstalledWidgets {
      */
     public function getWidgetAreas() {
         $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
-        $areas[1] = $this->website->t("widgets.homepage");
+        $areas[1] = $this->website->t("widgets.the_homepage");
         return $areas;
     }
 
