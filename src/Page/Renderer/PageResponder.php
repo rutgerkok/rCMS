@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Config;
 use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -103,6 +104,6 @@ final class PageResponder {
             throw new NotFoundException();
         }
 
-        return new OldPageWrapper($this->website->getSiteTitle(), $pageFile);
+        return new OldPageWrapper($this->website->getConfig()->get(Config::OPTION_SITE_TITLE), $pageFile);
     }
 }

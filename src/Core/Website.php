@@ -103,14 +103,6 @@ class Website {
         }
     }
 
-    /**
-     * Returns the full title that should be displayed at the top of this page.
-     * @return string The title.
-     */
-    public function getSiteTitle() {
-        return $this->getConfig()->get("title");
-    }
-
     // GETTING OTHER OBJECTS
 
     /**
