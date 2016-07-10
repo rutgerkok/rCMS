@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -28,9 +29,15 @@ class HomePage extends Page {
      * @var boolean Whether edit/delete links are shown.
      */
     private $editLinks;
+    
+    /**
+     * @var string The title of the website.
+     */
+    private $siteTitle;
 
     public function init(Website $website, Request $request) {
         $this->installedWidgets = $website->getWidgets();
+        $this->siteTitle = $website->getConfig()->get(Config::OPTION_SITE_TITLE);
 
         $widgetsRepo = new WidgetRepository($website);
         $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(self::DOCUMENT_ID);
@@ -42,7 +49,7 @@ class HomePage extends Page {
     }
 
     public function getShortPageTitle(Text $text) {
-        return $text->t("main.home");
+        return $this->siteTitle;
     }
 
     public function getView(Text $text) {

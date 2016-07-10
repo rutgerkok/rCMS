@@ -34,6 +34,7 @@ class Config {
     const OPTION_THEME = "theme";
     const OPTION_COPYRIGHT = "copyright";
     const OPTION_MAIN_MENU_ID = "main_menu_id";
+    const OPTION_SITE_TITLE = "title";
 
     private $config = [];
 
