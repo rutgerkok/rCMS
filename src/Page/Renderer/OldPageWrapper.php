@@ -2,6 +2,7 @@
 
 namespace Rcms\Page\Renderer;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Page\Page;
@@ -55,6 +56,11 @@ class OldPageWrapper extends Page {
 
     public function getPageType() {
         return Page::TYPE_BACKSTAGE;
+    }
+
+    public function getMinimumRank() {
+        // The old pages do their own access checks
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

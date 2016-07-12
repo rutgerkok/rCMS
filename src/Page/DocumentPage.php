@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Document\DocumentRepository;
 use Rcms\Core\Request;
@@ -62,6 +63,10 @@ class DocumentPage extends Page {
             new DocumentView($text, $this->document, $this->editLinks),
             new WidgetsPageView($text, $this->document->getId(), $this->widgetLoader, $this->widgets, false)
             ];
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

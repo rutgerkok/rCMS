@@ -65,4 +65,8 @@ class LoginPage extends Page {
         }
     }
 
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
+    }
+
 }

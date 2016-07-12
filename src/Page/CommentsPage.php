@@ -26,7 +26,7 @@ class CommentsPage extends Page {
         $this->viewingUser = $website->getAuth()->getCurrentUser();
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_MODERATOR;
     }
 

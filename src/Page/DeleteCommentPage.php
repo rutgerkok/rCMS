@@ -34,7 +34,7 @@ final class DeleteCommentPage extends Page {
         return $text->t("comments.delete");
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_USER;
     }
 

@@ -69,7 +69,7 @@ class EditPasswordPage extends Page {
         return $text->t("users.password.edit");
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_USER;
     }
 

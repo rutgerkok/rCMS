@@ -124,7 +124,7 @@ class EditDocumentPage extends Page {
         return $this->document->getTitle();
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

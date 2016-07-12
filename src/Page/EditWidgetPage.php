@@ -125,7 +125,7 @@ class EditWidgetPage extends Page {
         return new WidgetEditView($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_MODERATOR;
     }
 

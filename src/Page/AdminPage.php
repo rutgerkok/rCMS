@@ -26,7 +26,7 @@ class AdminPage extends Page {
         return new AdminPageView($text);
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

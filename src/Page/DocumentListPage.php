@@ -27,7 +27,7 @@ class DocumentListPage extends Page {
         $this->editLinks = $isStaff;
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_MODERATOR;
     }
 

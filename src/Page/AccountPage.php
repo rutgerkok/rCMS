@@ -28,6 +28,9 @@ class AccountPage extends Page {
         if ($userId === 0) {
             // Use current user
             $this->user = $website->getAuth()->getCurrentUser();
+            if ($this->user == null) {
+                throw new NotFoundException();
+            }
         } else {
             // Use provided user
             $this->user = $website->getAuth()->getUserRepository()->getById($userId);
@@ -49,13 +52,8 @@ class AccountPage extends Page {
         }
     }
 
-    public function getMinimumRank(Request $request) {
-        if ($request->getParamInt(0) == 0) {
-            // Need to be logged in to view your own account
-            return Authentication::RANK_USER;
-        } else {
-            return parent::getMinimumRank($request);
-        }
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
     public function getPageTitle(Text $text) {

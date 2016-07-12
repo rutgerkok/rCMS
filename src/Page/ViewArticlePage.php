@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Psr\Http\Message\ResponseInterface;
+use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -30,6 +31,10 @@ class ViewArticlePage extends Page {
 
     public function modifyResponse(ResponseInterface $response) {
         return Responses::withPermanentRedirect($response, $this->articleUrl);
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

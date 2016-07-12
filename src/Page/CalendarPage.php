@@ -3,11 +3,11 @@
 namespace Rcms\Page;
 
 use DateTime;
+use Rcms\Core\Authentication;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-
 use Rcms\Page\View\YearCalendarView;
 
 class CalendarPage extends Page {
@@ -43,6 +43,10 @@ class CalendarPage extends Page {
 
     public function getView(Text $text) {
         return new YearCalendarView($text, $this->year, $this->articlesInYear, $this->showCreateLinks);
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

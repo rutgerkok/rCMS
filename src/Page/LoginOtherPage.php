@@ -49,7 +49,7 @@ class LoginOtherPage extends Page {
         return new LoggedInOtherView($text, $this->newUser);
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

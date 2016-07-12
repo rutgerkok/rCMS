@@ -11,7 +11,7 @@ class AccountManagementPage extends Page {
 
     const USERS_PER_PAGE = 50;
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

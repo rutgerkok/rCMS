@@ -37,4 +37,8 @@ class ErrorLoginRequiredPage extends Page {
     public function getPageType() {
         return Page::TYPE_BACKSTAGE;
     }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
+    }
 }

@@ -41,7 +41,7 @@ final class PageResponder {
         }
 
         // Login check
-        $minimumRank = $page->getMinimumRank($request);
+        $minimumRank = $page->getMinimumRank();
         if ($minimumRank != Authentication::RANK_LOGGED_OUT && !$this->website->getAuth()->check($minimumRank, false)) {
             // Login failure
             $page = new ErrorLoginRequiredPage($minimumRank);

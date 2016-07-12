@@ -64,7 +64,7 @@ class DeleteArticlePage extends Page {
         }
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_MODERATOR;
     }
 

@@ -92,7 +92,7 @@ final class MoveWidgetPage extends Page {
         }
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

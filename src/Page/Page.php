@@ -57,12 +57,9 @@ abstract class Page {
      * Gets the minimum rank required to view this page, like
      * Authentication::USER_RANK. If the user doesn't satisfy this rank, no
      * other methods on this class will be called.
-     * @param Request $request Request that caused this page to load.
      * @return int The minimum rank required to view this page.
      */
-    public function getMinimumRank(Request $request) {
-        return Authentication::RANK_LOGGED_OUT;
-    }
+    public abstract function getMinimumRank();
 
     /**
      * Gets the title of this page. Empty titles are allowed. The returned

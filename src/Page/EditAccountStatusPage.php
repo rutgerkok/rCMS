@@ -16,7 +16,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         return $text->t("users.status.edit");
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_MODERATOR;
     }
 

@@ -43,7 +43,7 @@ final class EditCommentPage extends Page {
         return $text->t("comments.edit");
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_USER;
     }
 

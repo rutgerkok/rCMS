@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
@@ -52,6 +53,10 @@ class CategoryPage extends Page {
 
     public function getView(Text $text) {
         return $this->view;
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

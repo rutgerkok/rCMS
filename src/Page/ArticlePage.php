@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
@@ -42,6 +43,10 @@ class ArticlePage extends Page {
 
     public function getView(Text $text) {
         return new ArticleView($text, $this->article, $this->editLinks, $this->comments, $this->currentUser);
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

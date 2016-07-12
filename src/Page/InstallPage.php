@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\DatabaseInstaller;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -66,6 +67,10 @@ class InstallPage extends Page {
 
     public function getPageType() {
         return Page::TYPE_BACKSTAGE;
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

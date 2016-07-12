@@ -37,7 +37,7 @@ class EditMenuPage extends Page {
         return $this->menu->getName();
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
     

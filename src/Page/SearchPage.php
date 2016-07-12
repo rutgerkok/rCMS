@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Text;
@@ -80,6 +81,10 @@ class SearchPage extends Page {
         }
         $views[] = new SearchFormView($text, $this->keyword);
         return $views;
+    }
+ 
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

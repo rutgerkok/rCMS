@@ -2,6 +2,7 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\Authentication;
 use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -58,6 +59,10 @@ class HomePage extends Page {
 
     public function getPageType() {
         return Page::TYPE_HOME;
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

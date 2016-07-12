@@ -60,7 +60,7 @@ class DeleteDocumentPage extends Page {
         return $text->tReplaced("documents.delete.title", $this->document->getTitle());
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 

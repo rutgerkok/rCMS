@@ -50,7 +50,7 @@ class SiteSettingsPage extends Page {
         return $text->t("main.site_settings");
     }
 
-    public function getMinimumRank(Request $request) {
+    public function getMinimumRank() {
         return Authentication::RANK_ADMIN;
     }
 
