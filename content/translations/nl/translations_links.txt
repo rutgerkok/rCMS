@@ -19,6 +19,7 @@ menu.rename=Geef linkverzameling een andere naam
 menu.delete=Verwijder linkverzameling
 menu.delete.confirm=Weet u zeker dat u deze verzameling links wil verwijderen? Alle links in de verzameling zullen worden verwijderd.
 menu.for_main_menu=Linkverzameling voor hoofdmenu
+menu.go_back=Terug naar linkverzameling
 main_menu.edit=Bewerk het hoofdmenu
 main_menu.explained=Aan de bovenkant van deze pagina ziet u het hoofmenu.
 main_menu.use_menu=Gebruik linkverzameling voor hoofdmenu

@@ -84,5 +84,23 @@ class Link extends Entity {
     public function getId() {
         return $this->id;
     }
+    
+    /**
+     * Sets the display text of this link. As always, you need to save this link
+     * to a repository before any changes are persisted in the database.
+     * @param string $text The display text.
+     */
+    public function setText($text) {
+        $this->text = (string) $text;
+    }
+
+    /**
+     * Sets the URL of this link. As always, you need to save this link to a
+     * repository before any changes are persisted in the database.
+     * @param UriInterface $url The new URL.
+     */
+    public function setUrl(UriInterface $url) {
+        $this->url = $url;
+    }
 
 }

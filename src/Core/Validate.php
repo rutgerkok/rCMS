@@ -2,6 +2,9 @@
 
 namespace Rcms\Core;
 
+use InvalidArgumentException;
+use Zend\Diactoros\Uri;
+
 /**
  * Contains methods to check whether various things inputted by the user are
  * valid. If a function returns false, you can get the error message using
@@ -163,6 +166,12 @@ class Validate {
     }
 
     public static function url($linkUrl) {
+        try {
+            new Uri($linkUrl);
+        } catch (InvalidArgumentException $e) {
+            Validate::setError("not_a_valid_web_address");
+            return false;
+        }
         return self::stringLength($linkUrl, 1, LinkRepository::MAX_URL_LENGTH);
     }
 

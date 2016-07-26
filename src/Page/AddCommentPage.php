@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\Article;
 use Rcms\Core\ArticleRepository;
+use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
@@ -95,6 +96,10 @@ final class AddCommentPage extends Page {
     
     public function getPageType() {
         return Page::TYPE_BACKSTAGE;
+    }
+
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
     }
 
 }

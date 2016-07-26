@@ -13,7 +13,7 @@ unset($oAuth);
 if ($loggedIn) {
     $oMenus = new LinkRepository($this);
     $id = isSet($_REQUEST["id"]) ? (int) $_REQUEST["id"] : 0;
-    $link = $oMenus->getLink($id);
+    $link = $oMenus->getLinkOrNull($id);
     if ($link != null) {
         if (isSet($_REQUEST["confirm"])) {
             // Deletion confirmed

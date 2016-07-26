@@ -19,6 +19,7 @@ menu.rename=Give the link collection another name
 menu.delete=Delete the link collection
 menu.delete.confirm=Are you sure you want to remove this collection of links? All links in the collection will be removed.
 menu.for_main_menu=Link collection for main menu
+menu.go_back=Go back to link collection
 main_menu.edit=Edit the main menu
 main_menu.explained=On the top of this page, you see what is called the "Main menu".
 main_menu.use_menu=Use a link collection for the main menu

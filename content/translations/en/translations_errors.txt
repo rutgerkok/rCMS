@@ -6,6 +6,7 @@ not_correct=was not correct.
 not_saved=could not be saved.
 not_removeable=is not removeable.
 not_editable=is not editable.
+not_a_valid_web_address=is not a valid web address.
 please_enter_this=Please enter a {0}.
 is_not_created=could not be created.
 is_not_removed=could not be removed.

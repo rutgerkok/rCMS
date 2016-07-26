@@ -99,16 +99,29 @@ class LinkRepository extends Repository {
     }
 
     /**
-     * Returns the link with the given id as an array with the keys url and text.
+     * Returns the link with the given id, or null if not found.
      * @param int $id The id of the link.
      * @return Link|null The link, or null if it isn't found.
      */
-    public function getLink($id) {
+    public function getLinkOrNull($id) {
         try {
             return $this->where($this->getPrimaryKey(), '=', $id)->selectOneOrFail();
         } catch (NotFoundException $e) {
             return null;
         }
+    }
+    
+    /**
+     * Returns the link with the given id.
+     * @param int $linkId The id of the link.
+     * @return Link The link.
+     * @throws NotFoundException If no link exists with that id.
+     * @throws PDOException When a database error occurs.
+     */
+    public function getLink($linkId) {
+         return $this->where($this->getPrimaryKey(), '=', $linkId)
+                 ->withAllFields()
+                 ->selectOneOrFail();
     }
 
     /**
@@ -157,12 +170,24 @@ class LinkRepository extends Repository {
         }
     }
     
+    /**
+     * Saves a link to the database.
+     * @param Link $link The link to save.
+     * @throws PDOException When a database error occurs.
+     */
+    public function saveLink(Link $link) {
+        $this->saveEntity($link);
+    }
+    
     protected function canBeSaved(Entity $link) {
         if (!($link instanceof Link)) {
             return false;
         }
 
-        return parent::canBeSaved($link) && ($link->getMenuId() > 0 || $link->getId() > 0);
+        return parent::canBeSaved($link)
+                && ($link->getMenuId() > 0 || $link->getId() > 0)
+                && strLen($link->getUrl()) <= self::MAX_URL_LENGTH
+                && strLen($link->getText()) <= self::MAX_LINK_TEXT_LENGTH;
     }
 
     public function updateLink($link_id, $link_url, $link_text) {
