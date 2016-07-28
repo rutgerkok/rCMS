@@ -23,6 +23,7 @@ abstract class View {
 
     /**
      * Renders this view to the provided stream.
+     * @param StreamInterface $stream Stream to render to.
      */
     public abstract function writeText(StreamInterface $stream);
 

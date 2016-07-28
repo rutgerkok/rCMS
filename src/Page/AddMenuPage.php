@@ -48,10 +48,10 @@ class AddMenuPage extends Page {
     private function handleSubmitedForm(Website $website, Request $request) {
         $text = $website->getText();
 
-        if (Validate::stringLength($this->menuName, 1, MenuRepository::MAX_MENU_NAME_LENGTH)) {
+        if (Validate::stringLength($this->menuName, 1, MenuRepository::NAME_MAX_LENGTH)) {
             $menuRepo = new MenuRepository($website->getDatabase());
-            $menuId = $menuRepo->addMenu($this->menuName);
-            $this->menu = Menu::createMenu($menuId, $this->menuName);
+            $this->menu = Menu::createNew($this->menuName);
+            $menuRepo->saveMenu($this->menu);
             $text->addMessage($text->t("links.menu.created"));
         } else {
             $text->addError($text->t("links.menu.name") . ' '. Validate::getLastError($text));

@@ -37,10 +37,20 @@ class MenuAddView extends View {
         $text = $this->text;
 
         $stream->write(<<<HTML
-            <form action="{$text->e($text->getUrlPage("add_menu"))}" method="GET">
-                <input type="text" name="menu_name" value="{$text->e($this->name)}" />
-                <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($this->requestToken->getTokenString())}" />
-                <input type="submit" class="button primary_button" value="{$text->t("editor.save")}" />
+            <p>
+                {$text->t("main.fields_required")}
+            </p>
+            <form action="{$text->e($text->getUrlPage("add_menu"))}" method="post">
+                <p>
+                    <label for="menu_name">
+                        {$text->t("links.menu.name")}: <span class="required">*</span>
+                    </label> <br />
+                    <input type="text" name="menu_name" value="{$text->e($this->name)}" />
+                </p>
+                <p>
+                    <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($this->requestToken->getTokenString())}" />
+                    <input type="submit" class="button primary_button" value="{$text->t("editor.save")}" />
+                </p> 
             </form>
 HTML
         );

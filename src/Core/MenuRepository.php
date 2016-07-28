@@ -17,7 +17,7 @@ class MenuRepository extends Repository {
 
     const TABLE_NAME = "menus";
     
-    const MAX_MENU_NAME_LENGTH = 50;
+    const NAME_MAX_LENGTH = 50;
 
     private $menuIdField;
     private $menuNameField;
@@ -44,26 +44,22 @@ class MenuRepository extends Repository {
     public function createEmptyObject() {
         return new Menu();
     }
-    
+
+    /**
+     * Saves a menu to the database.
+     * @param $menu The menu.
+     */
+    public function saveMenu($menu) {
+        $this->saveEntity($menu);
+    }
+
     protected function canBeSaved(Entity $menu) {
         if (!($menu instanceof Menu)) {
             return false;
         }
         return parent::canBeSaved($menu)
                 && strLen($menu->getName()) > 0
-                && strLen($menu->getName()) <= self::MAX_MENU_NAME_LENGTH;
-    }
-
-    /**
-     * Adds a new menu.
-     * @param string $menuName Name of the menu.
-     * @return int The id of the newly created menu.
-     * @throws PDOException If the menu could not be saved.
-     */
-    public function addMenu($menuName) {
-        $menu = Menu::createMenu(0, $menuName);
-        $this->saveEntity($menu);
-        return $menu->getId();
+                && strLen($menu->getName()) <= self::NAME_MAX_LENGTH;
     }
 
     /**

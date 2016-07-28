@@ -9,18 +9,17 @@ use Rcms\Core\Repository\Entity;
  */
 class Menu extends Entity {
 
-    protected $id;
+    protected $id = 0;
     protected $name;
 
     /**
-     * Creates a new menu.
-     * @param int $id Id of the menu. Use 0 for new menus.
-     * @param string $name Name of the menu.
+     * Creates a new menu. Doesn't save to the database automatically.
+     * @param string $menuName Name of the menu.
+     * @return Menu The menu.
      */
-    public static function createMenu($id, $name) {
+    public static function createNew($menuName) {
         $menu = new Menu();
-        $menu->id = (int) $id;
-        $menu->name = (string) $name;
+        $menu->setName($menuName);
         return $menu;
     }
 
@@ -38,6 +37,14 @@ class Menu extends Entity {
      */
     public function getName() {
         return $this->name;
+    }
+
+    /**
+     * Sets the name of the menu.
+     * @param $name The new name of the menu.
+     */
+    public function setName($name) {
+        $this->name = (string) $name;
     }
 
 }
