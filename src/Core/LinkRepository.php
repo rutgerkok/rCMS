@@ -204,21 +204,15 @@ class LinkRepository extends Repository {
     }
 
     /**
-     * Removes the link with the given id. Returns whether successfull. Displays
+     * Removes the given link. Returns whether successfull. Displays
      * an error on failure.
-     * @param int $link_id The id of the link.
+     * @param Link $link The link to delete.
      * @return boolean Whether the link was removed.
+     * @throws NotFoundException When no such link exists in the database.
+     * @throws PDOException When a database error occurs.
      */
-    public function deleteLink($link_id) {
-        try {
-            $this->where($this->linkIdField, '=', $link_id)->deleteOneOrFail();
-            return true;
-        } catch (NotFoundException $e) {
-            $text = $this->website->getText();
-            $text->addError($website->t("main.link") . " " . $website->t("errors.is_not_removed"));
-            $text->logException("Error deleting link", $e);
-            return false;
-        }
+    public function deleteLink(Link $link) {
+        $this->where($this->linkIdField, '=', $link->getId())->deleteOneOrFail();
     }
 
 }
