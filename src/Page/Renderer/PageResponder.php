@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Config;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Page\Error404Page;

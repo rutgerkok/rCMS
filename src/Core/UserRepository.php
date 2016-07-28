@@ -4,7 +4,7 @@ namespace Rcms\Core;
 
 use PDO;
 use PDOException;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 

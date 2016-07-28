@@ -5,7 +5,7 @@ namespace Rcms\Core\Widget;
 use InvalidArgumentException;
 use PDOException;
 
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 use Rcms\Core\Website;

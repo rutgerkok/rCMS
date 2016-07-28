@@ -6,7 +6,7 @@ use BadMethodCallException;
 use PDO;
 use PDOException;
 use PDOStatement;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 
 /**
  * A query finds one or more rows and selects, counts or deletes them.

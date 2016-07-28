@@ -2,7 +2,7 @@
 
 namespace Rcms\Core;
 
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use PDO;
 
 /**

@@ -8,7 +8,7 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;

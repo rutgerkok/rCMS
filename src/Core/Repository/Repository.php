@@ -4,7 +4,7 @@ namespace Rcms\Core\Repository;
 
 use PDO;
 use InvalidArgumentException;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Entity;
 
 /**

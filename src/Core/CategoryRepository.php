@@ -3,8 +3,6 @@
 namespace Rcms\Core;
 
 use PDO;
-
-use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 

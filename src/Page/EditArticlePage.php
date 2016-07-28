@@ -10,7 +10,7 @@ use Rcms\Core\ArticleEditor;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
 use Rcms\Core\Request;

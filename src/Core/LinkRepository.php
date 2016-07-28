@@ -4,7 +4,6 @@ namespace Rcms\Core;
 
 use PDOException;
 use Psr\Http\Message\UriInterface;
-use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;

@@ -4,7 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Document\DocumentRepository;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;

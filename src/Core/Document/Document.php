@@ -4,7 +4,7 @@ namespace Rcms\Core\Document;
 
 use DateTime;
 use Psr\Http\Message\UriInterface;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Entity;
 use Rcms\Core\Text;
 use Rcms\Core\User;

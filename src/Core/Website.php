@@ -4,7 +4,6 @@ namespace Rcms\Core;
 
 use PDO;
 use PDOException;
-use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Theme\ThemeManager;
 use Zend\Diactoros\Uri;

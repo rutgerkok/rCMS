@@ -4,7 +4,7 @@ namespace Rcms\Page\Renderer;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Website;
 use Rcms\Core\Request;
 use Rcms\Page\Error404Page;

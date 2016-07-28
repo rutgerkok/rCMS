@@ -7,7 +7,7 @@ use Rcms\Core\DatabaseInstaller;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 
 use Rcms\Page\View\EmptyView;
 use Rcms\Page\View\InstallDatabaseView;

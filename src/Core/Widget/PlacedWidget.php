@@ -4,7 +4,7 @@ namespace Rcms\Core\Widget;
 
 use InvalidArgumentException;
 use Rcms\Core\Document\Document;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\InfoFile;
 use Rcms\Core\Repository\Entity;
 

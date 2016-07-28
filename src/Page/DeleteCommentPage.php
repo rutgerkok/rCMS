@@ -5,7 +5,7 @@ namespace Rcms\Page;
 use Rcms\Core\Authentication;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;

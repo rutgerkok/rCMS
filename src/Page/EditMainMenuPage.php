@@ -4,7 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Config;
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
 use Rcms\Core\Menu;
 use Rcms\Core\MenuRepository;

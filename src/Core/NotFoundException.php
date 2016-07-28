@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcms\Core\Exception;
+namespace Rcms\Core;
 
 use Exception;
 

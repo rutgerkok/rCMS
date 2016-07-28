@@ -4,11 +4,9 @@ namespace Rcms\Core;
 
 use PDO;
 use PDOException;
-use Rcms\Core\Exception\NotFoundException;
 use Rcms\Core\Repository\Entity;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
-use Rcms\Core\Text;
 
 class CommentRepository extends Repository {
 

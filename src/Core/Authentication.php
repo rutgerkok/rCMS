@@ -4,7 +4,7 @@ namespace Rcms\Core;
 
 use DateTime;
 
-use Rcms\Core\Exception\NotFoundException;
+use Rcms\Core\NotFoundException;
 use Rcms\Page\View\LoginView;
 
 class Authentication {
