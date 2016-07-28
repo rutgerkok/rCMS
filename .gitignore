@@ -19,5 +19,8 @@ Desktop.ini
 /.buildpath
 /.settings/
 
+#PHPStorm
+/.idea/
+
 # Config file
 /config.php
