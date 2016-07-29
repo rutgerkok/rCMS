@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\ArticleRepository;
+use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -54,4 +55,7 @@ class ArchivePage extends Page {
                 $this->selectedCategory, $this->selectedYear, $this->showEditLinks);
     }
 
+    public function getMinimumRank() {
+        return Authentication::RANK_LOGGED_OUT;
+    }
 }
