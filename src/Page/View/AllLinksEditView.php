@@ -49,11 +49,12 @@ class AllLinksEditView extends View {
     }
 
     private function writeMenus(StreamInterface $stream) {
+        $text = $this->text;
+
         foreach ($this->allMenus as $menu) {
             $menuId = $menu->getId();
             $linksInMenu = isSet($this->allLinks[$menuId]) ? $this->allLinks[$menuId] : [];
 
-            $text = $this->text;
             $menuEditView = new MenuEditView($text, $menu, $linksInMenu);
 
             $stream->write(<<<HTML
@@ -66,6 +67,9 @@ HTML
 
             $menuEditView->writeText($stream);
             $stream->write("</article>");
+        }
+        if (empty($this->allMenus)) {
+            $stream->write("<p>{$text->t("links.menu.no_menus_created")}</p>");
         }
     }
 

@@ -32,9 +32,9 @@ final class DeleteMenuPage extends Page {
     private $allMenus;
 
     /**
-     * @var Link[] All links in the menu being deleted.
+     * @var int Amount of links in the menu that is being deleted.
      */
-    private $linksInMenu;
+    private $linkCount;
 
     /**
      * @var RequestToken The request token.
@@ -61,7 +61,7 @@ final class DeleteMenuPage extends Page {
 
         // Retrieve links
         $linkRepo = new LinkRepository($website);
-        $this->linksInMenu = $linkRepo->getLinksByMenu($this->menu->getId());
+        $this->linkCount = $linkRepo->getLinkCountByMenu($this->menu->getId());
 
         $this->respondToRequest($linkRepo, $menuRepo, $website->getText(), $request);
 
@@ -86,7 +86,7 @@ final class DeleteMenuPage extends Page {
         if ($this->deleted) {
             return [new LinkEditFooterView($text)];
         }
-        return [new MenuDeleteView($text, $this->menu, $this->linksInMenu, $this->allMenus, $this->requestToken),
+        return [new MenuDeleteView($text, $this->menu, $this->linkCount, $this->allMenus, $this->requestToken),
             new LinkEditFooterView($text)];
     }
 

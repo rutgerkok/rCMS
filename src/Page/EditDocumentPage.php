@@ -84,12 +84,12 @@ class EditDocumentPage extends Page {
         }
 
         if (!Validate::stringLength($document->getIntro(), Document::INTRO_MIN_LENGTH, Document::INTRO_MAX_LENGTH)) {
-            $website->addError($text->t("documents.intro") . ' ' . Validate::getLastError($text));
+            $text->addError($text->t("documents.intro") . ' ' . Validate::getLastError($text));
             $valid = false;
         }
 
-        if (!Validate::stringLength($document->getIntro(), Document::TITLE_MIN_LENGTH, Document::TITLE_MAX_LENGTH)) {
-            $website->addError($text->t("documents.title") . ' ' . Validate::getLastError($text));
+        if (!Validate::stringLength($document->getTitle(), Document::TITLE_MIN_LENGTH, Document::TITLE_MAX_LENGTH)) {
+            $text->addError($text->t("documents.title") . ' ' . Validate::getLastError($text));
             $valid = false;
         }
 

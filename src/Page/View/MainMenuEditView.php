@@ -57,6 +57,8 @@ final class MainMenuEditView extends View {
                 </p>
 HTML
             );
+            $this->writeMenuForm($stream);
+            $this->writeFooter($stream);
         } else {
             $stream->write(<<<HTML
                 <p>
@@ -71,9 +73,9 @@ HTML
 HTML
             );
             $this->writeCategoriesForm($stream);
+            $this->writeMenuForm($stream);
+            $this->writeFooter($stream);
         }
-        $this->writeMenuForm($stream);
-        $this->writeFooter($stream);
     }
     
     private function writeCategoriesForm(StreamInterface $stream) {
@@ -81,7 +83,7 @@ HTML
         
         $stream->write(<<<HTML
             <fieldset>
-                <legend>{$text->t("links.main_menu.use_categories")}</legend>
+                <legend>{$text->t("links.main_menu.use_categories_instead")}</legend>
                 <form method="POST" action="{$text->e($text->getUrlPage("edit_main_menu"))}">
                     <p>
                         <input type="hidden" name="main_menu_id" value="0" />
@@ -96,14 +98,37 @@ HTML
     
     private function writeMenuForm(StreamInterface $stream) {
         $text = $this->text;
-        
+
+        $titleHtml = ($this->usesCategories())? $text->t("links.main_menu.use_menu_instead")
+                : $text->t("links.main_menu.use_other_menu");
+
+        $currentMenuId = $this->usesCategories()? 0 : $this->menu->getId();
+
+        // Find all menus that are currently not in use as the main menu
+        $selectableMenus = array_filter($this->menus, function(Menu $menu) use ($currentMenuId) {
+            return $menu->getId() !== $currentMenuId;
+        });
+
+        if (empty($selectableMenus)) {
+            $this->writeEmptyMenuForm($stream);
+        } else {
+            $this->writePopulatedMenuForm($stream, $selectableMenus);
+        }
+    }
+
+    private function writePopulatedMenuForm(StreamInterface $stream, array $selectableMenus) {
+        $text = $this->text;
+
+        $titleHtml = ($this->usesCategories())? $text->t("links.main_menu.use_menu_instead")
+            : $text->t("links.main_menu.use_other_menu");
+
         $stream->write(<<<HTML
              <fieldset>
                 <form method="POST" action="{$text->e($text->getUrlPage("edit_main_menu"))}">
-                    <legend>{$text->t("links.main_menu.use_menu")}</legend>
+                    <legend>{$titleHtml}</legend>
                     <p>
                         <label for="main_menu_id">{$text->t("links.menu.for_main_menu")}</label>:
-                        {$this->getMenuList()}
+                        {$this->getMenuList($selectableMenus)}
                         <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($this->requestToken->getTokenString())}" />
                         <input type="submit" class="button primary_button" value="{$text->t("editor.save")}" />
                     </p>
@@ -117,18 +142,39 @@ HTML
 HTML
         );
     }
-    
-    private function getMenuList() {
+
+    private function writeEmptyMenuForm(StreamInterface $stream) {
         $text = $this->text;
-        $currentMenuId = $this->usesCategories()? 0 : $this->menu->getId();
-        
+
+        if ($this->usesCategories()) {
+            $titleHtml = $text->t("links.main_menu.use_menu_instead");
+            $explanationHtml = $text->t("links.menu.no_menus_created");
+        } else {
+            $titleHtml = $text->t("links.main_menu.use_other_menu");
+            $explanationHtml = $text->t("links.menu.no_other_menus_created");
+        }
+
+        $stream->write(<<<HTML
+             <fieldset>
+                <legend>{$titleHtml}</legend>
+                <p>
+                    {$explanationHtml}
+                    <a class="arrow" href="{$text->e($text->getUrlPage("add_menu"))}">
+                        {$text->t("links.menu.add")}.
+                    </a>
+                </p>
+             </fieldset>
+HTML
+        );
+
+    }
+    
+    private function getMenuList(array $selectableMenus) {
+        $text = $this->text;
+
         $returnValue = '<select class="button" name="main_menu_id" id="main_menu_id">';
-        foreach ($this->menus as $menu) {
-            $returnValue.= '<option value="' . $menu->getId() . '" ';
-            if ($menu->getId() == $currentMenuId) {
-                $returnValue.= 'selected="selected"';
-            }
-            $returnValue.= '>';
+        foreach ($selectableMenus as $menu) {
+            $returnValue.= '<option value="' . $menu->getId() . '">';
             $returnValue.= $text->e($menu->getName());
             $returnValue.= '</option>';
         }
