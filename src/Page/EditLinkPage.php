@@ -31,7 +31,7 @@ class EditLinkPage extends Page {
 
     public function init(Website $website, Request $request) {
         $linkId = $request->getParamInt(0, 0);
-        $linkRepo = new LinkRepository($website);
+        $linkRepo = new LinkRepository($website->getDatabase());
         $this->link = $linkRepo->getLink($linkId);
 
         if (Validate::requestToken($request)) {

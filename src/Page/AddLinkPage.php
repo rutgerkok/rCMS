@@ -99,7 +99,7 @@ final class AddLinkPage extends Page {
         }
 
         $link = Link::createSaveable(0, $this->menu->getId(), new Uri($this->linkUrl), $this->linkName);
-        $linkRepo = new LinkRepository($website);
+        $linkRepo = new LinkRepository($website->getDatabase());
         $linkRepo->saveLink($link);
 
         $text->addMessage($text->t("main.link") . " " . $text->t("editor.is_created"),

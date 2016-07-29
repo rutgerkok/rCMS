@@ -5,8 +5,10 @@ namespace Rcms\Extend\Widget;
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\MenuRepository;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
+use Rcms\Page\View\LinkListView;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -23,7 +25,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         }
 
         $loggedInStaff = $website->isLoggedInAsStaff(true);
-        $menu_id = (int) $data["menu_id"];
+        $menuId = (int) $data["menu_id"];
 
         // Title
         if (strLen($data["title"]) > 0) {
@@ -31,14 +33,14 @@ class WidgetRkokLinks extends WidgetDefinition {
         }
 
         // Links
-        $oMenu = new LinkRepository($website);
-        $stream->write('<ul class="linklist">');
-        $stream->write($oMenu->getAsHtml($oMenu->getLinksByMenu($menu_id), true, $loggedInStaff));
-        $stream->write("</ul>");
+        $oMenu = new LinkRepository($website->getDatabase());
+        $links = $oMenu->getLinksByMenu($menuId);
+        $linkTemplate = new LinkListView($website->getText(), $links, $loggedInStaff);
+        $linkTemplate->writeText($stream);
 
         // Link to add link
         if ($loggedInStaff) {
-            $stream->write('<p><a class="arrow" href="' . $website->getUrlPage("create_link", $menu_id));
+            $stream->write('<p><a class="arrow" href="' . $website->getUrlPage("create_link", $menuId));
             $stream->write('">' . $website->t("links.create") . '</a></p>');
         }
     }
@@ -95,7 +97,9 @@ EOT;
         }
         $data["menu_id"] = isSet($_REQUEST["menu_id_" . $id]) ? (int) $_REQUEST["menu_id_" . $id] : 0;
         $oMenu = new MenuRepository($website->getDatabase());
-        if ($oMenu->getMenuName($data["menu_id"]) == null) {
+        try {
+            $oMenu->getMenu($data["menu_id"]);
+        } catch (NotFoundException $e) {
             $website->addError($website->t("widgets.menu") . " " . $website->t("errors.not_found"));
             $data["valid"] = false;
         }

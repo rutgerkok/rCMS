@@ -56,7 +56,7 @@ class SearchPage extends Page {
         $this->displayedArticles = $articles->getArticlesDataMatch($this->keyword, self::ARTICLES_PER_PAGE, $this->pageNumber * self::ARTICLES_PER_PAGE);
 
         // Fetch links
-        $menus = new LinkRepository($website);
+        $menus = new LinkRepository($website->getDatabase());
         $this->links = $menus->getLinksBySearch($this->keyword);
     }
 

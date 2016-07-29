@@ -27,7 +27,7 @@ class EditMenuPage extends Page {
     public function init(Website $website, Request $request) {
         $menuId = $request->getParamInt(0, 0);
         $menuRepo = new MenuRepository($website->getDatabase());
-        $linkRepo = new LinkRepository($website);
+        $linkRepo = new LinkRepository($website->getDatabase());
 
         $this->menu = $menuRepo->getMenu($menuId);
         $this->links = $linkRepo->getLinksByMenu($menuId);

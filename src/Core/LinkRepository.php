@@ -2,6 +2,7 @@
 
 namespace Rcms\Core;
 
+use PDO;
 use PDOException;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\Repository\Entity;
@@ -20,9 +21,8 @@ class LinkRepository extends Repository {
     protected $linkUrlField;
     protected $menuIdField;
 
-    public function __construct(Website $website) {
-        parent::__construct($website->getDatabase());
-        $this->website = $website;
+    public function __construct(PDO $database) {
+        parent::__construct($database);
 
         $this->linkIdField = new Field(Field::TYPE_PRIMARY_KEY, "id", "link_id");
         $this->linkTextField = new Field(Field::TYPE_STRING, "text", "link_text");
@@ -96,19 +96,6 @@ class LinkRepository extends Repository {
     public function getLinksBySearch($keyword) {
         return $this->whereRaw("`link_url` LIKE :keyword OR `link_text` LIKE :keyword", [":keyword" => "%$keyword%"])->select();
     }
-
-    /**
-     * Returns the link with the given id, or null if not found.
-     * @param int $id The id of the link.
-     * @return Link|null The link, or null if it isn't found.
-     */
-    public function getLinkOrNull($id) {
-        try {
-            return $this->where($this->getPrimaryKey(), '=', $id)->selectOneOrFail();
-        } catch (NotFoundException $e) {
-            return null;
-        }
-    }
     
     /**
      * Returns the link with the given id.
@@ -121,52 +108,6 @@ class LinkRepository extends Repository {
          return $this->where($this->getPrimaryKey(), '=', $linkId)
                  ->withAllFields()
                  ->selectOneOrFail();
-    }
-
-    /**
-     * Gets the links as HTML (just some li and a tags)
-     * @param Link[] $menu_array The menu array.
-     * @param boolean $open_in_new_window Whether the links should
-     *  open in a new window.
-     * @param boolean $edit_links Whether edit and delete links should be 
-     *  displayed. If true, those are displayed even if the user can't use them.
-     * @return string
-     */
-    public function getAsHtml(array $menu_array, $open_in_new_window = false,
-            $edit_links = false) {
-        $returnValue = "";
-        $website = $this->website;
-        foreach ($menu_array as $link) {
-            $returnValue.= '<li><a href="' . htmlSpecialChars($link->getUrl()) . '"';
-            if ($open_in_new_window) {
-                $returnValue.= ' target="_blank"';
-            }
-            $returnValue.= ">" . htmlSpecialChars($link->getText()) . "</a>";
-            if ($edit_links) {
-                $returnValue.=' <a class="arrow" href="' . $website->getUrlPage("edit_link", $link->getId()) . '">' . $website->t("main.edit") . "</a>";
-                $returnValue.=' <a class="arrow" href="' . $website->getUrlPage("delete_link", $link->getId()) . '">' . $website->t("main.delete") . "</a>";
-            }
-            $returnValue.= "</li>\n";
-        }
-        return $returnValue;
-    }
-
-    /**
-     * Adds a link to a menu. Returns whether successfull. Show an error when
-     * there was an error.
-     * @param int $menu_id Id of the menu. The id is not checked, only casted.
-     * @param UriInterface $link_url Url of the link.
-     * @param string $link_text Display text of the link.
-     */
-    public function addLink($menu_id, UriInterface $link_url, $link_text) {
-        $link = Link::createSaveable(0, $menu_id, $link_url, $link_text);
-        try {
-            $this->saveEntity($link);
-            return true;
-        } catch (PDOException $e) {
-            $this->website->getText()->logException("Failed to add link", $e);
-            return false;
-        }
     }
     
     /**
@@ -201,19 +142,6 @@ SQL
                 && ($link->getMenuId() > 0 || $link->getId() > 0)
                 && strLen($link->getUrl()) <= self::MAX_URL_LENGTH
                 && strLen($link->getText()) <= self::MAX_LINK_TEXT_LENGTH;
-    }
-
-    public function updateLink($link_id, $link_url, $link_text) {
-        $link = Link::createSaveable($link_id, 0, $link_url, $link_text);
-        try {
-            // Don't save menu id, we used a temporary id because this method
-            // doesn't know the real id.
-            $this->saveEntity($link, [$this->linkTextField, $this->linkUrlField]);
-            return true;
-        } catch (PDOException $e) {
-            $this->website->getText()->logException("Failed to update link", $e);
-            return false;
-        }
     }
 
     /**

@@ -86,54 +86,7 @@ class MenuRepository extends Repository {
     }
 
     /**
-     * Checks if the menu with the given id exists.
-     * 
-     * <p>Note: when you're interested in the contents of the menu but are not
-     * sure if the menu exists, just call getMenu($menuId) and catch the
-     * exception.
-     * @param int $menuId Id of the menu.
-     * @return boolean True if the menu exists, false otherwise.
-     */
-    public function exists($menuId) {
-        try {
-            $this->getMenu($menuId);
-            return true;
-        } catch (NotFoundException $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Gets the name of the menu with the given id. Name is parsed by htmlSpecialChars().
-     * @param int $menu_id The id of the menu.
-     * @return null|string The name of the menu, or null if the menu doesn't exist.
-     */
-    public function getMenuName($menu_id) {
-        try {
-            return $this->getMenu($menu_id)->getName();
-        } catch (NotFoundException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Renames a menu to something else.
-     * @param int $menu_id Current menu id.
-     * @param string $new_name The new name.
-     * @throws NotFoundException If no menu exists with the given id.
-     * @throws InvalidArgumentException If the menu id is not a number or is 0.
-     */
-    public function renameMenu($menu_id, $new_name) {
-        if ((int) $menu_id === 0) {
-            throw new InvalidArgumentException("Invalid menu id:" . $menu_id);
-        }
-        $menu = Menu::createMenu($menu_id, $new_name);
-        $this->saveEntity($menu);
-        return true;
-    }
-
-    /**
-     * Delets the menu with the given id. Note that the links in the menu are not deleted automatically.
+     * Deletes the menu with the given id. Note that the links in the menu are not deleted automatically.
      * @param int $menuId The id of the menu.
      * @throws NotFoundException If no such menu exists.
      * @throws PDOException If a database error occurs.

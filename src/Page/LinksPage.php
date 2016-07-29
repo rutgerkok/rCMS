@@ -34,7 +34,7 @@ class LinksPage extends Page {
     private $requestToken;
 
     public function init(Website $website, Request $request) {
-        $linkRepo = new LinkRepository($website);
+        $linkRepo = new LinkRepository($website->getDatabase());
         $menuRepo = new MenuRepository($website->getDatabase());
 
         $this->allLinks = $linkRepo->getAllLinksByMenu();

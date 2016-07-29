@@ -60,7 +60,7 @@ final class DeleteMenuPage extends Page {
         $this->menu = $this->allMenus[$menuId];
 
         // Retrieve links
-        $linkRepo = new LinkRepository($website);
+        $linkRepo = new LinkRepository($website->getDatabase());
         $this->linkCount = $linkRepo->getLinkCountByMenu($this->menu->getId());
 
         $this->respondToRequest($linkRepo, $menuRepo, $website->getText(), $request);

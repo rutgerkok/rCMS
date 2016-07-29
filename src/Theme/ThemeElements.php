@@ -266,7 +266,7 @@ EOT
                 $categoriesRepo = new CategoryRepository($website);
                 $links = array_merge($links, $categoriesRepo->getCategoryLinks($text));
             } else {
-                $linkRepo = new LinkRepository($website);
+                $linkRepo = new LinkRepository($website->getDatabase());
                 $links = array_merge($links, $linkRepo->getLinksByMenu($menuId));
             }
         }
