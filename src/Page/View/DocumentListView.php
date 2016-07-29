@@ -74,15 +74,17 @@ ERROR;
     }
 
     private function getDocumentIntro(Document $document) {
-        $titleHtml = htmlSpecialChars($document->getTitle());
-        $introHtml = htmlSpecialChars($document->getIntro());
+        $text = $this->text;
+
+        $titleHtml = $text->e($document->getTitle());
+        $introHtml = $text->e($document->getIntro());
         return <<<DOCUMENT
             <article>
-                <h3>$titleHtml</h3>
-                <p>$introHtml</p>
+                <h3>{$titleHtml}</h3>
+                <p>{$introHtml}</p>
                 <p>
-                    <a class="arrow" href="{$this->e($document->getUrl($this->text))}">
-                        {$this->text->t("documents.view")}
+                    <a class="arrow" href="{$text->e($document->getUrl($this->text))}">
+                        {$text->t("documents.view")}
                     </a>
                     {$this->getDocumentEditLinks($document)}
                 </p>

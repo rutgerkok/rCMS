@@ -37,7 +37,7 @@ class DocumentDeleteView extends View {
         $deleteUrl = $text->getUrlPage("delete_document", $this->document->getId(),
                 [RequestToken::FIELD_NAME => $this->requestToken->getTokenString()]);
         $stream->write(<<<HTML
-            <p>{text->t("documents.delete.are_you_sure")}</p>
+            <p>{$text->t("documents.delete.are_you_sure")}</p>
             <blockquote>
                 <h3 class="notable">{$text->e($title)}</h3>
                 <p class="intro">{$text->e($intro)}</p>
