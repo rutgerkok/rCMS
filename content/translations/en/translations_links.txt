@@ -8,6 +8,7 @@ delete=Delete a link
 delete.confirm=Are you sure you want to remove the link "{0}"? This cannot be undone.
 url=URL
 text=Text
+adding_link_to_menu=You are currently adding a link to the collection called "{0}".
 menu=Menu
 menu.add=Add a new link collection
 menu.created=The link collection has been created. You can now add links to it.

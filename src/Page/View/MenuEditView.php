@@ -81,7 +81,7 @@ HTML
         $stream->write(<<<HTML
                 <article>
                     <p class="menu_actions">
-                        <a class="arrow" href="{$text->e($text->getUrlPage("create_link", $menu->getId()))}">{$text->t("links.create")}</a>
+                        <a class="arrow" href="{$text->e($text->getUrlPage("add_link", $menu->getId()))}">{$text->t("links.create")}</a>
                         <a class="arrow" href="{$text->e($text->getUrlPage("rename_menu", $menu->getId()))}">{$text->t("links.menu.rename")}</a>
                         <a class="arrow" href="{$text->e($text->getUrlPage("delete_menu", $menu->getId()))}">{$text->t("links.menu.delete")}</a>
                     </p>

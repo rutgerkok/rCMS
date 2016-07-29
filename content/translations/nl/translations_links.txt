@@ -8,6 +8,7 @@ delete=Verwijder een link
 delete.confirm=Weet u zeker dat u de link "{0}" wil verwijderen? Dit kan niet ongedaan gemaakt worden.
 url=URL
 text=Tekst bij link
+adding_link_to_menu=U voegt nu een link toe aan de verzameling genaamd "{0}".
 menu=Linkverzameling
 menu.add=Voeg een nieuwe linkverzameling toe
 menu.created=De linkverzameling is toegevoegd. U kunt er nu links aan toevoegen.
