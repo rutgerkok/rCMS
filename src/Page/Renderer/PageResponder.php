@@ -35,6 +35,12 @@ final class PageResponder {
         // Load page
         try {
             $pageName = $request->getPageName();
+
+            // Switch to install page if website is not installed yet
+            if (!$this->website->getConfig()->isDatabaseUpToDate()) {
+                $pageName = "install";
+            }
+
             $page = $this->loadPage($pageName);
         } catch (NotFoundException $e) {
             $page = new Error404Page();

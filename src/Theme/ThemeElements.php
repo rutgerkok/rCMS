@@ -57,7 +57,7 @@ final class ThemeElements {
     
     /**
      * Gets the url of the directory of the theme used to render this page.
-     * @return The url.
+     * @return UriInterface The url.
      */
     public function getUrlTheme() {
         return $this->themeUrl;
@@ -295,6 +295,9 @@ SEARCH
     }
 
     public function writeWidgets(StreamInterface $stream, $area) {
+        if (!$this->website->getConfig()->isDatabaseUpToDate()) {
+            return;
+        }
         $editLinks = $this->website->isLoggedInAsStaff(true);
         if ($this->widgetsRepo === null) {
             $this->widgetsRepo = new WidgetRepository($this->website);

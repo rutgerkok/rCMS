@@ -17,7 +17,7 @@ final class UpdateCompletedView extends View {
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $stream->write(<<<HTML
-            <p>{text->t("install.thanks_for_updating")}</p>
+            <p>{$text->t("install.thanks_for_updating")}</p>
             <p>         
                 <a href="{$text->e($text->getUrlMain())}" class="arrow">
                 {$text->t("main.home")}
