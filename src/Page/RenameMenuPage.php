@@ -47,7 +47,7 @@ class RenameMenuPage extends Page  {
         }
         $menuRepo->saveMenu($this->menu);
         $text->addMessage($text->t("links.menu") . " " . $text->t("editor.is_changed"),
-            Link::of($text->getUrlPage("edit_menu", $this->menu->getId())), $text->t("links.menu.go_back"));
+            Link::of($text->getUrlPage("edit_menu", $this->menu->getId()), $text->t("links.menu.go_back")));
     }
 
     public function getMinimumRank() {

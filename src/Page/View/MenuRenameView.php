@@ -47,6 +47,9 @@ class MenuRenameView extends View {
                 <p>
                     <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($token->getTokenString())}" />
                     <input class="button primary_button" type="submit" value="{$text->t("editor.save")}" />
+                    <a class="button" href="{$text->e($text->getUrlPage("edit_menu", $menu->getId()))}">
+                        {$text->t("main.cancel")}
+                    </a>
                 </p>
             </form>
 HTML
