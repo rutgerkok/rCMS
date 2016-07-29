@@ -133,14 +133,13 @@ class MenuRepository extends Repository {
     }
 
     /**
-     * Delets the menu with the given id. All links in the menu are also deleted.
-     * @param int $menu_id The id of the menu.
+     * Delets the menu with the given id. Note that the links in the menu are not deleted automatically.
+     * @param int $menuId The id of the menu.
      * @throws NotFoundException If no such menu exists.
      * @throws PDOException If a database error occurs.
      */
-    public function deleteMenu($menu_id) {
-        $this->where($this->menuIdField, '=', $menu_id)->deleteOneOrFail();
-        return true;
+    public function deleteMenu($menuId) {
+        $this->where($this->menuIdField, '=', $menuId)->deleteOneOrFail();
     }
 
 }

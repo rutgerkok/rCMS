@@ -177,7 +177,21 @@ class LinkRepository extends Repository {
     public function saveLink(Link $link) {
         $this->saveEntity($link);
     }
-    
+
+    /**
+     * Moves all links in one menu to another menu.
+     * @param Menu $from The menu to take all links from.
+     * @param Menu $to The menu to move all links to.
+     */
+    public function moveLinks(Menu $from, Menu $to) {
+        $this->pdo->prepare(<<<SQL
+            UPDATE `{$this->getTableName()}`
+            SET `{$this->menuIdField->getNameInDatabase()}` = :to
+            WHERE `{$this->menuIdField->getNameInDatabase()}` = :from
+SQL
+        )->execute([":from" => $from->getId(), ":to" => $to->getId()]);
+    }
+
     protected function canBeSaved(Entity $link) {
         if (!($link instanceof Link)) {
             return false;
@@ -212,6 +226,15 @@ class LinkRepository extends Repository {
      */
     public function deleteLink(Link $link) {
         $this->where($this->linkIdField, '=', $link->getId())->deleteOneOrFail();
+    }
+
+    /**
+     * Deletes all links in the given menu. This method does nothing if the menu is empty.
+     * @param Menu $menu The menu.
+     * @throws PDOException If a database error occurs.
+     */
+    public function deleteLinksInMenu(Menu $menu) {
+        $this->where($this->menuIdField, '=', $menu->getId())->delete();
     }
 
 }
