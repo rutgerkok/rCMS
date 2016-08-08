@@ -87,7 +87,7 @@ class WidgetArticles extends WidgetDefinition {
         $textToDisplay.= "</p>\n";
 
         // Categories
-        $oCategories = new CategoryRepository($website, $website->getDatabase());
+        $oCategories = new CategoryRepository($website->getDatabase());
         $textToDisplay.= "<p>" . $website->t("main.categories") . ':';
         $textToDisplay.= '<span class="required">*</span><br />' . "\n";
         foreach ($oCategories->getCategories() as $category) {

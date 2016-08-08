@@ -7,7 +7,7 @@ use Rcms\Core\Repository\Entity;
 /**
  * Represents a single category.
  */
-class Category extends Entity {
+final class Category extends Entity {
 
     /**
      * @var int Id of the category.
@@ -18,6 +18,11 @@ class Category extends Entity {
      * @var string Name of the category.
      */
     protected $name;
+
+    /**
+     * @var string A short description of the category.
+     */
+    protected $description = "";
 
     public function __construct($id = null, $name = null) {
         if ($id !== null && $name !== null) {
@@ -49,6 +54,32 @@ class Category extends Entity {
      */
     public function setName($name) {
         $this->name = (string) $name;
+    }
+
+    /**
+     * Gets the description HTML of this category, may be an empty string.
+     * @return string The description HTML.
+     */
+    public function getDescriptionHtml() {
+        if ($this->description === null) {
+            // Normalize nulls
+            return "";
+        }
+        return $this->description;
+    }
+
+    /**
+     * Sets the description of this category.
+     * @param string $description The new description, may be an empty string.
+     */
+    public function setDescriptionHtml($description) {
+        $sanitizedDescription = trim((string) $description);
+        if ($sanitizedDescription === "") {
+            // Normalize nulls
+            $this->description = null;
+        } else {
+            $this->description = $sanitizedDescription;
+        }
     }
 
     /**

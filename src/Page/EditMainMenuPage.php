@@ -49,7 +49,7 @@ class EditMainMenuPage extends Page {
         $this->requestToken = RequestToken::generateNew();
         $this->requestToken->saveToSession();
     }
-    
+
     private function handleRequest(Website $website, Request $request) {
         $text = $website->getText();
         $menuId = $request->getRequestInt("main_menu_id", 0);
@@ -57,8 +57,7 @@ class EditMainMenuPage extends Page {
             $this->menu = null;
             $website->getConfig()->set($website->getDatabase(), Config::OPTION_MAIN_MENU_ID, 0);
             $text->addMessage($text->t("links.main_menu.now_using_categories"),
-                    Link::of($text->getUrlPage("rename_categories"), $text->t("categories.edit")),
-                    Link::of($text->getUrlMain(), $text->t("main.home")));
+                    Link::of($text->getUrlPage("category_list"), $text->t("categories.edit_categories")), Link::of($text->getUrlMain(), $text->t("main.home")));
         } else if (isSet($this->menus[$menuId])) {
             $this->menu = $this->menus[$menuId];
             $website->getConfig()->set($website->getDatabase(), Config::OPTION_MAIN_MENU_ID, $this->menu->getId());

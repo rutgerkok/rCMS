@@ -73,7 +73,7 @@ class ArticleEditor {
             if ($categoryId == 0) {
                 // Silent failure when category id is set to 0, as it is a default value
                 $noErrors = false;
-            } elseif (!$oCategories->getCategoryName($categoryId)) {
+            } elseif (!$this->categoryExists($oCategories, $categoryId)) {
                 $text->addError($text->t("main.category") . " " . $website->t("errors.not_found"));
                 $noErrors = false;
             }
@@ -121,6 +121,15 @@ class ArticleEditor {
         }
 
         return $noErrors;
+    }
+
+    private function categoryExists(CategoryRepository $repo, $id) {
+        try {
+            $repo->getCategory($id);
+            return true;
+        } catch (NotFoundException $ex) {
+            return false;
+        }
     }
 
     /**

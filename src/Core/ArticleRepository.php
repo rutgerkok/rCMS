@@ -51,8 +51,9 @@ class ArticleRepository extends Repository {
         $this->bodyField = new Field(Field::TYPE_STRING, "body", "artikel_inhoud");
         $this->featuredImageField = new Field(Field::TYPE_STRING, "featuredImage", "artikel_afbeelding");
         $this->categoryIdField = new Field(Field::TYPE_INT, "categoryId", "categorie_id");
-        $this->categoryNameField = new Field(Field::TYPE_STRING, "category", "categorie_naam");
-        $this->categoryNameField->createLink(CategoryRepository::TABLE_NAME, $this->categoryIdField);
+        $this->categoryNameField = new Field(Field::TYPE_STRING, "category", "category_name");
+        $categoryIdInCategoryTable = new Field(Field::TYPE_INT, "category", "category_id");
+        $this->categoryNameField->createLink(CategoryRepository::TABLE_NAME, $this->categoryIdField, $categoryIdInCategoryTable);
         $this->authorIdField = new Field(Field::TYPE_INT, "authorId", "gebruiker_id");
         $this->authorNameField = new Field(Field::TYPE_STRING, "author", "user_display_name");
         $authorIdInUsersTable = new Field(Field::TYPE_INT, "authorId", "user_id");

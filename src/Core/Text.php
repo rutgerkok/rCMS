@@ -273,14 +273,14 @@ class Text {
      * Creates an URL to the given page.
      * @param string $pageName Name of the page, like "edit_article".
      * @param string|string[]|null $params Parameters of the page, appear in URL
-     * as subdirectories. `getUrlPage("foo", ["this", "that"])` -> 
+     * as subdirectories. `getUrlPage("foo", ["this", "that"])` ->
      * `foo/this/that`. You can pass one string, or an array of strings. You can
      * also pass null to skip this parameter.
      * @param array $args Array of key/value pairs that should be used as the
      * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
      * @return UriInterface The url.
      */
-    public function getUrlPage($pageName, $params = null, $args = []) {
+    public function getUrlPage($pageName, $params = null, array $args = []) {
         $url = $this->getUrlMain();
         if (!$this->rewriteUrls) {
             $url = $url->withPath($url->getPath() . "index.php/{$pageName}/");
@@ -320,6 +320,23 @@ class Text {
     public function getUrlJavascript($name) {
         return $this->javascriptsUrl->withPath(
                         $this->javascriptsUrl->getPath() . $name . ".js");
+    }
+
+    /**
+     * Gets an HTML-escaped URL to the given page on the website. This method
+     * is equivalent to `$text->e((string) $text->getUrlPage($pageName, $params,
+     * $args))`.
+     * @param string $pageName Name of the page, like "edit_article".
+     * @param string|string[]|null $params Parameters of the page, appear in URL
+     * as subdirectories. `getUrlPage("foo", ["this", "that"])` ->
+     * `foo/this/that`. You can pass one string, or an array of strings. You can
+     * also pass null to skip this parameter.
+     * @param array $args Array of key/value pairs that should be used as the
+     * query string. `["foo" => "bar"]`  gives `?foo=bar` at the end of the URL.
+     * @return string The HTML-escaped url.
+     */
+    public function url($pageName, $params = null, array $args = []) {
+        return $this->e((string) $this->getUrlPage($pageName, $params, $args));
     }
 
     /**

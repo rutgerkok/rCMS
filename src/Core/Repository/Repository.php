@@ -3,6 +3,7 @@
 namespace Rcms\Core\Repository;
 
 use PDO;
+use PDOException;
 use InvalidArgumentException;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Entity;
@@ -38,7 +39,7 @@ abstract class Repository {
      * Creates a query that tests the given field for the given value.
      * @param Field $field The field to test.
      * @param string $operator The operator, must be '&lt;', '&gt;' or '='.
-     * @param mixed $value The value to test for. 
+     * @param mixed $value The value to test for.
      * @return Query The query.
      * @throws InvalidArgumentException When the operator is invalid.
      */
@@ -102,7 +103,7 @@ abstract class Repository {
      * Implementation note: all other database methods delegate to this method.
      * Subclasses may override this method to add additonial default parameters,
      * like adding a default result limit, or implementing soft-deletion.
-     * 
+     *
      * Warning: the $sql must be hardcoded or at least properly escaped,
      * otherwise SQL injection becomes possible.
      * @param string $sql The WHERE query, may be left blank.
@@ -121,6 +122,9 @@ abstract class Repository {
      * @param array $fields Fields to save. By default, it uses {@link #getAllFields()}.
      * @throws NotFoundException If the id is larger than 0 and no entity with
      * the given id exists in the database.
+     * @throws InvalidArgumentException If `$this->canBeSaved($entity)` returns
+     * false.
+     * @throws PDOException When a database error occurs.
      */
     protected function saveEntity(Entity $entity, array $fields = []) {
         if (!$this->canBeSaved($entity)) {
@@ -138,7 +142,7 @@ abstract class Repository {
             $this->insertEntity($entity, $fields);
         }
     }
-    
+
     /**
      * Gets whether all conditions are met to safely place this object in the
      * database. When this method returns false, required fields are not yet

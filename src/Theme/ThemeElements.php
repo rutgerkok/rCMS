@@ -31,7 +31,7 @@ final class ThemeElements {
      * @var Page The page being rendered.
      */
     private $page;
-    
+
     /**
      * @var Request The request of the client.
      */
@@ -41,20 +41,20 @@ final class ThemeElements {
      * @var UriInterface The URL of the theme.
      */
     private $themeUrl;
- 
+
     /**
      * @var WidgetRepository|null Repository for the widgets on the sidebar.
-     * Initialized when first needed. 
+     * Initialized when first needed.
      */
     private $widgetsRepo = null;
-    
+
     public function __construct(Website $website, Page $page, Request $request, UriInterface $themeUrl) {
         $this->website = $website;
         $this->page = $page;
         $this->request = $request;
         $this->themeUrl = $themeUrl;
     }
-    
+
     /**
      * Gets the url of the directory of the theme used to render this page.
      * @return UriInterface The url.
@@ -84,7 +84,7 @@ final class ThemeElements {
         }
         return $this->website->getText()->e($title);
     }
-    
+
     /**
      * Gets the title for the &lt;title&gt; tag.
      * @return string The title.
@@ -102,20 +102,20 @@ final class ThemeElements {
      */
     public function writePageContent(StreamInterface $stream) {
         $text = $this->website->getText();
-        
+
         // Title
         $title = $this->page->getPageTitle($this->website->getText());
         if (!empty($title)) {
             $stream->write("<h2>" . $text->e($title) . "</h2>\n");
         }
-        
+
         // Fetch page content using deprecated method
         $pageContent = $this->page->getPageContent($this->website, $this->request);
 
         // Errors and confirmations
         $this->writeList($stream, $text->getErrors(), "error");
         $this->writeList($stream, $text->getConfirmations(), "confirmation");
-        
+
         // Write page content
         foreach ($this->page->getViews($text) as $view) {
             $view->writeText($stream);
@@ -263,7 +263,7 @@ EOT
         if ($config->isDatabaseUpToDate()) {
             $menuId = (int) $config->get(Config::OPTION_MAIN_MENU_ID, 0);
             if ($menuId === 0) {
-                $categoriesRepo = new CategoryRepository($website);
+                $categoriesRepo = new CategoryRepository($website->getDatabase());
                 $links = array_merge($links, $categoriesRepo->getCategoryLinks($text));
             } else {
                 $linkRepo = new LinkRepository($website->getDatabase());

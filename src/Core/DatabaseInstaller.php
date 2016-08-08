@@ -28,7 +28,7 @@ class DatabaseInstaller {
      * outdated.
      */
     const STATE_OUTDATED = 2;
-    
+
     /**
      * Database state constant. Used when the version of the database scheme
      * matches the expected version.
@@ -42,7 +42,7 @@ class DatabaseInstaller {
     const STATE_FROM_FUTURE = 4;
 
     public function __construct() {
-        
+
     }
 
     /**
@@ -73,7 +73,10 @@ class DatabaseInstaller {
 
     private function createTables(PDO $database) {
         // Categories
-        $database->exec("CREATE TABLE `categorie` (`categorie_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `categorie_naam` VARCHAR(30) NOT NULL) ENGINE = MyISAM");
+        $database->exec("CREATE TABLE `category` (`category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " .
+                 "`category_name` VARCHAR(30) NOT NULL, " .
+                 "`category_description` TEXT NULL " .
+                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         $database->exec("INSERT INTO `categorie` (`categorie_naam`) VALUES ('No category'), ('Events'), ('News');");
 
         // Users
@@ -117,7 +120,7 @@ class DatabaseInstaller {
         $year = date("Y");
         $database_version = Config::CURRENT_DATABASE_VERSION;
         $sql = <<<EOT
-                INSERT INTO `settings` (`setting_name`, `setting_value`) VALUES 
+                INSERT INTO `settings` (`setting_name`, `setting_value`) VALUES
                 ('theme', 'rkok'),
                 ('title', 'My website'),
                 ('copyright', 'Copyright $year - built with rCMS'),
@@ -144,7 +147,7 @@ EOT;
             PRIMARY KEY (`document_id`),
             KEY `document_hidden` (`document_hidden`, `document_created`, `user_id`, `document_parent_id`),
             FULLTEXT KEY `document_title` (`document_title`, `document_intro`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10 ;         
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10 ;
 SQL;
         $database->exec($documentsTable);
     }
@@ -153,7 +156,7 @@ SQL;
         // Update users table (prefix needs to be included, since that isn't
         // automatically added for old table names )
         $updateSql = <<<SQL
-                ALTER TABLE `{$this->prefix}gebruikers`
+                ALTER TABLE `gebruikers`
                 CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `gebruiker_admin` `user_rank` TINYINT(4) NOT NULL,
                 CHANGE `gebruiker_login` `user_login` VARCHAR(30) NOT NULL,
@@ -168,13 +171,13 @@ SQL;
 SQL;
         $database->exec($updateSql);
 
-        $renameSql = "RENAME TABLE `{$this->prefix}gebruikers` TO `users`";
+        $renameSql = "RENAME TABLE `gebruikers` TO `users`";
         $database->exec($renameSql);
     }
 
     private function updateCommentsTable(PDO $database) {
         $updateSql = <<<SQL
-                ALTER TABLE `{$this->prefix}reacties`
+                ALTER TABLE `reacties`
                 CHANGE `reactie_id` `comment_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 CHANGE `artikel_id` `article_id` INT(10) UNSIGNED NOT NULL,
                 CHANGE `gebruiker_id` `user_id` INT(10) UNSIGNED NULL,
@@ -188,7 +191,20 @@ SQL;
 SQL;
         $database->exec($updateSql);
 
-        $renameSql = "RENAME TABLE `{$this->prefix}reacties` TO `comments`";
+        $renameSql = "RENAME TABLE `reacties` TO `comments`";
+        $database->exec($renameSql);
+    }
+
+    private function updateCategoriesTable(PDO $database) {
+        $updateSql = <<<SQL
+                ALTER TABLE `categorie`
+                CHANGE `categorie_id` `category_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                CHANGE `categorie_naam` `category_name` VARCHAR(30) NOT NULL,
+                ADD `category_description` TEXT NULL
+SQL;
+        $database->exec($updateSql);
+
+        $renameSql = "RENAME TABLE `categorie` TO `categories`";
         $database->exec($renameSql);
     }
 
@@ -221,6 +237,9 @@ SQL;
         }
         if ($version <= 3) {
             $this->createDocumentsTable($website->getDatabase());
+        }
+        if ($version <= 4) {
+            $this->updateCategoriesTable($website->getDatabase());
         }
 
         // Update version number to signify database update

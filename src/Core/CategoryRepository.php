@@ -2,40 +2,54 @@
 
 namespace Rcms\Core;
 
+use InvalidArgumentException;
 use PDO;
+use PDOException;
+use Rcms\Core\NotFoundException;
 use Rcms\Core\Repository\Field;
 use Rcms\Core\Repository\Repository;
 
-class CategoryRepository extends Repository {
+final class CategoryRepository extends Repository {
 
-    const TABLE_NAME = "categorie";
+    const TABLE_NAME = "categories";
+    const NAME_MIN_LENGTH = 1;
+    const NAME_MAX_LENGTH = 30;
+    const DESCRIPTION_MIN_LENGTH = 0;
+    const DESCRIPTION_MAX_LENGTH = 2000;
 
-    protected $databaseObject;
-    protected $website;
-    protected $idField;
-    protected $nameField;
+    private $idField;
+    private $nameField;
+    private $descriptionField;
 
-    public function __construct(Website $website, PDO $oDatabase = null) {
-        parent::__construct($oDatabase? : $website->getDatabase());
+    public function __construct(PDO $oDatabase) {
+        parent::__construct($oDatabase);
 
-        $this->website = $website;
-        $this->databaseObject = $oDatabase;
-        if (!$this->databaseObject) {
-            $this->databaseObject = $website->getDatabase();
-        }
-
-        $this->idField = new Field(Field::TYPE_PRIMARY_KEY, "id", "categorie_id");
-        $this->nameField = new Field(Field::TYPE_STRING, "name", "categorie_naam");
+        $this->idField = new Field(Field::TYPE_PRIMARY_KEY, "id", "category_id");
+        $this->nameField = new Field(Field::TYPE_STRING, "name", "category_name");
+        $this->descriptionField = new Field(Field::TYPE_STRING, "description", "category_description");
     }
 
     /**
-     * Gets all categories.
+     * Gets all category names and ids. Category descriptions are not included.
      * @return Category[] All categories.
      */
     public function getCategories() {
-        return $this->all()->orderDescending($this->idField)->select();
+        return $this->all()
+                        ->orderDescending($this->idField)
+                        ->select();
     }
-    
+
+    /**
+     * Gets all category names, descriptions and ids.
+     * @return Category[] All categories.
+     */
+    public function getCategoriesComplete() {
+        return $this->all()
+                        ->withAllFields()
+                        ->orderDescending($this->idField)
+                        ->select();
+    }
+
     /**
      * Gets an array of links to all categories.
      * @param Text $text The text object, of URL structure.
@@ -53,7 +67,7 @@ class CategoryRepository extends Repository {
                             $text->getUrlPage("category", $category->getId()), $category->getName()
             );
         }
-        
+
         return $links;
     }
 
@@ -71,6 +85,10 @@ class CategoryRepository extends Repository {
     }
 
     public function getAllFields() {
+        return [$this->idField, $this->nameField, $this->descriptionField];
+    }
+
+    public function getStandardFields() {
         return [$this->idField, $this->nameField];
     }
 
@@ -93,152 +111,38 @@ class CategoryRepository extends Repository {
      * @throws NotFoundException If the category is not found.
      */
     public function getCategory($id) {
-        return $this->where($this->idField, '=', $id)->selectOneOrFail();
+        return $this->where($this->idField, '=', $id)->withAllFields()->selectOneOrFail();
     }
 
     /**
-     * Returns the name of the category with the given id. Does a database call
-     * for this. Returns an empty string when the category isn't found.
-     * @param int $id Id of the category.
-     * @return string Name of the category, emtpy if not found.
+     * Saves the category to the datebase.
+     * @param Category $category The category.
+     * @throws NotFoundException If the id is larger than 0 and no entity with
+     * the given id exists in the database.
+     * @throws InvalidArgumentException If `$this->canBeSaved($entity)` returns
+     * false.
+     * @throws PDOException When a database error occurs.
      */
-    function getCategoryName($id) {
-        try {
-            return $this->where($this->getPrimaryKey(), '=', $id)->selectOneOrFail()->getName();
-        } catch (NotFoundException $e) {
-            return "";
-        }
-    }
-
-    // Below this line all methods should be rewritten to remove any HTML output
-
-    function createCategory() {
-        $website = $this->website;
-        $category = new Category(0, "New category");
+    public function saveCategory(Category $category) {
         $this->saveEntity($category);
-        $id = $category->getId();
-        //geef melding weer
-        return <<<EOT
-            <p>A new category has been created named 'New category'.</p>
-            <p>
-                    <a href="{$website->getUrlPage('rename_category', $id)}">Rename</a>|
-                    <a href="{$website->getUrlPage('delete_category', $id, ['confirm' => 1])}">Undo</a>
-            </p>	
-EOT;
     }
 
-    function renameCategory() { //gebruikt id en naam uit $_REQUEST
-        //STRUCTUUR:
-        // kijk eerst of er wel een id is. Zo niet, geef dan '' terug.
-        // kijk daarna of er een 
-        $website = $this->website;
-        $oDB = $this->databaseObject;
-
-        if (!isSet($_REQUEST['id'])) { //is er geen id, breek dan het script af
-            return '';
-        }
-        //als dit deel van het script is bereikt, is wel een id opgegeven
-        //sla de id op in $id
-
-        $id = (int) $_REQUEST['id'];
-        $name = '';
-
-
-        if (isSet($_REQUEST['name'])) { //kijk of de naam goed is
-            $name = $_REQUEST['name'];
-
-            if ($id == 0) {
-                $website->addError('Category was not found.');
-                return ''; //breek onmiddelijk af
-            }
-
-            if (strLen($name) < 2) {
-                $website->addError('Category name is too short!');
-            }
-
-            if (strLen($name) > 30) {
-                $website->addError('Category name is too long! Maximum length is 30 characters.');
-            }
-
-            if ($website->getErrorCount() == 0) { //het is veilig om te hernoemen
-                try {
-                    $category = $this->getCategory($id);
-                    $category->setName($name);
-                    $this->saveEntity($category);
-                    return '<p>Category is succesfully renamed.</p>';
-                } catch (NotFoundException $e) {
-                    $website->addError('Category was not found.');
-                    return ''; //breek onmiddelijk af
-                }
-            }
+    /**
+     * Deletes the given category. All articles are moved to the standard category.
+     * @param ArticleRepository $articleRepo Repo for moving the articles.
+     * @param Category $category The category that must be deleted.
+     * @throws NotFoundException If this category doesn't exist in the database.
+     * @throws PDOException If a database error occurs.
+     * @throws InvalidArgumentException If the category is a standard category.
+     */
+    public function deleteCategory(ArticleRepository $articleRepo,
+            Category $category) {
+        if ($category->isStandardCategory()) {
+            throw new InvalidArgumentException("cannot delete standard category");
         }
 
-        //als dit deel van de methode is bereikt, is er ergens iets misgegaan.
-        //als alles is goed gegaan, dan is de functie al eerder afgebroken
-        //nu is er echter een probleem, of er is geen naam voor de categorie
-        //ingevuld, of de naam is ongeldig, of er is geen geldige id, of de database deed zijn werk niet goed.
-        //laat hoe dan ook het formulier zien om een naam in te vullen.
-        $oldname = $this->getCategoryName($id);
-        if ($oldname == '') {//categorie niet gevonden
-            return '';
-        }
-        return <<<EOT
-		
-		<form action="{$website->getUrlMain()}" method="post">
-			<p>
-				<label for="name"> New name for category '$oldname':</label>
-				<input type="text" size="30" id="name" name="name" value="$name" />
-				<input type="hidden" name="id" value="$id" />
-				<input type="hidden" name="p" value="rename_category" />
-				<br />
-				<input type="submit" value="Save" class="button primary_button" /> 
-				<a href="{$website->getUrlPage('rename_category')}" class="button">Cancel</a>
-			</p>
-		</form>
-EOT;
-    }
-
-    function deleteCategory() { //verwijdert de categorie $_REQUEST['id']
-        $website = $this->website;
-        $oDB = $this->databaseObject;
-
-        if (!isSet($_REQUEST['id'])) {
-            return '';
-        }
-
-        $id = (int) $_REQUEST['id'];
-
-        if ($id == 0) {//ongeldig nummer
-            $website->addError('Category was not found.');
-            return '';
-        }
-        if ($id == 1) { //"No category" category cannot be removed
-            $website->addError('You cannot delete this category, but it is possible to rename it.');
-            return '';
-        }
-
-        //verwijder categorie, maar laat eerst bevestigingsvraag zien
-        if (isSet($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1) { //verwijder categorie
-            $this->where($this->idField, '=', $id)->deleteOneOrFail();
-            $articles = new ArticleRepository($website);
-            //zorg dat artikelen met de net verwijderder categorie ongecategoriseerd worden
-            $articles->changeCategories($id, 1);
-
-            //geef melding
-            return '<p>Category is removed.</p>';
-        } else { //laat bevestingingsvraag zien
-            $cat_name = $this->getCategoryName($id);
-
-            if (!empty($cat_name)) {
-                $returnValue = '<p>Are you sure you want to remove the category \'' . $cat_name . '\'?';
-                $returnValue.= ' This action cannot be undone. Please note that some articles might get uncatogorized.</p>';
-                $returnValue.= '<p><a href="' . $website->getUrlPage("delete_category", $id, ["confirm" => 1]) . '">Yes</a>|';
-                $returnValue.= '<a href="' . $website->getUrlPage("delete_category") . '">No</a></p>';
-                return $returnValue;
-            } else {
-                return '';
-            }
-        }
+        $articleRepo->changeCategories($category->getId(), 1);
+        $this->where($this->idField, '=', $category->getId())->deleteOneOrFail();
     }
 
 }

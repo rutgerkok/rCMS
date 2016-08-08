@@ -31,7 +31,7 @@ class EditArticlePage extends Page {
     /** @var Category[] All categories on the site. */
     protected $allCategories;
     protected $token; // Token, always set
-    
+
     /**
      * @var UriInterface|null Page to redirect to. Usually there is no
      * redirect, so this value is null.
@@ -48,9 +48,9 @@ class EditArticlePage extends Page {
         $articleEditor = new ArticleEditor($article);
         $this->articleEditor = $articleEditor;
 
-        $categoryRepository = new CategoryRepository($website);
+        $categoryRepository = new CategoryRepository($website->getDatabase());
         $this->allCategories = $categoryRepository->getCategories();
-        
+
         $this->richEditor = new CKEditor($website->getText(), $website->getConfig(), $website->getThemeManager());
 
         // Validate token, then save new one to session
@@ -132,7 +132,7 @@ class EditArticlePage extends Page {
         return new ArticleEditView($text, $this->articleEditor->getArticle(),
                 $this->token, $this->richEditor, $this->allCategories);
     }
-    
+
     public function modifyResponse(ResponseInterface $response) {
         if ($this->redirectUrl != null) {
             $response = Responses::withTemporaryRedirect($response, $this->redirectUrl);
@@ -144,6 +144,6 @@ class EditArticlePage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    
+
 
 }

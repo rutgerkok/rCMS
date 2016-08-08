@@ -43,7 +43,7 @@ final class MainMenuEditView extends View {
 
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
-    
+
         if ($this->usesCategories()) {
             $stream->write(<<<HTML
                 <p>
@@ -51,8 +51,8 @@ final class MainMenuEditView extends View {
                     {$text->t("links.main_menu.uses_categories")}
                 </p>
                 <p>
-                    <a class="arrow" href="{$text->e($text->getUrlPage("rename_category"))}">
-                        {$text->t("categories.edit")}
+                    <a class="arrow" href="{$text->e($text->getUrlPage("category_list"))}">
+                        {$text->t("categories.edit_categories")}
                     </a>
                 </p>
 HTML
@@ -77,10 +77,10 @@ HTML
             $this->writeFooter($stream);
         }
     }
-    
+
     private function writeCategoriesForm(StreamInterface $stream) {
         $text = $this->text;
-        
+
         $stream->write(<<<HTML
             <fieldset>
                 <legend>{$text->t("links.main_menu.use_categories_instead")}</legend>
@@ -95,7 +95,7 @@ HTML
 HTML
         );
     }
-    
+
     private function writeMenuForm(StreamInterface $stream) {
         $text = $this->text;
 
@@ -168,7 +168,7 @@ HTML
         );
 
     }
-    
+
     private function getMenuList(array $selectableMenus) {
         $text = $this->text;
 
@@ -181,11 +181,11 @@ HTML
         $returnValue.= '</select>';
         return $returnValue;
     }
-    
+
     private function usesCategories() {
         return $this->menu === null;
     }
-    
+
     private function writeFooter(StreamInterface $stream) {
         $text = $this->text;
         $footer = <<<HTML

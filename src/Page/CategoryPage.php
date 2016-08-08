@@ -2,57 +2,64 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Article;
 use Rcms\Core\ArticleRepository;
+use Rcms\Core\Authentication;
+use Rcms\Core\Category;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
+use Rcms\Page\View\CategoryView;
 
-use Rcms\Page\View\ArticleListView;
-use Rcms\Page\View\CategoriesView;
-use Rcms\Page\View\EmptyView;
+/**
+ * Shows all articles in a category.
+ */
+final class CategoryPage extends Page {
 
-class CategoryPage extends Page {
+    /**
+     * @var bool True when edit/delete links are shown for articles, false otherwise.
+     */
+    private $showArticleEditLinks;
 
-    /** @var Article $article The article object, or null if not found */
-    protected $pageTitle;
-    protected $view;
-    private $showEditLinks;
+    /**
+     * @var bool True when edit/delete links are shown for categories, false otherwise.
+     */
+    private $showCategoryEditLinks;
+
+    /**
+     * @var Category The category being viewed.
+     */
+    private $category;
+
+    /**
+     * @var Article[] Articles in the category.
+     */
+    private $articles;
 
     public function init(Website $website, Request $request) {
-        $text = $website->getText();
+        $categoryId = $request->getParamInt(0, 0);
 
-        $this->showEditLinks = $website->isLoggedInAsStaff();
+        $categoriesRepo = new CategoryRepository($website->getDatabase());
+        $this->category = $categoriesRepo->getCategory($categoryId);
 
-        $categoryId = $request->getParamInt(0);
-        $oArticles = new ArticleRepository($website);
-        $oCategories = new CategoryRepository($website);
+        $articlesRepo = new ArticleRepository($website);
+        $this->articles = $articlesRepo->getArticlesData($categoryId);
 
-        if ($categoryId == 0) {
-            // Display a list of categories
-            $this->pageTitle = $text->t("categories.all");
-            $this->view = new CategoriesView($text, $oCategories->getCategoriesArray());
-        } else {
-            // Display articles in a catgory
-            $this->pageTitle = $oCategories->getCategoryName($categoryId);
-            if (empty($this->pageTitle)) {
-                $this->pageTitle = $text->t("main.category");
-                $text->addError($text->t("main.category") . " " . $website->t("errors.not_found"));
-                $this->view = new EmptyView($text);
-            } else {
-                $articles = $oArticles->getArticlesData($categoryId);
-                $this->view = new ArticleListView($text, $articles, $categoryId, true, true, $this->showEditLinks);
-            }
-        }
+        $this->showArticleEditLinks = $website->isLoggedInAsStaff();
+        $this->showCategoryEditLinks = $website->isLoggedInAsStaff(true);
     }
 
     public function getPageTitle(Text $text) {
-        return $this->pageTitle;
+        return $this->category->getName();
     }
 
     public function getView(Text $text) {
-        return $this->view;
+        return new CategoryView($text, $this->category, $this->articles, $this->showArticleEditLinks, $this->showCategoryEditLinks);
+    }
+
+    public function getPageType() {
+        return Page::TYPE_NORMAL;
     }
 
     public function getMinimumRank() {

@@ -30,7 +30,7 @@ class ArchivePage extends Page {
         $this->selectedCategory = $request->getParamInt(0);
 
         // Fetch all categories
-        $categories = new CategoryRepository($website);
+        $categories = new CategoryRepository($website->getDatabase());
         $this->allCategories = $categories->getCategoriesArray();
 
         // Check if valid category
@@ -50,8 +50,8 @@ class ArchivePage extends Page {
     }
 
     public function getView(Text $text) {
-        return new ArticleArchiveView($text, $this->foundArticles, 
-                $this->allCategories, $this->articleCountInYears, 
+        return new ArticleArchiveView($text, $this->foundArticles,
+                $this->allCategories, $this->articleCountInYears,
                 $this->selectedCategory, $this->selectedYear, $this->showEditLinks);
     }
 

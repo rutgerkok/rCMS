@@ -12,7 +12,7 @@ class AdminPageView extends View {
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
         $stream->write(<<<EOT
-                
+
             <p>
                 <a href="{$text->e($text->getUrlPage("site_settings"))}" class="arrow">{$text->t("main.site_settings")}</a><br />
             </p>
@@ -32,7 +32,7 @@ class AdminPageView extends View {
 
             <h3>{$text->t("users.account_management")}</h3>
             <p>
-                <a class="arrow" href="{$text->e($text->getUrlPage("create_account"))}" >{$text->t("users.create")}</a><br /> 
+                <a class="arrow" href="{$text->e($text->getUrlPage("create_account"))}" >{$text->t("users.create")}</a><br />
                 <a class="arrow" href="{$text->e($text->getUrlPage("edit_password"))}">{$text->t("users.password.edit")}</a><br />
                 <a class="arrow" href="{$text->e($text->getUrlPage("edit_email"))}">{$text->t("users.email.edit")}</a><br />
                 <a class="arrow" href="{$text->e($text->getUrlPage("edit_display_name"))}">{$text->t("users.display_name.edit")}</a><br />
@@ -47,10 +47,9 @@ class AdminPageView extends View {
 
             <h3>{$text->t("main.categories")}</h3>
             <p>
-                <a href="{$text->e($text->getUrlPage("create_category"))}" class="arrow">{$text->t("categories.create")}</a><br />
-                <a href="{$text->e($text->getUrlPage("rename_category"))}" class="arrow">{$text->t("categories.rename")}</a><br />
-                <a href="{$text->e($text->getUrlPage("delete_category"))}" class="arrow">{$text->t("categories.delete")}</a>
-            </p>   
+                <a href="{$text->e($text->getUrlPage("edit_category", 0))}" class="arrow">{$text->t("categories.create")}</a><br />
+                <a href="{$text->e($text->getUrlPage("category_list"))}" class="arrow">{$text->t("categories.edit_or_delete")}</a><br />
+            </p>
 EOT
         );
     }
