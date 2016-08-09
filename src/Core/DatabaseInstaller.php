@@ -73,11 +73,11 @@ class DatabaseInstaller {
 
     private function createTables(PDO $database) {
         // Categories
-        $database->exec("CREATE TABLE `category` (`category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " .
+        $database->exec("CREATE TABLE `categories` (`category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, " .
                  "`category_name` VARCHAR(30) NOT NULL, " .
                  "`category_description` TEXT NULL " .
                  ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        $database->exec("INSERT INTO `categorie` (`categorie_naam`) VALUES ('No category'), ('Events'), ('News');");
+        $database->exec("INSERT INTO `categories` (`category_name`) VALUES ('No category'), ('Events'), ('News');");
 
         // Users
         $database->exec("CREATE TABLE IF NOT EXISTS `users` (`user_id` int(10) unsigned NOT NULL AUTO_INCREMENT, " .

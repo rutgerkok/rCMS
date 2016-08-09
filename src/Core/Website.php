@@ -46,7 +46,7 @@ class Website {
         define("WEBSITE", "Loaded");
 
         // Site settings and database connection
-        $this->config = new Config(self::CONFIG_FILE);
+        $this->config = new Config(dirname(dirname(__DIR__)) . '/' . self::CONFIG_FILE);
         $this->text = new Text(new Uri($this->getConfig()->get('url')), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
 
         // Connect to database, read settings
