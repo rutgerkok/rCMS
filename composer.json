@@ -9,8 +9,7 @@
     "require": {
         "php": ">=5.5.0",
         "ext-pdo": "*",
-        "zendframework/zend-diactoros": "^1.3.2",
-        "relay/middleware": "^1.0.0@dev"
+        "zendframework/zend-diactoros": "^1.3.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.0"
