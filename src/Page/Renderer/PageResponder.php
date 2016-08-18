@@ -19,16 +19,16 @@ use Rcms\Page\Page;
  * Middleware that extracts the page from the request and then renders it.
  */
 final class PageResponder {
-    
+
     /**
      * @var Website The website instance.
      */
     private $website;
-    
+
     public function __construct(Website $website) {
         $this->website = $website;
     }
-    
+
     public function __invoke(ServerRequestInterface $requestInterface, ResponseInterface $response, callable $next = null) {
         $request = new Request($requestInterface);
 
@@ -57,10 +57,10 @@ final class PageResponder {
         $updatedResponse = $next? $next($requestInterface, $response) : $response;
         return Responses::getPageResponse($this->website, $request, $page, $updatedResponse);
     }
-    
+
     /**
      * Gets the simple class name of the given page id.
-     * 
+     *
      * This method doesn't check its parameter. For example, "delete_article"
      * would turn into "DeleteArticlePage", even if no such page would exist.
      * @param string $pageName The page id.
@@ -91,25 +91,7 @@ final class PageResponder {
             throw new NotFoundException();
         }
 
-        $pageClass = $this->getPageClassName($pageName);
-        if (!class_exists($pageClass)) {
-            // No such class exists, try old system
-            return $this->loadPageUsingOldSystem($pageName);
-        }
-        return new $pageClass;
+        return $this->getPageClassName($pageName);
     }
 
-    private function loadPageUsingOldSystem($pageName) {
-        if (!preg_match('/^[a-z0-9_]+$/i', $pageName)) {
-            // Invalid name
-            throw new NotFoundException();
-        }
-
-        $pageFile = $this->website->getUriPage($pageName);
-        if (!file_exists($pageFile)) {
-            throw new NotFoundException();
-        }
-
-        return new OldPageWrapper($this->website->getConfig()->get(Config::OPTION_SITE_TITLE), $pageFile);
-    }
 }
