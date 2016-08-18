@@ -136,8 +136,8 @@ class User extends Entity {
             return (crypt($passwordUnhashed, $passwordHashed) === $passwordHashed);
         }
     }
-    
-    
+
+
     /**
      * Checks if the given password would be too weak for the user. Password
      * requirements are a little more strict for admins.
@@ -170,7 +170,7 @@ class User extends Entity {
     public static function hashPassword($password) {
         return HashHelper::hash($password);
     }
-    
+
     /**
      * Gets whether the rank of the user is at least the given rank.
      * @param int $rank The minimum rank.
@@ -201,7 +201,14 @@ class User extends Entity {
         return $this->rank;
     }
 
+    /**
+     * Gets the email address of the user.
+     * @return string The email address, or an empty string if no email was set.
+     */
     public function getEmail() {
+        if ($this->email === null) {
+            return "";
+        }
         return $this->email;
     }
 
@@ -256,7 +263,7 @@ class User extends Entity {
      * @param string $display_name
      */
     public function setDisplayName($display_name) {
-        $this->displayName = htmlSpecialChars(trim($display_name));
+        $this->displayName = trim($display_name);
     }
 
     /**
@@ -269,18 +276,22 @@ class User extends Entity {
 
     /**
      * Set the hashed password of the user directly.
-     * @param string $password_hashed The hashed password.
+     * @param string $passwordHashed The hashed password.
      */
-    public function setPasswordHashed($password_hashed) {
-        $this->passwordHashed = $password_hashed;
+    public function setPasswordHashed($passwordHashed) {
+        $this->passwordHashed = $passwordHashed;
     }
 
     /**
-     * Sets the email of the user. Case senstive.
+     * Sets the email of the user. Case senstive. Empty strings are stored as
+     * NULL in the database.
      * @param string $email The email.
      */
     public function setEmail($email) {
-        $this->email = $email;
+        if (empty($email)) {
+            $this->email = null;
+        }
+        $this->email = (string) $email;
     }
 
     /**
@@ -294,10 +305,10 @@ class User extends Entity {
     /**
      * Sets the date of the last login of the user. When set to 0, the current
      * date will be used.
-     * @param DateTime|null $last_login The date.
+     * @param DateTime|null $lastLogin The date.
      */
-    public function setLastLogin(DateTime $last_login = null) {
-        $this->lastLogin = $last_login;
+    public function setLastLogin(DateTime $lastLogin = null) {
+        $this->lastLogin = $lastLogin;
     }
 
     /**

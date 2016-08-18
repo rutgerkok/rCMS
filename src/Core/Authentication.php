@@ -4,9 +4,6 @@ namespace Rcms\Core;
 
 use DateTime;
 
-use Rcms\Core\NotFoundException;
-use Rcms\Page\View\LoginView;
-
 class Authentication {
 
     const RANK_LOGGED_OUT = -1;
@@ -177,7 +174,7 @@ class Authentication {
      * Call this when logging in an user. If password is correct, the last
      * login date is updated. If the password storage method was outdated, the
      * password is rehashed.
-     * 
+     *
      * @param User $user The user.
      * @param string $password_unhashed The password entered by the user.
      */
@@ -264,10 +261,6 @@ class Authentication {
             return true;
         } else {
             // Not logged in with enough rights
-            if ($showform) {
-                $loginView = new LoginView($this->website->getText(), $this->getLoginError($minimumRank));
-                echo $loginView->getText();
-            }
             return false;
         }
     }
@@ -333,7 +326,7 @@ class Authentication {
     /**
      * Returns true if the given number is a valid rank id for accounts.
      * The LOGGED_OUT rank isn't a valid rank for accounts.
-     * @return boolean Whether the rank is valid. 
+     * @return boolean Whether the rank is valid.
      */
     public function isValidRankForAccounts($id) {
         if ($id == self::RANK_USER || $id == self::RANK_ADMIN || $id == self::RANK_MODERATOR) {
@@ -344,19 +337,19 @@ class Authentication {
     }
 
     /**
-     * Gets the translated name of the rank with the given id. When the rank is
-     * not found, the translation of users.rank.unknown is returned.
+     * Gets the translation string for the rank with the given id. When the rank
+     * is not found, the translation of users.rank.unknown is returned.
      * @param int $id The rank id.
      * @return string The translated rank name.
      */
     public function getRankName($id) {
         $website = $this->website;
         switch ($id) {
-            case -1: return $website->t("users.rank.visitor");
-            case 0: return $website->t("users.rank.moderator");
-            case 1: return $website->t("users.rank.admin");
-            case 2: return $website->t("users.rank.user");
-            default: return $website->t("users.rank.unknown");
+            case -1: return "users.rank.visitor";
+            case 0: return "users.rank.moderator";
+            case 1: return "users.rank.admin";
+            case 2: return "users.rank.user";
+            default: return "users.rank.unknown";
         }
     }
 

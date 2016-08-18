@@ -3,6 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
+use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -14,7 +15,7 @@ class LoginPage extends Page {
     private $loggedIn;
     private $loggedInAsAdmin;
     private $errorMessage;
-    private $request;
+    private $canCreateAccounts;
 
     public function init(Website $website, Request $request) {
         $this->request = $request;
@@ -27,6 +28,7 @@ class LoginPage extends Page {
         if (!$this->loggedIn) {
             $this->errorMessage = $this->getLoginErrorMessage($website->getText(), $website->getAuth());
         }
+        $this->canCreateAccounts = (bool) $website->getConfig()->get(Config::OPTION_USER_ACCOUNT_CREATION);
     }
 
     public function getPageTitle(Text $text) {
@@ -61,7 +63,8 @@ class LoginPage extends Page {
         } else {
             // Return a login view, but without the "Must be logged in" message
             // at the top.
-            return new LoginView($text, $this->request, $this->errorMessage);
+            return new LoginView($text, $text->getUrlPage("login"), [],
+                    $this->errorMessage, $this->canCreateAccounts);
         }
     }
 

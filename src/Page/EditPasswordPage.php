@@ -14,7 +14,7 @@ class EditPasswordPage extends Page {
 
     /** @var User $user_to_edit */
     protected $user;
- 
+
     /** @var boolean True if the user is editing his/her own account. */
     protected $editing_someone_else;
 
@@ -116,7 +116,7 @@ class EditPasswordPage extends Page {
             // Text above form
             $textToDisplay.= "<p>" . $website->tReplaced("users.password.edit.explained", Validate::$MIN_PASSWORD_LENGHT) . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $website->tReplaced("accounts.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("users.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself

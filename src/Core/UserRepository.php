@@ -27,7 +27,7 @@ class UserRepository extends Repository {
     protected $statusTextField;
     protected $extraDataField;
 
-    public function __construct(PDO $database = null) {
+    public function __construct(PDO $database) {
         parent::__construct($database);
 
         $this->usernameField = new Field(Field::TYPE_STRING_LOWERCASE, "username", "user_login");

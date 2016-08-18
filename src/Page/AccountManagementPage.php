@@ -101,7 +101,7 @@ class AccountManagementPage extends Page {
         // Start table
         $returnValue = "<table>\n";
         $returnValue.="<tr><th>" . $website->t("users.username") . "</th><th>" . $website->t("users.display_name") . "</th><th>" . $website->t("users.email") . "</th><th>" . $website->t("users.rank") . "</th><th>" . $website->t("main.edit") . "</th></tr>\n"; //login-naam-email-admin-bewerk
-        $returnValue.='<tr><td colspan="5"><a class="arrow" href="' . $website->getUrlPage("create_account") . '">' . $website->t("users.create") . "...</a></td></tr>\n"; //maak nieuwe account
+        $returnValue.='<tr><td colspan="5"><a class="arrow" href="' . $website->getUrlPage("create_account_admin") . '">' . $website->t("users.create") . "...</a></td></tr>\n"; //maak nieuwe account
 
 
         if (count($users) > 0) {
@@ -117,7 +117,7 @@ class AccountManagementPage extends Page {
                 // Others
                 $username = $user->getUsername(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlSpecialChars($user->getDisplayName());
-                $rank_name = $oAuth->getRankName($user->getRank());
+                $rank_name = $website->t($oAuth->getRankName($user->getRank()));
                 if ($user->getStatus() == Authentication::STATUS_BANNED) {
                     $rank_name = $website->t("users.status.banned");
                 }

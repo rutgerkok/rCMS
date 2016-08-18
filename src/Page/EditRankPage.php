@@ -58,14 +58,14 @@ class EditRankPage extends EditPasswordPage {
                 <p>
                     {$website->t("users.rank.edit.explained")}
                     {$website->tReplaced("accounts.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
-                </p>  
+                </p>
                 <p>
                     {$website->t("main.fields_required")}
                 </p>
                 <form action="{$website->getUrlMain()}" method="post">
                     <p>
                         <label for="rank">{$website->t("users.rank")}</label>:<span class="required">*</span><br />
-                        {$this->get_ranks_box_html($website->getAuth(), $ranks, $rank)}
+                        {$this->get_ranks_box_html($website, $ranks, $rank)}
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_rank" />
@@ -82,11 +82,14 @@ EOT;
         return $textToDisplay;
     }
 
-    protected function get_ranks_box_html(Authentication $oAuth, $ranks,
+    protected function get_ranks_box_html(Website $website, $ranks,
             $selected) {
+        $oAuth = $website->getAuth();
+        $text = $website->getText();
+
         $selection_box = '<select name="rank" id="rank">';
         foreach ($ranks as $id) {
-            $label = $oAuth->getRankName($id);
+            $label = $text->t($oAuth->getRankName($id));
             $selection_box.= '<option value="' . $id . '"';
             if ($selected == $id) {
                 $selection_box.= ' selected="selected"';

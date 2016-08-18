@@ -22,7 +22,7 @@ class Config {
 
     const OPTION_CKEDITOR_URL = "ckeditor_url";
     const OPTION_CKFINDER_URL = "ckfinder_url";
-    
+
     const OPTION_DATABASE_NAME = "database_name";
     const OPTION_DATABASE_HOST = "database_location";
     const OPTION_DATABASE_USER = "database_user";
@@ -35,11 +35,12 @@ class Config {
     const OPTION_COPYRIGHT = "copyright";
     const OPTION_MAIN_MENU_ID = "main_menu_id";
     const OPTION_SITE_TITLE = "title";
+    const OPTION_USER_ACCOUNT_CREATION = "user_account_creation";
 
     private $config = [];
 
     /**
-     * Creates a new Config instance. The settings will be read from the 
+     * Creates a new Config instance. The settings will be read from the
      * provided file. Make sure to call the readFromDatabase method after this
      * to get all remaining settings that are stored in the database.
      * @param string $configFile Path to the options.php file. Warning: this
@@ -85,7 +86,7 @@ class Config {
 
     /**
      * Gets a setting from either the options.php or the settings table.
-     * Requires that there is a table called `settings` in the database 
+     * Requires that there is a table called `settings` in the database
      * with the columns `setting_name` and `setting_value`.
      * @param string $name Name of the setting.
      * @param mixed $default Default value for the setting
