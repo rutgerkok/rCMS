@@ -13,7 +13,7 @@ use Rcms\Page\Renderer\Responses;
  * This class exists to redirect any old view_article
  * urls to the newer article urls.
  */
-class TemplateArticlePage extends Page {
+class ViewArticlePage extends Page {
 
     /**
      * @var UriInterface The URL where the article is currently located.
