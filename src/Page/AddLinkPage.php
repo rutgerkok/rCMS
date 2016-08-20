@@ -12,10 +12,10 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkAddView;
-use Rcms\Page\View\LinkEditFooterView;
-use Rcms\Page\View\LinkEditView;
-use Rcms\Page\View\MenuEditView;
+use Rcms\Template\LinkAddTemplate;
+use Rcms\Template\LinkEditFooterTemplate;
+use Rcms\Template\LinkEditTemplate;
+use Rcms\Template\MenuEditTemplate;
 use Zend\Diactoros\Uri;
 
 /**
@@ -73,12 +73,12 @@ final class AddLinkPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         if ($this->addedLink) {
-            return [new LinkEditFooterView($text)];
+            return [new LinkEditFooterTemplate($text)];
         }
-        return [new LinkAddView($text, $this->menu, $this->linkName, $this->linkUrl, $this->requestToken),
-            new LinkEditFooterView($text)];
+        return [new LinkAddTemplate($text, $this->menu, $this->linkName, $this->linkUrl, $this->requestToken),
+            new LinkEditFooterTemplate($text)];
     }
 
     private function saveLink(Website $website) {

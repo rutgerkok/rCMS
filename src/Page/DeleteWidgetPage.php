@@ -12,8 +12,8 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\EmptyView;
-use Rcms\Page\View\WidgetDeleteView;
+use Rcms\Template\EmptyTemplate;
+use Rcms\Template\WidgetDeleteTemplate;
 
 /**
  * A page for deleting a widget.
@@ -66,12 +66,12 @@ final class DeleteWidgetPage extends Page {
         return $text->t("widgets.delete");
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->requestToken === null) {
             // No token, assume already deleted
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new WidgetDeleteView($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
+        return new WidgetDeleteTemplate($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
     }
 
 

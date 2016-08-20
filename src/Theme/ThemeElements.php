@@ -13,8 +13,8 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\HomePage;
 use Rcms\Page\Page;
-use Rcms\Page\View\MenuView;
-use Rcms\Page\View\WidgetsColumnView;
+use Rcms\Template\MenuTemplate;
+use Rcms\Template\WidgetsColumnTemplate;
 
 /**
  * The elements that appear inside a theme. All elements already escape their
@@ -117,7 +117,7 @@ final class ThemeElements {
         $this->writeList($stream, $text->getConfirmations(), "confirmation");
 
         // Write page content
-        foreach ($this->page->getViews($text) as $view) {
+        foreach ($this->page->getTemplates($text) as $view) {
             $view->writeText($stream);
         }
         $stream->write($pageContent);
@@ -270,8 +270,8 @@ EOT
                 $links = array_merge($links, $linkRepo->getLinksByMenu($menuId));
             }
         }
-        $menuView = new MenuView($website->getText(), $links);
-        $menuView->writeText($stream);
+        $menuTemplate = new MenuTemplate($website->getText(), $links);
+        $menuTemplate->writeText($stream);
     }
 
     /**
@@ -304,7 +304,7 @@ SEARCH
         }
         $widgets = $this->widgetsRepo->getWidgetsInDocumentWithId($area);
 
-        $widgetsView = new WidgetsColumnView($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
-        $widgetsView->writeText($stream);
+        $widgetsTemplate = new WidgetsColumnTemplate($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
+        $widgetsTemplate->writeText($stream);
     }
 }

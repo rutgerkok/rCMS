@@ -9,8 +9,8 @@ use Rcms\Core\MenuRepository;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkEditFooterView;
-use Rcms\Page\View\MenuEditView;
+use Rcms\Template\LinkEditFooterTemplate;
+use Rcms\Template\MenuEditTemplate;
 
 /**
  * Description of EditMenuPage
@@ -41,10 +41,10 @@ class EditMenuPage extends Page {
         return Authentication::RANK_ADMIN;
     }
     
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         return [
-            new MenuEditView($text, $this->menu, $this->links),
-            new LinkEditFooterView($text)
+            new MenuEditTemplate($text, $this->menu, $this->links),
+            new LinkEditFooterTemplate($text)
             ];
     }
 

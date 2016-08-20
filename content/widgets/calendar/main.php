@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\ArticleEventListView;
+use Rcms\Template\ArticleEventListTemplate;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -32,10 +32,10 @@ class WidgetCalendar extends WidgetDefinition {
 
         $oArticles = new ArticleRepository($website);
         $articles = $oArticles->getArticlesDataUpcomingEvents();
-        $articlesView = new ArticleEventListView($text, $articles, $editLinks, 0, true);
+        $articlesTemplate = new ArticleEventListTemplate($text, $articles, $editLinks, 0, true);
         
         // Articles
-        $articlesView->writeText($stream);
+        $articlesTemplate->writeText($stream);
     }
 
     public function getEditor(Website $website, $id, $data) {

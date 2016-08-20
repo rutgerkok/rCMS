@@ -20,8 +20,8 @@ use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
 use Rcms\Page\Renderer\Responses;
-use Rcms\Page\View\ArticleEditView;
-use Rcms\Page\View\Support\CKEditor;
+use Rcms\Template\ArticleEditTemplate;
+use Rcms\Template\Support\CKEditor;
 
 class EditArticlePage extends Page {
 
@@ -128,8 +128,8 @@ class EditArticlePage extends Page {
         return $text->t("articles.edit");
     }
 
-    public function getView(Text $text) {
-        return new ArticleEditView($text, $this->articleEditor->getArticle(),
+    public function getTemplate(Text $text) {
+        return new ArticleEditTemplate($text, $this->articleEditor->getArticle(),
                 $this->token, $this->richEditor, $this->allCategories);
     }
 

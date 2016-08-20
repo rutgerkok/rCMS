@@ -10,9 +10,9 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\EmptyView;
-use Rcms\Page\View\LinkDeleteView;
-use Rcms\Page\View\LinkEditFooterView;
+use Rcms\Template\EmptyTemplate;
+use Rcms\Template\LinkDeleteTemplate;
+use Rcms\Template\LinkEditFooterTemplate;
 
 class DeleteLinkPage extends Page {
 
@@ -60,10 +60,10 @@ class DeleteLinkPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         if ($this->link === null) {
-            return [new LinkEditFooterView($text)];
+            return [new LinkEditFooterTemplate($text)];
         }
-        return [new LinkDeleteView($text, $this->link, $this->requestToken), new LinkEditFooterView($text)];
+        return [new LinkDeleteTemplate($text, $this->link, $this->requestToken), new LinkEditFooterTemplate($text)];
     }
 }

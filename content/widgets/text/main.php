@@ -5,7 +5,7 @@ namespace Rcms\Extend\Widget;
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\Support\CKEditor;
+use Rcms\Template\Support\CKEditor;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {

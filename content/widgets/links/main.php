@@ -8,7 +8,7 @@ use Rcms\Core\MenuRepository;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\LinkListView;
+use Rcms\Template\LinkListTemplate;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -35,7 +35,7 @@ class WidgetRkokLinks extends WidgetDefinition {
         // Links
         $oMenu = new LinkRepository($website->getDatabase());
         $links = $oMenu->getLinksByMenu($menuId);
-        $linkTemplate = new LinkListView($website->getText(), $links, $loggedInStaff);
+        $linkTemplate = new LinkListTemplate($website->getText(), $links, $loggedInStaff);
         $linkTemplate->writeText($stream);
 
         // Link to add link

@@ -13,8 +13,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkEditFooterView;
-use Rcms\Page\View\MenuDeleteView;
+use Rcms\Template\LinkEditFooterTemplate;
+use Rcms\Template\MenuDeleteTemplate;
 
 /**
  * Page for deleting a whole menu.
@@ -82,12 +82,12 @@ final class DeleteMenuPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         if ($this->deleted) {
-            return [new LinkEditFooterView($text)];
+            return [new LinkEditFooterTemplate($text)];
         }
-        return [new MenuDeleteView($text, $this->menu, $this->linkCount, $this->allMenus, $this->requestToken),
-            new LinkEditFooterView($text)];
+        return [new MenuDeleteTemplate($text, $this->menu, $this->linkCount, $this->allMenus, $this->requestToken),
+            new LinkEditFooterTemplate($text)];
     }
 
     private function respondToRequest(LinkRepository $linkRepo, MenuRepository $menuRepo, Text $text, Request $request) {

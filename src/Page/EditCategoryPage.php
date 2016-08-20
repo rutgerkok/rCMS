@@ -11,9 +11,9 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\CategoryEditView;
-use Rcms\Page\View\Support\RichEditor;
-use Rcms\Page\View\Support\CKEditor;
+use Rcms\Template\CategoryEditTemplate;
+use Rcms\Template\Support\RichEditor;
+use Rcms\Template\Support\CKEditor;
 
 /**
  * Page for editing a single category.
@@ -100,8 +100,8 @@ final class EditCategoryPage extends Page {
         return $text->t("categories.edit_a_category");
     }
 
-    public function getView(Text $text) {
-        return new CategoryEditView($text, $this->category, $this->richEditor, $this->requestToken);
+    public function getTemplate(Text $text) {
+        return new CategoryEditTemplate($text, $this->category, $this->richEditor, $this->requestToken);
     }
 
 }

@@ -10,8 +10,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkEditView;
-use Rcms\Page\View\LinkEditFooterView;
+use Rcms\Template\LinkEditTemplate;
+use Rcms\Template\LinkEditFooterTemplate;
 use Zend\Diactoros\Uri;
 
 /**
@@ -80,9 +80,9 @@ class EditLinkPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getViews(Text $text) {
-        return [new LinkEditView($text, $this->link, $this->requestToken),
-            new LinkEditFooterView($text)];
+    public function getTemplates(Text $text) {
+        return [new LinkEditTemplate($text, $this->link, $this->requestToken),
+            new LinkEditFooterTemplate($text)];
     }
 
 }

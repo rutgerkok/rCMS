@@ -11,8 +11,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\DocumentDeleteView;
-use Rcms\Page\View\DocumentDeletedView;
+use Rcms\Template\DocumentDeleteTemplate;
+use Rcms\Template\DocumentDeletedTemplate;
 
 /**
  * Page that allows deletion of documents.
@@ -48,11 +48,11 @@ class DeleteDocumentPage extends Page {
         $this->requestToken->saveToSession();
     }
     
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->deleted) {
-            return new DocumentDeletedView($text);
+            return new DocumentDeletedTemplate($text);
         } else {
-            return new DocumentDeleteView($text, $this->document, $this->requestToken);
+            return new DocumentDeleteTemplate($text, $this->document, $this->requestToken);
         }
     }
 

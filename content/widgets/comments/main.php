@@ -7,7 +7,7 @@ use Rcms\Core\CommentRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\CommentsSmallView;
+use Rcms\Template\CommentsSmallTemplate;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -26,7 +26,7 @@ class WidgetComments extends WidgetDefinition {
         
         $commentLookup = new CommentRepository($website->getDatabase());
         $latestComments = $commentLookup->getCommentsLatest($amount);
-        $view = new CommentsSmallView($website->getText(), $latestComments);
+        $view = new CommentsSmallTemplate($website->getText(), $latestComments);
 
         $stream->write('<h2>' . $title . "</h2>\n");
         $view->writeText($stream);

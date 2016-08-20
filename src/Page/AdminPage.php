@@ -7,7 +7,7 @@ use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\AdminPageView;
+use Rcms\Template\AdminPageTemplate;
 
 /**
  * Page with links to all admin tasks of the site
@@ -22,8 +22,8 @@ class AdminPage extends Page {
         return $text->t("main.admin");
     }
 
-    public function getView(Text $text) {
-        return new AdminPageView($text);
+    public function getTemplate(Text $text) {
+        return new AdminPageTemplate($text);
     }
 
     public function getMinimumRank() {

@@ -11,8 +11,8 @@ use Rcms\Core\User;
 use Rcms\Core\UserRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\AdminAccountCreationView;
-use Rcms\Page\View\EmptyView;
+use Rcms\Template\AdminAccountCreationTemplate;
+use Rcms\Template\EmptyTemplate;
 
 /**
  * Page for creating a new user account.
@@ -123,11 +123,11 @@ final class CreateAccountAdminPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->accountCreated) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new AdminAccountCreationView($text, $this->newUser, $this->allRanks, $this->requestToken);
+        return new AdminAccountCreationTemplate($text, $this->newUser, $this->allRanks, $this->requestToken);
     }
 
 }

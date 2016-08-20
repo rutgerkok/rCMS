@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use Rcms\Core\Authentication;
-use Rcms\Core\Config;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -91,7 +90,8 @@ final class PageResponder {
             throw new NotFoundException();
         }
 
-        return $this->getPageClassName($pageName);
+        $className = $this->getPageClassName($pageName);
+        return new $className;
     }
 
 }

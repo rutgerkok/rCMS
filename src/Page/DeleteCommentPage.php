@@ -12,8 +12,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\CommentDeleteView;
-use Rcms\Page\View\EmptyView;
+use Rcms\Template\CommentDeleteTemplate;
+use Rcms\Template\EmptyTemplate;
 
 /**
  * A page used to delete comments.
@@ -64,11 +64,11 @@ final class DeleteCommentPage extends Page {
         }
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->requestToken == null) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new CommentDeleteView($text, $this->requestToken, $this->comment);
+        return new CommentDeleteTemplate($text, $this->requestToken, $this->comment);
     }
     
     public function getPageType() {

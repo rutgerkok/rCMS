@@ -11,8 +11,8 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\WidgetRepository;
 
-use Rcms\Page\View\DocumentView;
-use Rcms\Page\View\WidgetsPageView;
+use Rcms\Template\DocumentTemplate;
+use Rcms\Template\WidgetsPageTemplate;
 
 /**
  * A page that displays a single document.
@@ -58,10 +58,10 @@ class DocumentPage extends Page {
         return $this->document->getTitle();
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         return [
-            new DocumentView($text, $this->document, $this->editLinks),
-            new WidgetsPageView($text, $this->document->getId(), $this->widgetLoader, $this->widgets, false)
+            new DocumentTemplate($text, $this->document, $this->editLinks),
+            new WidgetsPageTemplate($text, $this->document->getId(), $this->widgetLoader, $this->widgets, false)
             ];
     }
 

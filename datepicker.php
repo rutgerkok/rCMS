@@ -3,7 +3,7 @@
 namespace Rcms\Core;
 
 use DateTime;
-use Rcms\Page\View\DatePickerView;
+use Rcms\Template\DatePickerTemplate;
 use Zend\Diactoros\Stream;
 
 // Setup environment
@@ -19,7 +19,7 @@ $dateTime = DateTime::createFromFormat("n Y", $selectedMonth . " " .$selectedYea
 //OBJECTEN
 $oArticles = new ArticleRepository($website);
 $articles = $oArticles->getArticlesDataCalendarMonth($dateTime);
-$calendarView = new DatePickerView($website->getText(), $dateTime, $articles);
+$calendarTemplate = new DatePickerTemplate($website->getText(), $dateTime, $articles);
 
 ?>
 <!DOCTYPE html>
@@ -35,7 +35,7 @@ $calendarView = new DatePickerView($website->getText(), $dateTime, $articles);
         <div>
             <?php
                 $stream = new Stream("php://output", 'w');
-                $calendarView->writeText($stream);
+                $calendarTemplate->writeText($stream);
                 $stream->close();
             ?>
         </div>

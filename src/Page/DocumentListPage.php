@@ -9,7 +9,7 @@ use Rcms\Core\Website;
 
 use Rcms\Core\Document\DocumentRepository;
 
-use Rcms\Page\View\DocumentListView;
+use Rcms\Template\DocumentListTemplate;
 
 /**
  * Page that lists all documents.
@@ -39,8 +39,8 @@ class DocumentListPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getView(Text $text) {
-        return new DocumentListView($text, $this->documents, $this->editLinks);
+    public function getTemplate(Text $text) {
+        return new DocumentListTemplate($text, $this->documents, $this->editLinks);
     }
 
 }

@@ -10,9 +10,9 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Validate;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkEditFooterView;
-use Rcms\Page\View\MenuAddView;
-use Rcms\Page\View\MenuEditView;
+use Rcms\Template\LinkEditFooterTemplate;
+use Rcms\Template\MenuAddTemplate;
+use Rcms\Template\MenuEditTemplate;
 
 /**
  * Page for adding a new menu.
@@ -73,14 +73,14 @@ class AddMenuPage extends Page {
         return Authentication::RANK_ADMIN;
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         $views = [];
         if ($this->menu === null) {
-            $views[] = new MenuAddView($text, $this->requestToken, $this->menuName);
+            $views[] = new MenuAddTemplate($text, $this->requestToken, $this->menuName);
         } else {
-            $views[] = new MenuEditView($text, $this->menu, []);
+            $views[] = new MenuEditTemplate($text, $this->menu, []);
         }
-        $views[] = new LinkEditFooterView($text);
+        $views[] = new LinkEditFooterTemplate($text);
         return $views;
     }
 

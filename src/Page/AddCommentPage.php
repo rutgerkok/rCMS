@@ -16,8 +16,8 @@ use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Page\Renderer\Responses;
-use Rcms\Page\View\AddCommentView;
-use Rcms\Page\View\EmptyView;
+use Rcms\Template\CommentAddTemplate;
+use Rcms\Template\EmptyTemplate;
 
 /**
  * Displays a form that adds a comment to a page.
@@ -80,11 +80,11 @@ final class AddCommentPage extends Page {
         }
     }
     
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->redirectLink !== null) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new AddCommentView($text, $this->comment, $this->requestToken);
+        return new CommentAddTemplate($text, $this->comment, $this->requestToken);
     }
     
     public function modifyResponse(ResponseInterface $response) {

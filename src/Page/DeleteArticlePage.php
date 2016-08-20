@@ -10,11 +10,11 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\ArticleDeleteView;
+use Rcms\Template\ArticleDeleteTemplate;
 
 class DeleteArticlePage extends Page {
 
-    /** @var View The view to be displayed on this page. */
+    /** @var Template The view to be displayed on this page. */
     protected $view;
 
     /** @var Article The article to delete */
@@ -34,23 +34,23 @@ class DeleteArticlePage extends Page {
         if ($action == "delete" && Validate::requestToken($request)) {
             // Bye bye article
             if ($oArticles->delete($article)) {
-                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_DELETED);
+                $this->view = new ArticleDeleteTemplate($text, $article, $formToken, $showAdminPageLink, ArticleDeleteTemplate::STATE_DELETED);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteTemplate($text, $article, $formToken, $showAdminPageLink, ArticleDeleteTemplate::STATE_ERROR);
             }
             return;
         } elseif ($action == "make_private" && Validate::requestToken($request)) {
             // Hide article for visitors
             $article->setHidden(true);
             if ($oArticles->saveArticle($article)) {
-                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_HIDDEN);
+                $this->view = new ArticleDeleteTemplate($text, $article, $formToken, $showAdminPageLink, ArticleDeleteTemplate::STATE_HIDDEN);
             } else {
-                $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_ERROR);
+                $this->view = new ArticleDeleteTemplate($text, $article, $formToken, $showAdminPageLink, ArticleDeleteTemplate::STATE_ERROR);
             }
             return;
         } else {
             // Ask what to do
-            $this->view = new ArticleDeleteView($text, $article, $formToken, $showAdminPageLink, ArticleDeleteView::STATE_CONFIRMATION);
+            $this->view = new ArticleDeleteTemplate($text, $article, $formToken, $showAdminPageLink, ArticleDeleteTemplate::STATE_CONFIRMATION);
         }
 
         $formToken->saveToSession();
@@ -76,7 +76,7 @@ class DeleteArticlePage extends Page {
         return $text->t("articles.delete");
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         return $this->view;
     }
 

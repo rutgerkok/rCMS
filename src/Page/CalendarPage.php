@@ -8,7 +8,7 @@ use Rcms\Core\ArticleRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\YearCalendarView;
+use Rcms\Template\YearCalendarTemplate;
 
 class CalendarPage extends Page {
 
@@ -41,8 +41,8 @@ class CalendarPage extends Page {
         return $text->tReplaced("calendar.calendar_for_year", $this->yearNumber);
     }
 
-    public function getView(Text $text) {
-        return new YearCalendarView($text, $this->year, $this->articlesInYear, $this->showCreateLinks);
+    public function getTemplate(Text $text) {
+        return new YearCalendarTemplate($text, $this->year, $this->articlesInYear, $this->showCreateLinks);
     }
 
     public function getMinimumRank() {

@@ -8,7 +8,7 @@ use Rcms\Core\CategoryRepository;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
-use Rcms\Page\View\CategoryListView;
+use Rcms\Template\CategoryListTemplate;
 
 /**
  * An overview of all categories on the website.
@@ -42,8 +42,8 @@ final class CategoryListPage extends Page {
         return $text->t("categories.all");
     }
 
-    public function getView(Text $text) {
-        return new CategoryListView($text, $this->categories, $this->editLinks);
+    public function getTemplate(Text $text) {
+        return new CategoryListTemplate($text, $this->categories, $this->editLinks);
     }
 
     public function getPageType() {

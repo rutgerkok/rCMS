@@ -15,7 +15,7 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\DocumentEditView;
+use Rcms\Template\DocumentEditTemplate;
 
 /**
  * The page that provides the admin an editor to edit the documents.
@@ -132,8 +132,8 @@ class EditDocumentPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getView(Text $text) {
-        return new DocumentEditView($text, $this->document, $this->requestToken, $this->widgetLoader, $this->widgets);
+    public function getTemplate(Text $text) {
+        return new DocumentEditTemplate($text, $this->document, $this->requestToken, $this->widgetLoader, $this->widgets);
     }
 
 }

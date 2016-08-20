@@ -12,10 +12,9 @@ use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
-use Rcms\Core\Widget\NullWidget;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\WidgetEditView;
+use Rcms\Template\WidgetEditTemplate;
 
 /**
  * Edits a single widget.
@@ -31,11 +30,6 @@ class EditWidgetPage extends Page {
      * @var InstalledWidgets The widgets installed on the website.
      */
     private $installedWidgets;
-    
-    /**
-     * @var Document The document the widget is placed in.
-     */
-    private $document;
 
     /**
      * @var RequestToken Token against CSRF attacks.
@@ -121,8 +115,8 @@ class EditWidgetPage extends Page {
         return $text->t("widgets.edit");
     }
 
-    public function getView(Text $text) {
-        return new WidgetEditView($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
+    public function getTemplate(Text $text) {
+        return new WidgetEditTemplate($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
     }
 
     public function getMinimumRank() {

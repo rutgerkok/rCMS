@@ -7,7 +7,7 @@ use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\LoginView;
+use Rcms\Template\LoginFormTemplate;
 
 /**
  * Page used when a login is required.
@@ -36,8 +36,8 @@ class ErrorLoginRequiredPage extends Page {
         return $text->t("main.log_in");
     }
 
-    public function getView(Text $text) {
-        return new LoginView($text, $this->targetUrl, $this->postVars,
+    public function getTemplate(Text $text) {
+        return new LoginFormTemplate($text, $this->targetUrl, $this->postVars,
                 $this->errorMessage, $this->canCreateAccounts);
     }
 

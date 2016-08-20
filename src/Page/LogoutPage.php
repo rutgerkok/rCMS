@@ -7,7 +7,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\LoggedOutView;
+use Rcms\Template\LoggedOutTemplate;
 
 class LogoutPage extends Page {
 
@@ -23,8 +23,8 @@ class LogoutPage extends Page {
         return $text->t("main.log_out");
     }
 
-    public function getView(Text $text) {
-        return new LoggedOutView($text);
+    public function getTemplate(Text $text) {
+        return new LoggedOutTemplate($text);
     }
     
     public function getPageType() {

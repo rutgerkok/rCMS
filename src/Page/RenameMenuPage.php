@@ -11,8 +11,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\LinkEditFooterView;
-use Rcms\Page\View\MenuRenameView;
+use Rcms\Template\LinkEditFooterTemplate;
+use Rcms\Template\MenuRenameTemplate;
 
 class RenameMenuPage extends Page  {
 
@@ -62,10 +62,10 @@ class RenameMenuPage extends Page  {
         return $text->t("links.menu.rename");
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         return [
-            new MenuRenameView($text, $this->menu, $this->requestToken),
-            new LinkEditFooterView($text)
+            new MenuRenameTemplate($text, $this->menu, $this->requestToken),
+            new LinkEditFooterTemplate($text)
         ];
     }
 }

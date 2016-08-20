@@ -9,7 +9,7 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\View\WidgetsColumnView;
+use Rcms\Template\WidgetsColumnTemplate;
 
 class HomePage extends Page {
     
@@ -53,8 +53,8 @@ class HomePage extends Page {
         return $this->siteTitle;
     }
 
-    public function getView(Text $text) {
-        return new WidgetsColumnView($text, self::DOCUMENT_ID, $this->installedWidgets, $this->widgets, $this->editLinks);
+    public function getTemplate(Text $text) {
+        return new WidgetsColumnTemplate($text, self::DOCUMENT_ID, $this->installedWidgets, $this->widgets, $this->editLinks);
     }
 
     public function getPageType() {

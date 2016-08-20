@@ -7,8 +7,8 @@ use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\LoggedInView;
-use Rcms\Page\View\LoginView;
+use Rcms\Template\LoggedInTemplate;
+use Rcms\Template\LoginFormTemplate;
 
 class LoginPage extends Page {
 
@@ -57,13 +57,13 @@ class LoginPage extends Page {
         return "";
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->loggedIn) {
-            return new LoggedInView($text, $this->loggedInAsAdmin);
+            return new LoggedInTemplate($text, $this->loggedInAsAdmin);
         } else {
             // Return a login view, but without the "Must be logged in" message
             // at the top.
-            return new LoginView($text, $text->getUrlPage("login"), [],
+            return new LoginFormTemplate($text, $text->getUrlPage("login"), [],
                     $this->errorMessage, $this->canCreateAccounts);
         }
     }

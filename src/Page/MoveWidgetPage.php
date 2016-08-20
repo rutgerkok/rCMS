@@ -14,8 +14,8 @@ use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
 use Rcms\Page\Renderer\Responses;
-use Rcms\Page\View\EmptyView;
-use Rcms\Page\View\WidgetDetailView;
+use Rcms\Template\EmptyTemplate;
+use Rcms\Template\WidgetDetailTemplate;
 
 /**
  * Page that moves a widget and then redirects to the document edit page.
@@ -46,11 +46,11 @@ final class MoveWidgetPage extends Page {
         return $text->t("widgets.moving_a_widget");
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->moveLink == null) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new WidgetDetailView($text, $this->installedWidgets, $this->placedWidget, $this->moveLink);
+        return new WidgetDetailTemplate($text, $this->installedWidgets, $this->placedWidget, $this->moveLink);
     }
     
     public function modifyResponse(ResponseInterface $response) {

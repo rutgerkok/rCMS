@@ -10,7 +10,7 @@ use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\CategoryView;
+use Rcms\Template\CategoryTemplate;
 
 /**
  * Shows all articles in a category.
@@ -54,8 +54,8 @@ final class CategoryPage extends Page {
         return $this->category->getName();
     }
 
-    public function getView(Text $text) {
-        return new CategoryView($text, $this->category, $this->articles, $this->showArticleEditLinks, $this->showCategoryEditLinks);
+    public function getTemplate(Text $text) {
+        return new CategoryTemplate($text, $this->category, $this->articles, $this->showArticleEditLinks, $this->showCategoryEditLinks);
     }
 
     public function getPageType() {

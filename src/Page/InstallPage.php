@@ -9,11 +9,11 @@ use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\NotFoundException;
 
-use Rcms\Page\View\EmptyView;
-use Rcms\Page\View\InstallDatabaseView;
-use Rcms\Page\View\InstallationCompletedView;
-use Rcms\Page\View\NoDatabaseConnectionView;
-use Rcms\Page\View\UpdateCompletedView;
+use Rcms\Template\EmptyTemplate;
+use Rcms\Template\DatabaseInstallTemplate;
+use Rcms\Template\InstallationCompletedTemplate;
+use Rcms\Template\NoDatabaseConnectionTemplate;
+use Rcms\Template\UpdateCompletedTemplate;
 
 class InstallPage extends Page {
 
@@ -50,18 +50,18 @@ class InstallPage extends Page {
         return $text->t("install.installing_database");
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->databaseState == DatabaseInstaller::STATE_NOT_CONNECTED) {
-            return new NoDatabaseConnectionView($text);
+            return new NoDatabaseConnectionTemplate($text);
         } else if ($this->databaseState == DatabaseInstaller::STATE_NOT_INSTALLED) {
             if ($this->justInstalled) {
-                return new InstallationCompletedView($text);
+                return new InstallationCompletedTemplate($text);
             }
-            return new InstallDatabaseView($text);
+            return new DatabaseInstallTemplate($text);
         } else if ($this->databaseState == DatabaseInstaller::STATE_OUTDATED) {
-            return new UpdateCompletedView($text);
+            return new UpdateCompletedTemplate($text);
         } else {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
     }
 

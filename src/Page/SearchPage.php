@@ -9,9 +9,9 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\ArticleSearchView;
-use Rcms\Page\View\LinkSearchView;
-use Rcms\Page\View\SearchFormView;
+use Rcms\Template\ArticleSearchTemplate;
+use Rcms\Template\LinkSearchTemplate;
+use Rcms\Template\SearchFormTemplate;
 
 class SearchPage extends Page {
 
@@ -72,14 +72,14 @@ class SearchPage extends Page {
         return $text->t("main.search");
     }
 
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         $views = [];
         if (isSet($this->displayedArticles)) {
-            $views[] = new ArticleSearchView($text, $this->keyword, $this->displayedArticles, 
+            $views[] = new ArticleSearchTemplate($text, $this->keyword, $this->displayedArticles, 
                     $this->pageNumber, $this->totalResults, $this->highestPageNumber, $this->showEditLinks);
-            $views[] = new LinkSearchView($text, $this->links);
+            $views[] = new LinkSearchTemplate($text, $this->links);
         }
-        $views[] = new SearchFormView($text, $this->keyword);
+        $views[] = new SearchFormTemplate($text, $this->keyword);
         return $views;
     }
  

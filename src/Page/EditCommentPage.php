@@ -16,8 +16,8 @@ use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Page\Renderer\Responses;
-use Rcms\Page\View\EditCommentView;
-use Rcms\Page\View\EmptyView;
+use Rcms\Template\CommentEditTemplate;
+use Rcms\Template\EmptyTemplate;
 
 /**
  * Displays a form that edits a comment on a page.
@@ -87,11 +87,11 @@ final class EditCommentPage extends Page {
         }
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->redirectLink !== null) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new EditCommentView($text, $this->comment, $this->requestToken);
+        return new CommentEditTemplate($text, $this->comment, $this->requestToken);
     }
 
     public function modifyResponse(ResponseInterface $response) {

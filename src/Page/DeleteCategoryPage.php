@@ -11,8 +11,8 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\CategoryDeleteView;
-use Rcms\Page\View\EmptyView;
+use Rcms\Template\CategoryDeleteTemplate;
+use Rcms\Template\EmptyTemplate;
 
 /**
  * Page for deleting a category. The page is responsible for moving all articles
@@ -81,11 +81,11 @@ final class DeleteCategoryPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->requestToken == null || $this->deleted) {
-            return new EmptyView($text);
+            return new EmptyTemplate($text);
         }
-        return new CategoryDeleteView($text, $this->category, $this->requestToken);
+        return new CategoryDeleteTemplate($text, $this->category, $this->requestToken);
     }
 
 }

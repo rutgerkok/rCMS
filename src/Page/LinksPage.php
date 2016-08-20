@@ -11,7 +11,7 @@ use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
-use Rcms\Page\View\AllLinksEditView;
+use Rcms\Template\AllLinksEditTemplate;
 
 /**
  * Shows the menu editor of all menus on one page.
@@ -56,8 +56,8 @@ class LinksPage extends Page {
         return Authentication::RANK_ADMIN;
     }
 
-    public function getView(Text $text) {
-        return new AllLinksEditView($text, $this->requestToken, $this->allLinks, $this->allMenus);
+    public function getTemplate(Text $text) {
+        return new AllLinksEditTemplate($text, $this->requestToken, $this->allLinks, $this->allMenus);
     }
 
 }

@@ -12,8 +12,8 @@ use Rcms\Core\User;
 use Rcms\Core\UserRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\AccountCreationView;
-use Rcms\Page\View\LoginView;
+use Rcms\Template\AccountCreationTemplate;
+use Rcms\Template\LoginFormTemplate;
 
 /**
  * Page for creating a new user account.
@@ -116,11 +116,11 @@ final class CreateAccountPage extends Page {
         return Page::TYPE_BACKSTAGE;
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->accountCreated) {
-            return new LoginView($text, $text->getUrlPage("login"), [], "", false);
+            return new LoginFormTemplate($text, $text->getUrlPage("login"), [], "", false);
         }
-        return new AccountCreationView($text, $this->newUser, $this->requestToken);
+        return new AccountCreationTemplate($text, $this->newUser, $this->requestToken);
     }
 
 }

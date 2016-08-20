@@ -8,8 +8,8 @@ use Rcms\Core\CategoryRepository;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
-use Rcms\Page\View\ArticleListView;
-use Rcms\Page\View\ArticleSmallListView;
+use Rcms\Template\ArticleListTemplate;
+use Rcms\Template\ArticleSmallListTemplate;
 
 // Protect against calling this script directly
 if (!defined("WEBSITE")) {
@@ -61,13 +61,13 @@ class WidgetArticles extends WidgetDefinition {
 
         if ($displayType >= self::TYPE_LIST) {
             // Small <ul> list
-            $oArticlesView = new ArticleSmallListView($website->getText(), $articles, $website->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
+            $oArticlesTemplate = new ArticleSmallListTemplate($website->getText(), $articles, $website->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
         } else {
             // Real paragraphs
-            $oArticlesView = new ArticleListView($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $website->isLoggedInAsStaff());
+            $oArticlesTemplate = new ArticleListTemplate($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $website->isLoggedInAsStaff());
         }
 
-        $oArticlesView->writeText($stream);
+        $oArticlesTemplate->writeText($stream);
     }
 
     public function getEditor(Website $website, $widget_id, $data) {

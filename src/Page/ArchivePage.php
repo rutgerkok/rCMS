@@ -9,7 +9,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\ArticleArchiveView;
+use Rcms\Template\ArticleArchiveTemplate;
 
 /**
  * Page with links to all admin tasks of the site
@@ -49,8 +49,8 @@ class ArchivePage extends Page {
         return $text->t("articles.archive");
     }
 
-    public function getView(Text $text) {
-        return new ArticleArchiveView($text, $this->foundArticles,
+    public function getTemplate(Text $text) {
+        return new ArticleArchiveTemplate($text, $this->foundArticles,
                 $this->allCategories, $this->articleCountInYears,
                 $this->selectedCategory, $this->selectedYear, $this->showEditLinks);
     }

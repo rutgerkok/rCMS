@@ -4,7 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Authentication;
 use Rcms\Core\Text;
-use Rcms\Page\View\EnterAccessCodeView;
+use Rcms\Template\AccessCodeEnterTemplate;
 
 /**
  * Shown when an access code is required.
@@ -15,8 +15,8 @@ class ErrorAccessCodeRequiredPage extends Page {
         return $text->t("access_key.key_required");
     }
 
-    public function getView(Text $text) {
-        return new EnterAccessCodeView($text);
+    public function getTemplate(Text $text) {
+        return new AccessCodeEnterTemplate($text);
     }
 
     public function getPageType() {

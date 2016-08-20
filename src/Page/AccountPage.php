@@ -11,8 +11,8 @@ use Rcms\Core\User;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\ArticleListView;
-use Rcms\Page\View\CommentsTreeView;
+use Rcms\Template\ArticleListTemplate;
+use Rcms\Template\CommentsTreeTemplate;
 
 /**
  * The code for the profile page of an user.
@@ -87,10 +87,10 @@ EOT;
         $oArticles = new ArticleRepository($website);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
         $loggedInStaff = $website->isLoggedInAsStaff();
-        $oArticleView = new ArticleListView($website->getText(), $articles, 0, true, false, $loggedInStaff);
+        $oArticleTemplate = new ArticleListTemplate($website->getText(), $articles, 0, true, false, $loggedInStaff);
         if (count($articles) > 0) {
             $returnValue = '<h3 class="notable">' . $website->t("main.articles") . "</h3>\n";
-            $returnValue.= $oArticleView->getText();
+            $returnValue.= $oArticleTemplate->getText();
             return $returnValue;
         } else {
             return "";
@@ -225,8 +225,8 @@ EOT;
         
         $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {
-            $commentsView = new CommentsTreeView($website->getText(), $comments, true, $this->user);
-            $returnValue .= $commentsView->getText();
+            $commentsTemplate = new CommentsTreeTemplate($website->getText(), $comments, true, $this->user);
+            $returnValue .= $commentsTemplate->getText();
         } else {
             $returnValue .= "<p><em>" . $website->t("comments.no_comments_found_user") . "</em></p>";
         }

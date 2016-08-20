@@ -13,7 +13,7 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\View\MainMenuEditView;
+use Rcms\Template\MainMenuEditTemplate;
 
 /**
  * A page to set which menu is used as the main menu.
@@ -81,8 +81,8 @@ class EditMainMenuPage extends Page {
         return Authentication::RANK_ADMIN;
     }
 
-    public function getView(Text $text) {
-        return new MainMenuEditView($text, $this->requestToken, $this->menus, $this->menu);
+    public function getTemplate(Text $text) {
+        return new MainMenuEditTemplate($text, $this->requestToken, $this->menus, $this->menu);
     }
 
 }

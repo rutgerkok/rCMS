@@ -7,7 +7,7 @@ use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\View;
+use Rcms\Template\Template;
 
 /**
  * Represents a page on the website.
@@ -82,24 +82,24 @@ abstract class Page {
     /**
      * Returns the view of this page.
      * @param Text $text The messages instance.
-     * @return View|null A view, or null if not using a view (deprecated).
+     * @return Template|null A view, or null if not using a view (deprecated).
      */
-    protected function getView(Text $text) {
+    protected function getTemplate(Text $text) {
         return null;
     }
 
     /**
      * Gets all views on this page, in case this page consists of multiple
      * views. If only one view is used, this method simply wraps
-     * {@link #getView(Messages)} in an one-element array. If no views are used,
+     * {@link #getTemplate(Text)} in an one-element array. If no views are used,
      * the array will be empty. This behaviour is deprecated.
      * @param Text $text The messages instance.
-     * @return View[] Array of views. May be empty if this page is not using
+     * @return Template[] Array of views. May be empty if this page is not using
      * views (deprecated).
      */
-    public function getViews(Text $text) {
+    public function getTemplates(Text $text) {
         // Fall back on method to get a single view
-        $view = $this->getView($text);
+        $view = $this->getTemplate($text);
 
         if ($view === null) {
             // No view found, return empty array
@@ -111,7 +111,7 @@ abstract class Page {
 
     /**
      * Gets the HTML content of this page. This method is deprecated, use
-     * getViews instead.
+     * getTemplates instead.
      * @return string The HTML content of this page.
      */
     public function getPageContent(Website $website, Request $request) {

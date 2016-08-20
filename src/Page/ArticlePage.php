@@ -10,7 +10,7 @@ use Rcms\Core\Request;
 use Rcms\Core\User;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\ArticleView;
+use Rcms\Template\ArticleTemplate;
 
 class ArticlePage extends Page {
 
@@ -41,8 +41,8 @@ class ArticlePage extends Page {
         return $this->article->getTitle();
     }
 
-    public function getView(Text $text) {
-        return new ArticleView($text, $this->article, $this->editLinks, $this->comments, $this->currentUser);
+    public function getTemplate(Text $text) {
+        return new ArticleTemplate($text, $this->article, $this->editLinks, $this->comments, $this->currentUser);
     }
 
     public function getMinimumRank() {

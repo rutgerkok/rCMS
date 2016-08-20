@@ -8,7 +8,7 @@ use Rcms\Core\Text;
 use Rcms\Core\User;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\View\LoggedInOtherView;
+use Rcms\Template\LoggedInOtherTemplate;
 
 class LoginOtherPage extends Page {
 
@@ -41,12 +41,12 @@ class LoginOtherPage extends Page {
         return $text->t("main.log_in");
     }
 
-    public function getView(Text $text) {
+    public function getTemplate(Text $text) {
         if ($this->newUser === null) {
             // Just display the error
-            return new LoggedInOtherView($text);
+            return new LoggedInOtherTemplate($text);
         }
-        return new LoggedInOtherView($text, $this->newUser);
+        return new LoggedInOtherTemplate($text, $this->newUser);
     }
 
     public function getMinimumRank() {

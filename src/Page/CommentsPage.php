@@ -8,7 +8,7 @@ use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 
-use Rcms\Page\View\CommentsTreeView;
+use Rcms\Template\CommentsTreeTemplate;
 
 /**
  * Page with the latest comments on the site.
@@ -34,8 +34,8 @@ class CommentsPage extends Page {
         return $text->t("comments.comments");
     }
 
-    public function getView(Text $text) {
-        return new CommentsTreeView($text, $this->comments, true, $this->viewingUser);
+    public function getTemplate(Text $text) {
+        return new CommentsTreeTemplate($text, $this->comments, true, $this->viewingUser);
     }
 
 }
