@@ -1,11 +1,15 @@
 <?php
-/*
- * The main configuration file.
- *
- * Save a copy of this file as config.php, then edit the settings in that file.
- */
+// This is the main configuration file. This is a PHP file. That means that the
+// first line must start with <?php, that all characters after // are ignored by
+// the website and that all literal values must 'quoted'.
 
-/**** Database settings ****/
+
+
+// DATABASE SETTINGS
+
+// The website needs to store all content somewhere. rCMS uses a MySQL
+// (or MariaDB) server for this. If you are not sure about these values, ask
+// your hosting provider for the MySQL access settings.
 
 // Location of mysql server, usually 'localhost'
 $this->config['database_location'] = 'localhost';
@@ -19,42 +23,67 @@ $this->config['database_user'] = 'root';
 // Your database password, for example 'rgo93ly69h'
 $this->config['database_password'] = 'rgo93ly69h';
 
-// A prefix. No two installations of rCMS on a single database may have the same
-// prefix
+// A prefix used for all tables in the database. If you want to run mutliple
+// instances of rCMS on the same database, you'll need to use a different prefix
+// for both of them.
 $this->config['database_table_prefix'] = 'rcms_'; 
 
-/**** Paths ****/
+
+
+// PATHS
+
+// The website needs to know where all the files are stored. The values here
+// depend on how you installed rCMS.
+
 // Note: the trailing slash is **required** in each and every path.
-// __DIR__  simply represents the folder where this config file is stored.
+// __DIR__  simply represents the folder where this config file is stored. It is
+// not a literal value, so it must not be quoted. The dot (.) is used to stitch
+// two values together, for example  __DIR__ . '/web/' stitches the directory of
+// this config file together with the literal path '/web/'.
 
-// The location of the folder with all the extensions. You can point multiple
-// sites to the same extensions folder, and still have different active
-// extensions in each site.
-$this->config['uri_extend'] = __DIR__ . '/extend/';
-
-// The location of the folder with all publicy accessable files. You can move
-// this to any location you like on your website, but 
+// The internal location (on the web server) of the web directory: this is the
+// folder with all publicly accessible files.
+//
+// If (and only if) the web directory is not placed in the same directory as
+// this config file, you'll need to open up the environment.php file in the web
+// directory (not the environment.php file in this directory) and follow the
+// instructions there.
 $this->config['uri_web'] = __DIR__ . '/web/';
 
-// Set this the URL of the website. This can for example be
-// http://www.example.com/ . You can leave out the protocol and domain parts, so
-// /foo/ is equal to to http://www.example.com/foo/ .
-// When changing this, also go to that folder and change the environment.php
-// file there to point to the enviroment.php in this folder.
+// Set this to where the website can be found on the internet. It must be the
+// public URL to the web directory (see above).
 $this->config['url_web'] = '/';
+
+// The location of the folder with all the extensions.
+$this->config['uri_extend'] = __DIR__ . '/extend/';
 
 // When set to true the index.php part of the links on the site is removed, so
 // http://www.example.com/index.php/article/10 turns into
 // http://www.example.com/article/10 .
-// Requires the .htaccess file with mod_rewrite support enabled.
+//
+// The web server needs additional configuration for this. If you are running
+// Apache with .htaccess and mod_rewrite support enabled, it will work
+// automatically. If none of the links work on the website, set this to false.
+//
+// Note that true and false are not literal values, but constants, so don't put
+// quotes around them.
 $this->config['url_rewrite'] = true;
 
-// CKEditor path. Leave blank to disable CKEditor, leaving you with a simple
-// textfield.
-$this->config['url_ckeditor'] = $this->config['url_web'] . 'ckeditor/';
+// For a fancies text editor, we use CKFinder.
+//
+// New users can leave this setting alone. More advanced users can create a
+// better editor by going to ckeditor.com and installing it themselves on their
+// web server. You can download any edition you want, but I recommend to
+// install the standard edition plus the Enhanced Image, Upload Image and
+// Upload File plugins. If you know HTML (or are interested in learning it), you
+// should also add the Source Dialog plugin.
+//
+// After you have downloaded it, extract it to a location accessible from the
+// internet, and modify this value to point to that location instead.
+$this->config['url_ckeditor'] = '//cdn.ckeditor.com/4.6.0/standard/';
 
 // CKFinder path. Leave blank to disable CKFinder.
-$this->config['url_ckfinder'] = $this->config['url_web'] . 'ckfinder/';
+$this->config['url_ckfinder'] = '';
 
 // The location of the src and vendor folders is always __DIR__ . '/src/' and
 // __DIR__ . '/vendor/', this cannot be changed.
