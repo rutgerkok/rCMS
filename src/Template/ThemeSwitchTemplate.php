@@ -64,6 +64,14 @@ final class ThemeSwitchTemplate extends Template {
 HTML
             );
         }
+
+        $stream->write(<<<HTML
+            <p>
+                <a class="arrow" href="{$text->url("admin")}">{$text->t("main.admin")}</a>         
+            </p>
+HTML
+        );
+
     }
 
 }
