@@ -29,7 +29,7 @@ class DatascienceTheme extends Theme {
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" >
 
-        <link href="' . $elements->getUrlTheme() . 'main.css" rel="stylesheet" type="text/css" />
+        <link href="' . $elements->getUrlTheme() . 'datascience.css" rel="stylesheet" type="text/css" />
         <script src="' . $elements->getUrlJavaScripts() . 'tooltip.js"></script>
         <!--[if lte IE 8]>
             <script src="' . $elements->getUrlJavaScripts() . 'html5.js"></script>

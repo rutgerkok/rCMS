@@ -12,6 +12,7 @@ use RuntimeException;
 class ThemeManager {
 
     const THEME_INFO_FILE_NAME = "info.txt";
+    const TEMPORARY_THEME = "temp";
 
     /**
      * @var Website The website object.
@@ -38,8 +39,8 @@ class ThemeManager {
                 //  "./", "../", ".somehiddentheme/"
                 return false;
             }
-            if (!is_dir($themesDir . $fileName)) {
-                // Only include directories
+            if (!$this->themeExists($fileName)) {
+                // Only include theme directories, not files
                 return false;
             }
 
@@ -74,11 +75,14 @@ class ThemeManager {
      */
     public function themeExists($directoryName) {
         if (!is_string($directoryName)
-            || strpos($directoryName, '/') !== false
-            || strpos($directoryName, '\\') !== false) {
-            // Path is not a string or contains / or \
+            || !preg_match("/^[a-z0-9_\\-]+$/", $directoryName)) {
+            // Path is not a string or contains special characters
             // So it is surely not a theme, and checking it wouldn't
-            //even be safe
+            // even be safe
+            return false;
+        }
+        if (strToLower($directoryName) == self::TEMPORARY_THEME) {
+            // Ignore the temporary installation theme
             return false;
         }
 
@@ -92,7 +96,7 @@ class ThemeManager {
      * @throws RuntimeException If no valid theme with that name exists.
      */
     public function getTheme($themeDirectoryName) {
-        if (!$this->themeExists($themeDirectoryName)) {
+        if (!$this->themeExists($themeDirectoryName) && $themeDirectoryName != self::TEMPORARY_THEME) {
             throw new RuntimeException("Theme directory does not exist");
         }
         $themeFile = $this->getUriTheme($themeDirectoryName) . "main.php";

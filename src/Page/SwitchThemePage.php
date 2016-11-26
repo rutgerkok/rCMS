@@ -47,7 +47,7 @@ final class SwitchThemePage extends Page {
     }
 
     public function getPageTitle(Text $text) {
-        return $text->t("themes.edit.title");
+        return $text->t("themes.switch.title");
     }
     
     public function getPageType() {

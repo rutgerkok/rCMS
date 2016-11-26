@@ -15,9 +15,11 @@ class SiteSettingsPage extends Page {
     protected $copyright;
     protected $password;
     protected $language;
-    protected $theme;
     protected $user_account_creation;
     protected $saved = false;
+    /**
+     * @var RequestToken Token for protecting the request.
+     */
     protected $token;
 
     public function init(Website $website, Request $request) {
@@ -25,7 +27,6 @@ class SiteSettingsPage extends Page {
         $this->copyright = $website->getConfig()->get("copyright");
         $this->password = $website->getConfig()->get("password");
         $this->language = $website->getConfig()->get("language");
-        $this->theme = $website->getConfig()->get("theme");
         $this->user_account_creation = $website->getConfig()->get("user_account_creation");
 
         if (isSet($_REQUEST["submit"]) && Validate::requestToken($request)) {
@@ -55,7 +56,6 @@ class SiteSettingsPage extends Page {
     }
 
     public function getPageContent(Website $website, Request $request) {
-        $themes = $website->getThemeManager()->getAllThemeNames();
         $languages = $this->get_sub_directory_names($website->getUriTranslations());
         $user_account_creation_checked = $this->user_account_creation ? 'checked="checked"' : '';
         $top_message = $website->t("site_settings.editing_site_settings.explained");
@@ -106,13 +106,6 @@ EOT;
                     {$this->get_dropdown_list("option_language", $languages, $this->language, true)}
                     <br />
                     <em>{$website->t("site_settings.language.explained")}</em>
-                </p>
-                <p>
-                    <label for="option_theme">{$website->t("site_settings.theme")}</label>:<span class="required">*</span>
-                    <br />
-                    {$this->get_dropdown_list("option_theme", $themes, $this->theme, true)}
-                    <br />
-                    <em>{$website->t("site_settings.theme.explained")}</em>
                 </p>
                 <p>
                     <label for="option_user_account_creation">
@@ -166,15 +159,6 @@ EOT;
             $config->set($database, "language", $language);
         } else {
             $website->addError($website->t("site_settings.language") . " " . $website->t("errors.not_found"));
-        }
-
-        // Theme
-        $theme = $website->getRequestString("option_theme", $this->theme);
-        if ($website->getThemeManager()->themeExists($theme)) {
-            $this->theme = $theme;
-            $config->set($database, "theme", $theme);
-        } else {
-            $website->addError($website->t("site_settings.theme") . " " . $website->t("errors.not_found"));
         }
     }
 

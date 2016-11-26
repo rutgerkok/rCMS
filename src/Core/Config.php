@@ -17,7 +17,7 @@ class Config {
     const CURRENT_DATABASE_VERSION = 5;
 
     const DEFAULT_LANGUAGE = "en";
-    const DEFAULT_THEME = "rkok";
+    const DEFAULT_THEME = "temp";
     const DEFAULT_TITLE = "Welcome!";
 
     const OPTION_CKEDITOR_URL = "url_ckeditor";

@@ -121,7 +121,7 @@ class DatabaseInstaller {
         $database_version = Config::CURRENT_DATABASE_VERSION;
         $sql = <<<EOT
                 INSERT INTO `settings` (`setting_name`, `setting_value`) VALUES
-                ('theme', 'rkok'),
+                ('theme', 'temp'),
                 ('title', 'My website'),
                 ('copyright', 'Copyright $year - built with rCMS'),
                 ('password', ''),

@@ -1,0 +1,8 @@
+/* Temporary stylesheet used until a theme has been installed. Used during the installation of the website. */
+body {
+    margin: 1em auto;
+    max-width: 20em;
+    line-height: 1.4;
+    color: #444;
+    padding: 0 1em;
+}

@@ -28,7 +28,7 @@ final class InstallationCompletedTemplate extends Template {
                     <td>admin</td>
                 </tr>
             </table>
-            <p><a class="arrow" href="{$text->e($text->getUrlPage("login"))}">{$text->t("main.log_in")}</p>
+            <p><a class="arrow" href="{$text->e($text->getUrlPage("switch_theme"))}">{$text->t("main.log_in")}</p>
 HTML
         );
     }

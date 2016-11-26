@@ -1,0 +1,7 @@
+name=Temporary theme
+description=Used during the installation of the website.
+version=1.0
+website=http://www.rutgerkok.nl/
+author=Rutger Kok
+author.website=http://www.rutgerkok.nl/
+widget_areas=0
