@@ -20,7 +20,7 @@ final class WidgetMeta {
         $this->infoFile = $infoFile;
     }
 
-    public function getName() {
+    public function getDisplayName() {
         return $this->infoFile->getString("name", $this->widgetName);
     }
 

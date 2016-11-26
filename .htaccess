@@ -1,8 +1,0 @@
-<IfModule mod_rewrite.c>
-# Rewrite /foo/bar to index.php/foo/bar
-RewriteEngine On
-  
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^([A-Za-z0-9\-_/]*)$ index.php/$1 [PT,L]
-</IfModule>

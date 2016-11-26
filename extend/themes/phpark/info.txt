@@ -1,5 +1,5 @@
 name=Prins Hendrikpark
-description=Thema voor prinshendrikpark.nl
+description=Thema voor prinshendrikpark.nl.
 version=1.0
 website=http://www.prinshendrikpark.nl/
 author=Prins Hendrikpark

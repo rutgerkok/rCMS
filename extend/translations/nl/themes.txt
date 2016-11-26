@@ -1,0 +1,8 @@
+_=Vertalingen voor thema's
+view_more_information=Meer informatie
+created_by=Gemaakt door {0}
+edit.title=Het uiterlijk van de site wijzigen
+switch_to_this=Gebruik dit uiterlijk
+switching_disabled=Het wisselen van thema is uitgeschakeld. De reden hiervoor is dat de website geen schrijfrechten heeft in de juiste map.
+does_not_exist=Dat thema bestaat niet.
+successfully_switched=Het thema is gewijzigd.

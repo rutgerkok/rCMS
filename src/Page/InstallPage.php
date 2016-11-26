@@ -39,7 +39,7 @@ class InstallPage extends Page {
             $installer->createOrUpdateTables($website);
             $this->justInstalled = true;
         }
-        
+
         if ($this->databaseState == DatabaseInstaller::STATE_FROM_FUTURE) {
             $text = $website->getText();
             $text->addError($text->t("install.database_version_from_future"));

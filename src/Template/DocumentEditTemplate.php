@@ -172,7 +172,7 @@ HTML;
 
         $installedWidgets = $this->installedWidgets->getInstalledWidgets();
         foreach ($installedWidgets as $installedWidget) {
-            $widgetNameHtml = htmlSpecialChars($installedWidget->getName());
+            $widgetNameHtml = htmlSpecialChars($installedWidget->getDisplayName());
             $descriptionHtml = htmlSpecialChars($installedWidget->getDescription());
 
             $widgetUrlHtml = htmlSpecialChars($installedWidget->getWidgetWebsite());

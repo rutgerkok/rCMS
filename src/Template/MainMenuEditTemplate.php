@@ -175,7 +175,7 @@ HTML
         $returnValue = '<select class="button" name="main_menu_id" id="main_menu_id">';
         foreach ($selectableMenus as $menu) {
             $returnValue.= '<option value="' . $menu->getId() . '">';
-            $returnValue.= $text->e($menu->getName());
+            $returnValue.= $text->e($menu->getDirectoryName());
             $returnValue.= '</option>';
         }
         $returnValue.= '</select>';

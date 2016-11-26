@@ -39,7 +39,7 @@ class PageRenderer {
      * @param StreamInterface $stream The stream to render the page to.
      */
     public function render(StreamInterface $stream) {
-        $themeUrl = $this->website->getThemeManager()->getUrlTheme($this->themeDirectoryName);
+        $themeUrl = $this->website->getUrlActiveTheme();
         $themeElements = new ThemeElements($this->website, $this->page, $this->request, $themeUrl);
         
         $theme = $this->website->getThemeManager()->getTheme($this->themeDirectoryName);

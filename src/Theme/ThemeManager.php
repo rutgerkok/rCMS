@@ -2,11 +2,11 @@
 
 namespace Rcms\Theme;
 
+use BadMethodCallException;
+use Rcms\Core\BulkFileSystem;
 use Rcms\Core\Config;
 use Rcms\Core\InfoFile;
 use Rcms\Core\Website;
-
-use BadMethodCallException;
 use RuntimeException;
 
 class ThemeManager {
@@ -23,16 +23,16 @@ class ThemeManager {
     }
 
     /**
-     * Gets the directory name of all themes that exist. In other words, this
+     * Gets the ThemeMeta of all themes that exist. In other words, this
      * method returns all possible values for which self::themeExists returns
      * true.
      * @return string[] All theme directory names.
      */
-    public function getAllThemeNames() {
+    public function getAllThemes() {
         $themesDir = $this->website->getUriThemes();
 
         $rawFiles = scanDir($themesDir);
-        return array_filter($rawFiles, function ($fileName) use ($themesDir) {
+        $allThemeDirs = array_filter($rawFiles, function ($fileName) use ($themesDir) {
             if ($fileName[0] === '.') {
                 // Directories starting with . should be ignored. This includes
                 //  "./", "../", ".somehiddentheme/"
@@ -45,6 +45,10 @@ class ThemeManager {
 
             return true;
         });
+
+        return array_map(function($themeName) {
+            return $this->getThemeMeta($themeName);
+        }, $allThemeDirs);
     }
 
     /**
@@ -69,7 +73,16 @@ class ThemeManager {
      * @return boolean Whether that theme exists.
      */
     public function themeExists($directoryName) {
-        return is_dir($this->website->getUriThemes() . $directoryName);
+        if (!is_string($directoryName)
+            || strpos($directoryName, '/') !== false
+            || strpos($directoryName, '\\') !== false) {
+            // Path is not a string or contains / or \
+            // So it is surely not a theme, and checking it wouldn't
+            //even be safe
+            return false;
+        }
+
+        return is_dir($this->getUriTheme($directoryName));
     }
 
     /**
@@ -79,6 +92,9 @@ class ThemeManager {
      * @throws RuntimeException If no valid theme with that name exists.
      */
     public function getTheme($themeDirectoryName) {
+        if (!$this->themeExists($themeDirectoryName)) {
+            throw new RuntimeException("Theme directory does not exist");
+        }
         $themeFile = $this->getUriTheme($themeDirectoryName) . "main.php";
         if (!file_exists($themeFile)) {
             throw new RuntimeException("Theme file does not exist");
@@ -96,8 +112,44 @@ class ThemeManager {
      * Gets the theme currently used on the site.
      * @return ThemeMeta The theme.
      */
-    public function getCurrentTheme() {
+    public function getCurrentThemeMeta() {
         return $this->getThemeMeta($this->website->getConfig()->get(Config::OPTION_THEME));
+    }
+
+    /**
+     * Checks if we can switch to another theme. When the directory containing
+     * the active theme is not writeable, we cannot switch themes.
+     * cannot switch to another theme.
+     * @return bool True if we can switch to another theme, false otherwise.
+     */
+    public function canSwitchThemes() {
+        return is_writeable($this->website->getUriActiveTheme());
+    }
+    
+    /**
+     * Changes the active theme to the given theme.
+     * @param string $themeDirectoryName The name of the new theme, like "forest".
+     * @throws BadMethodCallException If the theme name is invalid.
+     * @throws RuntimeException If the file system is read-only.
+     */
+    public function setActiveTheme($themeDirectoryName) {
+        if (!$this->themeExists($themeDirectoryName)) {
+            throw new BadMethodCallException("Given theme does not exist");
+        }
+        if (!$this->canSwitchThemes()) {
+            throw new RuntimeException("Cannot change theme, lacking file permissions");
+        }
+
+        $publicThemeDir = $this->website->getUriActiveTheme();
+        $internalThemeDir = $this->getUriTheme($themeDirectoryName) . "web/";
+        if (!file_exists($internalThemeDir)) {
+
+        }
+
+        $fileSystem = new BulkFileSystem();
+        $fileSystem->clearDirectory($publicThemeDir);
+        $fileSystem->copyFiles($internalThemeDir, $publicThemeDir);
+        $this->website->getConfig()->set($this->website->getDatabase(), Config::OPTION_THEME, $themeDirectoryName);
     }
 
     /**
@@ -107,16 +159,6 @@ class ThemeManager {
      */
     private function getUriTheme($themeDirectoryName) {
         return $this->website->getUriThemes() . $themeDirectoryName . "/";
-    }
-
-    /**
-     * Gets the url of theme directory.
-     * @param string $themeDirectoryName The theme directory name.
-     * @return string The url.
-     */
-    public function getUrlTheme($themeDirectoryName) {
-        $themesUrl = $this->website->getUrlThemes();
-        return $themesUrl->withPath($themesUrl->getPath() . $themeDirectoryName . "/");
     }
 
 }

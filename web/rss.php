@@ -8,7 +8,7 @@ use DateTime;
 header("Content-type: application/rss+xml");
 
 // Setup environment
-require("environment.php");
+require(__DIR__ . "/environment.php");
 
 // Objects
 $website = new Website();

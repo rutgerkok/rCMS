@@ -1,0 +1,8 @@
+_=Translations for themes
+view_more_information=More information
+created_by=Created by {0}
+edit.title=Changing the site theme
+switch_to_this=Switch to this theme
+switching_disabled=Switching themes is disabled. The reason is that the website doesn't have write permission in the theme folder.
+does_not_exist_named=That theme does not exist.
+successfully_switched=Successfully switched the theme.

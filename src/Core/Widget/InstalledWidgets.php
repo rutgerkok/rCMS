@@ -133,7 +133,7 @@ class InstalledWidgets {
      * @return string[] All widget areas, indexed by their id.
      */
     public function getWidgetAreas() {
-        $areas = $this->website->getThemeManager()->getCurrentTheme()->getWidgetAreas($this->website);
+        $areas = $this->website->getThemeManager()->getCurrentThemeMeta()->getWidgetAreas($this->website);
         $areas[1] = $this->website->t("widgets.the_homepage");
         return $areas;
     }

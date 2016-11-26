@@ -4,6 +4,7 @@ namespace Rcms\Core;
 
 use PDO;
 use PDOException;
+use Psr\Http\Message\UriInterface;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Theme\ThemeManager;
 use Zend\Diactoros\Uri;
@@ -33,12 +34,6 @@ class Website {
     protected $text;
 
     /**
-     * @deprecated For old page system. Errors are now always echoed after the
-     * page is rendered, so old pages shouldn't try to display them themselves 
-     */
-    public $errorsDisplayed = true;
-
-    /**
      * Constructs the Website. Page- and theme-specific logic won't be loaded yet.
      */
     function __construct() {
@@ -47,7 +42,7 @@ class Website {
 
         // Site settings and database connection
         $this->config = new Config(dirname(dirname(__DIR__)) . '/' . self::CONFIG_FILE);
-        $this->text = new Text(new Uri($this->getConfig()->get('url')), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
+        $this->text = new Text(new Uri($this->getConfig()->get('url_web')), $this->getUriTranslations(Config::DEFAULT_LANGUAGE), $this->getUrlJavaScripts());
 
         // Connect to database, read settings
         try {
@@ -81,25 +76,8 @@ class Website {
         }
         $this->themesObject = new ThemeManager($this);
 
-        // Workarounds for older PHP versions (5.3)
-        $this->requireFunctions("http_response_code");
-
         // Locales
         setLocale(LC_ALL, explode("|", $this->text->t("main.locales")));
-    }
-
-    /**
-     * For compability with old PHP versions, this method loads PHP equivalents
-     * of unimplemented functions.
-     * @param $functions string[] The functions to load.
-     */
-    private function requireFunctions($functions) {
-        $arguments = func_get_args();
-        foreach ($arguments as $function) {
-            if (!function_exists($function)) {
-                require_once ($this->getUriLibraries() . $function . '.function.php');
-            }
-        }
     }
 
     // GETTING OTHER OBJECTS
@@ -164,50 +142,17 @@ class Website {
 
     // Paths
 
-    /** Returns the path of the library directory */
-    public function getUriLibraries() {
-        return $this->getUriApplication() . "library/";
-    }
-
-    /** Returns the path of all default controllers, models, pages and views */
-    public function getUriApplication() {
-        return $this->getConfig()->get('uri') . "src/";
-    }
-
-    /** Returns the path of all pages */
-    public function getUriPages() {
-        return $this->getUriApplication() . "Page/";
-    }
-
     /** Returns the main site url. Other urls start with this */
     public function getUrlMain() {
-        return new Uri($this->getConfig()->get('url'));
-    }
-
-    /** Returns the site root directory */
-    public function getUriMain() {
-        return $this->getConfig()->get('uri');
+        return new Uri($this->getConfig()->get('url_web'));
     }
 
     /**
-     * Gets the url of the public content directory.
-     * @return UriInterface The url (with a trailing slash).
-     */
-    public function getUrlContent() {
-        return new Uri($this->getConfig()->get('url') . "content/");
-    }
-
-    /**
-     * Gets the interal uri of the public content directory.
+     * Gets the interal uri of the public (web) content directory.
      * @return string The url (with a trailing slash).
      */
-    public function getUriContent() {
-        return $this->getConfig()->get('uri') . "content/";
-    }
-
-    /** @deprecated Only accounts for old page system. */
-    public function getUriPage($name) {
-        return $this->getUriPages() . $name . ".inc";
+    public function getUriWeb() {
+        return $this->getConfig()->get('uri_web');
     }
 
     /**
@@ -226,12 +171,28 @@ class Website {
     }
 
     /**
-     * Gets the (web-accessible) url of the themes directory.
+     * Gets the (web-accessible) url of the theme directory.
      * @return UriInterface The url (with a trailing slash).
      */
-    public function getUrlThemes() {
-        $contentUrl = $this->getUrlContent();
-        return $contentUrl->withPath($contentUrl->getPath() . "themes/");
+    public function getUrlActiveTheme() {
+        $contentUrl = $this->getUrlMain();
+        return $contentUrl->withPath($contentUrl->getPath() . "theme/");
+    }
+
+    /**
+     * Gets the path of the only web-accessible theme. This is the active theme.
+     * @return string The path, containing a trailing slash.
+     */
+    public function getUriActiveTheme() {
+        return $this->getUriWeb() . "theme/";
+    }
+
+    /**
+     * Gets the path to the folder containing the extensions.
+     * @return string The path to that folder, with a trailing slash.
+     */
+    public function getUriExtend() {
+        return $this->config->get("uri_extend");
     }
 
     /**
@@ -239,15 +200,15 @@ class Website {
      * @return string The uri (with a trailing slash).
      */
     public function getUriThemes() {
-        return $this->getUriContent() . "themes/";
+        return $this->getUriExtend() . "themes/";
     }
 
     /**
      * Gets the uri of the widgets directory.
-     * @return UriInterface The uri (with a trailing slash).
+     * @return string The uri (with a trailing slash).
      */
     public function getUriWidgets() {
-        return $this->getUriContent() . "widgets/";
+        return $this->getUriExtend() . "widgets/";
     }
 
     /**
@@ -255,10 +216,10 @@ class Website {
      * translations directory of a specific language.
      * @param string|null $languageCode When present, the directory of this
      * specific language is returned.
-     * @return UriInterface The uri (with a trailing slash).
+     * @return string The uri (with a trailing slash).
      */
     public function getUriTranslations($languageCode = null) {
-        $path = $this->getUriContent() . "translations/";
+        $path = $this->getUriExtend() . "translations/";
         if ($languageCode !== null) {
             $path.= $languageCode . '/';
         }
@@ -270,37 +231,14 @@ class Website {
      * @return UriInterface The directory (so URL path has a trailing slash)
      */
     public function getUrlJavaScripts() {
-        $contentUrl = $this->getUrlContent();
-        return $contentUrl->withPath($contentUrl->getPath() . "scripts/");
+        $contentUrl = $this->getUrlMain();
+        return $contentUrl->withPath($contentUrl->getPath() . "javascript/");
     }
 
 //Einde paden
 
     public function addError($error) {
         $this->text->addError($error);
-    }
-
-    /**
-     * @deprecated Misused as a way to check if it is safe to save something.
-     * If you need to error count for display purposes, count them yourselves.
-     */
-    public function getErrorCount() {
-        return count($this->text->getErrors());
-    }
-
-    function hasAccess() { //kijkt of site mag worden geladen
-        $access = false;
-        if ($this->getConfig()->get('password') == "") {
-            $access = true;
-        } elseif (isSet($_POST['key']) && $this->getConfig()->get('password') == $_POST['key']) {
-            $access = true;
-        } elseif (isSet($_GET['key']) && $this->getConfig()->get('password') == $_GET['key']) {
-            $access = true;
-        } elseif (isSet($_COOKIE['key']) && $this->getConfig()->get('password') == $_COOKIE['key']) {
-            $access = true;
-        }
-
-        return $access;
     }
 
     public function isLoggedIn() {
@@ -382,23 +320,6 @@ class Website {
             }
         }
         return (int) $default;
-    }
-
-    // For old page system
-
-    /**
-     * @deprecated Used to give old .inc pages the Website context
-     */
-    public function execute($file) {
-        require $file;
-    }
-
-    /**
-     * @deprecated Keeps old page system from breaking. Errors are now printed
-     * by the page renderer.
-     */
-    public function echoErrors() {
-        // Empty!
     }
 
 }

@@ -8,8 +8,8 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\Response\HtmlResponse;
 
-// Setup environment
-require("environment.php");
+// Setup environment (change this 
+require(__DIR__ . "/environment.php");
 
 // We'll need this for every page
 session_start();

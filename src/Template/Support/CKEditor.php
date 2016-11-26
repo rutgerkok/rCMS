@@ -139,7 +139,7 @@ FORM;
         $nameHtml = htmlSpecialChars($name);
         $valueHtml = htmlSpecialChars($value);
 
-        $currentTheme = $this->themes->getCurrentTheme();
+        $currentTheme = $this->themes->getCurrentThemeMeta();
         $editorColor = $currentTheme->getTextEditorColor();
         return <<<EDITOR
             <textarea id="$nameHtml" name="$nameHtml" rows="30" cols="40" style="width:95%">$valueHtml</textarea>

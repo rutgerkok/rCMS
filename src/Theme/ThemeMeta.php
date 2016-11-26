@@ -27,11 +27,59 @@ final class ThemeMeta {
     }
 
     /**
-     * Gets the (directory) name of this theme.
+     * Gets the directory name of this theme.
      * @return string The name of this theme.
      */
-    public function getName() {
+    public function getDirectoryName() {
         return $this->name;
+    }
+
+    /**
+     * Gets the user-friendly name of the theme.
+     * @return string The user-friendly name.
+     */
+    public function getDisplayName() {
+        return $this->infoFile->getString("name", $this->name);
+    }
+    
+    /**
+     * Gets the description of the theme as provided by the author, may be empty.
+     * @return string The description.
+     */
+    public function getDescription() {
+        return $this->infoFile->getString("description", "No description given.");
+    }
+
+    /**
+     * Gets the version of the theme.
+     * @return string The version.
+     */
+    public function getVersion() {
+        return $this->infoFile->getString("version", "0.0.1");
+    }
+
+    /**
+     * Gets the name of the author of this theme.
+     * @return string The author.
+     */
+    public function getAuthor() {
+        return $this->infoFile->getString("author", "Unknown");
+    }
+
+    /**
+     * Gets the URL to the website of the author.
+     * @return string The URL.
+     */
+    public function getAuthorWebsite() {
+        return $this->infoFile->getString("author.website");
+    }
+
+    /**
+     * Gets the URL to the website of theme.
+     * @return string The URL.
+     */
+    public function getThemeWebsite() {
+        return $this->infoFile->getString("website");
     }
 
     /**

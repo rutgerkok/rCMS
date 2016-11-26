@@ -1,5 +1,5 @@
 name=Datascience
-description=Datascience theme
+description=Datascience theme.
 version=1.0
 website=http://www.rutgerkok.nl/joosts/map/met/datascience/
 author=Rutger Kok

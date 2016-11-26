@@ -7,7 +7,7 @@ use Rcms\Template\DatePickerTemplate;
 use Zend\Diactoros\Stream;
 
 // Setup environment
-require("environment.php");
+require(__DIR__ . "/environment.php");
 
 $website = new Website();
 
@@ -26,8 +26,8 @@ $calendarTemplate = new DatePickerTemplate($website->getText(), $dateTime, $arti
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="<?php echo $website->getUrlThemes() . $website->getConfig()->get('theme') ?>/main.css" rel="stylesheet" type="text/css" />
-        <link href="<?php echo $website->getUrlContent() ?>whitebackground.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $website->getUrlActiveTheme() ?>main.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $website->getUrlMain() ?>whitebackground.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="<?php echo $website->getUrlJavaScripts() ?>tooltip.js"> </script>
         <title><?php echo $website->t("calendar.pick_a_date"); ?></title>
     </head>

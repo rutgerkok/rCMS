@@ -24,18 +24,24 @@ $this->config['database_password'] = 'rgo93ly69h';
 $this->config['database_table_prefix'] = 'rcms_'; 
 
 /**** Paths ****/
-// Note: the trailing slash is required in each path.
+// Note: the trailing slash is **required** in each and every path.
+// __DIR__  simply represents the folder where this config file is stored.
 
-// Where the files of rCMS are stored. The 'src' and 'content' directories must
-// be subdirectories of this directory.
-// Note: there is usually no need to change this setting. The default setting,
-// "__DIR__ . '/';", assumes that rCMS is installed in the same directory as the
-// config file.
-$this->config['uri'] = __DIR__ . '/';
+// The location of the folder with all the extensions. You can point multiple
+// sites to the same extensions folder, and still have different active
+// extensions in each site.
+$this->config['uri_extend'] = __DIR__ . '/extend/';
 
-// Set this the URL of the website. Setting it to '/' will make the browser use
-// the home page of the website. If
-$this->config['url'] = '/';
+// The location of the folder with all publicy accessable files. You can move
+// this to any location you like on your website, but 
+$this->config['uri_web'] = __DIR__ . '/web/';
+
+// Set this the URL of the website. This can for example be
+// http://www.example.com/ . You can leave out the protocol and domain parts, so
+// /foo/ is equal to to http://www.example.com/foo/ .
+// When changing this, also go to that folder and change the environment.php
+// file there to point to the enviroment.php in this folder.
+$this->config['url_web'] = '/';
 
 // When set to true the index.php part of the links on the site is removed, so
 // http://www.example.com/index.php/article/10 turns into
@@ -45,7 +51,10 @@ $this->config['url_rewrite'] = true;
 
 // CKEditor path. Leave blank to disable CKEditor, leaving you with a simple
 // textfield.
-$this->config['ckeditor_url'] = $this->config['url'] . 'ckeditor/';
+$this->config['url_ckeditor'] = $this->config['url_web'] . 'ckeditor/';
 
 // CKFinder path. Leave blank to disable CKFinder.
-$this->config['ckfinder_url'] = $this->config['url'] . 'ckfinder/';
+$this->config['url_ckfinder'] = $this->config['url_web'] . 'ckfinder/';
+
+// The location of the src and vendor folders is always __DIR__ . '/src/' and
+// __DIR__ . '/vendor/', this cannot be changed.

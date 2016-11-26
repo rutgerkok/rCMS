@@ -111,8 +111,9 @@ abstract class Page {
 
     /**
      * Gets the HTML content of this page. This method is deprecated, use
-     * getTemplates instead.
+     * getTemplate instead.
      * @return string The HTML content of this page.
+     * @deprecated Use getTemplate instead.
      */
     public function getPageContent(Website $website, Request $request) {
         return "";

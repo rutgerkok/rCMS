@@ -165,7 +165,7 @@ class Text {
      * @throws BadMethodCallException If no such category exists.
      */
     protected function loadTranslations($translationCategory) {
-        $translationsFile = $this->translationsDir . "/translations_" . $translationCategory . ".txt";
+        $translationsFile = $this->translationsDir . "/" . $translationCategory . ".txt";
         if (!file_exists($translationsFile)) {
             throw new BadMethodCallException("Unknown translation category: " . htmlSpecialChars($translationCategory));
         }

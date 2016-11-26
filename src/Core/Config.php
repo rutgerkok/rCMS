@@ -20,8 +20,8 @@ class Config {
     const DEFAULT_THEME = "rkok";
     const DEFAULT_TITLE = "Welcome!";
 
-    const OPTION_CKEDITOR_URL = "ckeditor_url";
-    const OPTION_CKFINDER_URL = "ckfinder_url";
+    const OPTION_CKEDITOR_URL = "url_ckeditor";
+    const OPTION_CKFINDER_URL = "url_ckfinder";
 
     const OPTION_DATABASE_NAME = "database_name";
     const OPTION_DATABASE_HOST = "database_location";
