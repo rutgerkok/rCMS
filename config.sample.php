@@ -26,7 +26,7 @@ $this->config['database_password'] = 'rgo93ly69h';
 // A prefix used for all tables in the database. If you want to run mutliple
 // instances of rCMS on the same database, you'll need to use a different prefix
 // for both of them.
-$this->config['database_table_prefix'] = 'rcms_'; 
+$this->config['database_table_prefix'] = 'rcms_';
 
 
 
@@ -34,24 +34,25 @@ $this->config['database_table_prefix'] = 'rcms_';
 
 // The website needs to know where all the files are stored. The values here
 // depend on how you installed rCMS.
-
+//
 // Note: the trailing slash is **required** in each and every path.
 // __DIR__  simply represents the folder where this config file is stored. It is
 // not a literal value, so it must not be quoted. The dot (.) is used to stitch
-// two values together, for example  __DIR__ . '/web/' stitches the directory of
-// this config file together with the literal path '/web/'.
+// two values together, for example  __DIR__ . '/public_html/' stitches the
+// directory of this config file together with the literal path '/public_html/'.
 
-// The internal location (on the web server) of the web directory: this is the
-// folder with all publicly accessible files.
+
+// The internal location (on the web server) of the public_html directory: this
+// is the folder with all publicly accessible files.
 //
-// If (and only if) the web directory is not placed in the same directory as
-// this config file, you'll need to open up the environment.php file in the web
-// directory (not the environment.php file in this directory) and follow the
-// instructions there.
-$this->config['uri_web'] = __DIR__ . '/web/';
+// If (and only if) the public_html directory is not placed in the same
+// directory as this config file, you'll need to open up the environment.php
+// file in the public_html directory (not the environment.php file in this
+// directory) and follow the instructions there.
+$this->config['uri_web'] = __DIR__ . '/public_html/';
 
 // Set this to where the website can be found on the internet. It must be the
-// public URL to the web directory (see above).
+// public URL to the public_html directory (see above).
 $this->config['url_web'] = '/';
 
 // The location of the folder with all the extensions.
