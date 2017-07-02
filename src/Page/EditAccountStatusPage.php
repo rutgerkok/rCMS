@@ -73,7 +73,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         // Show form
         if ($show_form) {
             // Variables
-            $status = $website->getRequestInt("status", $this->user->getStatus());
+            $status = $request->getRequestInt("status", $this->user->getStatus());
             $statuses = array(Authentication::STATUS_NORMAL, Authentication::STATUS_BANNED, Authentication::STATUS_DELETED);
             $status_text = htmlSpecialChars($request->getRequestString("status_text", $this->user->getStatusText()));
 
@@ -82,7 +82,7 @@ class EditAccountStatusPage extends EditPasswordPage {
                 <p>
                     {$website->t("users.status.edit.explained")}
                     {$website->tReplaced("accounts.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
-                </p>  
+                </p>
                 <p>
                     {$website->t("main.fields_required")}
                 </p>

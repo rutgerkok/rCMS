@@ -41,7 +41,7 @@ class AccountManagementPage extends Page {
     }
 
     public function getPageContent(Website $website, Request $request) {
-        $page = max(0, $website->getRequestInt("id", 0));
+        $page = $request->getParamInt(0, 0);
         $usersCount = $website->getAuth()->getUserRepository()->getRegisteredUsersCount();
 
         // Check page id
