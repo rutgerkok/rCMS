@@ -77,7 +77,7 @@ class AccountPage extends Page {
                 {$this->get_articles_html($website)}
                 {$this->get_comments_html($website)}
             </div>
-            
+
 EOT;
         return $textToDisplay;
     }
@@ -138,7 +138,7 @@ EOT;
 
     /**
      * Returns links to edit the profile, based on the permissions of the user
-     * that is viewing this page. 
+     * that is viewing this page.
      */
     public function get_edit_links_html(Website $website) {
         $viewing_user = $website->getAuth()->getCurrentUser();
@@ -222,10 +222,11 @@ EOT;
     public function get_comments_html(Website $website) {
         $oComments = new CommentRepository($website->getDatabase());
         $comments = $oComments->getCommentsUser($this->user->getId());
-        
+        $viewer = $website->getAuth()->getCurrentUser();
+
         $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {
-            $commentsTemplate = new CommentsTreeTemplate($website->getText(), $comments, true, $this->user);
+            $commentsTemplate = new CommentsTreeTemplate($website->getText(), $comments, true, $viewer);
             $returnValue .= $commentsTemplate->getText();
         } else {
             $returnValue .= "<p><em>" . $website->t("comments.no_comments_found_user") . "</em></p>";
