@@ -44,7 +44,7 @@ create=Maak een nieuwe account aan
 create.title=Maak een account aan
 create.explained=U kunt zich hier opgeven voor een account. Uw gebruikersnaam mag alleen simpele letters (geen é, ü of ç), cijfers en het teken "_" bevatten. U gebruikt deze naam om in te loggen. Daarnaast kiest u een weergavenaam. Hiervoor mag u wel speciale tekens gebruiken. Deze naam wordt overal weergegeven waar u een reactie achterlaat. U wordt aangeraden uw voornaam en achternaam hiervoor te gebruiken, maar dit is niet verplicht.<br /><br />U hoeft uw e-mail niet in te vullen. Als u een e-mail invult zult u ook hiermee kunnen inloggen. Uw e-mailadres zal nergens op de site worden weergegeven. Uw e-mail wordt niet gecontroleerd, zorg dus dat u het goed gespeld heeft.
 create.done=Uw account is gemaakt! U kunt meteen proberen om in te loggen.
-create.other.done-De account is gemaakt!
+create.other.done=De account is gemaakt!
 create_another=Maak nog een account
 gravatar.explained=Deze afbeelding is gebaseerd op uw e-mailadres. U kunt deze afbeelding wijzigen op {0}.
 there_is_one_registered_user=Er is één geregistreerde gebruiker.
