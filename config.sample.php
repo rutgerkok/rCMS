@@ -81,7 +81,7 @@ $this->config['url_rewrite'] = true;
 //
 // After you have downloaded it, extract it to a location accessible from the
 // internet, and modify this value to point to that location instead.
-$this->config['url_ckeditor'] = '//cdn.ckeditor.com/4.6.0/standard/';
+$this->config['url_ckeditor'] = '//cdn.ckeditor.com/4.7.1/standard/';
 
 // CKFinder path. Leave blank to disable CKFinder.
 $this->config['url_ckfinder'] = '';
