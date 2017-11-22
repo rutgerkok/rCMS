@@ -2,11 +2,13 @@
 
 namespace Rcms\Core;
 
+use mindplay\middleman\Dispatcher;
 use Rcms\Page\Renderer\AccessKeyCheck;
+use Rcms\Page\Renderer\HttpsWwwRedirector;
 use Rcms\Page\Renderer\PageResponder;
-use Zend\Diactoros\ServerRequestFactory;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequestFactory;
 
 // Setup environment (change this 
 require(__DIR__ . "/environment.php");
@@ -16,12 +18,18 @@ session_start();
 
 // Display site
 $website = new Website();
-$pageResponder = new PageResponder($website);
-$accessKeyCheck = new AccessKeyCheck($website);
 
+$dispatcher = new Dispatcher([
+    new HttpsWwwRedirector($website),
+    new AccessKeyCheck($website),
+    new PageResponder($website)
+]);
+
+// Get the page response
 $request = ServerRequestFactory::fromGlobals();
-$response = $accessKeyCheck($request, new HtmlResponse(""), $pageResponder);
+$response = $dispatcher->dispatch($request, new HtmlResponse(""));
 
+// Output the response object to stdout
 $responseEmitter = new SapiEmitter();
 $responseEmitter->emit($response);
 $response->getBody()->close();
