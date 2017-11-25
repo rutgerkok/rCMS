@@ -8,7 +8,7 @@ use Rcms\Core\Repository\Entity;
 
 class User extends Entity {
 
-    const GRAVATAR_URL_BASE = "http://www.gravatar.com/avatar/";
+    const GRAVATAR_URL_BASE = "//www.gravatar.com/avatar/";
 
     protected $username;
     protected $displayName;
