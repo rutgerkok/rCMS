@@ -65,7 +65,7 @@ function createDir($dir) {
 }
 
 function downloadComposer() {
-    $alreadyDownloaded = file_exists(COMPOSER_FILE);
+    $alreadyDownloaded = file_exists(COMPOSER_INSTALLER_FILE);
     $expectedHash = @file_get_contents("https://composer.github.io/installer.sig");
 
     // Offline? Then use existing file, if available
@@ -79,22 +79,22 @@ function downloadComposer() {
 
     // Skip download if existing file is good
     if ($alreadyDownloaded) {
-        if (trim($expectedHash) === hash_file('SHA384', COMPOSER_FILE)) {
+        if (trim($expectedHash) === hash_file('SHA384', COMPOSER_INSTALLER_FILE)) {
             return;
         }
     }
 
     // Download Composer
-    echo "Installing Composer...";
+    echo "Installing Composer...\n";
     @unlink(TEMP_DIR);
-    if (!copy('https://getcomposer.org/installer', COMPOSER_FILE)) {
+    if (!copy('https://getcomposer.org/installer', COMPOSER_INSTALLER_FILE)) {
         fatalError("Failed to download composer");
     }
 
     // Check download
-    $actualHash = hash_file('SHA384', COMPOSER_FILE);
+    $actualHash = hash_file('SHA384', COMPOSER_INSTALLER_FILE);
     if (trim($expectedHash) !== $actualHash) {
-        rename(TEMP_DIR . 'composer-setup.php', COMPOSER_FILE . '.corrupt_do_not_use');
+        rename(TEMP_DIR . 'composer-setup.php', COMPOSER_INSTALLER_FILE . '.corrupt_do_not_use');
         fatalError("Failed to download Composer. Expected hash: $expectedHash. Actual: $actualHash");
     }
 
