@@ -22,4 +22,5 @@ function dependencies() {
     composer("zendframework/zend-diactoros", "^1.3.2");
     composer("mindplay/middleman", "^1.1.0");
     composerDev("phpunit/phpunit", "^4.8.0");
+    npm("@ckeditor/ckeditor5-build-balloon", "^1.0.0-alpha.2");
 }

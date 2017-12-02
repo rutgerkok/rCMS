@@ -34,15 +34,23 @@ define("COMPOSER_FILE", TEMP_DIR . "composer.phar");
 checkPhpVersion();
 createDir(BUILD_DIR);
 createDir(TEMP_DIR);
-downloadComposer();
 runComposer();
-Brug::init(__DIR__, BUILD_DIR, COMPOSER_FILE);
+require(TEMP_DIR . "vendor/autoload.php");
+Brug::init(__DIR__, BUILD_DIR, COMPOSER_FILE, getCommandArgs());
 
 // Function definitions
 
 function fatalError($msg) {
     echo $msg;
     exit(1);
+}
+
+function runCommand($command) {
+    // Runs the command. On failure, it prints the output and exit()s.
+    $exitCode = exec($command);
+    if ($exitCode != 0) {
+        fatalError("Exiting script... Used command:\n$command");
+    }
 }
 
 function checkPhpVersion() {
@@ -97,17 +105,17 @@ function downloadComposer() {
         rename(TEMP_DIR . 'composer-setup.php', COMPOSER_INSTALLER_FILE . '.corrupt_do_not_use');
         fatalError("Failed to download Composer. Expected hash: $expectedHash. Actual: $actualHash");
     }
-
-    // Install
-    installComposer();
 }
 
 function installComposer() {
     chdir(TEMP_DIR);
-    shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(COMPOSER_INSTALLER_FILE));
+    runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(COMPOSER_INSTALLER_FILE));
 }
 
-function runComposer() {
+function createBrugDownloadFile() {
+    if (file_exists(TEMP_DIR . "composer.json")) {
+        return; // File already exists
+    }
     $composerJson = [
         "name" => "brug-downloader",
         "description" => "Small project to download Brug files.",
@@ -123,6 +131,21 @@ function runComposer() {
         ]
     ];
     file_put_contents(TEMP_DIR . "composer.json", json_encode($composerJson, JSON_PRETTY_PRINT));
-    shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEMP_DIR . 'composer.phar') . ' install --no-dev');
-    require(TEMP_DIR . "vendor/autoload.php");
+}
+
+function runComposer() {
+    if (file_exists(TEMP_DIR . "vendor/autoload.php")) {
+        return; // Already run
+    }
+    downloadComposer();
+    installComposer();
+    createBrugDownloadFile();
+    runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEMP_DIR . 'composer.phar') . ' install --no-dev');
+}
+
+function getCommandArgs() {
+    global $argv;
+    $args = $argv;
+    array_shift($args);
+    return $args;
 }

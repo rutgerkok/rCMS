@@ -11,8 +11,9 @@ Desktop.ini
 # Netbeans
 /nbproject/
 
-# Composer
+# Composer and NPM
 /vendor/
+/node_modules/
 
 # Eclipse
 /.project
