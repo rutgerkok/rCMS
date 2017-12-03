@@ -120,14 +120,19 @@ function createBrugDownloadFile() {
         "name" => "brug-downloader",
         "description" => "Small project to download Brug files.",
         "type" => "project",
+        "minimum-stability" => "dev",
         "repositories" => [
             [
                 "type" => "path",
                 "url" => "../../../Brug"
+            ],
+            [
+                "type" => "vcs",
+                "url" => "https://github.com/rutgerkok/Brug"
             ]
         ],
         "require" => [
-            "rutgerkok/brug" => "^0.1"
+            "rutgerkok/brug" => "dev-master"
         ]
     ];
     file_put_contents(TEMP_DIR . "composer.json", json_encode($composerJson, JSON_PRETTY_PRINT));
@@ -140,7 +145,7 @@ function runComposer() {
     downloadComposer();
     installComposer();
     createBrugDownloadFile();
-    runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEMP_DIR . 'composer.phar') . ' install --no-dev');
+    runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEMP_DIR . 'composer.phar') . ' install');
 }
 
 function getCommandArgs() {
