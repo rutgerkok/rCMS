@@ -5,7 +5,7 @@ require "brug.php";
 function info() {
     projectName("rcms/rcms");
     projectDescription("Yet another content management system.");
-    projectLicence("MIT");
+    projectLicense("MIT");
 }
 
 function folders() {
