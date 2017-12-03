@@ -11,7 +11,8 @@ function info() {
 function folders() {
     phpPsr4Src("src/", "Rcms\\");
     phpSrc("extend/");
-    phpSrc("config.php");
+    phpSrc("config.sample.php");
+    phpSrc("environment.php");
     webSrc("public_html/");
     phpUnitSrc("tests/");
 }
@@ -23,4 +24,9 @@ function dependencies() {
     composer("mindplay/middleman", "^1.1.0");
     composerDev("phpunit/phpunit", "^4.8.0");
     npm("@ckeditor/ckeditor5-build-balloon", "^1.0.0-alpha.2");
+}
+
+function build() {
+    copyDirectory("node_modules/@ckeditor/ckeditor5-build-balloon/build/",
+            "public_html/javascript/ckeditor");
 }
