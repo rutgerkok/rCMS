@@ -119,16 +119,6 @@ class ThemeManager {
     public function getCurrentThemeMeta() {
         return $this->getThemeMeta($this->website->getConfig()->get(Config::OPTION_THEME));
     }
-
-    /**
-     * Checks if we can switch to another theme. When the directory containing
-     * the active theme is not writeable, we cannot switch themes.
-     * cannot switch to another theme.
-     * @return bool True if we can switch to another theme, false otherwise.
-     */
-    public function canSwitchThemes() {
-        return is_writeable($this->website->getUriActiveTheme());
-    }
     
     /**
      * Changes the active theme to the given theme.
@@ -140,19 +130,7 @@ class ThemeManager {
         if (!$this->themeExists($themeDirectoryName)) {
             throw new BadMethodCallException("Given theme does not exist");
         }
-        if (!$this->canSwitchThemes()) {
-            throw new RuntimeException("Cannot change theme, lacking file permissions");
-        }
 
-        $publicThemeDir = $this->website->getUriActiveTheme();
-        $internalThemeDir = $this->getUriTheme($themeDirectoryName) . "web/";
-        if (!file_exists($internalThemeDir)) {
-
-        }
-
-        $fileSystem = new BulkFileSystem();
-        $fileSystem->clearDirectory($publicThemeDir);
-        $fileSystem->copyFiles($internalThemeDir, $publicThemeDir);
         $this->website->getConfig()->set($this->website->getDatabase(), Config::OPTION_THEME, $themeDirectoryName);
     }
 

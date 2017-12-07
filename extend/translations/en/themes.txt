@@ -4,6 +4,5 @@ created_by=Created by {0}
 switch=Switch site theme
 switch.title=Changing the site theme
 switch_to_this=Switch to this theme
-switching_disabled=Switching themes is disabled. The reason is that the website doesn't have write permission in the ./web/theme folder. Please (temporarily) change the file permissions so that the web server can write to this directory.
 does_not_exist_named=That theme does not exist.
 successfully_switched=Successfully switched the theme.

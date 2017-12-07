@@ -42,7 +42,7 @@ $this->config['database_table_prefix'] = 'rcms_';
 // directory of this config file together with the literal path '/public_html/'.
 
 
-// The internal location (on the web server) of the public_html directory: this
+// The internal path (on the web server) of the public_html directory: this
 // is the folder with all publicly accessible files.
 //
 // If (and only if) the public_html directory is not placed in the same
@@ -51,12 +51,18 @@ $this->config['database_table_prefix'] = 'rcms_';
 // directory) and follow the instructions there.
 $this->config['uri_web'] = __DIR__ . '/public_html/';
 
-// Set this to where the website can be found on the internet. It must be the
-// public URL to the public_html directory (see above).
+// Set this to the URL where the website can be found on the internet. This URl
+// must point to the same folder as 'uri_web'.
 $this->config['url_web'] = '/';
 
-// The location of the folder with all the extensions.
+// The path on the web server to the folder containing the PHP code of the
+// extensions. This folder should NOT be accessible from the web.
 $this->config['uri_extend'] = __DIR__ . '/extend/';
+
+// The URL to the folder containing the JavaScript/CSS code of the extensions.
+// Note that this is a different folder than 'uri_extend'; this folder must
+// actually be reachable by the web browser.
+$this->config['url_extend'] = $this->config['url_web'] . '/extend/';
 
 // When set to true the index.php part of the links on the site is removed, so
 // http://www.example.com/index.php/article/10 turns into

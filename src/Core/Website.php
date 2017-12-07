@@ -169,20 +169,20 @@ class Website {
     }
 
     /**
-     * Gets the (web-accessible) url of the theme directory.
+     * Gets the url of the themes directory.
+     * @return UriInterface The url (with a trailing slash).
+     */
+    public function getUrlTheme($themeDirectoryName) {
+        $extendUrl = $this->getUrlExtend();
+        return $extendUrl->withPath($extendUrl->getPath() . "themes/$themeDirectoryName/");
+    }
+    
+    /**
+     * Gets the url of the theme that is currently active.
      * @return UriInterface The url (with a trailing slash).
      */
     public function getUrlActiveTheme() {
-        $contentUrl = $this->getUrlMain();
-        return $contentUrl->withPath($contentUrl->getPath() . "theme/");
-    }
-
-    /**
-     * Gets the path of the only web-accessible theme. This is the active theme.
-     * @return string The path, containing a trailing slash.
-     */
-    public function getUriActiveTheme() {
-        return $this->getUriWeb() . "theme/";
+        return $this->getUrlTheme($this->getConfig()->get(Config::OPTION_THEME));
     }
 
     /**
@@ -191,6 +191,14 @@ class Website {
      */
     public function getUriExtend() {
         return $this->config->get("uri_extend");
+    }
+
+    /**
+     * Gets the URL to the folder containing the public files of the extensions.
+     * @return type
+     */
+    public function getUrlExtend() {
+        return new Uri($this->config->get("url_extend"));
     }
 
     /**

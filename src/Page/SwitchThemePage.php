@@ -31,9 +31,7 @@ final class SwitchThemePage extends Page {
         parent::init($website, $request);
         
         $themeManager = $website->getThemeManager();
-        if (!$themeManager->canSwitchThemes()) {
-            $this->sendThemeSwitchError($website->getText());
-        } else if (Validate::requestToken($request)) {
+        if (Validate::requestToken($request)) {
             $this->trySwitchTheme($themeManager, $website->getText(), $request);
         }
         $this->availableThemes = $themeManager->getAllThemes();
@@ -56,10 +54,6 @@ final class SwitchThemePage extends Page {
     
     public function getTemplate(Text $text) {
         return new ThemeSwitchTemplate($text, $this->requestToken, $this->availableThemes);
-    }
-
-    private function sendThemeSwitchError(Text $text) {
-        $text->addError($text->t("themes.switching_disabled"));
     }
 
     private function trySwitchTheme(ThemeManager $themeManager, Text $text, Request $request) {

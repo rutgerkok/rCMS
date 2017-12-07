@@ -4,6 +4,5 @@ created_by=Gemaakt door {0}
 switch=Wijzig thema van de site
 switch.title=Het thema van de site wijzigen
 switch_to_this=Gebruik dit uiterlijk
-switching_disabled=Het wisselen van thema is uitgeschakeld. De reden hiervoor is dat de website geen schrijfrechten heeft in de map ./web/theme. Geef de webserver hier (tijdelijk) schrijfrechten om het thema te kunnen instellen.
 does_not_exist=Dat thema bestaat niet.
 successfully_switched=Het thema is gewijzigd.
