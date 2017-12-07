@@ -21,10 +21,10 @@ class ArchivePage extends Page {
     private $selectedCategory;
     private $selectedYear;
     private $foundArticles;
-    private $showEditLinks;
+    private $isModerator;
 
     public function init(Website $website, Request $request) {
-        $this->showEditLinks = $website->isLoggedInAsStaff();
+        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
 
         $this->selectedYear = $request->getRequestInt("year", 0);
         $this->selectedCategory = $request->getParamInt(0);
@@ -40,7 +40,7 @@ class ArchivePage extends Page {
         }
 
         // Fetch all articles
-        $articles = new ArticleRepository($website);
+        $articles = new ArticleRepository($website->getDatabase(), $this->isModerator);
         $this->articleCountInYears = $articles->getArticleCountInYears($this->selectedCategory);
         $this->foundArticles = $articles->getArticlesDataArchive($this->selectedYear, $this->selectedCategory);
     }
@@ -52,7 +52,7 @@ class ArchivePage extends Page {
     public function getTemplate(Text $text) {
         return new ArticleArchiveTemplate($text, $this->foundArticles,
                 $this->allCategories, $this->articleCountInYears,
-                $this->selectedCategory, $this->selectedYear, $this->showEditLinks);
+                $this->selectedCategory, $this->selectedYear, $this->isModerator);
     }
 
     public function getMinimumRank() {

@@ -40,10 +40,10 @@ class EditArticlePage extends Page {
 
     public function init(Website $website, Request $request) {
         $text = $website->getText();
-        $currentUser = $website->getAuth()->getCurrentUser();
+        $currentUser = $request->getCurrentUser($website);
         $articleId = $request->getParamInt(0);
 
-        $articleRepository = new ArticleRepository($website);
+        $articleRepository = new ArticleRepository($website->getDatabase(), true);
         $article = $this->getArticle($articleRepository, $currentUser, $articleId);
         $articleEditor = new ArticleEditor($article);
         $this->articleEditor = $articleEditor;

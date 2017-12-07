@@ -7,6 +7,7 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
+use Rcms\Core\Widget\WidgetRunner;
 
 /**
  * Description of WidgetEditTemplate
@@ -14,9 +15,9 @@ use Rcms\Core\Widget\PlacedWidget;
 class WidgetEditTemplate extends Template {
 
     /**
-     * @var InstalledWidgets The installed widgets on the site.
+     * @var WidgetRunner The widget runner.
      */
-    private $installedWidgets;
+    private $widgetRunner;
 
     /**
      * @var PlacedWidget The widget currently being edited.
@@ -28,10 +29,10 @@ class WidgetEditTemplate extends Template {
      */
     private $requestToken;
 
-    public function __construct(Text $text, InstalledWidgets $installedWidgets,
+    public function __construct(Text $text, WidgetRunner $widgetRunner,
             PlacedWidget $editWidget, RequestToken $requestToken) {
         parent::__construct($text);
-        $this->installedWidgets = $installedWidgets;
+        $this->widgetRunner = $widgetRunner;
         $this->editWidget = $editWidget;
         $this->requestToken = $requestToken;
     }
@@ -39,7 +40,7 @@ class WidgetEditTemplate extends Template {
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
 
-        $editorHtml = $this->installedWidgets->getEditor($this->editWidget);
+        $editorHtml = $this->widgetRunner->getEditor($this->editWidget);
         $actionUrl = $text->getUrlPage("edit_widget", $this->editWidget->getId());
         $documentEditUrl = $text->getUrlPage("edit_document", $this->editWidget->getDocumentId());
 

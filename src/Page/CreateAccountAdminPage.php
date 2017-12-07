@@ -44,7 +44,7 @@ final class CreateAccountAdminPage extends Page {
 
         $this->newUser = $this->handleUserRequest($website, $request);
 
-        $this->allRanks = $website->getAuth()->getRanks();
+        $this->allRanks = $request->getAuth($website->getUserRepository())->getRanks();
 
         $this->requestToken = RequestToken::generateNew();
         $this->requestToken->saveToSession();
@@ -62,8 +62,8 @@ final class CreateAccountAdminPage extends Page {
         $newUser->setRank($rank);
 
         $text = $website->getText();
-        $userRepo = new UserRepository($website->getDatabase());
-        if (Validate::requestToken($request) && $this->validateInput($newUser, $password, $website->getAuth(), $userRepo, $text)) {
+        $userRepo = $website->getUserRepository();
+        if (Validate::requestToken($request) && $this->validateInput($newUser, $password, $request->getAuth($userRepo), $userRepo, $text)) {
             $userRepo->save($newUser);
             $this->accountCreated = true;
             $text->addMessage($text->t("users.create.other.done"),

@@ -16,6 +16,11 @@ class Request {
 
     /** @var string[] The parts that exist in the path.. */
     private $pathParts = [];
+    
+    /**
+     * @var Authentication The authentication object. 
+     */
+    private $auth = null;
 
     public function __construct(ServerRequestInterface $serverRequest) {
         $this->serverRequest = $serverRequest;
@@ -39,6 +44,45 @@ class Request {
                 $this->pathParts = [$pageName];
             }
         }
+    }
+    
+    /**
+     * Gets the authentication of this request.
+     * @param UserRepository $userRepo User repo, for looking up ranks, user
+     * info, etc.
+     * @return Authentication The authentication for this request.
+     */
+    public function getAuth(UserRepository $userRepo = null) {
+        if ($this->auth == null) {
+            $this->auth = new Authentication($this, $userRepo);
+        }
+        return $this->auth;
+    }
+    
+    /**
+     * Checks if the current user has the given rank.
+     * @param Website $website The website, for rank lookups
+     * @param int $rank The rank.
+     * @return bool True if the user has this rank, false otherwise.
+     */
+    public function hasRank(Website $website, $rank) {
+        if ($rank == Authentication::RANK_LOGGED_OUT) {
+            return true; // Lowest rank, so always true
+        }
+        $user = $this->getAuth($website->getUserRepository())->getCurrentUser();
+        if ($user === null) {
+            return false;
+        }
+        return $user->hasRank($rank);
+    }
+    
+    /**
+     * Gets the currently logged in user.
+     * @param Website $website The website, for user lookups.
+     * @return User|null The user, or null if logged out.
+     */
+    public function getCurrentUser(Website $website) {
+        return $this->getAuth($website->getUserRepository())->getCurrentUser();
     }
 
     /**

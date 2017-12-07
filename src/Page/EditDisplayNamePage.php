@@ -22,7 +22,7 @@ class EditDisplayNamePage extends EditPasswordPage {
             if (Validate::displayName($display_name)) {
                 // Valid display_name
                 $this->user->setDisplayName($display_name);
-                $userRepo = $website->getAuth()->getUserRepository();
+                $userRepo = $website->getUserRepository();
                 $userRepo->save($this->user);
                 // Saved
                 $textToDisplay.='<p>' . $website->t("users.display_name") . ' ' . $website->t("editor.is_changed") . '</p>';
@@ -61,7 +61,7 @@ EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($website);
+        $textToDisplay.= $this->get_account_links_html($website, $request);
 
         return $textToDisplay;
     }

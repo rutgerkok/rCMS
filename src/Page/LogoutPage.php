@@ -12,7 +12,7 @@ use Rcms\Template\LoggedOutTemplate;
 class LogoutPage extends Page {
 
     public function init(Website $website, Request $request) {
-        $website->getAuth()->logOut();
+        $request->getAuth($website->getUserRepository())->logOut();
     }
 
     public function getPageTitle(Text $text) {

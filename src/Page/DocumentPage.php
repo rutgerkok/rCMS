@@ -40,9 +40,9 @@ class DocumentPage extends Page {
     private $editLinks;
 
     public function init(Website $website, Request $request) {
-        $isStaff = $website->isLoggedInAsStaff();
+        $isStaff = $request->hasRank($website, Authentication::RANK_MODERATOR);
         $id = $request->getParamInt(0);
-        $this->editLinks = $website->isLoggedInAsStaff(true);
+        $this->editLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
 
         // Load document
         $documentRepo = new DocumentRepository($website->getDatabase(), $isStaff);

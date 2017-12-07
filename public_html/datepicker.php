@@ -17,7 +17,7 @@ $selectedYear = $website->getRequestInt("year", date('Y'));//geselecteerd of hui
 $dateTime = DateTime::createFromFormat("n Y", $selectedMonth . " " .$selectedYear);
 
 //OBJECTEN
-$oArticles = new ArticleRepository($website);
+$oArticles = new ArticleRepository($website->getDatabase(), false);
 $articles = $oArticles->getArticlesDataCalendarMonth($dateTime);
 $calendarTemplate = new DatePickerTemplate($website->getText(), $dateTime, $articles);
 

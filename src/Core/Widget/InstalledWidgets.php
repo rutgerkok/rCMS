@@ -107,27 +107,6 @@ class InstalledWidgets {
     }
 
     /**
-     * Gets the HTML output of the widget.
-     * @param StreamInterface $stream The stream to write to
-     * @param PlacedWidget $placedWidget The widget.
-     * @return string The HTML output.
-     */
-    public function writeOutput(StreamInterface $stream, PlacedWidget $placedWidget) {
-        $widgetDefinition = $this->getDefinition($placedWidget);
-        $widgetDefinition->writeText($stream, $this->website, $placedWidget->getId(), $placedWidget->getData());
-    }
-
-    /**
-     * Gets the HTML for the editor of the widget.
-     * @param PlacedWidget $placedWidget The widget.
-     * @return string The HTML output.
-     */
-    public function getEditor(PlacedWidget $placedWidget) {
-        $widgetDefinition = $this->getDefinition($placedWidget);
-        return $widgetDefinition->getEditor($this->website, $placedWidget->getId(), $placedWidget->getData());
-    }
-
-    /**
      * Gets all widget areas on the site. This is both the area on the home
      * page, as well as any theme-defined locations.
      * @return string[] All widget areas, indexed by their id.

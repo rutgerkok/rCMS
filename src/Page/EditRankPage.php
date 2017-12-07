@@ -30,11 +30,11 @@ class EditRankPage extends EditPasswordPage {
         if ($request->hasRequestValue("rank")) {
             // Sent
             $rank = $request->getRequestInt("rank");
-            $oAuth = $website->getAuth();
+            $oAuth = $request->getAuth($website->getUserRepository());
             if ($oAuth->isValidRankForAccounts($rank)) {
                 // Valid rank id
                 $this->user->setRank($rank);
-                $userRepo = $website->getAuth()->getUserRepository();
+                $userRepo = $website->getUserRepository();
                 $userRepo->save($this->user);
                 // Saved
                 $textToDisplay.='<p>' . $website->t("users.rank") . ' ' . $website->t("editor.is_changed") . '</p>';
@@ -65,7 +65,7 @@ class EditRankPage extends EditPasswordPage {
                 <form action="{$website->getUrlMain()}" method="post">
                     <p>
                         <label for="rank">{$website->t("users.rank")}</label>:<span class="required">*</span><br />
-                        {$this->get_ranks_box_html($website, $ranks, $rank)}
+                        {$this->get_ranks_box_html($website, $request, $ranks, $rank)}
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_rank" />
@@ -77,14 +77,14 @@ EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($website);
+        $textToDisplay.= $this->get_account_links_html($website, $request);
 
         return $textToDisplay;
     }
 
-    protected function get_ranks_box_html(Website $website, $ranks,
-            $selected) {
-        $oAuth = $website->getAuth();
+    protected function get_ranks_box_html(Website $website, Request $request,
+            $ranks, $selected) {
+        $oAuth = $request->getAuth($website->getUserRepository());
         $text = $website->getText();
 
         $selection_box = '<select name="rank" id="rank">';

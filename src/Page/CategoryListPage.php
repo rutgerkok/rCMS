@@ -31,7 +31,7 @@ final class CategoryListPage extends Page {
         $categoryRepo = new CategoryRepository($website->getDatabase());
         $this->categories = $categoryRepo->getCategoriesComplete();
 
-        $this->editLinks = $website->isLoggedInAsStaff(true);
+        $this->editLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
     }
 
     public function getMinimumRank() {

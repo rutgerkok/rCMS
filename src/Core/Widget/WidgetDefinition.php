@@ -3,6 +3,7 @@
 namespace Rcms\Core\Widget;
 
 use Psr\Http\Message\StreamInterface;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 
 /**
@@ -14,11 +15,12 @@ abstract class WidgetDefinition {
      * Gets the text of the widget.
      * @param StreamInterface $stream Stream to write the text to.
      * @param Website $website The currently used website.
+     * @param Request $request The currently used request.
      * @param int $id The unique id of the widget.
      * @param array $data All data attached to the widget, key->value pairs.
      * @return string The text.
      */
-    public abstract function writeText(StreamInterface $stream, Website $website, $id, $data);
+    public abstract function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data);
 
     /**
      * Gets the widget's editor. The data is either the saved data, or the data

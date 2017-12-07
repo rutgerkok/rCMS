@@ -6,8 +6,8 @@ use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
+use Rcms\Core\Widget\WidgetRunner;
 
 /**
  * The HTML view of a single document. Only includes the intro of the document,
@@ -32,17 +32,17 @@ final class DocumentEditTemplate extends Template {
 
     /**
      *
-     * @var InstalledWidgets The installed widgets on the website.
+     * @var WidgetRunner The widget runner.
      */
-    private $installedWidgets;
+    private $widgetRunner;
 
     public function __construct(Text $text, Document $document,
-            RequestToken $requestToken, InstalledWidgets $installedWidgets,
+            RequestToken $requestToken, WidgetRunner $widgetRunner,
             array $placedWidgets) {
         parent::__construct($text);
         $this->document = $document;
         $this->requestToken = $requestToken;
-        $this->installedWidgets = $installedWidgets;
+        $this->widgetRunner = $widgetRunner;
         $this->placedWidgets = $placedWidgets;
     }
 
@@ -119,7 +119,7 @@ HTML;
         $token = $this->requestToken->getTokenString();
 
         $stream->write("<blockquote>");
-        $this->installedWidgets->writeOutput($stream, $placedWidget);
+        $this->widgetRunner->writeOutput($stream, $placedWidget);
         $stream->write("</blockquote>");
         
         $stream->write(<<<HTML
@@ -170,7 +170,7 @@ HTML
             </h3>
 HTML;
 
-        $installedWidgets = $this->installedWidgets->getInstalledWidgets();
+        $installedWidgets = $this->widgetRunner->getInstalledWidgets();
         foreach ($installedWidgets as $installedWidget) {
             $widgetNameHtml = htmlSpecialChars($installedWidget->getDisplayName());
             $descriptionHtml = htmlSpecialChars($installedWidget->getDescription());

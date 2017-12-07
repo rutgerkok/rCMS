@@ -28,12 +28,12 @@ class SearchPage extends Page {
     protected $links;
 
     /** @var boolean Whether edit and delete links are shown. */
-    protected $showEditLinks;
+    protected $isModerator;
 
     public function init(Website $website, Request $request) {
         $this->keyword = trim($request->getRequestString("searchbox"));
         $this->pageNumber = $request->getRequestInt("page", 0);
-        $this->showEditLinks = $website->isLoggedInAsStaff();
+        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
 
         if (strLen($this->keyword) < self::MIN_SEARCH_LENGTH) {
             // Don't search for too short words
@@ -45,7 +45,7 @@ class SearchPage extends Page {
         }
 
         // Fetch article count
-        $articles = new ArticleRepository($website);
+        $articles = new ArticleRepository($website->getDatabase(), $this->isModerator);
         $this->totalResults = $articles->getMatchesFor($this->keyword);
         // Count total number of pages, limit current page number
         $this->highestPageNumber = floor($this->totalResults / self::ARTICLES_PER_PAGE);
@@ -76,7 +76,7 @@ class SearchPage extends Page {
         $views = [];
         if (isSet($this->displayedArticles)) {
             $views[] = new ArticleSearchTemplate($text, $this->keyword, $this->displayedArticles, 
-                    $this->pageNumber, $this->totalResults, $this->highestPageNumber, $this->showEditLinks);
+                    $this->pageNumber, $this->totalResults, $this->highestPageNumber, $this->isModerator);
             $views[] = new LinkSearchTemplate($text, $this->links);
         }
         $views[] = new SearchFormTemplate($text, $this->keyword);

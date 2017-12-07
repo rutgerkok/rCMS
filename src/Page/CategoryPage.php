@@ -20,7 +20,7 @@ final class CategoryPage extends Page {
     /**
      * @var bool True when edit/delete links are shown for articles, false otherwise.
      */
-    private $showArticleEditLinks;
+    private $isArticleModerator;
 
     /**
      * @var bool True when edit/delete links are shown for categories, false otherwise.
@@ -38,16 +38,18 @@ final class CategoryPage extends Page {
     private $articles;
 
     public function init(Website $website, Request $request) {
+        $this->isArticleModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $this->showCategoryEditLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
+
         $categoryId = $request->getParamInt(0, 0);
 
         $categoriesRepo = new CategoryRepository($website->getDatabase());
         $this->category = $categoriesRepo->getCategory($categoryId);
 
-        $articlesRepo = new ArticleRepository($website);
+        $articlesRepo = new ArticleRepository($website->getDatabase(), $this->isArticleModerator);
         $this->articles = $articlesRepo->getArticlesData($categoryId);
 
-        $this->showArticleEditLinks = $website->isLoggedInAsStaff();
-        $this->showCategoryEditLinks = $website->isLoggedInAsStaff(true);
+
     }
 
     public function getPageTitle(Text $text) {
@@ -55,7 +57,7 @@ final class CategoryPage extends Page {
     }
 
     public function getTemplate(Text $text) {
-        return new CategoryTemplate($text, $this->category, $this->articles, $this->showArticleEditLinks, $this->showCategoryEditLinks);
+        return new CategoryTemplate($text, $this->category, $this->articles, $this->isArticleModerator, $this->showCategoryEditLinks);
     }
 
     public function getPageType() {

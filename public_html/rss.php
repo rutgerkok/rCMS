@@ -12,7 +12,7 @@ require(__DIR__ . "/environment.php");
 
 // Objects
 $website = new Website();
-$oArticles = new ArticleRepository($website);
+$oArticles = new ArticleRepository($website->getDatabase(), false);
 
 // Get category
 $category_id = $website->getRequestInt("category");

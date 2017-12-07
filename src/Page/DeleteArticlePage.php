@@ -23,9 +23,9 @@ class DeleteArticlePage extends Page {
     public function init(Website $website, Request $request) {
         $text = $website->getText();
         $articleId = $request->getParamInt(0);
-        $showAdminPageLink = $website->isLoggedInAsStaff(true);
+        $showAdminPageLink = $request->hasRank($website, Authentication::RANK_ADMIN);
 
-        $oArticles = new ArticleRepository($website);
+        $oArticles = new ArticleRepository($website->getDatabase(), true);
         $article = $oArticles->getArticleOrFail($articleId);
         $this->article = $article;
         $formToken = RequestToken::generateNew();

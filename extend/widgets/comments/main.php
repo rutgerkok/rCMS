@@ -4,6 +4,7 @@ namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\CommentRepository;
+use Rcms\Core\Request;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
@@ -20,7 +21,7 @@ class WidgetComments extends WidgetDefinition {
     const MAX_COMMENTS = 30;
     const DEFAULT_COMMENTS = 4;
 
-    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data) {
         $title = htmlSpecialChars($data["title"]);
         $amount = (int) $data["amount"];
         

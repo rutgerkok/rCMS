@@ -4,7 +4,9 @@ namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
+use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
+use Rcms\Core\Request;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
@@ -25,7 +27,7 @@ class WidgetArticles extends WidgetDefinition {
     const SORT_NEWEST_TOP = 1;
     const SORT_OLDEST_TOP = 0;
 
-    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data) {
         // Check variables
         if (!isSet($data["title"]) || !isSet($data["count"])
                 || !isSet($data["display_type"]) || !isSet($data["categories"])) {
@@ -55,16 +57,19 @@ class WidgetArticles extends WidgetDefinition {
         if (!isSet($data["archive"]) || $data["archive"] == true) {
             $showArchiveLink = true;
         }
+        
+        // Edit links
+        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
 
-        $oArticles = new ArticleRepository($website);
+        $oArticles = new ArticleRepository($website->getDatabase(), $isModerator);
         $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);
 
         if ($displayType >= self::TYPE_LIST) {
             // Small <ul> list
-            $oArticlesTemplate = new ArticleSmallListTemplate($website->getText(), $articles, $website->isLoggedInAsStaff(), $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
+            $oArticlesTemplate = new ArticleSmallListTemplate($website->getText(), $articles, $isModerator, $categories[0], $displayType == self::TYPE_LIST_WITH_IMAGES, $showArchiveLink);
         } else {
             // Real paragraphs
-            $oArticlesTemplate = new ArticleListTemplate($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $website->isLoggedInAsStaff());
+            $oArticlesTemplate = new ArticleListTemplate($website->getText(), $articles, $categories[0], $displayType == self::TYPE_WITH_METADATA, $showArchiveLink, $isModerator);
         }
 
         $oArticlesTemplate->writeText($stream);

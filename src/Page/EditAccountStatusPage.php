@@ -20,9 +20,9 @@ class EditAccountStatusPage extends EditPasswordPage {
         return Authentication::RANK_MODERATOR;
     }
 
-    // Overrided to allow moderators to (un)block someone else
-    public function can_user_edit_someone_else(Website $website) {
-        return $website->isLoggedInAsStaff(false);
+    // Overridden to allow moderators to (un)block someone else
+    public function can_user_edit_someone_else(Website $website, Request $request) {
+        return $request->hasRank($website, Authentication::RANK_MODERATOR);
     }
 
     public function getPageContent(Website $website, Request $request) {
@@ -35,11 +35,11 @@ class EditAccountStatusPage extends EditPasswordPage {
 
         $show_form = true;
         $textToDisplay = "";
+        $oAuth = $request->getAuth($website->getUserRepository());
         if ($request->hasRequestValue("status")) {
             // Sent
             $status = $request->getRequestInt("status");
             $status_text = $request->getRequestString("status_text");
-            $oAuth = $website->getAuth();
 
             $valid = true;
 
@@ -59,7 +59,7 @@ class EditAccountStatusPage extends EditPasswordPage {
                 // Valid status
                 $this->user->setStatus($status);
                 $this->user->setStatusText($status_text);
-                $oAuth->getUserRepository()->save($this->user);
+                $website->getUserRepository()->save($this->user);
                 // Saved
                 $textToDisplay.='<p>' . $website->t("users.status") . ' ' . $website->t("editor.is_changed") . '</p>';
                 // Don't show form
@@ -89,7 +89,7 @@ class EditAccountStatusPage extends EditPasswordPage {
                 <form action="{$website->getUrlMain()}" method="get">
                     <p>
                         <label for="status">{$website->t("users.status")}</label>:<span class="required">*</span><br />
-                        {$this->get_statuses_box_html($website->getAuth(), $statuses, $status)}
+                        {$this->get_statuses_box_html($website->getText(), $oAuth, $statuses, $status)}
                     </p>
                     <p>
                         <label for="status_text">{$website->t("users.status_text")}</label>:<span class="required">*</span><br />
@@ -105,16 +105,16 @@ EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($website);
+        $textToDisplay.= $this->get_account_links_html($website, $request);
 
         return $textToDisplay;
     }
 
-    protected function get_statuses_box_html(Authentication $oAuth, $statuss,
+    protected function get_statuses_box_html(Text $text, Authentication $oAuth, $statuss,
             $selected) {
         $selection_box = '<select name="status" id="status">';
         foreach ($statuss as $id) {
-            $label = $oAuth->getStatusName($id);
+            $label = $oAuth->getStatusName($text, $id);
             $selection_box.= '<option value="' . $id . '"';
             if ($selected == $id) {
                 $selection_box.= ' selected="selected"';

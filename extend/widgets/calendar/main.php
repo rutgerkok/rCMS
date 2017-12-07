@@ -6,6 +6,8 @@ use DateTime;
 
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
+use Rcms\Core\Authentication;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Template\ArticleEventListTemplate;
@@ -19,9 +21,9 @@ class WidgetCalendar extends WidgetDefinition {
 
     const MAX_TITLE_LENGTH = 50;
 
-    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data) {
         $text = $website->getText();
-        $editLinks = $website->isLoggedInAsStaff();
+        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
 
         // Title
         $title = "";
@@ -30,9 +32,9 @@ class WidgetCalendar extends WidgetDefinition {
         }
         $stream->write($title);
 
-        $oArticles = new ArticleRepository($website);
+        $oArticles = new ArticleRepository($website->getDatabase(), $isModerator);
         $articles = $oArticles->getArticlesDataUpcomingEvents();
-        $articlesTemplate = new ArticleEventListTemplate($text, $articles, $editLinks, 0, true);
+        $articlesTemplate = new ArticleEventListTemplate($text, $articles, $isModerator, 0, true);
         
         // Articles
         $articlesTemplate->writeText($stream);

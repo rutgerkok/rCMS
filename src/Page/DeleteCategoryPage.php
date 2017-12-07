@@ -51,7 +51,7 @@ final class DeleteCategoryPage extends Page {
         }
 
         if (Validate::requestToken($request)) {
-            $articlesRepo = new ArticleRepository($website);
+            $articlesRepo = new ArticleRepository($website->getDatabase(), true);
             $this->deleteCategory($categoriesRepo, $articlesRepo, $website->getText());
         }
 

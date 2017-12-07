@@ -5,8 +5,8 @@ namespace Rcms\Template;
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Link;
 use Rcms\Core\Text;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
+use Rcms\Core\Widget\WidgetRunner;
 
 /**
  * Simple view with a button to move the widget.
@@ -25,14 +25,14 @@ final class WidgetDetailTemplate extends Template {
 
     /**
      *
-     * @var InstalledWidgets The widgets installed on the website.
+     * @var WidgetRunner The widgets runner.
      */
-    private $installedWidgets;
+    private $widgetRunner;
 
-    public function __construct(Text $text, InstalledWidgets $installedWidgets,
+    public function __construct(Text $text, WidgetRunner $widgetRunner,
             PlacedWidget $placedWidget, Link $link) {
         parent::__construct($text);
-        $this->installedWidgets = $installedWidgets;
+        $this->widgetRunner = $widgetRunner;
         $this->placedWidget = $placedWidget;
         $this->link = $link;
     }
@@ -41,7 +41,7 @@ final class WidgetDetailTemplate extends Template {
         $text = $this->text;
         
         $stream->write("<blockquote>");
-        $this->installedWidgets->writeOutput($stream, $this->placedWidget);
+        $this->widgetRunner->writeOutput($stream, $this->placedWidget);
         $stream->write("</blockquote>");
 
         $buttonTextHtml = $text->e($this->link->getText());

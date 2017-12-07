@@ -44,7 +44,7 @@ final class DeleteCommentPage extends Page {
         $repo = new CommentRepository($website->getDatabase());
         $this->comment = $repo->getCommentOrFail($commentId);
 
-        $user = $website->getAuth()->getCurrentUser();
+        $user = $request->getCurrentUser($website);
 
         // Check if user is allowed to delete this comment
         if ($user->getId() !== $this->comment->getUserId() && !$user->hasRank(Authentication::RANK_MODERATOR)) {

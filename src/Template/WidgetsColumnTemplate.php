@@ -4,12 +4,12 @@ namespace Rcms\Template;
 
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Text;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
+use Rcms\Core\Widget\WidgetRunner;
 
 /**
  * Displays widgets. This view is intended to be displayed on a single column:
- * edit links will fpr example say "Edit Column".
+ * edit links will for example say "Edit Column".
  *
  * To make the column not too crowded, individual widgets don't have edit/delete
  * links. The user has to click on "Ëdit Column" first for those links to appear.
@@ -25,14 +25,14 @@ final class WidgetsColumnTemplate extends Template {
     /** @var boolean Whether create, edit and delete links are shown. */
     private $editLinks;
 
-    /** @var WidgetLoader The widget loader. */
-    private $widgetLoader;
+    /** @var WidgetRunner The widget loader. */
+    private $widgetRunner;
 
     public function __construct(Text $text, $documentId,
-            InstalledWidgets $widgetLoader, array $placedWidgets, $editLinks) {
+            WidgetRunner $widgetRunner, array $placedWidgets, $editLinks) {
         parent::__construct($text);
         $this->documentId = (int) $documentId;
-        $this->widgetLoader = $widgetLoader;
+        $this->widgetRunner = $widgetRunner;
         $this->placedWidgets = $placedWidgets;
         $this->editLinks = (boolean) $editLinks;
     }
@@ -43,7 +43,7 @@ final class WidgetsColumnTemplate extends Template {
 
         // Output widgets
         foreach ($this->placedWidgets as $widget) {
-            $this->widgetLoader->writeOutput($stream, $widget);
+            $this->widgetRunner->writeOutput($stream, $widget);
         }
     }
 

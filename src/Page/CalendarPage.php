@@ -22,10 +22,12 @@ class CalendarPage extends Page {
     private $year;
     private $yearNumber;
 
-    private $showCreateLinks;
+    private $isModerator;
 
     public function init(Website $website, Request $request) {
-        $oArticles = new ArticleRepository($website);
+        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+      
+        $oArticles = new ArticleRepository($website->getDatabase(), $this->isModerator);
         $yearNumber = $request->getParamInt(0, date('Y'));
         if ($yearNumber < self::MIN_YEAR || $yearNumber > self::MAX_YEAR) {
             $yearNumber = date('Y');
@@ -34,7 +36,6 @@ class CalendarPage extends Page {
         $this->yearNumber = $yearNumber;
 
         $this->articlesInYear = $oArticles->getArticlesDataCalendarYear($this->year);
-        $this->showCreateLinks = $website->isLoggedInAsStaff();
     }
 
     public function getPageTitle(Text $text) {
@@ -42,7 +43,7 @@ class CalendarPage extends Page {
     }
 
     public function getTemplate(Text $text) {
-        return new YearCalendarTemplate($text, $this->year, $this->articlesInYear, $this->showCreateLinks);
+        return new YearCalendarTemplate($text, $this->year, $this->articlesInYear, $this->isModerator);
     }
 
     public function getMinimumRank() {

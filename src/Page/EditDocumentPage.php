@@ -15,6 +15,7 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
+use Rcms\Core\Widget\WidgetRunner;
 use Rcms\Template\DocumentEditTemplate;
 
 /**
@@ -33,9 +34,9 @@ class EditDocumentPage extends Page {
     private $widgets;
 
     /**
-     * @var InstalledWidgets The widget loader.
+     * @var WidgetRunner The widget loader.
      */
-    private $widgetLoader;
+    private $widgetRunner;
 
     /**
      * @var RequestToken The request token that will be sent, placed in the form.
@@ -47,12 +48,12 @@ class EditDocumentPage extends Page {
 
         // Load document
         $documentRepo = new DocumentRepository($website->getDatabase(), true);
-        $user = $website->getAuth()->getCurrentUser();
+        $user = $request->getCurrentUser($website);
         // ^ this is never null, as the required rank for this page is moderator
         $this->document = $this->retrieveDocument($website, $documentRepo, $id, $user);
 
         // Load document widgets
-        $this->widgetLoader = $website->getWidgets();
+        $this->widgetRunner = new WidgetRunner($website, $request);
         $widgetRepo = new WidgetRepository($website);
         $this->widgets = $widgetRepo->getWidgetsInDocumentWithId($id);
 
@@ -133,7 +134,7 @@ class EditDocumentPage extends Page {
     }
 
     public function getTemplate(Text $text) {
-        return new DocumentEditTemplate($text, $this->document, $this->requestToken, $this->widgetLoader, $this->widgets);
+        return new DocumentEditTemplate($text, $this->document, $this->requestToken, $this->widgetRunner, $this->widgets);
     }
 
 }

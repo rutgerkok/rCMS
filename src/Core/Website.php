@@ -27,8 +27,8 @@ class Website {
     /** @var InstalledWidgets Widgets currently loaded. */
     protected $widgets;
 
-    /** @var Authentication Handles authentication */
-    protected $authenticationObject;
+    /** @var UserRepository User repository. */
+    protected $userRepository;
 
     /** @var Text Handles errors, messages and translations. */
     protected $text;
@@ -69,10 +69,8 @@ class Website {
         $this->text->setUrlRewrite($this->config->get("url_rewrite"));
 
         // Init other objects
-        if ($this->databaseObject == null) {
-            $this->authenticationObject = new Authentication($this, null);
-        } else {
-            $this->authenticationObject = new Authentication($this, new UserRepository($this->databaseObject));
+        if ($this->databaseObject !== null) {
+            $this->userRepository = new UserRepository($this->databaseObject);
         }
         $this->themesObject = new ThemeManager($this);
 
@@ -104,11 +102,11 @@ class Website {
     }
 
     /**
-     * Gets the authentication object.
-     * @return Authentication The authentication object.
+     * Gets the user repository, or null if the database cannot be accessed.
+     * @return UserRepository|null The user repository.
      */
-    public function getAuth() {
-        return $this->authenticationObject;
+    public function getUserRepository() {
+        return $this->userRepository;
     }
 
     /**
@@ -239,22 +237,6 @@ class Website {
 
     public function addError($error) {
         $this->text->addError($error);
-    }
-
-    public function isLoggedIn() {
-        return $this->getAuth()->getCurrentUser() != null;
-    }
-
-    public function isLoggedInAsStaff($admin = false) {
-        $user = $this->getAuth()->getCurrentUser();
-        if ($user === null) {
-            return false;
-        }
-        if ($admin) {
-            return $user->hasRank(Authentication::RANK_ADMIN);
-        } else {
-            return $user->hasRank(Authentication::RANK_MODERATOR);
-        }
     }
 
     // Translations, see documentation is Text class.

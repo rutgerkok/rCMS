@@ -22,7 +22,7 @@ class EditEmailPage extends EditPasswordPage {
             if (Validate::email($email)) {
                 // Valid email
                 $this->user->setEmail($email);
-                $userRepo = $website->getAuth()->getUserRepository();
+                $userRepo = $website->getUserRepository();
                 $userRepo->save($this->user);
                 // Saved
                 $textToDisplay.='<p>' . $website->t("users.email") . ' ' . $website->t("editor.is_changed") . '</p>';
@@ -59,7 +59,7 @@ EOT;
         }
 
         // Links
-        $textToDisplay.= $this->get_account_links_html($website);
+        $textToDisplay.= $this->get_account_links_html($website, $request);
 
         return $textToDisplay;
     }

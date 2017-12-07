@@ -25,7 +25,8 @@ class ErrorLoginRequiredPage extends Page {
     }
 
     public function init(Website $website, Request $request) {
-        $this->errorMessage = $website->getAuth()->getLoginError($this->minimumRank);
+        $auth = $request->getAuth($website->getUserRepository());
+        $this->errorMessage = $auth->getLoginError($website->getText(), $this->minimumRank);
         $psrRequest = $request->toPsr();
         $this->targetUrl = $psrRequest->getUri();
         $this->postVars = (array) $psrRequest->getParsedBody();

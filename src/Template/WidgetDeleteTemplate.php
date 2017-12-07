@@ -5,8 +5,8 @@ namespace Rcms\Template;
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
+use Rcms\Core\Widget\WidgetRunner;
 
 /**
  * Template for deleting a widget.
@@ -15,9 +15,9 @@ final class WidgetDeleteTemplate extends Template {
 
     /**
      *
-     * @var InstalledWidgets Used for rendering.
+     * @var WidgetRunner Used for rendering.
      */
-    private $installedWidgets;
+    private $widgetRunner;
 
     /**
      * @var PlacedWidget The widget being deleted.
@@ -29,10 +29,10 @@ final class WidgetDeleteTemplate extends Template {
      */
     private $requestToken;
 
-    public function __construct(Text $text, InstalledWidgets $installedWidgets, PlacedWidget $placedWidget, RequestToken $requestToken) {
+    public function __construct(Text $text, WidgetRunner $widgetRunner, PlacedWidget $placedWidget, RequestToken $requestToken) {
         parent::__construct($text);
 
-        $this->installedWidgets = $installedWidgets;
+        $this->widgetRunner = $widgetRunner;
         $this->placedWidget = $placedWidget;
         $this->requestToken = $requestToken;
     }
@@ -43,7 +43,7 @@ final class WidgetDeleteTemplate extends Template {
         $stream->write("<p>{$text->t("widgets.delete.confirm")}</p>");
 
         $stream->write("<blockquote>");
-        $this->installedWidgets->writeOutput($stream, $this->placedWidget);
+        $this->widgetRunner->writeOutput($stream, $this->placedWidget);
         $stream->write("</blockquote>");
 
 

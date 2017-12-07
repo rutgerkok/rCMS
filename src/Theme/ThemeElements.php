@@ -4,6 +4,7 @@ namespace Rcms\Theme;
 
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
+use Rcms\Core\Authentication;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Config;
 use Rcms\Core\Link;
@@ -11,6 +12,7 @@ use Rcms\Core\LinkRepository;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetRepository;
+use Rcms\Core\Widget\WidgetRunner;
 use Rcms\Page\HomePage;
 use Rcms\Page\Page;
 use Rcms\Template\MenuTemplate;
@@ -128,7 +130,7 @@ final class ThemeElements {
      * @return bool True if the user is logged in, false otherwise.
      */
     public function isLoggedIn() {
-        return $this->website->isLoggedIn();
+        return $this->request->hasRank($this->website, Authentication::RANK_USER);
     }
 
     /**
@@ -170,12 +172,13 @@ LIST
      */
     public function writeAccountsMenu(StreamInterface $stream) {
         $website = $this->website;
+        $request = $this->request;
 
-        if ($website->isLoggedInAsStaff(true)) {
+        if ($request->hasRank($website, Authentication::RANK_ADMIN)) {
             // Logged in as admin
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("admin") . '">' . $website->t("main.admin") . '</a></li>');
         }
-        if ($website->isLoggedIn()) {
+        if ($request->hasRank($website, Authentication::RANK_USER)) {
             // Logged in
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("account") . '">' . $this->website->t("main.my_account") . '</a></li>');
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("logout") . '">' . $this->website->t("main.log_out") . '</a></li>');
@@ -191,7 +194,7 @@ LIST
 
     public function writeAccountLabel(StreamInterface $stream) {
         $text = $this->website->getText();
-        $user = $this->website->getAuth()->getCurrentUser();
+        $user = $this->request->getCurrentUser($this->website);
 
         // Get welcome text
         if ($user == null) {
@@ -213,8 +216,7 @@ EOT
     }
 
     public function writeAccountBox(StreamInterface $stream, $gravatarSize = 140) {
-        $website = $this->website;
-        $user = $website->getAuth()->getCurrentUser();
+        $user = $this->request->getCurrentUser($this->website);
 
         if ($user == null) {
             // Nothing to display
@@ -298,13 +300,13 @@ SEARCH
         if (!$this->website->getConfig()->isDatabaseUpToDate()) {
             return;
         }
-        $editLinks = $this->website->isLoggedInAsStaff(true);
+        $editLinks = $this->request->hasRank($this->website, Authentication::RANK_ADMIN);
         if ($this->widgetsRepo === null) {
             $this->widgetsRepo = new WidgetRepository($this->website);
         }
         $widgets = $this->widgetsRepo->getWidgetsInDocumentWithId($area);
-
-        $widgetsTemplate = new WidgetsColumnTemplate($this->website->getText(), $area, $this->website->getWidgets(), $widgets, $editLinks);
+        $widgetRunner = new WidgetRunner($this->website, $this->request);
+        $widgetsTemplate = new WidgetsColumnTemplate($this->website->getText(), $area, $widgetRunner, $widgets, $editLinks);
         $widgetsTemplate->writeText($stream);
     }
 }

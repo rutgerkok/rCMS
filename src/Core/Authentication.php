@@ -24,9 +24,9 @@ class Authentication {
     const DEFAULT_ADMIN_PASSWORD = "admin";
 
     /**
-     * @var Website The website object.
+     * @var Request The request object.
      */
-    protected $website;
+    protected $request;
 
     /**
      * @var UserRepository|null The user repository, or null when the website is
@@ -50,19 +50,11 @@ class Authentication {
      * @param UserRepository $userRepo The user repository, or null if the
      * website is not connected to a database (happens when the website is not
      * installed yet).
-     *
-     * For backwards compatibility, if this parameter is null, it is tried to
-     * create a UserRepository instance anyways if the website reports that it
-     * is connected to a database. This behaviour will be removed in a future
-     * version.
      */
-    public function __construct(Website $website,
+    public function __construct(Request $request,
             UserRepository $userRepo = null) {
-        $this->website = $website;
-
-        if ($website->getConfig()->isDatabaseUpToDate()) {
-            $this->userRepo = $userRepo? : new UserRepository($website->getDatabase());
-        }
+        $this->request = $request;
+        $this->userRepo = $userRepo;
 
         // Check session and cookie
         if (isSet($_SESSION["user_id"])) {
@@ -150,15 +142,16 @@ class Authentication {
 
     /**
      * Logs the user in with the given username and password.
+     * @param Text $text For printing errors.
      * @param string $usernameOrEmail The username.
      * @param string $password The unhashed password.
      * @return boolean Whether the login was succesfull
      */
-    public function logIn($usernameOrEmail, $password) {
+    public function logIn(Text $text, $usernameOrEmail, $password) {
         try {
             $user = $this->getUserRepository()->getByNameOrEmail($usernameOrEmail);
 
-            if ($this->loginCheck($user, $password)) {
+            if ($this->loginCheck($text, $user, $password)) {
                 // Matches!
                 $this->setCurrentUser($user);
                 $this->setLoginCookie();
@@ -175,10 +168,11 @@ class Authentication {
      * login date is updated. If the password storage method was outdated, the
      * password is rehashed.
      *
+     * @param Text $text For error messages.
      * @param User $user The user.
      * @param string $password_unhashed The password entered by the user.
      */
-    protected function loginCheck(User $user, $password_unhashed) {
+    protected function loginCheck(Text $text, User $user, $password_unhashed) {
         if ($this->userRepo == null) {
             // Unable to log in when userRepo is not present
             return false;
@@ -210,14 +204,12 @@ class Authentication {
 
             // Check whether the account is banned
             if ($status == Authentication::STATUS_BANNED) {
-                $text = $this->website->getText();
                 $text->addError($text->tReplaced("users.status.banned.your_account", $user->getStatusText()));
                 return false;
             }
 
             // Check password strength
             if ($user->isWeakPassword($password_unhashed)) {
-                $text = $this->website->getText();
                 $text->addError($text->t("users.your_password_is_insecure"), Link::of(
                                 $text->getUrlPage("edit_password"), $text->t("users.password.edit")));
             }
@@ -230,14 +222,14 @@ class Authentication {
     }
 
     /**
-     * Checks whether the user has access to the current page, taking POST
-     * parameters into account. If not, a login screen is optionally displayed.
+     * Checks whether the user has access to the current page. If not, the
+     * request object is scanned for username/password, and if found, the user
+     * is logged in and the check is repeated.
+     * @param Text $text The text object.
      * @param int $minimumRank The minimum rank required.
-     * @param boolean $showform Whether a login form should be shown on failure.
      * @return boolean Whether the login was succesfull.
      */
-    public function check($minimumRank, $showform = true) {
-        $website = $this->website;
+    public function check(Text $text, $minimumRank) {
         $minimumRank = (int) $minimumRank;
         $currentUser = $this->getCurrentUser();
 
@@ -246,10 +238,10 @@ class Authentication {
         }
 
         // Try to login if data was sent
-        $usernameOrEmail = $website->getRequestString("user");
-        $password = $website->getRequestString("pass");
+        $usernameOrEmail = $this->request->getRequestString("user", "");
+        $password = $this->request->getRequestString("pass", "");
         if ($usernameOrEmail && $password) {
-            if ($this->logIn($usernameOrEmail, $password)) {
+            if ($this->logIn($text, $usernameOrEmail, $password)) {
                 $currentUser = $this->getCurrentUser();
             } else {
                 $this->loginFailed = true;
@@ -270,17 +262,18 @@ class Authentication {
      * password" or "You need to be logged in to view this page". The message
      * "Wrong password" can only be returned when {@link check(int, boolean)}
      * has been called before.
+     * @param Text $text The text object, for translations.
+     * @param int $minimumRank The minimum rank. Used to customize the message.
      * @return string The error message, or empty if there is no message.
      */
-    public function getLoginError($minimumRank) {
-        $website = $this->website;
+    public function getLoginError(Text $text, $minimumRank) {
         if ($this->hasLoginFailed()) {
-            return $website->t("errors.invalid_login_credentials");
+            return $text->t("errors.invalid_login_credentials");
         }
         if ($minimumRank == self::RANK_MODERATOR || $minimumRank == self::RANK_ADMIN) {
-            return $website->t("users.must_be_logged_in_as_administrator");
+            return $text->t("users.must_be_logged_in_as_administrator");
         }
-        return $website->t("users.must_be_logged_in");
+        return $text->t("users.must_be_logged_in");
     }
 
     /**
@@ -340,10 +333,9 @@ class Authentication {
      * Gets the translation string for the rank with the given id. When the rank
      * is not found, the translation of users.rank.unknown is returned.
      * @param int $id The rank id.
-     * @return string The translated rank name.
+     * @return string The translation id for the rank name.
      */
     public function getRankName($id) {
-        $website = $this->website;
         switch ($id) {
             case -1: return "users.rank.visitor";
             case 0: return "users.rank.moderator";
@@ -361,13 +353,12 @@ class Authentication {
         }
     }
 
-    public function getStatusName($id) {
-        $website = $this->website;
+    public function getStatusName(Text $text, $id) {
         switch ($id) {
-            case self::STATUS_BANNED: return $website->t("users.status.banned");
-            case self::STATUS_DELETED: return $website->t("users.status.deleted");
-            case self::STATUS_NORMAL: return $website->t("users.status.allowed");
-            default: return $website->t("users.status.unknown");
+            case self::STATUS_BANNED: return $text->t("users.status.banned");
+            case self::STATUS_DELETED: return $text->t("users.status.deleted");
+            case self::STATUS_NORMAL: return $text->t("users.status.allowed");
+            default: return $text->t("users.status.unknown");
         }
     }
 
@@ -377,12 +368,13 @@ class Authentication {
      * @return null|User The user, or null if the cookie is invalid.
      */
     public function getUserFromCookie() {
-        if (!isSet($_COOKIE[self::AUTHENTIATION_COOKIE])) {
+        $cookies = $this->request->toPsr()->getCookieParams();
+        if (!isSet($cookies[self::AUTHENTIATION_COOKIE])) {
             return null;
         }
 
         // Get and split the cookie
-        $auth_cookie = $_COOKIE[self::AUTHENTIATION_COOKIE];
+        $auth_cookie = $cookies[self::AUTHENTIATION_COOKIE];
         $cookie_split = explode('|', $auth_cookie);
         if (count($cookie_split) != 3) {
             // Invalid cookie, not consisting of three parts
@@ -435,6 +427,7 @@ class Authentication {
      * @return boolean Whether the cookie was removed.
      */
     public function deleteLoginCookie() {
+        $this->request->toPsr()->getCookieParams();
         if (headers_sent()) {
             return false;
         }

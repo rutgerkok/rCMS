@@ -44,9 +44,10 @@ final class AddCommentPage extends Page {
     public function init(Website $website, Request $request) {
         $text = $website->getText();
         $this->requestToken = RequestToken::generateNew();
+        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
         
         $articleId = $request->getParamInt(0, 0);
-        $articleRepo = new ArticleRepository($website);
+        $articleRepo = new ArticleRepository($website->getDatabase(), $isModerator);
         $article = $articleRepo->getArticleOrFail($articleId);
 
         if (!$article->showComments) {
@@ -54,7 +55,7 @@ final class AddCommentPage extends Page {
             return;
         }
 
-        $user = $website->getAuth()->getCurrentUser();
+        $user = $request->getCurrentUser($website);
         $this->comment = $this->fetchComment($request, $article, $user);
         
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {

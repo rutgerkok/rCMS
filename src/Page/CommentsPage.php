@@ -23,7 +23,7 @@ class CommentsPage extends Page {
     public function init(Website $website, Request $request) {
         $oComments = new CommentRepository($website->getDatabase());
         $this->comments = $oComments->getCommentsLatest();
-        $this->viewingUser = $website->getAuth()->getCurrentUser();
+        $this->viewingUser = $request->getCurrentUser($website);
     }
 
     public function getMinimumRank() {

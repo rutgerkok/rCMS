@@ -3,6 +3,7 @@
 namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Template\Support\CKEditor;
@@ -14,7 +15,7 @@ if (!defined("WEBSITE")) {
 
 class WidgetRkokText extends WidgetDefinition {
 
-    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data) {
         if (!isSet($data["text"]) || !isSet($data["title"])) {
             return;
         }

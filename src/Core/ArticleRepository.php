@@ -29,19 +29,20 @@ class ArticleRepository extends Repository {
     protected $hiddenField;
     protected $showCommentsField;
     protected $calendarField;
-
+    
     /**
-     * @var Website The website.
+     * @var bool True if hidden articles are shown.
      */
-    protected $website;
+    private $showHiddenArticles;
 
     /**
      * Constructs the article displayer.
-     * @param Website $website The website to use.
+     * @param Database $database The website database to use.
+     * @param bool $showHidden True if articles marked as hidden are still shown.
      */
-    public function __construct(Website $website) {
-        parent::__construct($website->getDatabase());
-        $this->website = $website;
+    public function __construct(PDO $database, $showHidden) {
+        parent::__construct($database);
+        $this->showHiddenArticles = (bool) $showHidden;
 
         $this->primaryField = new Field(Field::TYPE_PRIMARY_KEY, "id", "artikel_id");
         $this->titleField = new Field(Field::TYPE_STRING, "title", "artikel_titel");
@@ -93,7 +94,7 @@ class ArticleRepository extends Repository {
 
     protected function whereRaw($sql, $params) {
         // Remove hidden articles for normal visitors
-        if (!$this->website->isLoggedInAsStaff()) {
+        if (!$this->showHiddenArticles) {
             if (!empty($sql)) {
                 $sql = "({$sql}) AND ";
             }
@@ -120,9 +121,6 @@ class ArticleRepository extends Repository {
             return true;
         } catch (NotFoundException $e) {
             return false;
-        } catch (PDOException $e) {
-            $this->website->getText()->logException("Error deleting article", $e);
-            return false;
         }
     }
 
@@ -131,15 +129,8 @@ class ArticleRepository extends Repository {
      * @param Article $article Article to save.
      */
     public function saveArticle(Article $article) {
-        try {
-            $this->saveEntity($article);
-            return true;
-        } catch (PDOException $e) {
-            $website = $this->website;
-            $website->addError($website->t("main.article") . ' ' . $website->t("errors.not_saved"));
-            $website->getText()->logException("Error saving article", $e);
-            return false;
-        }
+        $this->saveEntity($article);
+        return true;
     }
 
     protected function canBeSaved(Entity $article) {

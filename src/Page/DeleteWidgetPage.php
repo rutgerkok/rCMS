@@ -9,9 +9,9 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
+use Rcms\Core\Widget\WidgetRunner;
 use Rcms\Template\EmptyTemplate;
 use Rcms\Template\WidgetDeleteTemplate;
 
@@ -21,9 +21,9 @@ use Rcms\Template\WidgetDeleteTemplate;
 final class DeleteWidgetPage extends Page {
     
     /**
-     * @var InstalledWidgets The widgets on the website.
+     * @var WidgetRunner The widgets on the website.
      */
-    private $installedWidgets;
+    private $widgetRunner;
     
     /**
      * @var PlacedWidget The widget being deleted.
@@ -36,7 +36,7 @@ final class DeleteWidgetPage extends Page {
     private $requestToken;
     
     public function init(Website $website, Request $request) {
-        $this->installedWidgets = $website->getWidgets();
+        $this->widgetRunner = new WidgetRunner($website, $request);
         
         $widgetId = $request->getParamInt(0, 0);
         $widgetRepo = new WidgetRepository($website);
@@ -71,7 +71,7 @@ final class DeleteWidgetPage extends Page {
             // No token, assume already deleted
             return new EmptyTemplate($text);
         }
-        return new WidgetDeleteTemplate($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
+        return new WidgetDeleteTemplate($text, $this->widgetRunner, $this->placedWidget, $this->requestToken);
     }
 
 

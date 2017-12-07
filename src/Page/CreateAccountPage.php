@@ -39,7 +39,7 @@ final class CreateAccountPage extends Page {
         parent::init($website, $request);
 
         if (!$website->getConfig()->get(Config::OPTION_USER_ACCOUNT_CREATION)
-                || $website->isLoggedIn()) {
+                || $request->hasRank($website, Authentication::RANK_USER)) {
             // Pretend page doesn't exist when account creation is disabled,
             // or when already logged in
             throw new NotFoundException();

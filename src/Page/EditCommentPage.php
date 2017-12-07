@@ -53,8 +53,7 @@ final class EditCommentPage extends Page {
 
         $commentId = $request->getParamInt(0, 0);
 
-        $auth = $website->getAuth();
-        $user = $auth->getCurrentUser();
+        $user = $request->getCurrentUser($website);
 
         $repo = new CommentRepository($website->getDatabase());
         $this->comment = $repo->getCommentOrFail($commentId);

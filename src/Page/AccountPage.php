@@ -27,19 +27,19 @@ class AccountPage extends Page {
         $userId = $request->getParamInt(0);
         if ($userId === 0) {
             // Use current user
-            $this->user = $website->getAuth()->getCurrentUser();
+            $this->user = $request->getCurrentUser($website);
             if ($this->user == null) {
                 throw new NotFoundException();
             }
         } else {
             // Use provided user
-            $this->user = $website->getAuth()->getUserRepository()->getById($userId);
+            $this->user = $website->getUserRepository()->getById($userId);
         }
 
         if ($this->user !== null) {
             // Don't display banned/deleted users
             if (!$this->user->canLogIn()) {
-                if (!$website->isLoggedInAsStaff()) {
+                if (!$request->hasRank($website, Authentication::RANK_MODERATOR)) {
                     // Staff can view everyone
                     $this->user = null;
                 }
@@ -70,12 +70,12 @@ class AccountPage extends Page {
             <div id="sidebar_page_sidebar">
                 <h3 class="notable">{$this->user->getDisplayName()}</h3>
                 <p><img src="{$this->user->getAvatarUrl()}" style="max-width: 95%" /></p>
-                {$this->get_edit_links_html($website)}
+                {$this->get_edit_links_html($website, $request)}
             </div>
             <div id="sidebar_page_content">
                 {$this->get_status_html($website)}
-                {$this->get_articles_html($website)}
-                {$this->get_comments_html($website)}
+                {$this->get_articles_html($website, $request)}
+                {$this->get_comments_html($website, $request)}
             </div>
 
 EOT;
@@ -83,10 +83,10 @@ EOT;
     }
 
     /** Returns the HTML of the articles of the user, including the header */
-    public function get_articles_html(Website $website) {
-        $oArticles = new ArticleRepository($website);
+    public function get_articles_html(Website $website, Request $request) {
+        $loggedInStaff = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $oArticles = new ArticleRepository($website->getDatabase(), $loggedInStaff);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
-        $loggedInStaff = $website->isLoggedInAsStaff();
         $oArticleTemplate = new ArticleListTemplate($website->getText(), $articles, 0, true, false, $loggedInStaff);
         if (count($articles) > 0) {
             $returnValue = '<h3 class="notable">' . $website->t("main.articles") . "</h3>\n";
@@ -140,8 +140,8 @@ EOT;
      * Returns links to edit the profile, based on the permissions of the user
      * that is viewing this page.
      */
-    public function get_edit_links_html(Website $website) {
-        $viewing_user = $website->getAuth()->getCurrentUser();
+    public function get_edit_links_html(Website $website, Request $request) {
+        $viewing_user = $request->getCurrentUser($website);
         $returnValue = "";
 
         // Get privileges
@@ -150,10 +150,10 @@ EOT;
         $is_viewing_as_admin = false;
         if ($viewing_user != null) {
             $is_viewing_themselves = ($this->user->getId() == $viewing_user->getId());
-            if ($website->isLoggedInAsStaff(false)) {
+            if ($request->hasRank($website, Authentication::RANK_MODERATOR)) {
                 $is_viewing_as_moderator = true;
             }
-            if ($website->isLoggedInAsStaff(true)) {
+            if ($website->hasRank($website, Authentication::RANK_ADMIN)) {
                 $is_viewing_as_admin = true;
             }
         }
@@ -219,10 +219,10 @@ EOT;
     }
 
     /** Returns the HTML of the comments of the user, including the header */
-    public function get_comments_html(Website $website) {
+    public function get_comments_html(Website $website, Request $request) {
         $oComments = new CommentRepository($website->getDatabase());
         $comments = $oComments->getCommentsUser($this->user->getId());
-        $viewer = $website->getAuth()->getCurrentUser();
+        $viewer = $request->getCurrentUser($website);
 
         $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {

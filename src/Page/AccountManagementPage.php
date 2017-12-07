@@ -42,7 +42,7 @@ class AccountManagementPage extends Page {
 
     public function getPageContent(Website $website, Request $request) {
         $page = $request->getParamInt(0, 0);
-        $usersCount = $website->getAuth()->getUserRepository()->getRegisteredUsersCount();
+        $usersCount = $website->getUserRepository()->getRegisteredUsersCount();
 
         // Check page id
         if (!$this->check_valid_page_id($website, $page, $usersCount)) {
@@ -60,7 +60,7 @@ class AccountManagementPage extends Page {
 
         // Users table
         $start = $page * self::USERS_PER_PAGE;
-        $textToDisplay.= $this->get_users_table($website, $start);
+        $textToDisplay.= $this->get_users_table($website, $request, $start);
         // Link to admin page
         $textToDisplay.= '<p><br /><a class="arrow" href="' . $website->getUrlPage('admin') . '">' . $website->t("main.admin") . '</a></p>';
         return $textToDisplay;
@@ -91,11 +91,11 @@ class AccountManagementPage extends Page {
     }
 
     /** Gets a table of all users */
-    public function get_users_table(Website $website, $start) {
+    public function get_users_table(Website $website, Request $request, $start) {
         $start = (int) $start;
 
-        $oAuth = $website->getAuth();
-        $users = $oAuth->getUserRepository()->getRegisteredUsers($start, self::USERS_PER_PAGE);
+        $oAuth = $request->getAuth($website->getUserRepository());
+        $users = $website->getUserRepository()->getRegisteredUsers($start, self::USERS_PER_PAGE);
         $current_user_id = $oAuth->getCurrentUser()->getId();
 
         // Start table

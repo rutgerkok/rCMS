@@ -3,9 +3,11 @@
 namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
+use Rcms\Core\Authentication;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\MenuRepository;
 use Rcms\Core\NotFoundException;
+use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Core\Widget\WidgetDefinition;
 use Rcms\Template\LinkListTemplate;
@@ -19,12 +21,12 @@ class WidgetRkokLinks extends WidgetDefinition {
 
     const TITLE_MAX_LENGTH = 40;
 
-    public function writeText(StreamInterface $stream, Website $website, $id, $data) {
+    public function writeText(StreamInterface $stream, Website $website, Request $request, $id, $data) {
         if (!isSet($data["menu_id"]) || !isSet($data["title"])) {
             return;
         }
 
-        $loggedInStaff = $website->isLoggedInAsStaff(true);
+        $loggedInStaff = $request->hasRank($website, Authentication::RANK_ADMIN);
         $menuId = (int) $data["menu_id"];
 
         // Title

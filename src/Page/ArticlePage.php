@@ -25,10 +25,11 @@ class ArticlePage extends Page {
 
     public function init(Website $website, Request $request) {
         $articleId = $request->getParamInt(0);
-        $oArticles = new ArticleRepository($website);
+        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $oArticles = new ArticleRepository($website->getDatabase(), $isModerator);
         $this->article = $oArticles->getArticleOrFail($articleId);
-        $this->editLinks = $website->isLoggedInAsStaff();
-        $this->currentUser = $website->getAuth()->getCurrentUser();
+        $this->editLinks = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $this->currentUser = $request->getCurrentUser($website);
         if ($this->article->showComments) {
             $oComments = new CommentRepository($website->getDatabase());
             $this->comments = $oComments->getCommentsArticle($this->article->getId());

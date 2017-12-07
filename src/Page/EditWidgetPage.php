@@ -11,9 +11,9 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
+use Rcms\Core\Widget\WidgetRunner;
 use Rcms\Template\WidgetEditTemplate;
 
 /**
@@ -27,9 +27,9 @@ class EditWidgetPage extends Page {
     private $placedWidget;
 
     /**
-     * @var InstalledWidgets The widgets installed on the website.
+     * @var WidgetRunner The widgets installed on the website.
      */
-    private $installedWidgets;
+    private $widgetRunner;
 
     /**
      * @var RequestToken Token against CSRF attacks.
@@ -60,7 +60,7 @@ class EditWidgetPage extends Page {
     }
 
     public function init(Website $website, Request $request) {
-        $this->installedWidgets = $website->getWidgets();
+        $this->widgetRunner = new WidgetRunner($website, $request);
 
         $widgetRepo = new WidgetRepository($website);
         $widgetId = $request->getParamInt(0);
@@ -73,7 +73,7 @@ class EditWidgetPage extends Page {
 
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {
             // Use incoming data
-            $widgetDefinition = $this->installedWidgets->getDefinition($this->placedWidget);
+            $widgetDefinition = $website->getWidgets()->getDefinition($this->placedWidget);
             $data = $widgetDefinition->parseData($website, $widgetId);
             $this->placedWidget->setData($data);
 
@@ -116,7 +116,7 @@ class EditWidgetPage extends Page {
     }
 
     public function getTemplate(Text $text) {
-        return new WidgetEditTemplate($text, $this->installedWidgets, $this->placedWidget, $this->requestToken);
+        return new WidgetEditTemplate($text, $this->widgetRunner, $this->placedWidget, $this->requestToken);
     }
 
     public function getMinimumRank() {
