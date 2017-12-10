@@ -50,11 +50,14 @@ final class MainMenuEditTemplate extends Template {
                     {$text->t("links.main_menu.explained")}
                     {$text->t("links.main_menu.uses_categories")}
                 </p>
-                <p>
-                    <a class="arrow" href="{$text->e($text->getUrlPage("category_list"))}">
-                        {$text->t("categories.edit_categories")}
-                    </a>
-                </p>
+                <fieldset>
+                    <legend>{$text->t("links.main_menu.change_current_menu")}</legend>
+                    <p>
+                        <a class="arrow" href="{$text->e($text->getUrlPage("category_list"))}">
+                            {$text->t("categories.edit_categories")}
+                        </a>
+                    </p>
+                </fieldset>
 HTML
             );
             $this->writeMenuForm($stream);
@@ -65,11 +68,14 @@ HTML
                     {$text->t("links.main_menu.explained")}
                     {$text->tReplaced("links.main_menu.uses_menu", $text->e($this->menu->getName()))}
                 </p>
-                <p>
-                    <a class="arrow" href="{$text->e($text->getUrlPage("edit_menu", $this->menu->getId()))}">
-                        {$text->tReplaced("links.menu.edit_this", $text->e($this->menu->getName()))}
-                    </a>
-                </p>
+                <fieldset>
+                    <legend>{$text->t("links.main_menu.change_current_menu")}</legend>
+                    <p>
+                        <a class="arrow" href="{$text->e($text->getUrlPage("edit_menu", $this->menu->getId()))}">
+                            {$text->tReplaced("links.menu.edit_this", $text->e($this->menu->getName()))}
+                        </a>
+                    </p>
+                </fieldset>
 HTML
             );
             $this->writeCategoriesForm($stream);
@@ -88,7 +94,7 @@ HTML
                     <p>
                         <input type="hidden" name="main_menu_id" value="0" />
                         <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($this->requestToken->getTokenString())}" />
-                        <input type="submit" class="button primary_button" value="{$text->t("links.main_menu.switch_to_categories")}" />
+                        <input type="submit" class="button" value="{$text->t("links.main_menu.switch_to_categories")}" />
                     </p>
                 </form>
              </fieldset>
@@ -169,13 +175,18 @@ HTML
 
     }
 
+    /**
+     * Converts the menu array to an HTML selection list.
+     * @param Menu[] $selectableMenus The menu array.
+     * @return string HTML selection list.
+     */
     private function getMenuList(array $selectableMenus) {
         $text = $this->text;
 
         $returnValue = '<select class="button" name="main_menu_id" id="main_menu_id">';
         foreach ($selectableMenus as $menu) {
             $returnValue.= '<option value="' . $menu->getId() . '">';
-            $returnValue.= $text->e($menu->getDirectoryName());
+            $returnValue.= $text->e($menu->getName());
             $returnValue.= '</option>';
         }
         $returnValue.= '</select>';

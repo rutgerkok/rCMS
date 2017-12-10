@@ -30,6 +30,7 @@ menu.for_main_menu=Linkverzameling voor hoofdmenu
 menu.go_back=Terug naar linkverzameling
 menu.no_menus_created=Er zijn nog geen linkverzamelingen gemaakt.
 menu.no_other_menus_created=Er zijn nog geen andere linkverzamelingen gemaakt.
+main_menu.change_current_menu=Verander het bestaande menu:
 main_menu.edit=Bewerk het hoofdmenu
 main_menu.explained=Aan de bovenkant van deze pagina ziet u het hoofmenu.
 main_menu.use_menu_instead=Of: gebruik een linkverzameling voor het hoofdmenu

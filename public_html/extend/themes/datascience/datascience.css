@@ -359,13 +359,14 @@ a.arrow {
 a.arrow-disabled {
     padding-right: 5px;
     padding-left: 6px;
-    text-transform: uppercase;
+    background: transparent url(images/arrow.gif) center left no-repeat;
+    text-decoration: line-through;
     color: gray;
 }
 a:hover {
     text-decoration: none;
 }
-a:hover.arrow {
+a:hover.arrow, a:hover.arrow-disabled {
     text-decoration: underline;
 }
 a:active {

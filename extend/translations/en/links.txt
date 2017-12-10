@@ -30,6 +30,7 @@ menu.for_main_menu=Link collection for main menu
 menu.go_back=Go back to link collection
 menu.no_menus_created=No link collection has been created yet.
 menu.no_other_menus_created=No other link collections have been created yet.
+main_menu.change_current_menu=To change the current menu:
 main_menu.edit=Edit the main menu
 main_menu.explained=On the top of this page, you see what is called the "Main menu".
 main_menu.use_menu_instead=Or: use a link collection instead for the main menu

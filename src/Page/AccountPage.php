@@ -153,7 +153,7 @@ EOT;
             if ($request->hasRank($website, Authentication::RANK_MODERATOR)) {
                 $is_viewing_as_moderator = true;
             }
-            if ($website->hasRank($website, Authentication::RANK_ADMIN)) {
+            if ($request->hasRank($website, Authentication::RANK_ADMIN)) {
                 $is_viewing_as_admin = true;
             }
         }
