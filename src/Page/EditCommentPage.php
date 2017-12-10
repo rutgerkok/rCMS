@@ -15,7 +15,7 @@ use Rcms\Core\RequestToken;
 use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
-use Rcms\Page\Renderer\Responses;
+use Rcms\Middleware\Responses;
 use Rcms\Template\CommentEditTemplate;
 use Rcms\Template\EmptyTemplate;
 

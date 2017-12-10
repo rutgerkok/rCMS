@@ -13,7 +13,7 @@ use Rcms\Core\Website;
 use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRepository;
-use Rcms\Page\Renderer\Responses;
+use Rcms\Middleware\Responses;
 use Rcms\Template\EmptyTemplate;
 use Rcms\Template\WidgetDetailTemplate;
 

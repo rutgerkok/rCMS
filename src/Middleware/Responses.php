@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcms\Page\Renderer;
+namespace Rcms\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;

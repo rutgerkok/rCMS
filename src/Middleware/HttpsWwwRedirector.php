@@ -1,15 +1,10 @@
 <?php
 
-namespace Rcms\Page\Renderer;
+namespace Rcms\Middleware;
 
-use DateInterval;
-use DateTimeImmutable;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Rcms\Core\Config;
-use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\ErrorAccessCodeRequiredPage;
 
 /**
  * Middleware that checks whether the site is accessed using the correct URL.

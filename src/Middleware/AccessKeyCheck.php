@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcms\Page\Renderer;
+namespace Rcms\Middleware;
 
 use DateInterval;
 use DateTimeImmutable;

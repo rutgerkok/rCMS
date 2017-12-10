@@ -7,7 +7,7 @@ use Rcms\Core\Authentication;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
-use Rcms\Page\Renderer\Responses;
+use Rcms\Middleware\Responses;
 
 /**
  * This class exists to redirect any old view_article

@@ -3,9 +3,9 @@
 namespace Rcms\Core;
 
 use mindplay\middleman\Dispatcher;
-use Rcms\Page\Renderer\AccessKeyCheck;
-use Rcms\Page\Renderer\HttpsWwwRedirector;
-use Rcms\Page\Renderer\PageResponder;
+use Rcms\Middleware\AccessKeyCheck;
+use Rcms\Middleware\HttpsWwwRedirector;
+use Rcms\Middleware\PageResponder;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
