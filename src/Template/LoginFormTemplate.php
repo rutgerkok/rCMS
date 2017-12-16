@@ -5,6 +5,7 @@ namespace Rcms\Template;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\Request;
+use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 
 /**
@@ -16,6 +17,11 @@ class LoginFormTemplate extends Template {
      * @var UriInterface The location where the login form should go.
      */
     private $destination;
+
+    /**
+     * @var RequestToken Token for protecting against CSRF.
+     */
+    private $requestToken;
 
     /**
      * @var array Variables that were sent in the request body.
@@ -35,9 +41,10 @@ class LoginFormTemplate extends Template {
      * link must be shown.
      */
     public function __construct(Text $text, UriInterface $destination,
-            array $postVars, $showCreateAccountLink) {
+            RequestToken $token, array $postVars, $showCreateAccountLink) {
         parent::__construct($text);
         $this->destination = $destination;
+        $this->requestToken = $token;
         $this->postVars = $postVars;
         $this->showCreateAccountLinks = (bool) $showCreateAccountLink;
     }
@@ -59,7 +66,7 @@ class LoginFormTemplate extends Template {
                         <input type="password" name="pass" id="pass" /> <br />
 
                         <input type="submit" value="{$text->t('main.log_in')}" class="button primary_button" />
-
+                        <input type="hidden" name="{$text->e(RequestToken::FIELD_NAME)}" value="{$text->e($this->requestToken->getTokenString())}" />
 EOT
         );
         // Repost all POSTed variables (GET variables will be part of the URL above)

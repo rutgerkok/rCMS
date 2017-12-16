@@ -6,15 +6,21 @@ use Rcms\Core\Ranks;
 use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\RequestToken;
 use Rcms\Core\Website;
 use Rcms\Template\LoggedInTemplate;
 use Rcms\Template\LoginFormTemplate;
 
 class LoginPage extends Page {
 
+    /** @var bool True if the login just succeeded. */
     private $loggedIn;
+    /** @var bool True to display an "Admin" link upon successful login. */
     private $loggedInAsAdmin;
+    /** @var bool True to display a "Create account" link. */
     private $canCreateAccounts;
+    /** @var RequestToken Token for protecting against CSRF. */
+    private $requestToken;
 
     public function init(Website $website, Request $request) {
         $this->request = $request;
@@ -25,6 +31,9 @@ class LoginPage extends Page {
         $this->loggedIn = $request->hasRank(Ranks::USER);
         $this->loggedInAsAdmin = $request->hasRank(Ranks::ADMIN);
         $this->canCreateAccounts = (bool) $website->getConfig()->get(Config::OPTION_USER_ACCOUNT_CREATION);
+
+        $this->requestToken = RequestToken::generateNew();
+        $this->requestToken->saveToSession();
     }
 
     public function getPageTitle(Text $text) {
@@ -45,8 +54,8 @@ class LoginPage extends Page {
         } else {
             // Return a login view, but without the "Must be logged in" message
             // at the top.
-            return new LoginFormTemplate($text, $text->getUrlPage("login"), [],
-                    $this->canCreateAccounts);
+            return new LoginFormTemplate($text, $text->getUrlPage("login"),
+                    $this->requestToken, [], $this->canCreateAccounts);
         }
     }
 

@@ -118,7 +118,7 @@ final class CreateAccountPage extends Page {
 
     public function getTemplate(Text $text) {
         if ($this->accountCreated) {
-            return new LoginFormTemplate($text, $text->getUrlPage("login"), [], false);
+            return new LoginFormTemplate($text, $text->getUrlPage("login"), $this->requestToken, [], false);
         }
         return new AccountCreationTemplate($text, $this->newUser, $this->requestToken);
     }

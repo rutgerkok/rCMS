@@ -2,6 +2,8 @@
 
 namespace Rcms\Page;
 
+use Psr\Http\Message\ResponseInterface;
+
 use Rcms\Core\Ranks;
 use Rcms\Core\Request;
 use Rcms\Core\Text;

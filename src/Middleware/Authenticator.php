@@ -5,6 +5,7 @@ namespace Rcms\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+use Rcms\Core\RequestToken;
 use Rcms\Core\UserSession;
 use Rcms\Core\Website;
 
@@ -32,12 +33,17 @@ class Authenticator {
         $user = null;
         $post = $request->getParsedBody();
 
-        if (isSet($post["user"]) && isSet($post["pass"])) {
+        if (isSet($post["user"]) && isSet($post["pass"]) && isSet($post[RequestToken::FIELD_NAME])) {
             // POST login
             $login = (string) $post["user"];
             $pass = (string) $post["pass"];
-            $user = $this->userSession->doPasswordLogin($login, $pass);
-            if ($user) { // Set login cookie
+            $sessionToken = RequestToken::fromSession();
+            $formToken = RequestToken::fromString($post[RequestToken::FIELD_NAME]);
+            if ($sessionToken->matches($formToken)) {
+                // Only login if request came from this site
+                $user = $this->userSession->doPasswordLogin($login, $pass);
+            }
+            if ($user) { // Login successful, set login cookie
                 $response = $this->userSession->addRememberMeCookie($user, $response);
             }
         }
