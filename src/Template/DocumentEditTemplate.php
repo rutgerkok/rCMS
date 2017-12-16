@@ -6,6 +6,7 @@ use Psr\Http\Message\StreamInterface;
 use Rcms\Core\Document\Document;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
+use Rcms\Core\Widget\InstalledWidgets;
 use Rcms\Core\Widget\PlacedWidget;
 use Rcms\Core\Widget\WidgetRunner;
 
@@ -29,6 +30,11 @@ final class DocumentEditTemplate extends Template {
      * @var PlacedWidget[] The widgets. 
      */
     private $placedWidgets;
+    
+    /**
+     * @var InstalledWidgets All widgets installed on the web server.
+     */
+    private $installedWidgets;
 
     /**
      *
@@ -38,12 +44,13 @@ final class DocumentEditTemplate extends Template {
 
     public function __construct(Text $text, Document $document,
             RequestToken $requestToken, WidgetRunner $widgetRunner,
-            array $placedWidgets) {
+            InstalledWidgets $installedWidget, array $placedWidgets) {
         parent::__construct($text);
         $this->document = $document;
         $this->requestToken = $requestToken;
         $this->widgetRunner = $widgetRunner;
         $this->placedWidgets = $placedWidgets;
+        $this->installedWidgets = $installedWidget;
     }
 
     public function writeText(StreamInterface $stream) {
@@ -170,7 +177,7 @@ HTML
             </h3>
 HTML;
 
-        $installedWidgets = $this->widgetRunner->getInstalledWidgets();
+        $installedWidgets = $this->installedWidgets->getInstalledWidgets();
         foreach ($installedWidgets as $installedWidget) {
             $widgetNameHtml = htmlSpecialChars($installedWidget->getDisplayName());
             $descriptionHtml = htmlSpecialChars($installedWidget->getDescription());

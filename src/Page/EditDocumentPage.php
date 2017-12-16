@@ -37,6 +37,11 @@ class EditDocumentPage extends Page {
      * @var WidgetRunner The widget loader.
      */
     private $widgetRunner;
+    
+    /**
+     * @var InstalledWidgets The installed widgets.
+     */
+    private $installedWidgets;
 
     /**
      * @var RequestToken The request token that will be sent, placed in the form.
@@ -54,6 +59,7 @@ class EditDocumentPage extends Page {
 
         // Load document widgets
         $this->widgetRunner = new WidgetRunner($website, $request);
+        $this->installedWidgets = $website->getWidgets();
         $widgetRepo = new WidgetRepository($website);
         $this->widgets = $widgetRepo->getWidgetsInDocumentWithId($id);
 
@@ -134,7 +140,8 @@ class EditDocumentPage extends Page {
     }
 
     public function getTemplate(Text $text) {
-        return new DocumentEditTemplate($text, $this->document, $this->requestToken, $this->widgetRunner, $this->widgets);
+        return new DocumentEditTemplate($text, $this->document, $this->requestToken,
+                $this->widgetRunner, $this->installedWidgets, $this->widgets);
     }
 
 }
