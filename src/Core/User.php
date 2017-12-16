@@ -2,13 +2,21 @@
 
 namespace Rcms\Core;
 
-use DateTime;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use Rcms\Core\Repository\Entity;
 
 class User extends Entity {
 
     const GRAVATAR_URL_BASE = "//www.gravatar.com/avatar/";
+    const STATUS_NORMAL = 0;
+    const STATUS_DELETED = 2;
+    const STATUS_BANNED = 1;
+    /**
+     * Password used for the admin account when the site is created. The site
+     * will complain until the admin no longer uses this password.
+     */
+    const DEFAULT_ADMIN_PASSWORD = "admin";
 
     protected $username;
     protected $displayName;
@@ -18,7 +26,7 @@ class User extends Entity {
     protected $rank;
     protected $joined;
     protected $lastLogin;
-    protected $status = Authentication::STATUS_NORMAL;
+    protected $status = self::STATUS_NORMAL;
     protected $statusText = "";
     protected $extraData = [];
 
@@ -35,9 +43,9 @@ class User extends Entity {
         $user->setUsername($username);
         $user->setDisplayName($displayName);
         $user->setPassword($password);
-        $user->rank = Authentication::RANK_USER;
+        $user->rank = Ranks::USER;
 
-        $now = new DateTime();
+        $now = new DateTimeImmutable();
         $user->setLastLogin($now);
         $user->joined = $now;
 
@@ -50,10 +58,10 @@ class User extends Entity {
      * @return boolean Whether the user can log in.
      */
     public function canLogIn() {
-        if ($this->status == Authentication::STATUS_DELETED) {
+        if ($this->status == self::STATUS_DELETED) {
             return false;
         }
-        if ($this->status == Authentication::STATUS_BANNED) {
+        if ($this->status == self::STATUS_BANNED) {
             return false;
         }
         return true;
@@ -130,10 +138,10 @@ class User extends Entity {
      */
     public function verifyPassword($passwordUnhashed) {
         $passwordHashed = $this->getPasswordHashed();
-        if (strLen($passwordHashed) == 32 && $passwordHashed[0] != '$') {
-            return (md5(sha1($passwordUnhashed)) == $passwordHashed);
+        if (strLen($passwordHashed) === 32 && $passwordHashed[0] !== '$') {
+            return md5(sha1($passwordUnhashed)) === $passwordHashed;
         } else {
-            return (crypt($passwordUnhashed, $passwordHashed) === $passwordHashed);
+            return crypt($passwordUnhashed, $passwordHashed) === $passwordHashed;
         }
     }
 
@@ -146,7 +154,7 @@ class User extends Entity {
      * @return boolean True if the password would be too weak.
      */
     public function isWeakPassword($password) {
-        if ($this->getRank() === Authentication::RANK_ADMIN) {
+        if ($this->getRank() === Ranks::ADMIN) {
             // Admins shouldn't use the default password
             if ($password === "admin") {
                 return true;
@@ -158,17 +166,13 @@ class User extends Entity {
         }
         return false;
     }
-
-    /**
-     * Hashes the password using blowfish, or something weaker if blowfish is
-     * not available. Using <code>crypt($pass,$hash)==$hash)</code> (or the
-     * method verify_password) you can check if the given password matches the
-     * hash.
-     * @param string $password The password to hash.
-     * @return string The hashed password.
-     */
-    public static function hashPassword($password) {
-        return HashHelper::hash($password);
+    
+    public function passwordNeedsRehash() {
+        $passwordHashed = $this->getPasswordHashed();
+        if (strLen($passwordHashed) === 32 && $passwordHashed[0] !== '$') {
+            return true; // Still md5(sha1($pass))
+        }
+        return password_needs_rehash($passwordHashed, PASSWORD_DEFAULT);
     }
 
     /**
@@ -180,13 +184,13 @@ class User extends Entity {
      */
     public function hasRank($rank) {
         switch ($rank) {
-            case Authentication::RANK_ADMIN:
-                return $this->rank == Authentication::RANK_ADMIN;
-            case Authentication::RANK_MODERATOR:
-                return $this->rank == Authentication::RANK_MODERATOR
-                    || $this->rank == Authentication::RANK_ADMIN;
-            case Authentication::RANK_USER:
-            case Authentication::RANK_LOGGED_OUT:
+            case Ranks::ADMIN:
+                return $this->rank == Ranks::ADMIN;
+            case Ranks::MODERATOR:
+                return $this->rank == Ranks::MODERATOR
+                    || $this->rank == Ranks::ADMIN;
+            case Ranks::USER:
+            case Ranks::LOGGED_OUT:
                 return true;
             default:
                 throw new InvalidArgumentException("Invalid rank: " . $rank);
@@ -271,7 +275,7 @@ class User extends Entity {
      * @param string $password
      */
     public function setPassword($password) {
-        $this->passwordHashed = self::hashPassword($password);
+        $this->passwordHashed = password_hash($password, PASSWORD_DEFAULT);
     }
 
     /**
@@ -305,9 +309,9 @@ class User extends Entity {
     /**
      * Sets the date of the last login of the user. When set to 0, the current
      * date will be used.
-     * @param DateTime|null $lastLogin The date.
+     * @param DateTimeImmutable $lastLogin The date.
      */
-    public function setLastLogin(DateTime $lastLogin = null) {
+    public function setLastLogin(DateTimeImmutable $lastLogin = null) {
         $this->lastLogin = $lastLogin;
     }
 

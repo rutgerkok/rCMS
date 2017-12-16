@@ -2,17 +2,24 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
-use Rcms\Core\Text;
+use Rcms\Core\Ranks;
 use Rcms\Core\Request;
+use Rcms\Core\Text;
+use Rcms\Core\UserSession;
 use Rcms\Core\Website;
 
 use Rcms\Template\LoggedOutTemplate;
 
 class LogoutPage extends Page {
+    
+    private $userSession;
 
     public function init(Website $website, Request $request) {
-        $request->getAuth($website->getUserRepository())->logOut();
+        $this->userSession = new UserSession($website);
+    }
+    
+    public function modifyResponse(ResponseInterface $response) {
+        return $this->userSession->logout($response);
     }
 
     public function getPageTitle(Text $text) {
@@ -32,7 +39,7 @@ class LogoutPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

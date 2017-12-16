@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use DateTime;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -25,7 +25,7 @@ class CalendarPage extends Page {
     private $isModerator;
 
     public function init(Website $website, Request $request) {
-        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $this->isModerator = $request->hasRank(Ranks::MODERATOR);
       
         $oArticles = new ArticleRepository($website->getDatabase(), $this->isModerator);
         $yearNumber = $request->getParamInt(0, date('Y'));
@@ -47,7 +47,7 @@ class CalendarPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

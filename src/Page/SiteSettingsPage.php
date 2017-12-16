@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -52,7 +52,7 @@ class SiteSettingsPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageContent(Website $website, Request $request) {

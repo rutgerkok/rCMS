@@ -21,7 +21,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("Rutger", $comment->getUsername());
         $this->assertEquals("rutger@example.com", $comment->getUserEmail());
         $this->assertEquals(0, $comment->getUserId());
-        $this->assertEquals(Authentication::RANK_LOGGED_OUT, $comment->getUserRank());
+        $this->assertEquals(Ranks::LOGGED_OUT, $comment->getUserRank());
 
         // Check reply
         $this->assertEquals(0, $comment->getId());
@@ -109,7 +109,7 @@ class CommentTest extends PHPUnit_Framework_TestCase {
         $user = new User();
         $user->setDisplayName("John Doe");
         $user->setUsername("testuser");
-        $user->setRank(Authentication::RANK_USER);
+        $user->setRank(Ranks::USER);
         $user->setField(new Field(Field::TYPE_PRIMARY_KEY, "id", "id"), 10);
         return $user;
     }

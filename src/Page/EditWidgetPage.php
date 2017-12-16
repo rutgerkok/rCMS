@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Document\DocumentRepository;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
@@ -120,7 +120,7 @@ class EditWidgetPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageType() {

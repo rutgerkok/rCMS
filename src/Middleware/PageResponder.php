@@ -5,7 +5,7 @@ namespace Rcms\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -47,7 +47,7 @@ final class PageResponder {
 
         // Login check
         $minimumRank = $page->getMinimumRank();
-        if (!$request->hasRank($this->website, $minimumRank)) {
+        if (!$request->hasRank($minimumRank)) {
             // Login failure
             $page = new ErrorLoginRequiredPage($minimumRank);
         }

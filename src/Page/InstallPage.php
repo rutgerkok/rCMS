@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\DatabaseInstaller;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -70,7 +70,7 @@ class InstallPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

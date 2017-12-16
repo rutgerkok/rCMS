@@ -90,11 +90,12 @@ final class AccessKeyCheck {
         }
 
         $now = new DateTimeImmutable();
-        $expires = $now->add(new DateInterval('P60D'))->format('r');
+        $expires = $now->add(new DateInterval('P180D'))->format('r');
         $siteUrl = $this->website->getText()->getUrlMain();
         $path = empty($siteUrl->getPath()) ? '/' : $siteUrl->getPath();
 
-        $cookieInstructioh = "key=$siteKey; expires=$expires; path=$path";
+        $cookieValue = urlEncode($siteKey);
+        $cookieInstructioh = "key=$cookieValue; expires=$expires; path=$path";
         return $response->withAddedHeader("Set-Cookie", $cookieInstructioh);
     }
 

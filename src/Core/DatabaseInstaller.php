@@ -89,7 +89,7 @@ class DatabaseInstaller {
                 "PRIMARY KEY (`user_id`), UNIQUE KEY `user_login` (`user_login`)) ENGINE=InnoDB");
 
         $admin = User::createNewUser("admin", "Admin", "admin");
-        $admin->setRank(Authentication::RANK_ADMIN);
+        $admin->setRank(Ranks::ADMIN);
         $userRepo = new UserRepository($database);
         $userRepo->save($admin);
 

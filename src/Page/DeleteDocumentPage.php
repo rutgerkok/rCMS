@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Document\DocumentRepository;
 use Rcms\Core\Website;
@@ -61,7 +61,7 @@ class DeleteDocumentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageType() {

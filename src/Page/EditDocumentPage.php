@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Document\DocumentRepository;
 use Rcms\Core\NotFoundException;
@@ -48,7 +48,7 @@ class EditDocumentPage extends Page {
 
         // Load document
         $documentRepo = new DocumentRepository($website->getDatabase(), true);
-        $user = $request->getCurrentUser($website);
+        $user = $request->getCurrentUser();
         // ^ this is never null, as the required rank for this page is moderator
         $this->document = $this->retrieveDocument($website, $documentRepo, $id, $user);
 
@@ -126,7 +126,7 @@ class EditDocumentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageType() {

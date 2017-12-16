@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -14,19 +14,16 @@ use Rcms\Template\LoginFormTemplate;
  */
 class ErrorLoginRequiredPage extends Page {
 
-    private $errorMessage;
     private $minimumRank;
     private $targetUrl;
     private $postVars;
     private $canCreateAccounts;
 
-    public function __construct($minimumRank = Authentication::RANK_USER) {
+    public function __construct($minimumRank = Ranks::USER) {
         $this->minimumRank = $minimumRank;
     }
 
     public function init(Website $website, Request $request) {
-        $auth = $request->getAuth($website->getUserRepository());
-        $this->errorMessage = $auth->getLoginError($website->getText(), $this->minimumRank);
         $psrRequest = $request->toPsr();
         $this->targetUrl = $psrRequest->getUri();
         $this->postVars = (array) $psrRequest->getParsedBody();
@@ -39,7 +36,7 @@ class ErrorLoginRequiredPage extends Page {
 
     public function getTemplate(Text $text) {
         return new LoginFormTemplate($text, $this->targetUrl, $this->postVars,
-                $this->errorMessage, $this->canCreateAccounts);
+                $this->canCreateAccounts);
     }
 
     public function getPageType() {
@@ -47,6 +44,6 @@ class ErrorLoginRequiredPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 }

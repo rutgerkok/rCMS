@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Template\Error404Template;
 
@@ -23,6 +23,6 @@ class Error404Page extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 }

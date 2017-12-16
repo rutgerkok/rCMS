@@ -3,7 +3,7 @@
 namespace Rcms\Template;
 
 use Psr\Http\Message\StreamInterface;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Comment;
 use Rcms\Core\Text;
 use Rcms\Core\User;
@@ -30,7 +30,7 @@ class CommentsTreeTemplate extends Template {
             User $viewer = null) {
         parent::__construct($text);
         $this->comments = $comments;
-        $this->viewedByStaff = $viewer === null?  false : $viewer->hasRank(Authentication::RANK_MODERATOR);
+        $this->viewedByStaff = $viewer === null?  false : $viewer->hasRank(Ranks::MODERATOR);
         $this->viewedOutOfContext = $viewedOutOfContext;
         $this->viewerId = $viewer ? $viewer->getId() : 0;
     }

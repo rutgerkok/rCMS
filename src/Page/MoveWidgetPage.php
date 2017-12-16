@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Psr\Http\Message\ResponseInterface;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -93,7 +93,7 @@ final class MoveWidgetPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageType() {

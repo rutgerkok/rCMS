@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Document\Document;
 use Rcms\Core\Document\DocumentRepository;
 use Rcms\Core\Request;
@@ -40,9 +40,9 @@ class DocumentPage extends Page {
     private $editLinks;
 
     public function init(Website $website, Request $request) {
-        $isStaff = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $isStaff = $request->hasRank(Ranks::MODERATOR);
         $id = $request->getParamInt(0);
-        $this->editLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $this->editLinks = $request->hasRank(Ranks::ADMIN);
 
         // Load document
         $documentRepo = new DocumentRepository($website->getDatabase(), $isStaff);
@@ -66,7 +66,7 @@ class DocumentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

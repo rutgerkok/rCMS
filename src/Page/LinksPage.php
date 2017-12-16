@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Link;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Menu;
@@ -53,7 +53,7 @@ class LinksPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getTemplate(Text $text) {

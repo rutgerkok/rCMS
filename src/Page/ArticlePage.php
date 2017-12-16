@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
@@ -25,11 +25,11 @@ class ArticlePage extends Page {
 
     public function init(Website $website, Request $request) {
         $articleId = $request->getParamInt(0);
-        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $isModerator = $request->hasRank(Ranks::MODERATOR);
         $oArticles = new ArticleRepository($website->getDatabase(), $isModerator);
         $this->article = $oArticles->getArticleOrFail($articleId);
-        $this->editLinks = $request->hasRank($website, Authentication::RANK_MODERATOR);
-        $this->currentUser = $request->getCurrentUser($website);
+        $this->editLinks = $request->hasRank(Ranks::MODERATOR);
+        $this->currentUser = $request->getCurrentUser();
         if ($this->article->showComments) {
             $oComments = new CommentRepository($website->getDatabase());
             $this->comments = $oComments->getCommentsArticle($this->article->getId());
@@ -47,7 +47,7 @@ class ArticlePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

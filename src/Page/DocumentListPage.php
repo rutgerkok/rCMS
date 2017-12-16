@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Request;
 use Rcms\Core\Text;
 use Rcms\Core\Website;
@@ -20,7 +20,7 @@ class DocumentListPage extends Page {
     private $editLinks;
     
     public function init(Website $website, Request $request) {
-        $isStaff = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $isStaff = $request->hasRank(Ranks::ADMIN);
 
         $documentRepo = new DocumentRepository($website->getDatabase(), $isStaff);
         $this->documents = $documentRepo->getAll();
@@ -28,7 +28,7 @@ class DocumentListPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageTitle(Text $text) {

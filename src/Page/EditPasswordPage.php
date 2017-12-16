@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Request;
 use Rcms\Core\User;
@@ -21,7 +21,7 @@ class EditPasswordPage extends Page {
     /** Fills the class variables, adds errors if needed. */
     public function init(Website $website, Request $request) {
         $this->user = $this->getEditingUser($website, $request);
-        $viewingUser = $request->getCurrentUser($website);
+        $viewingUser = $request->getCurrentUser();
         $this->editing_someone_else = ($viewingUser->getId() !== $this->user->getId());
     }
 
@@ -34,7 +34,7 @@ class EditPasswordPage extends Page {
      */
     private function getEditingUser(Website $website, Request $request) {
         // Will always have a value - minimum rank of this page is user rank
-        $loggedInUser = $request->getCurrentUser($website);
+        $loggedInUser = $request->getCurrentUser();
 
         // Check if editing another user
         if (!$request->hasParameter(0)) {
@@ -63,7 +63,7 @@ class EditPasswordPage extends Page {
      * @return boolean Whether the user can edit someone else.
      */
     public function can_user_edit_someone_else(Website $website, Request $request) {
-        return $request->hasRank($website, Authentication::RANK_ADMIN);
+        return $request->hasRank(Ranks::ADMIN);
     }
 
     public function getPageTitle(Text $text) {
@@ -71,7 +71,7 @@ class EditPasswordPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_USER;
+        return Ranks::USER;
     }
 
     public function getPageType() {
@@ -97,7 +97,8 @@ class EditPasswordPage extends Page {
                     $textToDisplay.='<p>' . $website->t("users.password") . ' ' . $website->t("editor.is_changed") . '</p>';
                     // Update login cookie (only when changing your own password)
                     if (!$this->editing_someone_else) {
-                        $request->getAuth($website->getUserRepo)->setLoginCookie();
+                        // Disfunctional for now... Some refactoring is required
+                        // before the response object can be edited here
                     }
                     // Don't show form
                     $show_form = false;
@@ -170,7 +171,7 @@ EOT;
 EOT;
         } else {
             $textToDisplay .= '<p><a class="arrow" href="' . $website->getUrlPage("account") . '">' . $website->t("main.my_account") . "</a>\n";
-            if ($request->hasRank($website, Authentication::RANK_ADMIN)) {
+            if ($request->hasRank(Ranks::ADMIN)) {
                 $textToDisplay .= '<br /><a class="arrow" href="' . $website->getUrlPage("account_management") . '">' . $website->t("main.account_management") . "</a>\n";
             }
             $textToDisplay.= "</p>";

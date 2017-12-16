@@ -4,24 +4,24 @@ namespace Rcms\Core;
 
 use mindplay\middleman\Dispatcher;
 use Rcms\Middleware\AccessKeyCheck;
+use Rcms\Middleware\Authenticator;
 use Rcms\Middleware\HttpsWwwRedirector;
 use Rcms\Middleware\PageResponder;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
 
-// Setup environment (change this 
+// Setup environment
 require(__DIR__ . "/environment.php");
-
-// We'll need this for every page
-session_start();
 
 // Display site
 $website = new Website();
 
+
 $dispatcher = new Dispatcher([
     new HttpsWwwRedirector($website),
     new AccessKeyCheck($website),
+    new Authenticator($website),
     new PageResponder($website)
 ]);
 

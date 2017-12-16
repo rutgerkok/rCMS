@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\ArticleRepository;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Text;
@@ -33,7 +33,7 @@ class SearchPage extends Page {
     public function init(Website $website, Request $request) {
         $this->keyword = trim($request->getRequestString("searchbox"));
         $this->pageNumber = $request->getRequestInt("page", 0);
-        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $this->isModerator = $request->hasRank(Ranks::MODERATOR);
 
         if (strLen($this->keyword) < self::MIN_SEARCH_LENGTH) {
             // Don't search for too short words
@@ -84,7 +84,7 @@ class SearchPage extends Page {
     }
  
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

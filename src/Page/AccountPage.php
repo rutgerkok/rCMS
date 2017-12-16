@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Text;
@@ -27,7 +27,7 @@ class AccountPage extends Page {
         $userId = $request->getParamInt(0);
         if ($userId === 0) {
             // Use current user
-            $this->user = $request->getCurrentUser($website);
+            $this->user = $request->getCurrentUser();
             if ($this->user == null) {
                 throw new NotFoundException();
             }
@@ -39,7 +39,7 @@ class AccountPage extends Page {
         if ($this->user !== null) {
             // Don't display banned/deleted users
             if (!$this->user->canLogIn()) {
-                if (!$request->hasRank($website, Authentication::RANK_MODERATOR)) {
+                if (!$request->hasRank(Ranks::MODERATOR)) {
                     // Staff can view everyone
                     $this->user = null;
                 }
@@ -53,7 +53,7 @@ class AccountPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
     public function getPageTitle(Text $text) {
@@ -84,7 +84,7 @@ EOT;
 
     /** Returns the HTML of the articles of the user, including the header */
     public function get_articles_html(Website $website, Request $request) {
-        $loggedInStaff = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $loggedInStaff = $request->hasRank(Ranks::MODERATOR);
         $oArticles = new ArticleRepository($website->getDatabase(), $loggedInStaff);
         $articles = $oArticles->getArticlesDataUser($this->user->getId());
         $oArticleTemplate = new ArticleListTemplate($website->getText(), $articles, 0, true, false, $loggedInStaff);
@@ -107,7 +107,7 @@ EOT;
         // It's safe to display the edit links, as only moderators and up can
         // view account pages of banned/deleted users.
         // Check if account is banned
-        if ($this->user->getStatus() == Authentication::STATUS_BANNED) {
+        if ($this->user->getStatus() == User::STATUS_BANNED) {
             // Banned
             return <<<EOT
                 <div class="error">
@@ -121,7 +121,7 @@ EOT;
         }
 
         // Check if account is deleted
-        if ($this->user->getStatus() == Authentication::STATUS_DELETED) {
+        if ($this->user->getStatus() == User::STATUS_DELETED) {
             return <<<EOT
                 <div class="error">
                     {$website->tReplaced("users.status.deleted.this_account", $status_text)}.
@@ -141,7 +141,7 @@ EOT;
      * that is viewing this page.
      */
     public function get_edit_links_html(Website $website, Request $request) {
-        $viewing_user = $request->getCurrentUser($website);
+        $viewing_user = $request->getCurrentUser();
         $returnValue = "";
 
         // Get privileges
@@ -150,10 +150,10 @@ EOT;
         $is_viewing_as_admin = false;
         if ($viewing_user != null) {
             $is_viewing_themselves = ($this->user->getId() == $viewing_user->getId());
-            if ($request->hasRank($website, Authentication::RANK_MODERATOR)) {
+            if ($request->hasRank(Ranks::MODERATOR)) {
                 $is_viewing_as_moderator = true;
             }
-            if ($request->hasRank($website, Authentication::RANK_ADMIN)) {
+            if ($request->hasRank(Ranks::ADMIN)) {
                 $is_viewing_as_admin = true;
             }
         }
@@ -222,7 +222,7 @@ EOT;
     public function get_comments_html(Website $website, Request $request) {
         $oComments = new CommentRepository($website->getDatabase());
         $comments = $oComments->getCommentsUser($this->user->getId());
-        $viewer = $request->getCurrentUser($website);
+        $viewer = $request->getCurrentUser();
 
         $returnValue = '<h3 class="notable">' . $website->t("comments.comments") . "</h3>\n";
         if (count($comments) > 0) {

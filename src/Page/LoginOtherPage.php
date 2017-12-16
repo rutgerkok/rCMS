@@ -2,10 +2,13 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Psr\Http\Message\ResponseInterface;
+
+use Rcms\Core\Ranks;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Text;
 use Rcms\Core\User;
+use Rcms\Core\UserSession;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
 use Rcms\Template\LoggedInOtherTemplate;
@@ -15,22 +18,26 @@ class LoginOtherPage extends Page {
     /**
      * @var User The new user.
      */
-    private $newUser = null;
+    private $newUser;
+    
+    /**
+     * @var UserSession For logging the new user in.
+     */
+    private $userSession;
 
     public function init(Website $website, Request $request) {
-        $userId = $request->getParamInt(0);
+        $this->userSession = new UserSession($website);
 
         // Fetch user
-        $userRepo = $website->getUserRepository();
-        $user = $userRepo->getById($userId);
-        if (!$user->canLogIn()) {
-            // Can't log in to deleted or banned users
+        $userId = $request->getParamInt(0);
+        $this->newUser = $website->getUserRepository()->getById($userId);
+        if (!$this->newUser->canLogIn()) {
             throw new NotFoundException();
         }
-
-        // Set user
-        $this->newUser = $user;
-        $request->getAuth($userRepo)->setCurrentUser($user);
+    }
+    
+    public function modifyResponse(ResponseInterface $response) {
+        return $this->userSession->withUserInSession($response, $this->newUser);
     }
 
     public function getPageType() {
@@ -50,7 +57,7 @@ class LoginOtherPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
 }

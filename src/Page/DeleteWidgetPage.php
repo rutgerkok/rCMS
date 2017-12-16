@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -55,7 +55,7 @@ final class DeleteWidgetPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageType() {

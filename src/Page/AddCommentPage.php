@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\Article;
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
@@ -44,7 +44,7 @@ final class AddCommentPage extends Page {
     public function init(Website $website, Request $request) {
         $text = $website->getText();
         $this->requestToken = RequestToken::generateNew();
-        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $isModerator = $request->hasRank(Ranks::MODERATOR);
         
         $articleId = $request->getParamInt(0, 0);
         $articleRepo = new ArticleRepository($website->getDatabase(), $isModerator);
@@ -55,7 +55,7 @@ final class AddCommentPage extends Page {
             return;
         }
 
-        $user = $request->getCurrentUser($website);
+        $user = $request->getCurrentUser();
         $this->comment = $this->fetchComment($request, $article, $user);
         
         if ($request->hasRequestValue("submit") && Validate::requestToken($request)) {
@@ -100,7 +100,7 @@ final class AddCommentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

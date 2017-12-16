@@ -102,10 +102,14 @@ class Website {
     }
 
     /**
-     * Gets the user repository, or null if the database cannot be accessed.
-     * @return UserRepository|null The user repository.
+     * Gets the user repository of the website, containing all user data.
+     * @return UserRepository The user repository.
+     * @throws NotFoundException If the user repository is offline.
      */
     public function getUserRepository() {
+        if ($this->userRepository === null) {
+            throw new NotFoundException();
+        }
         return $this->userRepository;
     }
 
@@ -136,6 +140,14 @@ class Website {
      */
     public function getText() {
         return $this->text;
+    }
+    
+    /**
+     * Gets the ranks on this website.
+     * @return Ranks The ranks.
+     */
+    public function getRanks() {
+        return new Ranks();
     }
 
     // Paths

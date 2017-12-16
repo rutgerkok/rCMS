@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -14,7 +14,7 @@ class EditRankPage extends EditPasswordPage {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageContent(Website $website, Request $request) {
@@ -30,7 +30,7 @@ class EditRankPage extends EditPasswordPage {
         if ($request->hasRequestValue("rank")) {
             // Sent
             $rank = $request->getRequestInt("rank");
-            $oAuth = $request->getAuth($website->getUserRepository());
+            $oAuth = $website->getRanks();
             if ($oAuth->isValidRankForAccounts($rank)) {
                 // Valid rank id
                 $this->user->setRank($rank);
@@ -51,7 +51,7 @@ class EditRankPage extends EditPasswordPage {
         if ($show_form) {
             // Variables
             $rank = $request->getRequestInt("rank", $this->user->getRank());
-            $ranks = array(Authentication::RANK_USER, Authentication::RANK_MODERATOR, Authentication::RANK_ADMIN);
+            $ranks = array(Ranks::USER, Ranks::MODERATOR, Ranks::ADMIN);
 
             // Form itself
             $textToDisplay.=<<<EOT
@@ -84,7 +84,7 @@ EOT;
 
     protected function get_ranks_box_html(Website $website, Request $request,
             $ranks, $selected) {
-        $oAuth = $request->getAuth($website->getUserRepository());
+        $oAuth = $website->getRanks();
         $text = $website->getText();
 
         $selection_box = '<select name="rank" id="rank">';

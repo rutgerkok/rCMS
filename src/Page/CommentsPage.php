@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -23,11 +23,11 @@ class CommentsPage extends Page {
     public function init(Website $website, Request $request) {
         $oComments = new CommentRepository($website->getDatabase());
         $this->comments = $oComments->getCommentsLatest();
-        $this->viewingUser = $request->getCurrentUser($website);
+        $this->viewingUser = $request->getCurrentUser();
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageTitle(Text $text) {

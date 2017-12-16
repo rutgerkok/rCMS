@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Category;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Link;
@@ -86,7 +86,7 @@ final class EditCategoryPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageType() {

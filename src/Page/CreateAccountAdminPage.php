@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -44,7 +44,7 @@ final class CreateAccountAdminPage extends Page {
 
         $this->newUser = $this->handleUserRequest($website, $request);
 
-        $this->allRanks = $request->getAuth($website->getUserRepository())->getRanks();
+        $this->allRanks = $website->getRanks()->getAllRanks();
 
         $this->requestToken = RequestToken::generateNew();
         $this->requestToken->saveToSession();
@@ -63,7 +63,7 @@ final class CreateAccountAdminPage extends Page {
 
         $text = $website->getText();
         $userRepo = $website->getUserRepository();
-        if (Validate::requestToken($request) && $this->validateInput($newUser, $password, $request->getAuth($userRepo), $userRepo, $text)) {
+        if (Validate::requestToken($request) && $this->validateInput($newUser, $password, $website->getRanks(), $userRepo, $text)) {
             $userRepo->save($newUser);
             $this->accountCreated = true;
             $text->addMessage($text->t("users.create.other.done"),
@@ -74,7 +74,7 @@ final class CreateAccountAdminPage extends Page {
         return $newUser;
     }
 
-    private function validateInput(User $user, $password, Authentication $auth, UserRepository $userRepo, Text $text) {
+    private function validateInput(User $user, $password, Ranks $auth, UserRepository $userRepo, Text $text) {
         $valid = true;
 
         if (!Validate::username($user->getUsername())) {
@@ -112,7 +112,7 @@ final class CreateAccountAdminPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageTitle(Text $text) {

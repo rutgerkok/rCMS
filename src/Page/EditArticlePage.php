@@ -8,7 +8,7 @@ use Psr\Http\Message\UriInterface;
 use Rcms\Core\Article;
 use Rcms\Core\ArticleEditor;
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Link;
@@ -40,7 +40,7 @@ class EditArticlePage extends Page {
 
     public function init(Website $website, Request $request) {
         $text = $website->getText();
-        $currentUser = $request->getCurrentUser($website);
+        $currentUser = $request->getCurrentUser();
         $articleId = $request->getParamInt(0);
 
         $articleRepository = new ArticleRepository($website->getDatabase(), true);
@@ -109,7 +109,7 @@ class EditArticlePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageTitle(Text $text) {

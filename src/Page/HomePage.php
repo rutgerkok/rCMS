@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Config;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -42,7 +42,7 @@ class HomePage extends Page {
 
         $widgetsRepo = new WidgetRepository($website);
         $this->widgets = $widgetsRepo->getWidgetsInDocumentWithId(self::DOCUMENT_ID);
-        $this->editLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $this->editLinks = $request->hasRank(Ranks::ADMIN);
     }
 
     public function getPageTitle(Text $text) {
@@ -62,7 +62,7 @@ class HomePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

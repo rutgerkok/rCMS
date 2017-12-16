@@ -5,7 +5,7 @@ namespace Rcms\Page;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\NotFoundException;
@@ -44,7 +44,7 @@ final class EditCommentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_USER;
+        return Ranks::USER;
     }
 
     public function init(Website $website, Request $request) {
@@ -53,13 +53,13 @@ final class EditCommentPage extends Page {
 
         $commentId = $request->getParamInt(0, 0);
 
-        $user = $request->getCurrentUser($website);
+        $user = $request->getCurrentUser();
 
         $repo = new CommentRepository($website->getDatabase());
         $this->comment = $repo->getCommentOrFail($commentId);
 
         if ($user->getId() !== $this->comment->getUserId() &&
-                !$user->hasRank(Authentication::RANK_MODERATOR)) {
+                !$user->hasRank(Ranks::MODERATOR)) {
             // Can only edit own comment unless moderator
             throw new NotFoundException();
         }

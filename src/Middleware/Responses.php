@@ -2,6 +2,7 @@
 
 namespace Rcms\Middleware;
 
+use DateTimeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Rcms\Core\NotFoundException;
@@ -54,4 +55,5 @@ final class Responses {
     public static function withPermanentRedirect(ResponseInterface $response, UriInterface $url) {
         return $response->withStatus(301)->withAddedHeader("Location", (string) $url);
     }
+
 }

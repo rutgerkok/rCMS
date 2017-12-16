@@ -13,11 +13,6 @@ use Rcms\Core\Text;
 class LoginFormTemplate extends Template {
 
     /**
-     * @var string The error message on top of the login form, may be empty.
-     */
-    private $errorMessage;
-
-    /**
      * @var UriInterface The location where the login form should go.
      */
     private $destination;
@@ -36,35 +31,23 @@ class LoginFormTemplate extends Template {
      * Creates a new login view.
      * @param Text $text The text instance.
      * @param Request $request The request instance.
-     * @param string $errorMessage Message to display on top of the login form
-     * in a red box. Leave blank for no message.
      * @param bool $showCreateAccountLink Set to true when a "Create account"
      * link must be shown.
      */
     public function __construct(Text $text, UriInterface $destination,
-            array $postVars, $errorMessage, $showCreateAccountLink) {
+            array $postVars, $showCreateAccountLink) {
         parent::__construct($text);
         $this->destination = $destination;
         $this->postVars = $postVars;
-        $this->errorMessage = $errorMessage;
         $this->showCreateAccountLinks = (bool) $showCreateAccountLink;
     }
 
     public function writeText(StreamInterface $stream) {
         $text = $this->text;
-        $errorMessage = $this->errorMessage;
 
         $formUrl = $this->destination;
 
         $loginText = $text->t("users.please_log_in");
-        if (!empty($errorMessage)) {
-            $stream->write(<<<EOT
-                <div class="error">
-                    <p>$errorMessage</p>
-                </div>
-EOT
-            );
-        }
         $stream->write(<<<EOT
             <div id="login">
                 <form method="post" action="{$text->e($formUrl)}">

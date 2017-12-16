@@ -132,7 +132,7 @@ class Comment extends Entity {
      * @return int The rank.
      */
     public function getUserRank() {
-        return isSet($this->userRank) ? $this->userRank : Authentication::RANK_LOGGED_OUT;
+        return isSet($this->userRank) ? $this->userRank : Ranks::LOGGED_OUT;
     }
 
     /**

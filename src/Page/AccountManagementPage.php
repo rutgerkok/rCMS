@@ -2,9 +2,10 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\User;
 use Rcms\Core\Website;
 
 class AccountManagementPage extends Page {
@@ -12,7 +13,7 @@ class AccountManagementPage extends Page {
     const USERS_PER_PAGE = 50;
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageTitle(Text $text) {
@@ -94,9 +95,9 @@ class AccountManagementPage extends Page {
     public function get_users_table(Website $website, Request $request, $start) {
         $start = (int) $start;
 
-        $oAuth = $request->getAuth($website->getUserRepository());
+        $oAuth = $website->getRanks();
         $users = $website->getUserRepository()->getRegisteredUsers($start, self::USERS_PER_PAGE);
-        $current_user_id = $oAuth->getCurrentUser()->getId();
+        $current_user_id = $request->getCurrentUser()->getId();
 
         // Start table
         $returnValue = "<table>\n";
@@ -118,10 +119,10 @@ class AccountManagementPage extends Page {
                 $username = $user->getUsername(); // Usernames are severly restricted, so no need to escape
                 $display_name = htmlSpecialChars($user->getDisplayName());
                 $rank_name = $website->t($oAuth->getRankName($user->getRank()));
-                if ($user->getStatus() == Authentication::STATUS_BANNED) {
+                if ($user->getStatus() == User::STATUS_BANNED) {
                     $rank_name = $website->t("users.status.banned");
                 }
-                if ($user->getStatus() == Authentication::STATUS_DELETED) {
+                if ($user->getStatus() == User::STATUS_DELETED) {
                     $rank_name = $website->t("users.status.deleted");
                 }
                 $username_link = '<a href="' . $website->getUrlPage("account", $user->getId()) . '">' . $username . '</a>';

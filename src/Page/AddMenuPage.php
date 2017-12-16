@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Menu;
 use Rcms\Core\MenuRepository;
 use Rcms\Core\Request;
@@ -70,7 +70,7 @@ class AddMenuPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getTemplates(Text $text) {

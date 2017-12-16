@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
@@ -41,7 +41,7 @@ final class SwitchThemePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageTitle(Text $text) {

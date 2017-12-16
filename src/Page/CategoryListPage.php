@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Category;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Request;
@@ -31,11 +31,11 @@ final class CategoryListPage extends Page {
         $categoryRepo = new CategoryRepository($website->getDatabase());
         $this->categories = $categoryRepo->getCategoriesComplete();
 
-        $this->editLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $this->editLinks = $request->hasRank(Ranks::ADMIN);
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageTitle(Text $text) {

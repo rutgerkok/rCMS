@@ -4,7 +4,7 @@ namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Request;
 use Rcms\Core\Validate;
@@ -59,7 +59,7 @@ class WidgetArticles extends WidgetDefinition {
         }
         
         // Edit links
-        $isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $isModerator = $request->hasRank(Ranks::MODERATOR);
 
         $oArticles = new ArticleRepository($website->getDatabase(), $isModerator);
         $articles = $oArticles->getArticlesData($categories, $articlesCount, $oldestTop);

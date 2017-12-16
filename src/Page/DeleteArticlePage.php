@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
@@ -23,7 +23,7 @@ class DeleteArticlePage extends Page {
     public function init(Website $website, Request $request) {
         $text = $website->getText();
         $articleId = $request->getParamInt(0);
-        $showAdminPageLink = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $showAdminPageLink = $request->hasRank(Ranks::ADMIN);
 
         $oArticles = new ArticleRepository($website->getDatabase(), true);
         $article = $oArticles->getArticleOrFail($articleId);
@@ -65,7 +65,7 @@ class DeleteArticlePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     public function getPageType() {

@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Config;
 use Rcms\Core\NotFoundException;
 use Rcms\Core\Request;
@@ -39,7 +39,7 @@ final class CreateAccountPage extends Page {
         parent::init($website, $request);
 
         if (!$website->getConfig()->get(Config::OPTION_USER_ACCOUNT_CREATION)
-                || $request->hasRank($website, Authentication::RANK_USER)) {
+                || $request->hasRank(Ranks::USER)) {
             // Pretend page doesn't exist when account creation is disabled,
             // or when already logged in
             throw new NotFoundException();
@@ -105,7 +105,7 @@ final class CreateAccountPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
     public function getPageTitle(Text $text) {
@@ -118,7 +118,7 @@ final class CreateAccountPage extends Page {
 
     public function getTemplate(Text $text) {
         if ($this->accountCreated) {
-            return new LoginFormTemplate($text, $text->getUrlPage("login"), [], "", false);
+            return new LoginFormTemplate($text, $text->getUrlPage("login"), [], false);
         }
         return new AccountCreationTemplate($text, $this->newUser, $this->requestToken);
     }

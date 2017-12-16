@@ -2,9 +2,10 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
+use Rcms\Core\User;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
 
@@ -17,12 +18,12 @@ class EditAccountStatusPage extends EditPasswordPage {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_MODERATOR;
+        return Ranks::MODERATOR;
     }
 
     // Overridden to allow moderators to (un)block someone else
     public function can_user_edit_someone_else(Website $website, Request $request) {
-        return $request->hasRank($website, Authentication::RANK_MODERATOR);
+        return $request->hasRank(Ranks::MODERATOR);
     }
 
     public function getPageContent(Website $website, Request $request) {
@@ -35,7 +36,7 @@ class EditAccountStatusPage extends EditPasswordPage {
 
         $show_form = true;
         $textToDisplay = "";
-        $oAuth = $request->getAuth($website->getUserRepository());
+        $oAuth = $website->getRanks();
         if ($request->hasRequestValue("status")) {
             // Sent
             $status = $request->getRequestInt("status");
@@ -74,7 +75,7 @@ class EditAccountStatusPage extends EditPasswordPage {
         if ($show_form) {
             // Variables
             $status = $request->getRequestInt("status", $this->user->getStatus());
-            $statuses = array(Authentication::STATUS_NORMAL, Authentication::STATUS_BANNED, Authentication::STATUS_DELETED);
+            $statuses = array(User::STATUS_NORMAL, User::STATUS_BANNED, User::STATUS_DELETED);
             $status_text = htmlSpecialChars($request->getRequestString("status_text", $this->user->getStatusText()));
 
             // Form itself
@@ -110,8 +111,8 @@ EOT;
         return $textToDisplay;
     }
 
-    protected function get_statuses_box_html(Text $text, Authentication $oAuth, $statuss,
-            $selected) {
+    protected function get_statuses_box_html(Text $text, Ranks $oAuth, $statuss,
+                                             $selected) {
         $selection_box = '<select name="status" id="status">';
         foreach ($statuss as $id) {
             $label = $oAuth->getStatusName($text, $id);

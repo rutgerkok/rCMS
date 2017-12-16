@@ -4,7 +4,7 @@ namespace Rcms\Theme;
 
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Config;
 use Rcms\Core\Link;
@@ -130,7 +130,7 @@ final class ThemeElements {
      * @return bool True if the user is logged in, false otherwise.
      */
     public function isLoggedIn() {
-        return $this->request->hasRank($this->website, Authentication::RANK_USER);
+        return $this->request->hasRank(Ranks::USER);
     }
 
     /**
@@ -174,11 +174,11 @@ LIST
         $website = $this->website;
         $request = $this->request;
 
-        if ($request->hasRank($website, Authentication::RANK_ADMIN)) {
+        if ($request->hasRank(Ranks::ADMIN)) {
             // Logged in as admin
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("admin") . '">' . $website->t("main.admin") . '</a></li>');
         }
-        if ($request->hasRank($website, Authentication::RANK_USER)) {
+        if ($request->hasRank(Ranks::USER)) {
             // Logged in
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("account") . '">' . $this->website->t("main.my_account") . '</a></li>');
             $stream->write('<li><a class="arrow" href="' . $website->getUrlPage("logout") . '">' . $this->website->t("main.log_out") . '</a></li>');
@@ -194,7 +194,7 @@ LIST
 
     public function writeAccountLabel(StreamInterface $stream) {
         $text = $this->website->getText();
-        $user = $this->request->getCurrentUser($this->website);
+        $user = $this->request->getCurrentUser();
 
         // Get welcome text
         if ($user == null) {
@@ -216,7 +216,7 @@ EOT
     }
 
     public function writeAccountBox(StreamInterface $stream, $gravatarSize = 140) {
-        $user = $this->request->getCurrentUser($this->website);
+        $user = $this->request->getCurrentUser();
 
         if ($user == null) {
             // Nothing to display
@@ -300,7 +300,7 @@ SEARCH
         if (!$this->website->getConfig()->isDatabaseUpToDate()) {
             return;
         }
-        $editLinks = $this->request->hasRank($this->website, Authentication::RANK_ADMIN);
+        $editLinks = $this->request->hasRank(Ranks::ADMIN);
         if ($this->widgetsRepo === null) {
             $this->widgetsRepo = new WidgetRepository($this->website);
         }

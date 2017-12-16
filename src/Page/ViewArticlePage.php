@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Psr\Http\Message\ResponseInterface;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
 use Rcms\Core\Website;
@@ -34,7 +34,7 @@ class ViewArticlePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

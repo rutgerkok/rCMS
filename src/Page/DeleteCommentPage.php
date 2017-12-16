@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Comment;
 use Rcms\Core\CommentRepository;
 use Rcms\Core\NotFoundException;
@@ -35,7 +35,7 @@ final class DeleteCommentPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_USER;
+        return Ranks::USER;
     }
 
     public function init(Website $website, Request $request) {
@@ -44,10 +44,10 @@ final class DeleteCommentPage extends Page {
         $repo = new CommentRepository($website->getDatabase());
         $this->comment = $repo->getCommentOrFail($commentId);
 
-        $user = $request->getCurrentUser($website);
+        $user = $request->getCurrentUser();
 
         // Check if user is allowed to delete this comment
-        if ($user->getId() !== $this->comment->getUserId() && !$user->hasRank(Authentication::RANK_MODERATOR)) {
+        if ($user->getId() !== $this->comment->getUserId() && !$user->hasRank(Ranks::MODERATOR)) {
             throw new NotFoundException();
         }
         

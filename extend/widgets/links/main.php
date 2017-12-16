@@ -3,7 +3,7 @@
 namespace Rcms\Extend\Widget;
 
 use Psr\Http\Message\StreamInterface;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\MenuRepository;
 use Rcms\Core\NotFoundException;
@@ -26,7 +26,7 @@ class WidgetRkokLinks extends WidgetDefinition {
             return;
         }
 
-        $loggedInStaff = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $loggedInStaff = $request->hasRank(Ranks::ADMIN);
         $menuId = (int) $data["menu_id"];
 
         // Title

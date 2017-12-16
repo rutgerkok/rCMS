@@ -4,7 +4,7 @@ namespace Rcms\Page;
 
 use Rcms\Core\Article;
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\Category;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
@@ -38,8 +38,8 @@ final class CategoryPage extends Page {
     private $articles;
 
     public function init(Website $website, Request $request) {
-        $this->isArticleModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
-        $this->showCategoryEditLinks = $request->hasRank($website, Authentication::RANK_ADMIN);
+        $this->isArticleModerator = $request->hasRank(Ranks::MODERATOR);
+        $this->showCategoryEditLinks = $request->hasRank(Ranks::ADMIN);
 
         $categoryId = $request->getParamInt(0, 0);
 
@@ -65,7 +65,7 @@ final class CategoryPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 
 }

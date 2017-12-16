@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Text;
 use Rcms\Core\Request;
@@ -24,7 +24,7 @@ class ArchivePage extends Page {
     private $isModerator;
 
     public function init(Website $website, Request $request) {
-        $this->isModerator = $request->hasRank($website, Authentication::RANK_MODERATOR);
+        $this->isModerator = $request->hasRank(Ranks::MODERATOR);
 
         $this->selectedYear = $request->getRequestInt("year", 0);
         $this->selectedCategory = $request->getParamInt(0);
@@ -56,6 +56,6 @@ class ArchivePage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_LOGGED_OUT;
+        return Ranks::LOGGED_OUT;
     }
 }

@@ -3,7 +3,7 @@
 namespace Rcms\Page;
 
 use Rcms\Core\ArticleRepository;
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\CategoryRepository;
 use Rcms\Core\Link;
 use Rcms\Core\Request;
@@ -70,7 +70,7 @@ final class DeleteCategoryPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
 
     public function getPageTitle(Text $text) {

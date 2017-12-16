@@ -2,7 +2,7 @@
 
 namespace Rcms\Page;
 
-use Rcms\Core\Authentication;
+use Rcms\Core\Ranks;
 use Rcms\Core\LinkRepository;
 use Rcms\Core\Menu;
 use Rcms\Core\MenuRepository;
@@ -38,7 +38,7 @@ class EditMenuPage extends Page {
     }
 
     public function getMinimumRank() {
-        return Authentication::RANK_ADMIN;
+        return Ranks::ADMIN;
     }
     
     public function getTemplates(Text $text) {
