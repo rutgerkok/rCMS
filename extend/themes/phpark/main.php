@@ -2,18 +2,13 @@
 
 namespace Rcms\Extend\Theme;
 
-// Protect against calling this script directly
-if (!defined("WEBSITE")) {
-    die();
-}
-
 use Psr\Http\Message\StreamInterface;
 use Rcms\Page\Page;
 use Rcms\Theme\Theme;
 use Rcms\Theme\ThemeElements;
 
 class PhpTheme extends Theme {
-    
+
      public function render(StreamInterface $stream, ThemeElements $elements) {
         $contentId = 'content';
         if ($elements->getPageType() === Page::TYPE_BACKSTAGE) {
@@ -21,6 +16,7 @@ class PhpTheme extends Theme {
         } else if ($elements->getPageType() === Page::TYPE_NORMAL) {
             $contentId = 'contentwide';
         }
+        $text = $elements->getText();
 
         $stream->write('
 <!DOCTYPE html>
@@ -49,7 +45,7 @@ class PhpTheme extends Theme {
                     $stream->write('<div id="account_label">');
                     $elements->writeAccountLabel($stream);
                     $stream->write('<div id="account_box">');
-                    $elements->writeAccountBox($stream, 80); 
+                    $elements->writeAccountBox($stream, 80);
                     $stream->write('<div style="clear:both"></div>');
                     $stream->write('</div>');
                     $stream->write('</div>');
@@ -57,12 +53,15 @@ class PhpTheme extends Theme {
                 $stream->write('
             </div> <!-- id="header" -->
             <div id="hornav">
+                <span id="hornav__closed"></span>
+                <a href="#hornav" class="hornav__expand">' . $text->t("main.main_menu.open") . '</a>
+                <a href="#hornav__closed" class="hornav__contract">' . $text->t("main.main_menu.close") . '</a>
                 <ul>
                     '); $elements->writeTopMenu($stream); $stream->write('
                 </ul>
                 ');
                 if (!$elements->isLoggedIn()) {
-                    $stream->write('<ul id="accountlinks">');
+                    $stream->write('<ul id="hornav__accountlinks">');
                     $elements->writeAccountsMenu($stream);
                     $stream->write('</ul>');
                 }
@@ -70,7 +69,7 @@ class PhpTheme extends Theme {
             </div> <!-- id="hornav" -->
             <div id="' . $contentId . '" >
                 <!-- Einde header -->
-                
+
                 '); $elements->writePageContent($stream); $stream->write('
 
                 <!-- Begin footer -->

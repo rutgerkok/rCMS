@@ -36,3 +36,5 @@ widget=Widget
 widgets=Widgets
 welcome_user=Welcome, {0}!
 welcome_guest=Welcome, guest!
+main_menu.open=Menu
+main_menu.close=Hide

@@ -245,56 +245,75 @@ div#nav {
 }
 
 /* Horizontal link bar on top of page */
-div#hornav {
+#hornav {
     background: #9a9a79;
     overflow: auto;
     padding: 0 0.7em;
 }
-div#hornav ul {
+#hornav ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
-div#hornav ul li {
+#hornav ul li {
     margin: 0;
     padding: 0;
     float: left;
     background: transparent;
 }
-div#hornav ul li a {
+#hornav a {
     color: #fff;
-    text-decoration:none;
+    text-decoration: none;
     margin: 0;
     padding: 0.7em 0.7em;
     font-family: verdana, sans-serif;
     font-size: 85%;
-    display: block;
 }
-div#hornav ul li a:hover {
+#hornav a:hover {
     color: #303030;
     text-decoration: none;
     border: none;
 }
+#hornav li a {
+    display: block;
+}
+.hornav__contract, .hornav__expand {
+    display: none;
+}
 @media all and (max-width : 38em) {
     /* Mobile, switch to vertical menu */
-    div#hornav
-    {
+    #hornav {
         padding: 0;
+        max-height: 2.5em;
+        overflow: hidden;
+        transition: max-height 0.15s ease-out;
     }
-    div#hornav ul
-    {
+    .hornav__expand {
+        display: block;
+    }
+    #hornav ul {
         width: 100%;
         margin-top: 2em;
     }
-    div#hornav ul li
-    {
+    #hornav ul li {
         float: none;
         border-right: none;
-        border-top: 1px dotted white;
+    }
+    /* When menu is open */
+    #hornav:target {
+        max-height: 100em; /* Because of the transition, a specific value is
+                              required. This should be large enough. */
+        transition: max-height 0.25s ease-in;
+    }
+    #hornav:target .hornav__expand {
+        display: none;
+    }
+    #hornav:target .hornav__contract {
+        display: block;
     }
 }
 /* Login link of horizontal bar */
-div#hornav ul#accountlinks {
+#hornav__accountlinks {
     float: right;
 }
 
@@ -368,7 +387,7 @@ legend {
     font-weight:bold;
 }
 .button,button /*ook geschikt voor links*/ {
-    background: #ccc; 
+    background: #ccc;
     border:0;
     padding: 5px;
     margin: 3px 0;
@@ -386,7 +405,7 @@ legend {
     text-align: center;
 }
 .button:hover, button:hover {
-    background: #ddd; 
+    background: #ddd;
     border:0;
 }
 .button:focus,button:focus {
@@ -754,10 +773,10 @@ figcaption {
     border: solid 1px #6b966b;
     background: #e4f2e9; /* IE8 */
     background: rgba(228, 242, 233, 0.8);
-    min-width: 100px; 
+    min-width: 100px;
     padding: 1px;
-    position: absolute; 
-    z-index: 100;	
+    position: absolute;
+    z-index: 100;
     font-family: verdana, sans-serif;
     box-shadow: #6b966b 0 0 20px;
 }

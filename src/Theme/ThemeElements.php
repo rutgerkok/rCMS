@@ -141,6 +141,14 @@ final class ThemeElements {
         return $this->page->getPageType();
     }
 
+    /**
+     * Gets the Text instance, for example for translations.
+     * @return Text The text instance.
+     */
+    public function getText() {
+        return $this->website->getText();
+    }
+
     private function writeList(StreamInterface $stream, array $messages, $cssClass) {
         $messageCount = count($messages);
         if ($messageCount == 0) {
