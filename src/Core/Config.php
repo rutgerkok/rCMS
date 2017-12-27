@@ -37,6 +37,14 @@ class Config {
     const OPTION_SITE_TITLE = "title";
     const OPTION_USER_ACCOUNT_CREATION = "user_account_creation";
 
+    const OPTION_MAIL_TYPE = "mail_type";
+    const OPTION_MAIL_HOST = "mail_host";
+    const OPTION_MAIL_PORT = "mail_port";
+    const OPTION_MAIL_ENCRYPTION = "mail_encryption";
+    const OPTION_MAIL_USERNAME = "mail_username";
+    const OPTION_MAIL_PASSWORD = "mail_password";
+    const OPTION_MAIL_FROM = "mail_from";
+
     private $config = [];
 
     /**

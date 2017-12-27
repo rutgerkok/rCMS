@@ -16,6 +16,7 @@ class AdminPageTemplate extends Template {
             <p>
                 <a href="{$text->e($text->getUrlPage("site_settings"))}" class="arrow">{$text->t("main.site_settings")}</a><br />
                 <a href="{$text->e($text->getUrlPage("switch_theme"))}" class="arrow">{$text->t("themes.switch")}</a><br />
+                <a href="{$text->e($text->getUrlPage("mail_settings"))}" class="arrow">{$text->t("mail.settings.edit")}</a><br />
             </p>
 
             <h3>{$text->t("main.articles")}</h3>

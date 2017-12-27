@@ -80,19 +80,22 @@ EOT
         $stream->write(<<<EOT
                     </p>
                 </form>
+                <p>
+                    <a class="arrow" href="{$text->url("forgot_password")}">
+                        {$text->t("users.password.forgot")}
+                    </a>
 EOT
         );
         if ($this->showCreateAccountLinks) {
             $stream->write(<<<HTML
-                <p>
+                    <br />
                     <a class="arrow" href="{$text->url("create_account")}">
                         {$text->t("main.create_account")}
                     </a>
-                </p>
 HTML
         );
         }
-        $stream->write("</div>");
+        $stream->write("</p></div>");
     }
 
 }
