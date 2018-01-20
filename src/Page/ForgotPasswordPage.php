@@ -14,7 +14,7 @@ use Rcms\Template\EmptyTemplate;
 use Rcms\Template\PasswordForgotTemplate;
 
 /**
- * A page for starting the password recovery process.
+ * A page for starting the password recovery process: sending the email.
  */
 final class ForgotPasswordPage extends Page {
 

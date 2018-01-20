@@ -15,7 +15,7 @@ use Rcms\Template\EmptyTemplate;
 use Rcms\Template\PasswordResetTemplate;
 
 /**
- * Page for resetting the password of an account.
+ * Page for setting a new password after the user clicked on a link in a mail.
  */
 final class ResetPasswordPage extends Page {
 
@@ -65,7 +65,7 @@ final class ResetPasswordPage extends Page {
             $this->user->setPassword($password);
             $website->getUserRepository()->save($this->user);
             $text->addMessage($text->t("users.password") . " " . $text->t("editor.is_changed"), Link::of(
-                    $text->getUrlPage("log_in"), $text->t("main.log_in")));
+                    $text->getUrlPage("login"), $text->t("main.log_in")));
             $this->completedPasswordReset = true;
         } else {
             $text->addError($text->t("users.password") . " " . Validate::getLastError($text));
