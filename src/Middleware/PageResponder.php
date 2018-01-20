@@ -91,6 +91,10 @@ final class PageResponder {
         }
 
         $className = $this->getPageClassName($pageName);
+        if (!class_exists($className)) {
+            // No such page
+            throw new NotFoundException();
+        }
         return new $className;
     }
 

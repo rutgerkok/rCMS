@@ -2,6 +2,7 @@
 
 namespace Rcms\Core;
 
+use BadMethodCallException;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Rcms\Core\Repository\Entity;
@@ -18,6 +19,10 @@ class User extends Entity {
      */
     const DEFAULT_ADMIN_PASSWORD = "admin";
 
+    // Various keys used by setExtraData
+    const DATA_PASSWORD_RESET_TOKEN = "pwr_token";
+    const DATA_PASSWORD_RESET_EXPIRATION = "pwr_expiration";
+
     protected $username;
     protected $displayName;
     protected $passwordHashed;
@@ -28,7 +33,7 @@ class User extends Entity {
     protected $lastLogin;
     protected $status = self::STATUS_NORMAL;
     protected $statusText = "";
-    protected $extraData = [];
+    protected $extraData = false;
 
     /**
      * Creates a new user with the given username, display name and password.
@@ -44,6 +49,7 @@ class User extends Entity {
         $user->setDisplayName($displayName);
         $user->setPassword($password);
         $user->rank = Ranks::USER;
+        $user->extraData = null;
 
         $now = new DateTimeImmutable();
         $user->setLastLogin($now);
@@ -166,7 +172,7 @@ class User extends Entity {
         }
         return false;
     }
-    
+
     public function passwordNeedsRehash() {
         $passwordHashed = $this->getPasswordHashed();
         if (strLen($passwordHashed) === 32 && $passwordHashed[0] !== '$') {
@@ -246,12 +252,20 @@ class User extends Entity {
     }
 
     /**
-     * Returns the extra data of this user in an associative array. The array
-     * is passed by value, so changing it has no effect.
-     * @return array The extra data as an array.
+     * Returns the extra data stored with the given key..
+     * @param string $key The extra data.
+     * @param string|bool|int|float|array|null Default
+     * @return string|bool|int|float|array|null The extra data.
+     * @throws BadMethodCallException If the extra data is not loaded.
      */
-    public function getExtraData() {
-        return $this->extraData;
+    public function getExtraData($key, $default) {
+        if ($this->extraData === false) {
+            throw new BadMethodCallException("Extra data not available");
+        }
+        if (!isSet($this->extraData[$key])) {
+            return $default;
+        }
+        return $this->extraData[$key];
     }
 
     /**
@@ -275,7 +289,7 @@ class User extends Entity {
      * @param string $password
      */
     public function setPassword($password) {
-        $this->passwordHashed = password_hash($password, PASSWORD_DEFAULT);
+        $this->setPasswordHashed(password_hash($password, PASSWORD_DEFAULT));
     }
 
     /**
@@ -284,6 +298,10 @@ class User extends Entity {
      */
     public function setPasswordHashed($passwordHashed) {
         $this->passwordHashed = $passwordHashed;
+
+        // Disallow pending password resets
+        $this->setExtraData(self::DATA_PASSWORD_RESET_EXPIRATION, null);
+        $this->setExtraData(self::DATA_PASSWORD_RESET_TOKEN, null);
     }
 
     /**
@@ -333,29 +351,29 @@ class User extends Entity {
     }
 
     /**
-     * Sets the extra data of the user.
-     * @param mixed $extra_data The extra data, either empty, as an array of as
-     * a json string.
-     * @throws InvalidArgumentException If the extra data is not a string, array or null.
+     * Sets extra data on the object. Overwrites existing data.
+     * @param string $key Data key. See the DATA_ constants in this class.
+     * @param string|int|float|bool|array|null $data The data.
+     * @throws BadMethodCallException If the extra data is not loaded.
+     * @throws InvalidArgumentException If an argument is of the wrong type.
      */
-    public function setExtraData($extra_data) {
-        if ($extra_data === null) {
-            $this->extraData = [];
-            return;
+    public function setExtraData($key, $data) {
+        if ($this->extraData === false) {
+            throw new BadMethodCallException("Extra data not available");
         }
-        if (is_string($extra_data)) {
-            if (empty($extra_data)) {
-                $this->extraData = [];
-                return;
+        if (!is_string($key)) {
+            throw new InvalidArgumentException("Key should be a string, was " . getType($key));
+        }
+        if (is_string($data) || is_array($data) || is_bool($data) || is_array($data) || is_numeric($data)) {
+            $this->extraData[$key] = $data;
+        } else if ($data === null) {
+            unSet($this->extraData[$key]);
+            if (empty($this->extraData)) {
+                $this->extraData = null;
             }
-            $this->extraData = JsonHelper::stringToArray($extra_data);
-            return;
+        } else {
+            throw new InvalidArgumentException("Invalid data type: " . getType($data));
         }
-        if (is_array($extra_data)) {
-            $this->extraData = $extra_data;
-            return;
-        }
-        throw new InvalidArgumentException("Expected string, array or null, got " . $extra_data);
     }
 
 }

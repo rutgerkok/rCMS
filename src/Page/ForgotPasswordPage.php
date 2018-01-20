@@ -2,12 +2,15 @@
 
 namespace Rcms\Page;
 
+use Rcms\Core\NotFoundException;
+use Rcms\Core\PasswordResetter;
 use Rcms\Core\Ranks;
 use Rcms\Core\Request;
 use Rcms\Core\RequestToken;
 use Rcms\Core\Text;
 use Rcms\Core\Validate;
 use Rcms\Core\Website;
+use Rcms\Template\EmptyTemplate;
 use Rcms\Template\PasswordForgotTemplate;
 
 /**
@@ -25,10 +28,15 @@ final class ForgotPasswordPage extends Page {
      */
     private $requestToken;
 
+    /**
+     * @var bool True if the reset mail has been sent.
+     */
+    private $mailSent = false;
+
     public function init(Website $website, Request $request) {
         if (Validate::requestToken($request)) {
             $this->email = $request->getRequestString("user_email", "");
-            // Send mail
+            $this->sendMail($website, $request);
         } else {
             // Try to prefill e-mail
             $user = $request->getCurrentUser();
@@ -42,6 +50,21 @@ final class ForgotPasswordPage extends Page {
         $this->requestToken->saveToSession();
     }
 
+    private function sendMail(Website $website, Request $request) {
+        $text = $website->getText();
+
+        $userRepo = $website->getUserRepository();
+        try {
+            $user = $userRepo->getByEmail($this->email);
+            $passwordResetter = new PasswordResetter($website, $request);
+            $passwordResetter->sendPasswordReset($user);
+            $text->addMessage($text->tReplaced("users.password.forgot.reset_sent", $text->e($user->getEmail())));
+            $this->mailSent = true;
+        } catch (NotFoundException $e) {
+            $text->addError($text->t("users.password.forgot.unknown_email"));
+        }
+    }
+
     public function getMinimumRank() {
         return Ranks::LOGGED_OUT;
     }
@@ -51,10 +74,14 @@ final class ForgotPasswordPage extends Page {
     }
 
     public function getPageType() {
-        return Page::TYPE_NORMAL;
+        return Page::TYPE_BACKSTAGE;
     }
 
     public function getTemplate(Text $text) {
+        if ($this->mailSent) {
+            // The success message is enough
+            return new EmptyTemplate($text);
+        }
         return new PasswordForgotTemplate($text, $this->requestToken, $this->email);
     }
 

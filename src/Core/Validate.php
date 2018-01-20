@@ -14,7 +14,7 @@ class Validate {
 
     private static $lastError;
     private static $replaceInLastError = "";
-    public static $MIN_PASSWORD_LENGHT = 5;
+    public static $MIN_PASSWORD_LENGTH = 5;
 
     private static function setError($code, $replaceInCode = "") {
         Validate::$lastError = $code;
@@ -70,8 +70,8 @@ class Validate {
     public static function password($password1, $password2) {
         $valid = true;
 
-        if (strLen($password1) < self::$MIN_PASSWORD_LENGHT) {
-            Validate::setError("is_too_short_num", Validate::$MIN_PASSWORD_LENGHT);
+        if (strLen($password1) < self::$MIN_PASSWORD_LENGTH) {
+            Validate::setError("is_too_short_num", Validate::$MIN_PASSWORD_LENGTH);
             $valid = false;
         }
         if ($password1 != $password2) {
