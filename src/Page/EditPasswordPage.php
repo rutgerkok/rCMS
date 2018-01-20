@@ -127,7 +127,9 @@ class EditPasswordPage extends Page {
                 // Add field to verify old password when editing yourself
                 $old_password_text = <<<EOT
                     <label for="old_password">{$website->t('users.old_password')}:</label><span class="required">*</span><br />
-                    <input type="password" id="old_password" name="old_password" value=""/><br />
+                    <input type="password" id="old_password" name="old_password" value=""/>
+                    <a href="{$website->getText()->url("forgot_password")}">{$website->t("users.password.forgot")}</a>
+                    <br />
 EOT;
             }
             $textToDisplay.=<<<EOT

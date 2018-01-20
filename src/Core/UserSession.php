@@ -12,17 +12,17 @@ use Psr\Http\Message\ServerRequestInterface;
  * Manages user sessions: cookies and session variables.
  */
 class UserSession {
-    
+
     const AUTH_COOKIE = "remember_me";
-    
+
     private $website;
 
     public function __construct(Website $website) {
         $this->website = $website;
     }
-    
+
     public function doPasswordLogin($login, $pass) {
-        try { 
+        try {
             $user = $this->website->getUserRepository()->getByNameOrEmail($login);
             if (!$user->verifyPassword($pass)) {
                 throw new NotFoundException(); // Invalid password
@@ -51,11 +51,12 @@ class UserSession {
         } catch (NotFoundException $e) {
             // Invalid username/email or password
             $text = $this->website->getText();
-            $text->addError($text->t("errors.invalid_login_credentials"));
-            return null; 
+            $text->addError($text->t("errors.invalid_login_credentials"), Link::of(
+                    $text->getUrlPage("forgot_password"), $text->t("users.password.request")));
+            return null;
         }
     }
-    
+
     /**
      * Restores the session from a provided cookie value.
      * @param ServerRequestInterface $request Request that stores the cookie
@@ -67,7 +68,7 @@ class UserSession {
             return null; // No cookie
         }
         $cookie = (string) $cookies[self::AUTH_COOKIE];
-        
+
         $cookieSplit = explode('||', $cookie);
         if (count($cookieSplit) !== 3) {
             return null; // Invalid cookie
@@ -94,7 +95,7 @@ class UserSession {
             return null; // User with id not found
         }
     }
-    
+
     /**
      * Gets the user stored in the current session.
      * @param ServerRequestInterface $userId The id.
@@ -107,7 +108,7 @@ class UserSession {
         }
         $userId = $_SESSION["user_id"];
         try {
-            
+
             $user = $this->website->getUserRepository()->getById($userId);
             if (!$user->canLogIn()) {
                 return null;
@@ -118,18 +119,18 @@ class UserSession {
             return null;
         }
     }
-    
+
     private function rehashPasswordIfNeeded(User $user, $password) {
         if ($user->passwordNeedsRehash()) {
             $user->setPassword($password);
             // The password gets saved when the login data is set
         }
     }
-    
+
     private function updateLoginDate(User $user) {
         $user->setLastLogin(new DateTimeImmutable());
     }
-    
+
     /**
      * Logs a user out. Cookies and session variables will be cleared.
      * @param ResponseInterface $response The response object, used for deleting
@@ -157,7 +158,7 @@ class UserSession {
         }
         return $response;
     }
-    
+
     private function getCookiePath() {
         $siteUrl = $this->website->getText()->getUrlMain();
         if (empty($siteUrl->getPath())) {
@@ -165,7 +166,7 @@ class UserSession {
         }
         return $siteUrl->getPath();
     }
-    
+
     /**
      * Adds a cookie that makes the user signed in for the coming 30 days.
      * @param User $user The user.
@@ -197,6 +198,6 @@ class UserSession {
         return $response->withAddedHeader("Set-Cookie", $cookieInstruction);
     }
 
-   
+
 
 }

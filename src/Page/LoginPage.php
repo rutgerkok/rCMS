@@ -28,6 +28,8 @@ class LoginPage extends Page {
         // Handle login ourselves using views
         // (Using the provided getMinimumRank helper gives an ugly
         // "You need to be logged in to view this page" message.)
+        // Actual form handling is done by a Middleware component, that reads
+        // form values
         $this->loggedIn = $request->hasRank(Ranks::USER);
         $this->loggedInAsAdmin = $request->hasRank(Ranks::ADMIN);
         $this->canCreateAccounts = (bool) $website->getConfig()->get(Config::OPTION_USER_ACCOUNT_CREATION);
