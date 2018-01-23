@@ -167,7 +167,7 @@ SQL;
                 ADD `user_last_login` DATETIME NOT NULL,
                 ADD `user_status` TINYINT NOT NULL,
                 ADD `user_status_text` VARCHAR( 255 ) NOT NULL,
-                ADD `user_extra_data` TEXT NOT NULL
+                ADD `user_extra_data` TEXT NULL
 SQL;
         $database->exec($updateSql);
 
@@ -207,6 +207,14 @@ SQL;
         $renameSql = "RENAME TABLE `categorie` TO `categories`";
         $database->exec($renameSql);
     }
+    
+    private function makeUsersExtraDataFieldOptional(PDO $database) {
+        $database->exec(<<<SQL
+            ALTER TABLE `users`
+            CHANGE `user_extra_data` `user_extra_data` TEXT NULL; 
+SQL
+       );
+    }
 
     /**
      * Updates/installs the database.
@@ -229,7 +237,7 @@ SQL;
         }
 
         // Upgrade existing
-        if ($version == 1) {
+        if ($version === 1) {
             $this->updateUsersTable($website->getDatabase());
         }
         if ($version <= 2) {
@@ -240,6 +248,9 @@ SQL;
         }
         if ($version <= 4) {
             $this->updateCategoriesTable($website->getDatabase());
+        }
+        if ($version !== 1 && $version <= 5) {
+            $this->makeUsersExtraDataFieldOptional($website->getDatabase());
         }
 
         // Update version number to signify database update
