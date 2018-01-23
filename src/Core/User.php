@@ -45,11 +45,11 @@ class User extends Entity {
      */
     public static function createNewUser($username, $displayName, $password) {
         $user = new User();
+        $user->extraData = null;
         $user->setUsername($username);
         $user->setDisplayName($displayName);
         $user->setPassword($password);
         $user->rank = Ranks::USER;
-        $user->extraData = null;
 
         $now = new DateTimeImmutable();
         $user->setLastLogin($now);
@@ -147,7 +147,7 @@ class User extends Entity {
         if (strLen($passwordHashed) === 32 && $passwordHashed[0] !== '$') {
             return md5(sha1($passwordUnhashed)) === $passwordHashed;
         } else {
-            return crypt($passwordUnhashed, $passwordHashed) === $passwordHashed;
+            return password_verify($passwordUnhashed, $passwordHashed);
         }
     }
 

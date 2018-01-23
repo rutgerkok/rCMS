@@ -51,13 +51,12 @@ class EditRankPage extends EditPasswordPage {
         if ($show_form) {
             // Variables
             $rank = $request->getRequestInt("rank", $this->user->getRank());
-            $ranks = array(Ranks::USER, Ranks::MODERATOR, Ranks::ADMIN);
 
             // Form itself
             $textToDisplay.=<<<EOT
                 <p>
                     {$website->t("users.rank.edit.explained")}
-                    {$website->tReplaced("accounts.edit_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
+                    {$website->tReplaced("users.edit.currently_editing_other", "<strong>" . $this->user->getDisplayName() . "</strong>")}
                 </p>
                 <p>
                     {$website->t("main.fields_required")}
@@ -65,7 +64,7 @@ class EditRankPage extends EditPasswordPage {
                 <form action="{$website->getUrlMain()}" method="post">
                     <p>
                         <label for="rank">{$website->t("users.rank")}</label>:<span class="required">*</span><br />
-                        {$this->get_ranks_box_html($website, $request, $ranks, $rank)}
+                        {$this->get_ranks_box_html($website, $request, $rank)}
                     </p>
                     <p>
                         <input type="hidden" name="p" value="edit_rank" />
@@ -83,15 +82,15 @@ EOT;
     }
 
     protected function get_ranks_box_html(Website $website, Request $request,
-            $ranks, $selected) {
-        $oAuth = $website->getRanks();
+            $selected) {
+        $ranks = $website->getRanks()->getAllRanks();
         $text = $website->getText();
 
         $selection_box = '<select name="rank" id="rank">';
-        foreach ($ranks as $id) {
-            $label = $text->t($oAuth->getRankName($id));
-            $selection_box.= '<option value="' . $id . '"';
-            if ($selected == $id) {
+        foreach ($ranks as $rankId => $rankName) {
+            $label = $text->t($rankName);
+            $selection_box.= '<option value="' . $rankId . '"';
+            if ($selected === $rankId) {
                 $selection_box.= ' selected="selected"';
             }
             $selection_box.= '>' . $label . "</option>\n";

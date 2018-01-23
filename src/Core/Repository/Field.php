@@ -86,10 +86,13 @@ class Field {
 
     /**
      * Transforms the string received from the database to the appropriate type.
-     * @param string $string String from the database. May not be null.
+     * @param string|null $string String from the database. May not be null.
      * @return mixed Type appropriate for this field.
      */
     public function deserializeValue($string) {
+        if ($string === null) {
+            return null;
+        }
         switch ($this->type) {
             case self::TYPE_INT:
             case self::TYPE_PRIMARY_KEY:

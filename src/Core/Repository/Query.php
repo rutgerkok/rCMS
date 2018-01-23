@@ -312,9 +312,6 @@ class Query {
             $object = $this->repository->createEmptyObject();
 
             foreach ($row as $fieldName => $value) {
-                if ($value === null) {
-                    continue;
-                }
                 $field = $fieldMap[$fieldName];
                 $object->setField($field, $value);
             }

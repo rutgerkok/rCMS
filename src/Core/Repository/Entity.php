@@ -30,7 +30,7 @@ abstract class Entity {
     /**
      * Sets the value of a field on this object.
      * @param Field $field The field to set.
-     * @param string $value Raw value of the field.
+     * @param string|null $value Raw value of the field.
      * @throws BadMethodCallException If the object is already constructed.
      */
     public function setField(Field $field, $value) {

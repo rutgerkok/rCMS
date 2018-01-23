@@ -144,7 +144,7 @@ class Request {
      */
     public function getParamInt($paramNr, $defaultValue = 0) {
         $stringValue = $this->getParamString($paramNr, "");
-        if (is_numeric($defaultValue)) {
+        if (is_numeric($stringValue)) {
             return (int) $stringValue;
         }
         return $defaultValue;
@@ -160,7 +160,7 @@ class Request {
      */
     public function getRequestInt($key, $defaultValue = 0) {
         $stringValue = $this->getRequestString($key, "");
-        if (is_numeric($defaultValue)) {
+        if (is_numeric($stringValue)) {
             return (int) $stringValue;
         }
         return $defaultValue;

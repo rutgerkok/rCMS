@@ -118,7 +118,7 @@ class EditPasswordPage extends Page {
             // Text above form
             $textToDisplay.= "<p>" . $website->tReplaced("users.password.edit.explained", Validate::$MIN_PASSWORD_LENGTH) . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $website->tReplaced("users.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("users.edit.currently_editing_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself

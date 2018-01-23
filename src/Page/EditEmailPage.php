@@ -39,7 +39,7 @@ class EditEmailPage extends EditPasswordPage {
             // Text above form
             $textToDisplay.= "<p>" . $website->t("users.email.edit.explained") . "</p>\n";
             if ($this->editing_someone_else) {
-                $textToDisplay.= "<p><em>" . $website->tReplaced("users.edit_other", $this->user->getDisplayName()) . "</em></p>\n";
+                $textToDisplay.= "<p><em>" . $website->tReplaced("users.edit.currently_editing_other", $this->user->getDisplayName()) . "</em></p>\n";
             }
 
             // Form itself

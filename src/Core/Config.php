@@ -14,7 +14,7 @@ class Config {
      * Schema version of the database.
      * @see #isDatabaseUpToDate
      */
-    const CURRENT_DATABASE_VERSION = 5;
+    const CURRENT_DATABASE_VERSION = 6;
 
     const DEFAULT_LANGUAGE = "en";
     const DEFAULT_THEME = "temp";
