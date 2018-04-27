@@ -5,9 +5,8 @@
 body {
     background: #bcbcbc url(images/background.jpg);
     color: #454545;
-}
-body.backstage {
-    background: #808080 url(images/background-dark.jpg);
+    background-size: 50px 50px;
+    background-size: 3.94vw 3.94vw;
 }
 
 p, h1, h2, h3, h4, ul, figcaption {
@@ -64,7 +63,10 @@ body, div, section, article {
 
 /* Header menu */
 #site_header {
-    background: #f4f4f4;
+    background: #EEF2F6 url(images/header_image.jpg);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
     position: relative;
     padding: 0;
     box-shadow: 0 0 16px black;
@@ -185,6 +187,25 @@ input#searchbutton {
     div#search {
         display: none;
     }
+}
+
+/* Site background (not on mobile) */
+@media only screen and (min-width: 60rem) {
+    #site_after_header {
+        background-image: url(images/hero_image.jpg);
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+    }
+    
+}
+/* Hero image */
+.with_hero #site_after_header {
+    background-image: url(images/hero_image.jpg);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 100% auto;
+    padding-top: 30vw;
 }
 
 /* Main content area */

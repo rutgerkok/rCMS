@@ -33,19 +33,21 @@ HTML
         if ($elements->isLoggedIn()) {
             $bodyClass.= " logged_in";
         }
-        if ($elements->getPageType() == Page::TYPE_BACKSTAGE) {
+        if ($elements->getPageType() === Page::TYPE_BACKSTAGE) {
             $bodyClass.= " backstage";
+        } elseif ($elements->getPageType() === Page::TYPE_HOME) {
+            $bodyClass.= " with_hero";
         }
 
         $stream->write('<body class="' . $bodyClass . '">');
 
         $this->renderHeader($stream, $elements);
-
+        $stream->write('<div id="site_after_header">');
         $stream->write('<div class="site_container">');
         $this->renderMainContent($stream, $elements);
         $this->renderWidgetsSidebar($stream, $elements);
         $stream->write('<div style="clear:both"></div>');
-        $stream->write('</div>');
+        $stream->write('</div></div>');
 
         $this->renderFooter($stream, $elements);
 
@@ -85,6 +87,18 @@ HTML
                 </div>
             </header>
         ');
+    }
+    
+    private function renderHero(StreamInterface $stream, ThemeElements $elements) {
+        if ($elements->getPageType() !== Page::TYPE_HOME) {
+            return;
+        }
+        $stream->write(<<<HTML
+            <div id="site-hero">
+   
+            </div>
+HTML
+        );
     }
 
     private function renderFooter(StreamInterface $stream,
