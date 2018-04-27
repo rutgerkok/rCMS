@@ -31,7 +31,7 @@ final class SwitchThemePage extends Page {
         parent::init($website, $request);
         
         $themeManager = $website->getThemeManager();
-        if (Validate::requestToken($request)) {
+        if (Validate::requestToken($request) && $request->hasRequestValue("theme")) {
             $this->trySwitchTheme($themeManager, $website->getText(), $request);
         }
         $this->availableThemes = $themeManager->getAllThemes();
