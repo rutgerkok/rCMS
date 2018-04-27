@@ -4,5 +4,5 @@ created_by=Created by {0}
 switch=Switch site theme
 switch.title=Changing the site theme
 switch_to_this=Switch to this theme
-does_not_exist_named=That theme does not exist.
+does_not_exist=That theme does not exist.
 successfully_switched=Successfully switched the theme.
