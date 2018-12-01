@@ -1,9 +1,11 @@
 <?php
 
 // Welcome! Brug is a build system for websites. This file is just an installer,
-// it downloads Composer (PHP package manager) and Brug. See 'build.php' for the
-// actual build file. Simple execute that file using `php build.php` to build
-// the website.
+// it downloads Composer (PHP package manager) and Brug. Available commands:
+//
+// php brug.php build    Build for production release.
+// php brug.php dev      Build for developmental release.
+// php brug.php run      Run the project for development.
 
 namespace RutgerKok\Brug;
 
@@ -40,12 +42,14 @@ Brug::init(__DIR__, BUILD_DIR, COMPOSER_FILE, getCommandArgs());
 
 // Function definitions
 
-function fatalError($msg) {
+function fatalError($msg)
+{
     echo $msg;
     exit(1);
 }
 
-function runCommand($command) {
+function runCommand($command)
+{
     // Runs the command. On failure, it prints the output and exit()s.
     $exitCode = exec($command);
     if ($exitCode != 0) {
@@ -53,14 +57,16 @@ function runCommand($command) {
     }
 }
 
-function checkPhpVersion() {
+function checkPhpVersion()
+{
     if (version_compare(PHP_VERSION, '5.4.0', '<')) {
         fatalError("PHP version 5.4 is required.");
         // Because of array syntax and PHP_BINARY constant
     }
 }
 
-function createDir($dir) {
+function createDir($dir)
+{
     if (!is_dir($dir)) {
         if (file_exists($dir)) {
             fatalError($dir . " must be a directory, but was a file.");
@@ -72,7 +78,8 @@ function createDir($dir) {
     }
 }
 
-function downloadComposer() {
+function downloadComposer()
+{
     $alreadyDownloaded = file_exists(COMPOSER_INSTALLER_FILE);
     $expectedHash = @file_get_contents("https://composer.github.io/installer.sig");
 
@@ -107,12 +114,14 @@ function downloadComposer() {
     }
 }
 
-function installComposer() {
+function installComposer()
+{
     chdir(TEMP_DIR);
     runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(COMPOSER_INSTALLER_FILE));
 }
 
-function createBrugDownloadFile() {
+function createBrugDownloadFile()
+{
     if (file_exists(TEMP_DIR . "composer.json")) {
         return; // File already exists
     }
@@ -138,7 +147,8 @@ function createBrugDownloadFile() {
     file_put_contents(TEMP_DIR . "composer.json", json_encode($composerJson, JSON_PRETTY_PRINT));
 }
 
-function runComposer() {
+function runComposer()
+{
     if (file_exists(TEMP_DIR . "vendor/autoload.php")) {
         return; // Already run
     }
@@ -148,7 +158,8 @@ function runComposer() {
     runCommand(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(TEMP_DIR . 'composer.phar') . ' install');
 }
 
-function getCommandArgs() {
+function getCommandArgs()
+{
     global $argv;
     $args = $argv;
     array_shift($args);
