@@ -29,7 +29,7 @@ class Authenticator {
     public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null) {
 
-        $response = $this->withStartedSession($response);
+        $response = $this->withStartedSession($request, $response);
         $user = null;
         $post = $request->getParsedBody();
 
@@ -66,7 +66,11 @@ class Authenticator {
         return $next? $next($request, $response) : $response;
     }
     
-    private function withStartedSession(ResponseInterface $response) {
+    private function withStartedSession(ServerRequestInterface $request, ResponseInterface $response) {
+        // Get session id from cookie, or create a new one
+        $sessionId = $request->getCookieParams()[session_name()] ?? bin2hex(random_bytes(16));
+        session_id($sessionId);
+
         // Start the session with manual cookie injection
         session_start([
             'use_cookies' => false,
